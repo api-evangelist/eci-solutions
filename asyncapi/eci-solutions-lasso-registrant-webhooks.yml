@@ -1,0 +1,115 @@
+generated: '2026-09-06'
+method: searched
+source: >-
+  https://platform.lassocrm.com/api/lasso.yml — the "Lasso Event System" section of
+  info.description and the RegistrantWebhookEvent component schema
+provider: ECI Solutions
+providerId: eci-solutions
+api: eci-solutions:eci-solutions-lasso-crm
+type: Webhooks
+asyncapi_published: false
+asyncapi_note: >-
+  ECI publishes NO AsyncAPI document for any product. Lasso CRM is the only ECI surface with an
+  event system at all, and it is described in prose plus one component schema inside the REST
+  OpenAPI, not as a separate event contract. This artifact captures that webhook catalog verbatim
+  from the contract. Nothing here is generated: the trigger list, the envelope fields and the
+  `changed` enumeration are all copied from what Lasso publishes. No AsyncAPI was authored on the
+  provider's behalf.
+transport: https-webhook
+delivery: push to registered integrations
+subscription:
+  detail: >-
+    Subscriptions are not created by the API. A registrant is ASSOCIATED with an external system by
+    POST /registrants/{registrantId}/integrations with an ExternalId body; the integration type is
+    inferred from the API key used. The webhook endpoint URL itself, and any static customParams,
+    are configured on the Lasso project-level webhook configuration page, not through the API.
+  operations:
+    - operationId: post_registrants_integrations
+      method: POST
+      path: /registrants/{registrantId}/integrations
+      description: Associate an external customer id with a Lasso registrant so integration-specific triggers fire.
+    - operationId: delete_registrants_integrations
+      method: DELETE
+      path: /registrants/{registrantId}/integrations
+      description: Remove the association.
+    - operationId: delete_registrants_external
+      method: DELETE
+      path: /registrants/{registrantId}/external/{externalId}
+      description: Detach one external id mapping.
+envelope:
+  schema: RegistrantWebhookEvent
+  fields:
+    - name: timestamp
+      type: string
+      format: ISO 8601 UTC
+      description: Time of the event.
+    - name: id
+      type: string
+      description: The Lasso registrantId. Present even when entity is null (deleted events).
+    - name: externalId
+      type: string
+      description: The external system's id for this registrant, matching RegistrantRead.externalId.
+    - name: action
+      type: string
+      enum: [inserted, updated, deleted]
+      description: entity is set on inserted and updated; NOT set on deleted.
+    - name: customParams
+      type: array
+      description: >-
+        Static key/value pairs configured on the project-level webhook configuration and passed
+        through unchanged — e.g. communityId=12345 — so a consumer can map the event into its own
+        tenancy without a lookup.
+    - name: changed
+      type: array of string
+      description: >-
+        On update events only, the RegistrantRead field names that triggered the webhook. Empty on
+        inserted and deleted. A stateless consumer can skip irrelevant updates without diffing the
+        entity — e.g. when changed is only ["history"].
+      allowed_values:
+        - person
+        - rating
+        - excludeFromTraffic
+        - registrationDate
+        - followUpProcess
+        - sourceType
+        - secondarySourceType
+        - questions
+        - notes
+        - assignedSalesReps
+        - history
+      caveat: >-
+        Internal metadata changes (status, LastModified, activities, emailOptedStatus) DO trigger a
+        webhook but never appear in `changed`. A consumer will therefore receive update events whose
+        changed array is empty for reasons it cannot see.
+    - name: entity
+      type: RegistrantRead
+      description: The full registrant, embedded. Null on deleted.
+events:
+  - name: registrant.inserted
+    action: inserted
+    trigger: Create Registrant
+  - name: registrant.deleted
+    action: deleted
+    trigger: Delete Registrant
+  - name: registrant.updated
+    action: updated
+    trigger: >-
+      Update of any of the following registrant attributes — person.firstName, person.lastName,
+      person.nameTitle, person.contactPreference, person.company, person.birthday, person.gender,
+      person.jobTitle, person.nickname, person.ssnSin, Rating, SourceType, SecondarySourceType,
+      FollowUpProcess, registrationDate, emails, phones, addresses, notes, questions,
+      excludeFromTraffic, status, relationships, assignedSalesReps.
+    note: >-
+      Explicitly NOT every write fires an event — Lasso states that only actions on certain
+      registrant attributes trigger a webhook.
+known_behaviour:
+  - >-
+    Changelog v1.0.30 (2018-10-10): specifying an externalId on POST /registrants no longer
+    generates a webhook event for all integration types except lassoLeadCapture.
+retries: not documented
+signing: not documented
+replay: not documented
+gaps:
+  - No signature or shared-secret verification scheme is documented for the webhook payload.
+  - No retry/backoff policy, no delivery log, and no replay endpoint are documented.
+  - No webhook surface exists on ANY ECI Manufacturing product. The ERP, JobBOSS² and M1 APIs are poll-only; the documented incremental mechanism is the rowVersion cursor (see conventions/).

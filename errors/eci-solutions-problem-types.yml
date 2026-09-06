@@ -1,0 +1,115 @@
+generated: '2026-09-06'
+method: derived
+source: >-
+  openapi/ 4xx and 5xx responses across all 18 harvested contracts, plus the error-response section
+  of the JobBOSS² Public API info.description
+provider: ECI Solutions
+providerId: eci-solutions
+format: rfc7807-shaped
+media_types:
+  - application/json
+  - text/json
+  - text/plain
+  - application/xml
+  - text/xml
+note: >-
+  ECI returns RFC 7807-shaped bodies but never the application/problem+json media type, so this is
+  NOT an RFC 9457 error surface. Three distinct envelopes are in use across the estate; a client
+  integrating two ECI APIs has to parse two different error shapes.
+envelopes:
+  - name: ProblemDetails
+    used_by:
+      - openapi/eci-solutions-apar-commerce-openapi.json
+      - openapi/eci-solutions-authentication-openapi.json
+      - openapi/eci-solutions-ecommerce-openapi.json
+      - openapi/eci-solutions-einvoice-openapi.json
+      - openapi/eci-solutions-management-openapi.json
+      - openapi/eci-solutions-notification-openapi.json
+      - openapi/eci-solutions-office-openapi.json
+    fields: [type, title, status, detail, instance]
+    note: ASP.NET Core ProblemDetails. Notification adds ValidationProblemDetails with an errors map.
+  - name: Problem
+    used_by:
+      - openapi/eci-solutions-financial-v2-openapi.json
+    fields: [type, title, status, detail, instance]
+  - name: ErrorResponse / ErrorSchema
+    used_by:
+      - openapi/eci-solutions-jobboss2-openapi.json
+    fields: [Error.Title, Error.Status, Error.Detail, Error.TraceId]
+    note: >-
+      PascalCase, wrapped in an Error object, and carries a TraceId a caller can quote to ECI
+      support. Documented in the spec description with worked 404 and 500 examples.
+  - name: APIResponseMessageDto
+    used_by:
+      - openapi/eci-solutions-m1-openapi.json
+    note: >-
+      M1's own envelope, attached to 400, 404 and 500 on all 1,208 operations. 415 returns a bare
+      string.
+  - name: StringAPIResponse / ItemModelListAPIResponse
+    used_by:
+      - openapi/eci-solutions-management-openapi.json
+      - openapi/eci-solutions-financial-v1-openapi.json
+    note: >-
+      Envelope reuse of the SUCCESS response type for errors on some Management and Financial v1
+      operations — the same shape carries both outcomes, so status code is the only discriminator.
+problem_types:
+  - status: 400
+    title: Bad Request
+    declared_on: 9 contracts
+    remediation: >-
+      Validation failure. Financial v2 and Notification return field-level detail; M1 declares 400
+      on every one of its 1,208 operations.
+  - status: 401
+    title: Unauthorized
+    declared_on: 5 contracts
+    remediation: >-
+      Missing, malformed or expired bearer token. Integration Engine access tokens are valid for
+      exactly 3,600 seconds and there is no refresh token — re-present client id and secret to
+      https://api-user.integrations.ecimanufacturing.com/oauth2/api-user/token. The whole api-jb2
+      and api-m1 hosts answer 401 to any anonymous request, including /.well-known/ paths.
+  - status: 403
+    title: Forbidden
+    declared_on: 3 contracts
+    remediation: >-
+      The API user is authenticated but the API is not activated for the company. ECI must activate
+      each API before use.
+  - status: 404
+    title: Not Found
+    declared_on: 11 contracts
+    remediation: Resource id does not exist in the connected ERP instance.
+  - status: 406
+    title: Not Acceptable
+    declared_on: Lasso CRM (documented in the changelog, v1.0.35)
+    remediation: A numeric field received a non-numeric value.
+  - status: 409
+    title: Conflict
+    declared_on: 3 contracts (Ecommerce, Financial v2, Management)
+    remediation: Duplicate or conflicting record.
+  - status: 415
+    title: Unsupported Media Type
+    declared_on: M1 (all 1,208 operations)
+    remediation: Send application/json or application/xml.
+  - status: 429
+    title: Too Many Requests
+    declared_on: Financial Integration v2 only (16 operations)
+    remediation: >-
+      Back off. No Retry-After or RateLimit-* header is declared anywhere in the estate, so a client
+      has no runtime signal telling it how long to wait — only the prose limits in
+      rate-limits/eci-solutions-rate-limits.yml.
+  - status: 500
+    title: Internal Server Error
+    declared_on: 5 contracts
+    remediation: >-
+      JobBOSS² returns a TraceId in the envelope; quote it to ECI support. The JobBOSS² spec also
+      documents one known 500: applying the [NULL] filter operator to revisedDate always 500s
+      because that field can never be null.
+  - status: 501
+    title: Not Implemented
+    declared_on: Financial Integration v2 (16 operations)
+    remediation: >-
+      The connected financial package (Xero or ECI Financials) does not support this operation. Call
+      GET /api/v2/features first to learn what the tenant's package supports.
+gaps:
+  - No error CODE registry — errors are carried by HTTP status and prose detail only, with no stable machine-readable code enum in any contract.
+  - No application/problem+json media type, so problem documents cannot be detected by content type.
+  - No Retry-After on the only 429 in the estate.

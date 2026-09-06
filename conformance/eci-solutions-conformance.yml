@@ -1,0 +1,125 @@
+generated: '2026-09-06'
+method: derived
+source: >-
+  openapi/ (18 harvested contracts), well-known/eci-solutions-openid-configuration.json,
+  security/eci-solutions-trust-center.yml, https://trust.ecisolutions.com/
+provider: ECI Solutions
+providerId: eci-solutions
+conformance:
+  - id: openapi-3.0
+    conforms: true
+    evidence: >-
+      Seventeen contracts declare openapi 3.0.1 (every ECI Manufacturing Integration Engine API) and
+      one declares 3.0.2 (Lasso CRM). All eighteen parse.
+  - id: oauth2-client-credentials
+    conforms: true
+    evidence: >-
+      components.securitySchemes.Bearer / oauth2 / ClientToken across fifteen contracts declare
+      flows.clientCredentials with tokenUrl
+      https://api-user.integrations.ecimanufacturing.com/oauth2/api-user/token.
+  - id: oidc
+    conforms: true
+    evidence: >-
+      securitySchemes.oidc (type openIdConnect) in the Authentication and Management APIs points at
+      https://cognito-idp.us-east-1.amazonaws.com/us-east-1_9IYBf4TpD/.well-known/openid-configuration,
+      which returns a complete discovery document (issuer, jwks_uri, authorization/token/userinfo/
+      revocation endpoints, RS256).
+  - id: rfc7807-problem-details
+    conforms: partial
+    evidence: >-
+      Ten contracts $ref a ProblemDetails / ValidationProblemDetails / Problem schema on 4xx and 5xx
+      responses (ASP.NET Core shape: type, title, status, detail, instance). JobBOSS² uses its own
+      ErrorSchema with Title/Status/Detail/TraceId. The bodies are RFC 7807-shaped but are served as
+      application/json, text/json and text/plain — never application/problem+json — so a client
+      cannot content-negotiate or detect a problem document by media type.
+  - id: rfc9457-problem-details
+    conforms: false
+    evidence: >-
+      No response in any of the eighteen contracts declares the application/problem+json media type.
+  - id: rfc9116-security-txt
+    conforms: true
+    evidence: >-
+      https://www.ecisolutions.com/.well-known/security.txt (HTTP 200) and
+      https://integrations.ecimanufacturing.com/.well-known/security.txt (HTTP 200). Both are valid
+      RFC 9116 files; both have expiry problems (see security/eci-solutions-vulnerability-disclosure.yml).
+  - id: pagination
+    conforms: true
+    evidence: >-
+      Documented and uniform inside each product family: take/skip on the ERP, JobBOSS² and
+      Management APIs (default take=200 on JobBOSS²), top/skip on AP/AR Commerce, pageSize on M1,
+      nextPageToken cursor on the Office API. There is no single scheme across the estate.
+  - id: idempotency
+    conforms: partial
+    evidence: >-
+      No Idempotency-Key header exists in any contract. Financial Integration v2 documents
+      create-or-update upsert semantics on six named write operations, which are replay-safe by
+      natural key. See conventions/eci-solutions-conventions.yml.
+  - id: rate-limit-headers
+    conforms: false
+    evidence: >-
+      Limits are stated in prose (100 rpm on the Authentication API, 500 rpm on the Management API,
+      1,000 rpm per key on Lasso) but no contract declares RateLimit-*, X-RateLimit-* or Retry-After
+      response headers. Financial v2 is the only contract that even declares a 429 response, and it
+      declares no headers with it.
+  - id: json-api
+    conforms: false
+    evidence: Plain JSON; no application/vnd.api+json anywhere.
+  - id: odata
+    conforms: false
+    evidence: >-
+      No $metadata surface and no OData query syntax. The ERP and JobBOSS² APIs use their own
+      field[operator]=value filter grammar; M1 uses M1Field[operator]=value.
+  - id: fhir
+    conforms: false
+  - id: psd2
+    conforms: false
+  - id: scim
+    conforms: false
+    evidence: >-
+      The Management API provisions users and API users but declares no urn:ietf:params:scim:
+      schema URN and no /Users or /Groups SCIM resource.
+  - id: webhooks
+    conforms: partial
+    evidence: >-
+      Lasso CRM documents a registrant webhook event system with a RegistrantWebhookEvent envelope
+      (timestamp, id, externalId, action inserted|updated|deleted, changed[]) and a
+      POST/DELETE /registrants/{registrantId}/integrations subscription surface. No AsyncAPI
+      document is published, and no other ECI contract has an event surface.
+domain_standards:
+  note: >-
+    Checked the contracts themselves, not marketing prose, for a declared domain standard in ECI's
+    markets (manufacturing ERP, distribution, construction, office technology). REWARD-ONLY: no
+    invented conformance is recorded.
+  standards:
+  - id: peppol-einvoicing
+    conforms: unknown
+    evidence: >-
+      openapi/eci-solutions-einvoice-openapi.json is an integration with the Avalara E-Invoicing &
+      Live Reporting system and exposes Document, InputField and Mandate resources keyed to country
+      mandates — the shape of a statutory e-invoicing surface. The contract does NOT name PEPPOL,
+      UBL, EN 16931, Factur-X or any specific message type in a schema, enum or description, so no
+      conformance is asserted. Confirming this needs the Avalara mandate list the API returns at
+      runtime, which is auth-gated.
+  - id: mtconnect
+    conforms: false
+    evidence: >-
+      ECI markets ECI MES and Amper for shop-floor machine data, which is MTConnect's market, but no
+      published ECI contract exposes an MTConnect agent, probe/current/sample surface or
+      urn:mtconnect namespace.
+  - id: cmmc
+    conforms: claimed-not-in-contract
+    evidence: >-
+      ECI publicly states JobBOSS and M1 are ready for CMMC 2.0 (BusinessWire, 2023-10-17). This is
+      a product-security claim about the hosting environment, not something a contract declares, so
+      it is recorded as a claim and not scored as contract conformance.
+certifications:
+  source: https://trust.ecisolutions.com/
+  published:
+    - SOC 2
+    - ISO 27001
+    - ISO 27017
+    - ISO 27018
+    - HIPAA
+    - FedRAMP
+    - GDPR
+    - CSA STAR

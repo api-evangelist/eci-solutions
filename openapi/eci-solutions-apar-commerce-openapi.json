@@ -1,0 +1,2930 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "APAR Commerce Integration API",
+    "description": "# Documentation\n\n## Authentication\nPass an access token in the HTTP Authorization header of each request.\n\nFor example:\n\n```Authorization: Bearer [token]```\n\nAccess tokens are obtained from the Management API. See the <a href='https://integrations.ecimanufacturing.com/api.html?id=authentication-v1#/AuthApi/GetApiUserToken'>Management API OAuth 2.0 Token endpoint documentation</a> for more information.\n\n## Connection Prerequisites\n\n### Nuvei\n- **For AP endpoints:** Your credentials must have been configured with `ApMerchantId`, `ApPlatformId`, and `ApGatewayId` settings.\n- **For AR endpoints:** Your credentials must have been configured with `ArMerchantId` and `ArPlatformId` settings.\n- **For both AP and AR:** All of the above AP settings and AR settings must be configured.\n- These values are configured in the Integration Engine Management System and must match your Nuvei environment.\n- If any required value is missing, requests to the corresponding endpoints will fail with a validation error.\n\n## Usage\n\nThe API supports the following main operations:\n\n- Create and update customers (AR)\n- Create, update, and delete customer invoices and sales orders (AR)\n- Retrieve status and other information about payments made by customers (AR)\n- Create and update vendors (AP)\n- Create, update, and delete vendor invoices (AP)\n- Initiate or delete payments for vendor invoices (AP)\n- Retrieve status and other information about payments made to vendors (AP)\n\n### Common AP Workflows\n\nTo create vendor payments and retrieve their status, use the following sequence of API calls:\n\n- Call <a href='#/Vendor/CreateVendor'>Create Vendor</a>\n- Call <a href='#/Vendor/CreateVendorInvoice'>Create Vendor Invoice</a>\n- Call <a href='#/Vendor/CreatePayment'>Create Vendor Payment</a>\n- Call <a href='#/VendorPayment/GetPaymentById'>Get Vendor Payment by ID</a>\n\n### Common AR Workflows\n\nTo create customer invoices and retrieve their payment status, use the following sequence of API calls:\n\n- Call <a href='#/Customer/CreateCustomer'>Create Customer</a>\n- Call <a href='#/Customer/CreateCustomerInvoice'>Create Customer Invoice</a>\n- Use payment link from the create invoice response when requesting payment from the customer. Alternately, the customer may receive an email notification\nfrom the commerce platform if configured to do so and may pay by logging in to the customer portal.\n- Call (poll) <a href='#/CustomerPayment/GetCustomerPayments'>Get Customer Payments</a>, optionally filtering by single invoice ID\n\n\nFor more details, see the API endpoint documentation below or contact ECI support.",
+    "contact": {
+      "name": "ECI Support",
+      "url": "https://www.ecisolutions.com/support/"
+    },
+    "version": "v1"
+  },
+  "paths": {
+    "/api/v1/customers": {
+      "get": {
+        "tags": [
+          "Customer"
+        ],
+        "summary": "Get a list of customers.",
+        "operationId": "GetCustomers",
+        "parameters": [
+          {
+            "name": "top",
+            "in": "query",
+            "description": "Maximum number of records to return. Default: 100. Max: 100.",
+            "schema": {
+              "maximum": 100,
+              "minimum": 1,
+              "type": "integer",
+              "format": "int32",
+              "default": 100
+            }
+          },
+          {
+            "name": "skip",
+            "in": "query",
+            "description": "The value from which to start taking records. Default: 0.",
+            "schema": {
+              "maximum": 2147483647,
+              "minimum": 0,
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          },
+          {
+            "name": "externalCustomerId",
+            "in": "query",
+            "description": "The External Customer Id by which to search for the customer.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerResponseListResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerResponseListResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerResponseListResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Customer"
+        ],
+        "summary": "Create a customer.",
+        "operationId": "CreateCustomer",
+        "requestBody": {
+          "description": "The details of Customer by which  we can create the customer with all the validation applied.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CustomerRequestModel"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CustomerRequestModel"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/CustomerRequestModel"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/customers/{id}": {
+      "get": {
+        "tags": [
+          "Customer"
+        ],
+        "summary": "Get a Customer record by customer id.",
+        "operationId": "GetCustomerById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The Customer Id by which to search for the customer.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Customer"
+        ],
+        "summary": "Update a customer.",
+        "operationId": "UpdateCustomer",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The Customer Id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "The details of Customer by which  we can update the customer with all the validation applied.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCustomerRequestModel"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCustomerRequestModel"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCustomerRequestModel"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Customer"
+        ],
+        "summary": "Delete a customer by customer id.",
+        "operationId": "DeleteCustomer",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The Customer Id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        }
+      }
+    },
+    "/api/v1/customers/{id}/invoices": {
+      "post": {
+        "tags": [
+          "Customer"
+        ],
+        "summary": "Create a customer invoice.",
+        "operationId": "CreateCustomerInvoice",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The Customer Id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "The details of Customer Invoice by which we can create the customer invoice with all the validation applied.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCustomerInvoiceRequestModel"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCustomerInvoiceRequestModel"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCustomerInvoiceRequestModel"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerInvoiceResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerInvoiceResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerInvoiceResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/customers/{id}/invoices/{invoiceId}": {
+      "get": {
+        "tags": [
+          "Customer"
+        ],
+        "summary": "Get a Customer Invoice record.",
+        "operationId": "GetCustomerInvoiceById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The Customer Id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "invoiceId",
+            "in": "path",
+            "description": "The Invoice Id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerInvoiceResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerInvoiceResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerInvoiceResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Customer"
+        ],
+        "summary": "Update a customer invoice.",
+        "operationId": "UpdateCustomerInvoice",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The Customer Id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "invoiceId",
+            "in": "path",
+            "description": "The Customer Invoice Id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "The details of Customer Invoice by which we can update the customer invoice.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCustomerInvoiceRequestModel"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCustomerInvoiceRequestModel"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCustomerInvoiceRequestModel"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerInvoiceResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerInvoiceResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerInvoiceResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Customer"
+        ],
+        "summary": "Delete a customer invoice by invoice id.",
+        "operationId": "DeleteCustomerInvoice",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The Customer Id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "invoiceId",
+            "in": "path",
+            "description": "The Customer Invoice Id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        }
+      }
+    },
+    "/api/v1/customers/{id}/invoices/{invoiceId}/upload-file": {
+      "post": {
+        "tags": [
+          "Customer"
+        ],
+        "summary": "Upload an invoice file.",
+        "description": "For Nuvei the file must be a PDF.",
+        "operationId": "UploadFileToCustomerInvoice",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The Customer Id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "invoiceId",
+            "in": "path",
+            "description": "The Customer Invoice Id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "required": [
+                  "File"
+                ],
+                "type": "object",
+                "properties": {
+                  "File": {
+                    "type": "string",
+                    "description": "The data file (e.g., a PDF) to be uploaded.",
+                    "format": "binary"
+                  }
+                }
+              },
+              "encoding": {
+                "File": {
+                  "style": "form"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerInvoiceResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerInvoiceResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerInvoiceResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/customers/{id}/sales-orders": {
+      "post": {
+        "tags": [
+          "Customer"
+        ],
+        "summary": "Create a customer sales order.",
+        "operationId": "CreateCustomerSalesOrder",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The Customer Id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "The details of Customer Sales Order by which we can create the customer sales order with all the validation applied.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCustomerSalesOrderRequestModel"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCustomerSalesOrderRequestModel"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCustomerSalesOrderRequestModel"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerSalesOrderResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerSalesOrderResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerSalesOrderResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/customers/{id}/sales-orders/{salesOrderId}": {
+      "get": {
+        "tags": [
+          "Customer"
+        ],
+        "summary": "Get a Customer Sales Order record.",
+        "operationId": "GetCustomerSalesOrderById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The Customer Id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "salesOrderId",
+            "in": "path",
+            "description": "The Sales Order Id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerSalesOrderResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerSalesOrderResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerSalesOrderResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Customer"
+        ],
+        "summary": "Update a customer sales order.",
+        "operationId": "UpdateCustomerSalesOrder",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The Customer Id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "salesOrderId",
+            "in": "path",
+            "description": "The Customer Sales Order Id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "The details of Customer Sales Order by which we can update the customer sales order.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCustomerSalesOrderRequestModel"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCustomerSalesOrderRequestModel"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCustomerSalesOrderRequestModel"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerSalesOrderResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerSalesOrderResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerSalesOrderResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Customer"
+        ],
+        "summary": "Delete a customer sales order by sales order id.",
+        "operationId": "DeleteCustomerSalesOrder",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The Customer Id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "salesOrderId",
+            "in": "path",
+            "description": "The Customer Sales Order Id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        }
+      }
+    },
+    "/api/v1/customers/{id}/sales-orders/{salesOrderId}/upload-file": {
+      "post": {
+        "tags": [
+          "Customer"
+        ],
+        "summary": "Upload a sales order file.",
+        "description": "For Nuvei the file must be a PDF.",
+        "operationId": "UploadFileToSalesOrders",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The Customer Id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "salesOrderId",
+            "in": "path",
+            "description": "The Customer Sales Order Id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "required": [
+                  "File"
+                ],
+                "type": "object",
+                "properties": {
+                  "File": {
+                    "type": "string",
+                    "description": "The data file (e.g., a PDF) to be uploaded.",
+                    "format": "binary"
+                  }
+                }
+              },
+              "encoding": {
+                "File": {
+                  "style": "form"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerSalesOrderResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerSalesOrderResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerSalesOrderResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/customer-payments": {
+      "get": {
+        "tags": [
+          "CustomerPayment"
+        ],
+        "summary": "Get a list of customer payments.",
+        "operationId": "GetCustomerPayments",
+        "parameters": [
+          {
+            "name": "top",
+            "in": "query",
+            "description": "Maximum number of records to return. Default: 100. Max: 100.",
+            "schema": {
+              "maximum": 100,
+              "minimum": 1,
+              "type": "integer",
+              "format": "int32",
+              "default": 100
+            }
+          },
+          {
+            "name": "skip",
+            "in": "query",
+            "description": "The value from which to start taking records. Default: 0.",
+            "schema": {
+              "maximum": 2147483647,
+              "minimum": 0,
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          },
+          {
+            "name": "paymentDate",
+            "in": "query",
+            "description": "The Payment Date by which to search for the payments. Results will include payments on or after the provided date.",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "invoiceId",
+            "in": "query",
+            "description": "The Customer Invoice ID for which to search for payments.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "salesOrderId",
+            "in": "query",
+            "description": "The Customer Sales Order ID for which to search for payments.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerPaymentResponseListResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerPaymentResponseListResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerPaymentResponseListResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/customer-payments/{id}": {
+      "get": {
+        "tags": [
+          "CustomerPayment"
+        ],
+        "summary": "Get a customer's payment record by payment id.",
+        "operationId": "GetCustomerPaymentById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The Payment Id by which to search for the customer's payment.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerPaymentResponseListResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerPaymentResponseListResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerPaymentResponseListResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/vendors": {
+      "get": {
+        "tags": [
+          "Vendor"
+        ],
+        "summary": "Get a list of vendors.",
+        "operationId": "GetVendors",
+        "parameters": [
+          {
+            "name": "top",
+            "in": "query",
+            "description": "Maximum number of records to return. Default: 100. Max: 100.",
+            "schema": {
+              "maximum": 100,
+              "minimum": 1,
+              "type": "integer",
+              "format": "int32",
+              "default": 100
+            }
+          },
+          {
+            "name": "skip",
+            "in": "query",
+            "description": "The value from which to start taking records. Default: 0.",
+            "schema": {
+              "maximum": 2147483647,
+              "minimum": 0,
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          },
+          {
+            "name": "externalVendorId",
+            "in": "query",
+            "description": "The External Vendor Id by which to search for the vendor.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "vendorName",
+            "in": "query",
+            "description": "The Vendor Name by which to search for the vendor.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/VendorResponseListResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VendorResponseListResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VendorResponseListResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Vendor"
+        ],
+        "summary": "Create a vendor.",
+        "operationId": "CreateVendor",
+        "requestBody": {
+          "description": "The details of Vendor by which  we can create the vendor with all the validation applied.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VendorRequestModel"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VendorRequestModel"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/VendorRequestModel"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/VendorResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VendorResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VendorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/vendors/{id}": {
+      "get": {
+        "tags": [
+          "Vendor"
+        ],
+        "summary": "Get a vendor record by vendor id.",
+        "operationId": "GetVendorById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The Vendor Id by which to search for the vendor.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/VendorResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VendorResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VendorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Vendor"
+        ],
+        "summary": "Update a vendor.",
+        "operationId": "UpdateVendor",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The Vendor Id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "The details of Vendor by which we can update the vendor.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateVendorRequestModel"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateVendorRequestModel"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateVendorRequestModel"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/VendorResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VendorResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VendorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Vendor"
+        ],
+        "summary": "Delete a vendor by vendor id.",
+        "operationId": "DeleteVendor",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The Vendor Id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        }
+      }
+    },
+    "/api/v1/vendors/{id}/invoices": {
+      "post": {
+        "tags": [
+          "Vendor"
+        ],
+        "summary": "Create a vendor invoice.",
+        "operationId": "CreateVendorInvoice",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The Vendor Id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "The details of Vendor Invoice by which we can create the vendor invoice with all the validation applied.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateVendorInvoiceRequestModel"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateVendorInvoiceRequestModel"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateVendorInvoiceRequestModel"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/VendorInvoiceResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VendorInvoiceResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VendorInvoiceResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/vendors/{id}/invoices/{invoiceId}": {
+      "get": {
+        "tags": [
+          "Vendor"
+        ],
+        "summary": "Get a Vendor Invoice record.",
+        "operationId": "GetVendorInvoiceById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The Vendor Id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "invoiceId",
+            "in": "path",
+            "description": "The Invoice Id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/VendorInvoiceResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VendorInvoiceResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VendorInvoiceResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Vendor"
+        ],
+        "summary": "Update a vendor invoice.",
+        "operationId": "UpdateVendorInvoice",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The Vendor Id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "invoiceId",
+            "in": "path",
+            "description": "The Vendor Invoice Id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "The details of Vendor Invoice by which we can update the vendor invoice.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateVendorInvoiceRequestModel"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateVendorInvoiceRequestModel"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateVendorInvoiceRequestModel"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/VendorInvoiceResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VendorInvoiceResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VendorInvoiceResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Vendor"
+        ],
+        "summary": "Delete a vendor invoice by invoice id.",
+        "operationId": "DeleteVendorInvoice",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The Vendor Id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "invoiceId",
+            "in": "path",
+            "description": "The Vendor Invoice Id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        }
+      }
+    },
+    "/api/v1/vendors/{id}/payments": {
+      "post": {
+        "tags": [
+          "Vendor"
+        ],
+        "summary": "Create vendor payments.",
+        "operationId": "CreatePayment",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The Vendor Id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Model.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateVendorPaymentModel"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateVendorPaymentModel"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateVendorPaymentModel"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/VendorPaymentResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VendorPaymentResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VendorPaymentResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/vendor-payment-methods": {
+      "get": {
+        "tags": [
+          "VendorPayment"
+        ],
+        "summary": "Get a list of payment methods and their lead times.",
+        "operationId": "GetPaymentMethods",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/VendorPaymentMethodResponseListResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VendorPaymentMethodResponseListResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VendorPaymentMethodResponseListResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/vendor-payments": {
+      "get": {
+        "tags": [
+          "VendorPayment"
+        ],
+        "summary": "Get a list of payments.",
+        "operationId": "GetPayments",
+        "parameters": [
+          {
+            "name": "top",
+            "in": "query",
+            "description": "Maximum number of records to return. Default: 100. Max: 100.",
+            "schema": {
+              "maximum": 100,
+              "minimum": 1,
+              "type": "integer",
+              "format": "int32",
+              "default": 100
+            }
+          },
+          {
+            "name": "skip",
+            "in": "query",
+            "description": "The value from which to start taking records. Default: 0.",
+            "schema": {
+              "maximum": 2147483647,
+              "minimum": 0,
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          },
+          {
+            "name": "paymentDate",
+            "in": "query",
+            "description": "The Payment Date by which to search for the payment.",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "createdDate",
+            "in": "query",
+            "description": "The Created Date by which to search for the payment.",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "invoiceId",
+            "in": "query",
+            "description": "The Vendor Invoice ID by which to search for payments.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/VendorPaymentResponseListResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VendorPaymentResponseListResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VendorPaymentResponseListResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/vendor-payments/{id}": {
+      "get": {
+        "tags": [
+          "VendorPayment"
+        ],
+        "summary": "Get a vendor's payment record by payment id.",
+        "operationId": "GetPaymentById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The Payment Id by which to search for the vendor's payment.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/VendorPaymentResponseListResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VendorPaymentResponseListResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VendorPaymentResponseListResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "VendorPayment"
+        ],
+        "summary": "Delete a vendor payment by payment id.",
+        "operationId": "DeleteVendorPayment",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The Vendor Payment Id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Address": {
+        "type": "object",
+        "properties": {
+          "addressLine1": {
+            "type": "string",
+            "nullable": true
+          },
+          "addressLine2": {
+            "type": "string",
+            "nullable": true
+          },
+          "city": {
+            "type": "string",
+            "nullable": true
+          },
+          "country": {
+            "maxLength": 2,
+            "minLength": 0,
+            "type": "string",
+            "nullable": true
+          },
+          "state": {
+            "maxLength": 2,
+            "minLength": 0,
+            "type": "string",
+            "nullable": true
+          },
+          "postalCode": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "CreateCustomerInvoiceRequestModel": {
+        "required": [
+          "amount",
+          "date",
+          "dueDate",
+          "invoiceNo",
+          "taxAmount"
+        ],
+        "type": "object",
+        "properties": {
+          "invoiceNo": {
+            "maxLength": 200,
+            "minLength": 0,
+            "type": "string"
+          },
+          "date": {
+            "type": "string",
+            "format": "date"
+          },
+          "dueDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "amount": {
+            "type": "number",
+            "format": "double"
+          },
+          "balance": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "discountAmount": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "discountDate": {
+            "type": "string",
+            "format": "date",
+            "nullable": true
+          },
+          "taxAmount": {
+            "type": "number",
+            "format": "double"
+          },
+          "preAuth": {
+            "type": "boolean",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "CreateCustomerSalesOrderRequestModel": {
+        "required": [
+          "amount",
+          "date",
+          "dueDate",
+          "salesOrderNo"
+        ],
+        "type": "object",
+        "properties": {
+          "salesOrderNo": {
+            "maxLength": 200,
+            "minLength": 0,
+            "type": "string"
+          },
+          "date": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "dueDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "amount": {
+            "type": "number",
+            "format": "double"
+          },
+          "balance": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "taxAmount": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "discountAmount": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "discountDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "preAuth": {
+            "type": "boolean",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "CreateVendorInvoiceRequestModel": {
+        "required": [
+          "amount",
+          "date",
+          "dueDate",
+          "invoiceNo"
+        ],
+        "type": "object",
+        "properties": {
+          "invoiceNo": {
+            "maxLength": 200,
+            "minLength": 0,
+            "type": "string"
+          },
+          "date": {
+            "type": "string",
+            "format": "date"
+          },
+          "dueDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "amount": {
+            "type": "number",
+            "format": "double"
+          },
+          "balance": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "discountAmount": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "discountDate": {
+            "type": "string",
+            "format": "date",
+            "nullable": true
+          },
+          "comment": {
+            "maxLength": 200,
+            "minLength": 0,
+            "type": "string",
+            "nullable": true
+          },
+          "purchaseOrderNumber": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "CreateVendorPaymentModel": {
+        "required": [
+          "invoices",
+          "statusDate",
+          "transactionNo"
+        ],
+        "type": "object",
+        "properties": {
+          "transactionNo": {
+            "maxLength": 10,
+            "minLength": 0,
+            "type": "string",
+            "description": "The transaction number for the payment."
+          },
+          "paymentMethod": {
+            "type": "string",
+            "description": "The payment method used for the payment.\r\n* Nuvei: ACH, CHECK",
+            "nullable": true
+          },
+          "statusDate": {
+            "type": "string",
+            "description": "The date the status of the payment was last updated.",
+            "format": "date-time"
+          },
+          "payDate": {
+            "type": "string",
+            "description": "The date when the payment will be paid. If not provided, the <see cref=\"P:APARCommerceIntegration.Domain.RequestModels.CreateVendorPaymentModel.PaymentInitiatedDate\">PaymentInitiatedDate</see> must be set.",
+            "format": "date-time",
+            "nullable": true
+          },
+          "paymentInitiatedDate": {
+            "type": "string",
+            "description": "The date when the payment process will be initiated or scheduled.",
+            "format": "date-time",
+            "nullable": true
+          },
+          "invoices": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/InvoiceRequestModel"
+            },
+            "description": "The vendor invoices and amounts that will be paid with this payment."
+          }
+        },
+        "additionalProperties": false
+      },
+      "CustomerInvoiceResponse": {
+        "type": "object",
+        "properties": {
+          "invoiceNo": {
+            "type": "string",
+            "nullable": true
+          },
+          "date": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "dueDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "amount": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "balance": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "status": {
+            "type": "string",
+            "nullable": true
+          },
+          "discountAmount": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "discountDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "invoiceId": {
+            "type": "string",
+            "nullable": true
+          },
+          "customerId": {
+            "type": "string",
+            "nullable": true
+          },
+          "externalCustomerId": {
+            "type": "string",
+            "nullable": true
+          },
+          "taxAmount": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "preAuth": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "paymentLinkUri": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "CustomerPaymentInvoice": {
+        "type": "object",
+        "properties": {
+          "documentNo": {
+            "type": "string",
+            "nullable": true
+          },
+          "amount": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "invoiceId": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "CustomerPaymentPreAuthDetails": {
+        "type": "object",
+        "properties": {
+          "acctLast4": {
+            "type": "string",
+            "nullable": true
+          },
+          "acctPaymentNetwork": {
+            "type": "string",
+            "nullable": true
+          },
+          "acctExpireMonth": {
+            "type": "string",
+            "nullable": true
+          },
+          "acctExpireYear": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "CustomerPaymentResponse": {
+        "type": "object",
+        "properties": {
+          "paymentId": {
+            "type": "string",
+            "nullable": true
+          },
+          "externalCustomerId": {
+            "type": "string",
+            "nullable": true
+          },
+          "transactionNo": {
+            "type": "string",
+            "nullable": true
+          },
+          "paymentMethod": {
+            "type": "string",
+            "nullable": true
+          },
+          "totalAmount": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "paymentDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "createdDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "surchargeAmount": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "preAuthDetails": {
+            "$ref": "#/components/schemas/CustomerPaymentPreAuthDetails"
+          },
+          "invoices": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CustomerPaymentInvoice"
+            },
+            "nullable": true
+          },
+          "salesOrders": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CustomerPaymentSalesOrder"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "CustomerPaymentResponseListResponse": {
+        "type": "object",
+        "properties": {
+          "count": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CustomerPaymentResponse"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "CustomerPaymentSalesOrder": {
+        "type": "object",
+        "properties": {
+          "documentNo": {
+            "type": "string",
+            "nullable": true
+          },
+          "amount": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "salesOrderId": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "CustomerRequestModel": {
+        "required": [
+          "address",
+          "contactGivenName",
+          "contactSurname"
+        ],
+        "type": "object",
+        "properties": {
+          "externalCustomerId": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string",
+            "nullable": true
+          },
+          "contactGivenName": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string"
+          },
+          "contactSurname": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string"
+          },
+          "emailAddress": {
+            "maxLength": 320,
+            "minLength": 0,
+            "type": "string",
+            "nullable": true
+          },
+          "address": {
+            "$ref": "#/components/schemas/Address"
+          },
+          "restrictPayment": {
+            "$ref": "#/components/schemas/RestrictPayment"
+          },
+          "disableFeeRecovery": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "selfServiceAccount": {
+            "type": "boolean",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "CustomerResponse": {
+        "type": "object",
+        "properties": {
+          "customerId": {
+            "type": "string",
+            "nullable": true
+          },
+          "externalCustomerId": {
+            "type": "string",
+            "nullable": true
+          },
+          "address": {
+            "$ref": "#/components/schemas/Address"
+          },
+          "contactGivenName": {
+            "type": "string",
+            "nullable": true
+          },
+          "contactSurname": {
+            "type": "string",
+            "nullable": true
+          },
+          "emailAddress": {
+            "type": "string",
+            "nullable": true
+          },
+          "restrictPayment": {
+            "type": "string",
+            "nullable": true
+          },
+          "disableFeeRecovery": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "selfServiceAccount": {
+            "type": "boolean",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "CustomerResponseListResponse": {
+        "type": "object",
+        "properties": {
+          "count": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CustomerResponse"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "CustomerSalesOrderResponse": {
+        "type": "object",
+        "properties": {
+          "salesOrderId": {
+            "type": "string",
+            "nullable": true
+          },
+          "customerId": {
+            "type": "string",
+            "nullable": true
+          },
+          "externalCustomerId": {
+            "type": "string",
+            "nullable": true
+          },
+          "salesOrderNo": {
+            "type": "string",
+            "nullable": true
+          },
+          "date": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "dueDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "amount": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "balance": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "status": {
+            "type": "string",
+            "nullable": true
+          },
+          "taxAmount": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "discountAmount": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "discountDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "preAuth": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "paymentLinkUri": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "InvoiceRequestModel": {
+        "required": [
+          "amount",
+          "invoiceId"
+        ],
+        "type": "object",
+        "properties": {
+          "invoiceId": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "amount": {
+            "type": "number",
+            "format": "double"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ProblemDetails": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "nullable": true
+          },
+          "title": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "detail": {
+            "type": "string",
+            "nullable": true
+          },
+          "instance": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": { }
+      },
+      "RestrictPayment": {
+        "enum": [
+          "CreditCard",
+          "ACH",
+          "Both"
+        ],
+        "type": "string"
+      },
+      "UpdateCustomerInvoiceRequestModel": {
+        "type": "object",
+        "properties": {
+          "invoiceNo": {
+            "maxLength": 200,
+            "minLength": 0,
+            "type": "string",
+            "nullable": true
+          },
+          "date": {
+            "type": "string",
+            "format": "date",
+            "nullable": true
+          },
+          "dueDate": {
+            "type": "string",
+            "format": "date",
+            "nullable": true
+          },
+          "amount": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "balance": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "taxAmount": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "discountAmount": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "discountDate": {
+            "type": "string",
+            "format": "date",
+            "nullable": true
+          },
+          "preAuth": {
+            "type": "boolean",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "UpdateCustomerRequestModel": {
+        "type": "object",
+        "properties": {
+          "externalCustomerId": {
+            "type": "string",
+            "nullable": true
+          },
+          "contactGivenName": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string",
+            "nullable": true
+          },
+          "contactSurname": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string",
+            "nullable": true
+          },
+          "emailAddress": {
+            "maxLength": 320,
+            "minLength": 0,
+            "type": "string",
+            "nullable": true
+          },
+          "address": {
+            "$ref": "#/components/schemas/Address"
+          },
+          "restrictPayment": {
+            "$ref": "#/components/schemas/RestrictPayment"
+          },
+          "disableFeeRecovery": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "selfServiceAccount": {
+            "type": "boolean",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "UpdateCustomerSalesOrderRequestModel": {
+        "type": "object",
+        "properties": {
+          "salesOrderNo": {
+            "maxLength": 200,
+            "minLength": 0,
+            "type": "string",
+            "nullable": true
+          },
+          "date": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "dueDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "amount": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "balance": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "taxAmount": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "discountAmount": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "discountDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "preAuth": {
+            "type": "boolean",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "UpdateVendorInvoiceRequestModel": {
+        "type": "object",
+        "properties": {
+          "invoiceNo": {
+            "maxLength": 200,
+            "minLength": 0,
+            "type": "string",
+            "nullable": true
+          },
+          "date": {
+            "type": "string",
+            "format": "date",
+            "nullable": true
+          },
+          "dueDate": {
+            "type": "string",
+            "format": "date",
+            "nullable": true
+          },
+          "amount": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "balance": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "comment": {
+            "maxLength": 200,
+            "minLength": 0,
+            "type": "string",
+            "nullable": true
+          },
+          "purchaseOrderNumber": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string",
+            "nullable": true
+          },
+          "discountAmount": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "discountDate": {
+            "type": "string",
+            "format": "date",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "UpdateVendorRequestModel": {
+        "type": "object",
+        "properties": {
+          "externalVendorId": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string",
+            "nullable": true
+          },
+          "vendorName": {
+            "maxLength": 255,
+            "minLength": 0,
+            "type": "string",
+            "nullable": true
+          },
+          "address": {
+            "$ref": "#/components/schemas/Address"
+          },
+          "contactGivenName": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string",
+            "nullable": true
+          },
+          "contactSurname": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string",
+            "nullable": true
+          },
+          "emailAddress": {
+            "type": "string",
+            "nullable": true
+          },
+          "comment": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "VendorInvoiceResponse": {
+        "type": "object",
+        "properties": {
+          "invoiceNo": {
+            "type": "string",
+            "nullable": true
+          },
+          "date": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "dueDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "amount": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "balance": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "status": {
+            "type": "string",
+            "nullable": true
+          },
+          "discountAmount": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "discountDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "billId": {
+            "type": "string",
+            "nullable": true
+          },
+          "vendorId": {
+            "type": "string",
+            "nullable": true
+          },
+          "comment": {
+            "type": "string",
+            "nullable": true
+          },
+          "purchaseOrderNumber": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "VendorPaymentInvoice": {
+        "type": "object",
+        "properties": {
+          "invoiceId": {
+            "type": "string",
+            "nullable": true
+          },
+          "amount": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "VendorPaymentMethodResponse": {
+        "type": "object",
+        "properties": {
+          "paymentMethod": {
+            "type": "string",
+            "nullable": true
+          },
+          "leadTime": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "VendorPaymentMethodResponseListResponse": {
+        "type": "object",
+        "properties": {
+          "count": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/VendorPaymentMethodResponse"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "VendorPaymentResponse": {
+        "required": [
+          "invoices"
+        ],
+        "type": "object",
+        "properties": {
+          "paymentId": {
+            "type": "string",
+            "nullable": true
+          },
+          "vendorId": {
+            "type": "string",
+            "nullable": true
+          },
+          "transactionNo": {
+            "type": "string",
+            "nullable": true
+          },
+          "paymentMethod": {
+            "type": "string",
+            "nullable": true
+          },
+          "paymentReferenceNo": {
+            "type": "string",
+            "nullable": true
+          },
+          "statusDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "status": {
+            "type": "string",
+            "nullable": true
+          },
+          "paymentDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "paymentInitiatedDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "totalAmount": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "createdDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "invoices": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/VendorPaymentInvoice"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "VendorPaymentResponseListResponse": {
+        "type": "object",
+        "properties": {
+          "count": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/VendorPaymentResponse"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "VendorRequestModel": {
+        "required": [
+          "address",
+          "emailAddress",
+          "vendorName"
+        ],
+        "type": "object",
+        "properties": {
+          "externalVendorId": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string",
+            "nullable": true
+          },
+          "vendorName": {
+            "maxLength": 255,
+            "minLength": 0,
+            "type": "string"
+          },
+          "address": {
+            "$ref": "#/components/schemas/Address"
+          },
+          "contactGivenName": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string",
+            "nullable": true
+          },
+          "contactSurname": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string",
+            "nullable": true
+          },
+          "emailAddress": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "comment": {
+            "type": "string",
+            "nullable": true
+          },
+          "defaultPaymentMethod": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "VendorResponse": {
+        "type": "object",
+        "properties": {
+          "vendorId": {
+            "type": "string",
+            "nullable": true
+          },
+          "externalVendorId": {
+            "type": "string",
+            "nullable": true
+          },
+          "vendorName": {
+            "type": "string",
+            "nullable": true
+          },
+          "address": {
+            "$ref": "#/components/schemas/Address"
+          },
+          "contactGivenName": {
+            "type": "string",
+            "nullable": true
+          },
+          "contactSurname": {
+            "type": "string",
+            "nullable": true
+          },
+          "emailAddress": {
+            "type": "string",
+            "nullable": true
+          },
+          "comment": {
+            "type": "string",
+            "nullable": true
+          },
+          "defaultPaymentMethod": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "VendorResponseListResponse": {
+        "type": "object",
+        "properties": {
+          "count": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/VendorResponse"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "securitySchemes": {
+      "Bearer": {
+        "type": "oauth2",
+        "description": "OAuth 2.0 Client Credentials Flow with API Users issued from Integration Engine Management Console",
+        "flows": {
+          "clientCredentials": {
+            "tokenUrl": "https://api-user.integrations.ecimanufacturing.com/oauth2/api-user/token",
+            "scopes": {
+              "openid": "openid"
+            }
+          }
+        }
+      }
+    }
+  },
+  "security": [
+    {
+      "Bearer": [ ]
+    }
+  ]
+}

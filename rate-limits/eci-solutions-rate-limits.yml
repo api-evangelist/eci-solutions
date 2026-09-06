@@ -3,95 +3,99 @@ specificationVersion: '0.1'
 schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main/schema/api-commons.yml#/$defs/RateLimits
 provider: ECI Solutions
 providerId: eci-solutions
+generated: '2026-09-06'
+method: searched
+source: >-
+  the info.description of openapi/eci-solutions-authentication-openapi.json,
+  openapi/eci-solutions-management-openapi.json and openapi/eci-solutions-lasso-crm-openapi.yml —
+  all three fetched anonymously from the provider's own hosts
 created: '2026-05-04'
-# Provenance stamped 2026-08-11: this artifact was written by the API Evangelist
-# bulk sweep dated 2026-05-04, not harvested from the provider. See roadmap#35.
-method: generated
-modified: '2026-05-04'
+modified: '2026-09-06'
+limit_count: 3
 tags:
-  - Accounting
-  - Business Management
-  - CRM
-  - Distribution
-  - E-Commerce
-  - ERP
-  - Field Service
-  - Inventory
-  - Manufacturing
-  - Retail
   - Rate Limiting
   - Quotas
   - Throttling
-description: Machine-readable rate limit definitions for the ECI Solutions API surface. Captures per-tier
-  quotas, burst behavior, response signaling, and recovery semantics. Defaults are scaffold values to
-  be replaced with published provider limits.
+description: >-
+  Three published rate limits across ECI's eighteen contracts, all stated in prose inside the spec
+  description rather than declared as machine-readable metadata. Two are per source IP, one is per
+  API key. Every other ECI API declares no limit at all, and both the Authentication and Management
+  descriptions warn that "other more specific rate limits may also apply" without saying what they
+  are.
 headers:
-  limit: X-RateLimit-Limit
-  remaining: X-RateLimit-Remaining
-  reset: X-RateLimit-Reset
-  retryAfter: Retry-After
-  policy: RateLimit-Policy
+  limit: null
+  remaining: null
+  reset: null
+  retryAfter: null
+  policy: null
+  note: >-
+    NO rate-limit response headers are declared in ANY of the eighteen contracts — no
+    X-RateLimit-*, no RateLimit-*, no Retry-After. A client learns it has been throttled only by
+    receiving an error, and gets no signal about how long to wait. This is the single largest
+    runtime gap in ECI's API surface for an automated consumer.
 responseCodes:
   throttled: 429
-  quotaExceeded: 429
-  serviceUnavailable: 503
+  note: >-
+    Only openapi/eci-solutions-financial-v2-openapi.json declares a 429 response (on 16 operations,
+    with an RFC 7807-shaped Problem body and no Retry-After header). No other contract declares 429
+    at all, including the two APIs whose descriptions state a numeric limit.
 limits:
-  - tier: free
-    name: Free Tier Default
-    scope: api-key
-    metric: requests_per_minute
-    limit: 10
-    burst: 20
-    timeFrame: minute
-    applies:
-      - ECI Solutions Platform API
-  - tier: free
-    name: Free Tier Monthly Quota
-    scope: api-key
-    metric: requests_per_month
-    limit: 1000
-    timeFrame: month
-    applies:
-      - ECI Solutions Platform API
-  - tier: professional
-    name: Professional Tier Default
-    scope: api-key
-    metric: requests_per_minute
+  - name: ECI Authentication API — per source IP
+    api: eci-solutions:eci-solutions-authentication
+    scope: per-source-ip
     limit: 100
-    burst: 200
-    timeFrame: minute
-    applies:
-      - ECI Solutions Platform API
-  - tier: professional
-    name: Professional Tier Monthly Quota
-    scope: api-key
-    metric: requests_per_month
-    limit: 100000
-    timeFrame: month
-    applies:
-      - ECI Solutions Platform API
-  - tier: enterprise
-    name: Enterprise Negotiated Limit
-    scope: contract
-    metric: requests_per_minute
+    window: minute
+    burst: null
+    source: openapi/eci-solutions-authentication-openapi.json (info.description)
+    quote: >-
+      "This API enforces a rate limit of 100 requests per minute from the same Source IP. Other more
+      specific rate limits may also apply."
+    note: >-
+      This is the token endpoint. Because Integration Engine access tokens last 3,600 seconds and
+      there is NO refresh token, every client re-mints against this limit. A fleet of workers
+      sharing an egress IP will contend here first.
+  - name: ECI MFG Integration Management API — per source IP
+    api: eci-solutions:eci-solutions-integration-management
+    scope: per-source-ip
+    limit: 500
+    window: minute
+    burst: null
+    source: openapi/eci-solutions-management-openapi.json (info.description)
+    quote: >-
+      "This API enforces a rate limit of 500 requests per minute from the same Source IP. Other more
+      specific rate limits may also apply."
+  - name: Lasso CRM API — per API key
+    api: eci-solutions:eci-solutions-lasso-crm
+    scope: per-api-key
     limit: 1000
-    burst: 5000
-    timeFrame: minute
-    applies:
-      - ECI Solutions Platform API
-policies:
-  - name: Backoff Strategy
-    description: Clients should implement exponential backoff with jitter, honoring the Retry-After header
-      when present.
-  - name: Burst Handling
-    description: Short bursts above the steady-state limit are tolerated up to the documented burst ceiling
-      before throttling engages.
-  - name: Quota Reset
-    description: Monthly quotas reset at the start of each calendar month in UTC. Per-minute and per-second
-      windows reset on a sliding-window basis.
-  - name: Fair Use
-    description: Even on uncapped enterprise tiers, sustained usage that materially impacts shared infrastructure
-      may be subject to fair-use throttling.
+    window: minute
+    burst: null
+    source: openapi/eci-solutions-lasso-crm-openapi.yml (info.description, "Rate Limiting")
+    quote: '"A Rate limit of 1,000 requests per minute applies to each API key"'
+    note: Keys are issued per project or per location, so the limit is effectively per community.
+configurable_limits:
+  note: >-
+    The Management API contract exposes RateLimitDefault and RateLimitDefaultPeriod fields on its
+    integration and application resources, which means per-integration limits are configurable
+    server-side by ECI. Those values are not published; reading them requires an authenticated call
+    to the Management API.
+undocumented:
+  - eci-solutions:eci-solutions-platform
+  - eci-solutions:eci-solutions-jobboss2
+  - eci-solutions:eci-solutions-m1
+  - eci-solutions:eci-solutions-payment
+  - eci-solutions:eci-solutions-financial
+  - eci-solutions:eci-solutions-ecommerce
+  - eci-solutions:eci-solutions-einvoice
+  - eci-solutions:eci-solutions-shipping
+  - eci-solutions:eci-solutions-currency
+  - eci-solutions:eci-solutions-apar-commerce
+  - eci-solutions:eci-solutions-office
+  - eci-solutions:eci-solutions-notification
+note: >-
+  This file previously carried scaffold tiers (free/pro/enterprise) with invented numeric limits and
+  a full set of X-RateLimit-* headers ECI does not return, written by the 2026-05-04 bulk sweep.
+  Those are removed and replaced with the three limits ECI actually publishes.
 maintainers:
   - FN: Kin Lane
     email: info@apievangelist.com

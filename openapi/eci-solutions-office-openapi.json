@@ -1,0 +1,2136 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Office Integration",
+    "description": "This service provides APIs to enable building a single integration\nto access Drive, Email, and Calendar features in different productivity suites.\n\nThis service currently only supports Microsoft 365, but may support other \nservices such as Google Workspace in the future.\n\n## Microsoft 365 Features\n - Access to files in a connected user's OneDrive, SharePoint and Teams.\n - Access to read & send email in a connected user's Outlook account.\n - Access to calendar events in a connected user's Outlook calendar.\n\n## Connection Options\nCredentials to this service can be obtained using the [Integration Engine Self Service Connection flow](https://dev.azure.com/ECISpecialProject/MFG-Integrations/_wiki/wikis/MFG-Integrations.wiki/92/Integration-Connection-Flow).\n\nCurrently the connection process supports Microsoft 365 OAuth2 Authorization Code flow, meaning each end user will\nbe authorizing and connecting their individual user accounts. Each credential issued is associated\nwith a single Microsoft 365 user.\n\nIn the future, this connection will also support OAuth2 Client Credentials for Service Principal authentication.\n\n## Authentication\n\nYou can authenticate with this API using an JWT Bearer token in an HTTP header as shown below:\n\n```Authorization: Bearer <token>```\n\n## Service Information \n\nBuild Version: `1.2.6+79ad6ecb58`",
+    "version": "v1"
+  },
+  "paths": {
+    "/api/v1/drives": {
+      "get": {
+        "tags": [
+          "Drive"
+        ],
+        "summary": "Get drives",
+        "description": "Gets a list of drives available from the backing storage provider.\r\n- For Microsoft 365, returns a list of all OneDrive, Sharepoint, and Team Site drives.",
+        "operationId": "GetDrives",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetDrivesResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetDrivesResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetDrivesResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/drives/{id}/items": {
+      "get": {
+        "tags": [
+          "Drive"
+        ],
+        "summary": "Get drive items",
+        "description": "Gets a list of items in the drive, optionally filtered by the search criteria if provided.\r\n- For Microsoft 365, returns a list of items in the selected drive.",
+        "operationId": "GetDriveItems",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Drive id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "description": "Search query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/DriveItemResponseListResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DriveItemResponseListResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DriveItemResponseListResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/me/calendar/events": {
+      "get": {
+        "tags": [
+          "Me"
+        ],
+        "summary": "Get calendar events.",
+        "description": "Gets calendar events from the connected user's personal calendar, optionally filtered by the start and end date.\r\n- For Microsoft 365, gets events from the connected user’s Outlook Calendar.",
+        "operationId": "GetCalendarEvents",
+        "parameters": [
+          {
+            "name": "start_date",
+            "in": "query",
+            "description": "The start date of the events to retrieve",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "end_date",
+            "in": "query",
+            "description": "The end date of the events to retrieve",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/CalendarEventResponseListResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CalendarEventResponseListResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CalendarEventResponseListResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Me"
+        ],
+        "summary": "Create a calendar event.",
+        "description": "Creates a new calendar event in the connected user's personal calendar.\r\n- For Microsoft 365, creates a new event in the connected user’s Outlook Calendar.",
+        "operationId": "CreateCalendarEvent",
+        "requestBody": {
+          "description": "The request containing the details of the calendar event to be created.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCalendarEventRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCalendarEventRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCalendarEventRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/CalendarEventResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CalendarEventResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CalendarEventResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/me/calendar/events/{eventId}": {
+      "get": {
+        "tags": [
+          "Me"
+        ],
+        "summary": "Get a calendar event by Id.",
+        "description": "Gets a calendar event from the connected user's personal calendar by its Id.\r\n- For Microsoft 365, gets an event from the connected user’s Outlook Calendar by Id.",
+        "operationId": "GetCalendarEventById",
+        "parameters": [
+          {
+            "name": "eventId",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/CalendarEventResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CalendarEventResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CalendarEventResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Me"
+        ],
+        "summary": "Updates a calendar event.",
+        "description": "Updates an existing calendar event in the connected user's personal calendar.\r\n- For Microsoft 365, updates an event in the connected user’s Outlook Calendar.",
+        "operationId": "UpdateCalendarEvent",
+        "parameters": [
+          {
+            "name": "eventId",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCalendarEventRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCalendarEventRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCalendarEventRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/CalendarEventResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CalendarEventResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CalendarEventResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Me"
+        ],
+        "summary": "Deletes a calendar event.",
+        "description": "Deletes a calendar event from the connected user's personal calendar.\r\n- For Microsoft 365, deletes an event from the connected user’s Outlook Calendar.",
+        "operationId": "DeleteCalendarEvent",
+        "parameters": [
+          {
+            "name": "eventId",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/me/drive": {
+      "get": {
+        "tags": [
+          "Me"
+        ],
+        "summary": "Get user's drive.",
+        "description": "Gets the user's personal drive.\r\n- For Microsoft 365, returns the user's personal drive.",
+        "operationId": "GetCurrentUserDrive",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/DriveResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DriveResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DriveResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/me/drive/items": {
+      "get": {
+        "tags": [
+          "Me"
+        ],
+        "summary": "Get user's drive items.",
+        "description": "Gets a list of items in the user's drive, optionally filtered by the search criteria if provided.\r\n- For Microsoft 365, returns a list of items in the user's drive.",
+        "operationId": "GetCurrentUserDriveItems",
+        "parameters": [
+          {
+            "name": "search",
+            "in": "query",
+            "description": "Search query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/DriveItemResponseListResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DriveItemResponseListResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DriveItemResponseListResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/me/drive/recent": {
+      "get": {
+        "tags": [
+          "Me"
+        ],
+        "summary": "Get recent files.",
+        "description": "Gets a list of files that the user has recently accessed, sorted by most recently accessed first.\r\n- For Microsoft 365, returns a list of recently accessed files.",
+        "operationId": "GetCurrentUserRecentFiles",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/DriveItemResponseListResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DriveItemResponseListResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DriveItemResponseListResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/me/mail": {
+      "post": {
+        "tags": [
+          "Me"
+        ],
+        "summary": "Send Mail",
+        "description": "Sends an email message using the connected mail account.\r\n- For Microsoft 365, sends an email from the connected user's Outlook mailbox.",
+        "operationId": "SendMail",
+        "requestBody": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SendMailRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SendMailRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/SendMailRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Accepted"
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/me/mail/{folder}/messages": {
+      "get": {
+        "tags": [
+          "Me"
+        ],
+        "summary": "Get mail messages.",
+        "description": "Gets a list of mail messages in the specified folder.\r\n\r\n- For Microsoft 365, returns a list of messages in the specified folder.\r\n\r\nIf no parameters are specified, the default is to return the most recent 25 messages in the folder, oldest to newest.",
+        "operationId": "GetMailFolderMessages",
+        "parameters": [
+          {
+            "name": "folder",
+            "in": "path",
+            "description": "The folder to get messages from",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/Folder"
+            }
+          },
+          {
+            "name": "top",
+            "in": "query",
+            "description": "Limit the number of results. The default value is 25 if not specified.",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 25
+            }
+          },
+          {
+            "name": "since",
+            "in": "query",
+            "description": "Limit the results to messages received since the given date. Default is last 3 days.",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "before",
+            "in": "query",
+            "description": "Limit the results to messages received before the given date.",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "next_page_token",
+            "in": "query",
+            "description": "The next page token from a previous request. If this value is provided, all other parameters will be ignored.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sort_order",
+            "in": "query",
+            "description": "Indicates the sort order for mail items. Default is oldest first.",
+            "schema": {
+              "$ref": "#/components/schemas/MailSortOrder"
+            }
+          },
+          {
+            "name": "response",
+            "in": "query",
+            "description": "",
+            "schema": {
+              "$ref": "#/components/schemas/MailResponseType"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/MailItemResponseListResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MailItemResponseListResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MailItemResponseListResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/me/mail/{folder}/messages/{messageId}": {
+      "get": {
+        "tags": [
+          "Me"
+        ],
+        "summary": "Get Message",
+        "description": "Gets a mail message by ID.\r\n\r\n- For Microsoft 365, returns a list of messages in the specified folder.\r\n\r\nIf no parameters are specified, the default is to return the most recent 25 messages in the folder.",
+        "operationId": "GetMailMessageById",
+        "parameters": [
+          {
+            "name": "folder",
+            "in": "path",
+            "description": "The folder to get messages from",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/Folder"
+            }
+          },
+          {
+            "name": "messageId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/MailItemResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MailItemResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MailItemResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/me/mail/{folder}/messages/{messageId}/attachments": {
+      "get": {
+        "tags": [
+          "Me"
+        ],
+        "summary": "Get Message Attachments",
+        "description": "Gets a list of attachments for a specific message.\r\n- For Microsoft 365, returns a list of attachments for a message.",
+        "operationId": "GetMessageAttachments",
+        "parameters": [
+          {
+            "name": "folder",
+            "in": "path",
+            "description": "The folder to get messages from",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/Folder"
+            }
+          },
+          {
+            "name": "messageId",
+            "in": "path",
+            "description": "The message id to get attachments from",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetMailAttachmentModelListResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetMailAttachmentModelListResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetMailAttachmentModelListResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/me/mail/{folder}/messages/{messageId}/attachments/{attachmentId}": {
+      "get": {
+        "tags": [
+          "Me"
+        ],
+        "summary": "Get Message Attachment",
+        "description": "Gets a message attachment by ID\r\n- For Microsoft 365, gets the message attachment including it's contents.",
+        "operationId": "GetMessageAttachment",
+        "parameters": [
+          {
+            "name": "folder",
+            "in": "path",
+            "description": "The folder to get messages from",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/Folder"
+            }
+          },
+          {
+            "name": "messageId",
+            "in": "path",
+            "description": "The message id to get attachments from",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "attachmentId",
+            "in": "path",
+            "description": "The attachment id to download",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetMailAttachmentModel"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetMailAttachmentModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetMailAttachmentModel"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/me/mail/{folder}/messages/{messageId}/attachments/{attachmentId}/contentBytes/$value": {
+      "get": {
+        "tags": [
+          "Me"
+        ],
+        "summary": "Download Message Attachment",
+        "description": "Downloads a specific attachment from a message.\r\n- For Microsoft 365, downloads an attachment from a message.",
+        "operationId": "DownloadMessageAttachment",
+        "parameters": [
+          {
+            "name": "folder",
+            "in": "path",
+            "description": "The folder to get messages from",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/Folder"
+            }
+          },
+          {
+            "name": "messageId",
+            "in": "path",
+            "description": "The message id to get attachments from",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "attachmentId",
+            "in": "path",
+            "description": "The attachment id to download",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/me/mail/{folder}/messages/$delta": {
+      "get": {
+        "tags": [
+          "Me"
+        ],
+        "summary": "Get Messages with Memory",
+        "description": "Gets a list of mail messages, and provides a nextPageToken in the response\r\nthat can be used to fetch messages that have only changed since the previous request.\r\n\r\n<br>\r\nEach subsequent request will generate a new nextPageToken in the response that can be used\r\nto make a subsequent request. Only the 'top' parameter can be specified in subsequent requests\r\ncombined with next_page_token.\r\n\r\n\r\n- For Microsoft 365, returns a list of messages in the specified folder, or messages that have arrived since the previous request.\r\n\r\nIf no parameters are specified, the default is to return the most recent 25 messages in the folder, oldest to newest.",
+        "operationId": "GetMailFolderMessagesWithMemory",
+        "parameters": [
+          {
+            "name": "folder",
+            "in": "path",
+            "description": "The folder to get messages from",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/Folder"
+            }
+          },
+          {
+            "name": "top",
+            "in": "query",
+            "description": "Limit the number of results. The default value is 25 if not specified.",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 25
+            }
+          },
+          {
+            "name": "since",
+            "in": "query",
+            "description": "Limit the results to messages received since the given date. Default is last 3 days if not specified.",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "before",
+            "in": "query",
+            "description": "Limit the results to messages received before the given date.",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "next_page_token",
+            "in": "query",
+            "description": "The next page token from a previous request. If this value is provided, all other parameters will be ignored.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sort_order",
+            "in": "query",
+            "description": "Indicates the sort order for mail items. Default is oldest first.",
+            "schema": {
+              "$ref": "#/components/schemas/MailSortOrder"
+            }
+          },
+          {
+            "name": "response",
+            "in": "query",
+            "description": "",
+            "schema": {
+              "$ref": "#/components/schemas/MailResponseType"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/MailItemResponseListResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MailItemResponseListResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MailItemResponseListResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/me/mail/Drafts/messages": {
+      "post": {
+        "tags": [
+          "Me"
+        ],
+        "summary": "Create a draft mail message without sending it.",
+        "description": "Creates a draft mail message in the user's Drafts folder. The message will not be sent.",
+        "operationId": "CreateDraftMailMessage",
+        "requestBody": {
+          "description": "The mail message to save as a draft.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SendMailRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SendMailRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/SendMailRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/DraftMailItemResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DraftMailItemResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DraftMailItemResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AttachmentType": {
+        "enum": [
+          "File"
+        ],
+        "type": "string",
+        "description": "Represents the type of attachment in an email."
+      },
+      "Attendee": {
+        "type": "object",
+        "properties": {
+          "address": {
+            "type": "string",
+            "description": "Email address.",
+            "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "description": "User name.",
+            "nullable": true
+          },
+          "status": {
+            "$ref": "#/components/schemas/ResponseType"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Represents an attendee in a calendar event."
+      },
+      "BodyType": {
+        "enum": [
+          "Html",
+          "Text",
+          "RichText"
+        ],
+        "type": "string",
+        "description": "Mail body type."
+      },
+      "CalendarEventResponse": {
+        "type": "object",
+        "properties": {
+          "subject": {
+            "type": "string",
+            "description": "The subject of the event.",
+            "nullable": true
+          },
+          "body": {
+            "type": "string",
+            "description": "The body or description of the event.",
+            "nullable": true
+          },
+          "organizer": {
+            "$ref": "#/components/schemas/EmailAddress"
+          },
+          "attendees": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Attendee"
+            },
+            "description": "The collection of attendees for the event.",
+            "nullable": true
+          },
+          "start": {
+            "type": "string",
+            "description": "The start date and time of the event.",
+            "format": "date-time",
+            "nullable": true
+          },
+          "end": {
+            "type": "string",
+            "description": "The end date and time of the event.",
+            "format": "date-time",
+            "nullable": true
+          },
+          "location": {
+            "type": "string",
+            "description": "The location of the event.",
+            "nullable": true
+          },
+          "id": {
+            "type": "string",
+            "description": "The Id of the event.",
+            "nullable": true
+          },
+          "bodyPreview": {
+            "type": "string",
+            "description": "The BodyPreview of the event.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Response for calendar events."
+      },
+      "CalendarEventResponseListResponse": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CalendarEventResponse"
+            },
+            "description": "Response value, containing a list of T items",
+            "nullable": true
+          },
+          "nextPageToken": {
+            "type": "string",
+            "description": "The next page token",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Response for a list of T items"
+      },
+      "CreateCalendarEventRequest": {
+        "type": "object",
+        "properties": {
+          "subject": {
+            "type": "string",
+            "description": "The subject of the calendar event.",
+            "nullable": true
+          },
+          "body": {
+            "type": "string",
+            "description": "The body or description of the calendar event.",
+            "nullable": true
+          },
+          "start": {
+            "type": "string",
+            "description": "The start date and time of the calendar event.",
+            "format": "date-time"
+          },
+          "end": {
+            "type": "string",
+            "description": "The end date and time of the calendar event.",
+            "format": "date-time"
+          },
+          "location": {
+            "type": "string",
+            "description": "The location of the calendar event.",
+            "nullable": true
+          },
+          "attendeesEmails": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "The email addresses of the attendees.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Request to create a calendar event."
+      },
+      "CreateMailAttachmentModel": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Represents the name of the attachment.",
+            "nullable": true
+          },
+          "contentBytes": {
+            "type": "string",
+            "description": "Represents the content of the attachment as a Base64 encoded byte array.",
+            "format": "byte",
+            "nullable": true
+          },
+          "attachmentType": {
+            "$ref": "#/components/schemas/AttachmentType"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Represents a model for an email attachment."
+      },
+      "DraftMailItemResponse": {
+        "type": "object",
+        "properties": {
+          "from": {
+            "$ref": "#/components/schemas/EmailAddress"
+          },
+          "recipients": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EmailAddress"
+            },
+            "description": "List of recipients.",
+            "nullable": true
+          },
+          "ccRecipients": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EmailAddress"
+            },
+            "description": "List with copy recipients.",
+            "nullable": true
+          },
+          "sentDate": {
+            "type": "string",
+            "description": "Sent date time.",
+            "format": "date-time",
+            "nullable": true
+          },
+          "receivedDate": {
+            "type": "string",
+            "description": "The date/time the message was received by the underlying mail system.",
+            "format": "date-time",
+            "nullable": true
+          },
+          "subject": {
+            "type": "string",
+            "description": "Mail subject.",
+            "nullable": true
+          },
+          "body": {
+            "type": "string",
+            "description": "Mail body.",
+            "nullable": true
+          },
+          "bodyType": {
+            "$ref": "#/components/schemas/BodyType"
+          },
+          "conversationId": {
+            "type": "string",
+            "description": "The conversation ID for the email thread.",
+            "nullable": true
+          },
+          "hasAttachments": {
+            "type": "boolean",
+            "description": "Indicates if the message has attachments",
+            "nullable": true
+          },
+          "id": {
+            "type": "string",
+            "description": "Represents the unique identifier of the draft email.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Represents a response for a draft email."
+      },
+      "DriveItemResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Gets or sets the unique identifier of the drive item.",
+            "nullable": true
+          },
+          "driveId": {
+            "type": "string",
+            "description": "Gets or sets the unique identifier of the drive.",
+            "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "description": "Gets or sets the name of the drive item.",
+            "nullable": true
+          },
+          "itemType": {
+            "type": "string",
+            "description": "Gets or sets the type of the item. This can be null.",
+            "nullable": true
+          },
+          "providerType": {
+            "type": "string",
+            "description": "Gets or sets the type of the provider. This can be null.",
+            "nullable": true
+          },
+          "createdDate": {
+            "type": "string",
+            "description": "Gets or sets the date and time when the drive item was created.",
+            "format": "date-time",
+            "nullable": true
+          },
+          "webUrl": {
+            "type": "string",
+            "description": "Gets or sets the web URL of the drive item. This can be null.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Response for the GetDriveItemsRequest, representing a drive item"
+      },
+      "DriveItemResponseListResponse": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DriveItemResponse"
+            },
+            "description": "Response value, containing a list of T items",
+            "nullable": true
+          },
+          "nextPageToken": {
+            "type": "string",
+            "description": "The next page token",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Response for a list of T items"
+      },
+      "DriveResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The ID of the drive",
+            "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the drive",
+            "nullable": true
+          },
+          "provider": {
+            "type": "string",
+            "description": "The provider of the drive",
+            "nullable": true
+          },
+          "providerType": {
+            "type": "string",
+            "description": "The provider type of the drive",
+            "nullable": true
+          },
+          "createdDate": {
+            "type": "string",
+            "description": "The created date of the drive",
+            "format": "date-time",
+            "nullable": true
+          },
+          "webUrl": {
+            "type": "string",
+            "description": "The WebUrl of the drive",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Custom Drive object"
+      },
+      "EmailAddress": {
+        "type": "object",
+        "properties": {
+          "address": {
+            "type": "string",
+            "description": "Email address.",
+            "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "description": "User name.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Email address class."
+      },
+      "Folder": {
+        "enum": [
+          "Inbox",
+          "SentItems",
+          "Drafts",
+          "DeletedItems",
+          "JunkEmail",
+          "Outbox",
+          "Archive"
+        ],
+        "type": "string",
+        "description": "Represents the main folders in a mail system."
+      },
+      "GetDrivesResponse": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DriveResponse"
+            },
+            "description": "Response value, containing a list of drives",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Reponse for the GetDrivesRequest"
+      },
+      "GetMailAttachmentModel": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Gets or sets the unique identifier of the attachment.",
+            "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "description": "Represents the name of the attachment.",
+            "nullable": true
+          },
+          "contentType": {
+            "type": "string",
+            "description": "Gets or sets the MIME type of the attachment.",
+            "nullable": true
+          },
+          "contentBytes": {
+            "type": "string",
+            "description": "Represents the content of the attachment as a Base64 encoded byte array.",
+            "format": "byte",
+            "nullable": true
+          },
+          "size": {
+            "type": "integer",
+            "description": "Gets or sets the size of the attachment in bytes.",
+            "format": "int64",
+            "nullable": true
+          },
+          "contentId": {
+            "type": "string",
+            "description": "The Content ID for inline attachments that are part of the message body",
+            "nullable": true
+          },
+          "lastModifiedDateTime": {
+            "type": "string",
+            "description": "The date/time the attachment was last modified.",
+            "format": "date-time",
+            "nullable": true
+          },
+          "isInline": {
+            "type": "boolean",
+            "description": "Gets a value that indicates if the attachment is inline (part of the message body) or not.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Represents a model for an email attachment, including its metadata."
+      },
+      "GetMailAttachmentModelListResponse": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GetMailAttachmentModel"
+            },
+            "description": "Response value, containing a list of T items",
+            "nullable": true
+          },
+          "nextPageToken": {
+            "type": "string",
+            "description": "The next page token",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Response for a list of T items"
+      },
+      "MailItemResponse": {
+        "type": "object",
+        "properties": {
+          "from": {
+            "$ref": "#/components/schemas/EmailAddress"
+          },
+          "recipients": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EmailAddress"
+            },
+            "description": "List of recipients.",
+            "nullable": true
+          },
+          "ccRecipients": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EmailAddress"
+            },
+            "description": "List with copy recipients.",
+            "nullable": true
+          },
+          "sentDate": {
+            "type": "string",
+            "description": "Sent date time.",
+            "format": "date-time",
+            "nullable": true
+          },
+          "receivedDate": {
+            "type": "string",
+            "description": "The date/time the message was received by the underlying mail system.",
+            "format": "date-time",
+            "nullable": true
+          },
+          "subject": {
+            "type": "string",
+            "description": "Mail subject.",
+            "nullable": true
+          },
+          "body": {
+            "type": "string",
+            "description": "Mail body.",
+            "nullable": true
+          },
+          "bodyType": {
+            "$ref": "#/components/schemas/BodyType"
+          },
+          "conversationId": {
+            "type": "string",
+            "description": "The conversation ID for the email thread.",
+            "nullable": true
+          },
+          "hasAttachments": {
+            "type": "boolean",
+            "description": "Indicates if the message has attachments",
+            "nullable": true
+          },
+          "id": {
+            "type": "string",
+            "description": "Mail id.",
+            "nullable": true
+          },
+          "bodyPreview": {
+            "type": "string",
+            "description": "Mail body preview.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Representing a email message."
+      },
+      "MailItemResponseListResponse": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MailItemResponse"
+            },
+            "description": "Response value, containing a list of T items",
+            "nullable": true
+          },
+          "nextPageToken": {
+            "type": "string",
+            "description": "The next page token",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Response for a list of T items"
+      },
+      "MailResponseType": {
+        "enum": [
+          "Full",
+          "Minimal"
+        ],
+        "type": "string",
+        "description": "Indicates the options for what data to return in mail item responses."
+      },
+      "MailSortOrder": {
+        "enum": [
+          "NewestFirst",
+          "OldestFirst"
+        ],
+        "type": "string",
+        "description": "Indicates the sort order for mail items."
+      },
+      "ProblemDetails": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "nullable": true
+          },
+          "title": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "detail": {
+            "type": "string",
+            "nullable": true
+          },
+          "instance": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": { }
+      },
+      "ResponseType": {
+        "enum": [
+          "None",
+          "Organizer",
+          "TentativelyAccepted",
+          "Accepted",
+          "Declined",
+          "NotResponded"
+        ],
+        "type": "string",
+        "description": "Represents the response type of a calendar event."
+      },
+      "SendMailRequest": {
+        "required": [
+          "toRecipients"
+        ],
+        "type": "object",
+        "properties": {
+          "subject": {
+            "type": "string",
+            "description": "Gets or sets the subject of the email.",
+            "nullable": true
+          },
+          "body": {
+            "type": "string",
+            "description": "Gets or sets the body content of the email.",
+            "nullable": true
+          },
+          "bodyType": {
+            "$ref": "#/components/schemas/BodyType"
+          },
+          "toRecipients": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EmailAddress"
+            },
+            "description": "Gets or sets the collection of email addresses to send the email to."
+          },
+          "ccRecipients": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EmailAddress"
+            },
+            "description": "Gets or sets the collection of email addresses to send a carbon copy (CC) of the email to.",
+            "nullable": true
+          },
+          "bccRecipients": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EmailAddress"
+            },
+            "description": "Gets or sets the collection of email addresses to send a blind carbon copy (BCC) of the email to.",
+            "nullable": true
+          },
+          "attachments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CreateMailAttachmentModel"
+            },
+            "description": "Gets or sets the collection of attachments to include in the email.",
+            "nullable": true
+          },
+          "replyToMessageId": {
+            "type": "string",
+            "description": "If specified, the email will be sent as a reply to the message with this ID.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Represents a request to send an email."
+      },
+      "UpdateCalendarEventRequest": {
+        "type": "object",
+        "properties": {
+          "subject": {
+            "type": "string",
+            "description": "The subject of the calendar event.",
+            "nullable": true
+          },
+          "body": {
+            "type": "string",
+            "description": "The body or description of the calendar event.",
+            "nullable": true
+          },
+          "start": {
+            "type": "string",
+            "description": "The start date and time of the calendar event.",
+            "format": "date-time",
+            "nullable": true
+          },
+          "end": {
+            "type": "string",
+            "description": "The end date and time of the calendar event.",
+            "format": "date-time",
+            "nullable": true
+          },
+          "location": {
+            "type": "string",
+            "description": "The location of the calendar event.",
+            "nullable": true
+          },
+          "attendeesEmails": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "The email addresses of the attendees.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Request to update a calendar event."
+      }
+    },
+    "securitySchemes": {
+      "Bearer": {
+        "type": "oauth2",
+        "description": "OAuth 2.0 Client Credentials Flow with API Users issued from Integration Engine Management Console",
+        "flows": {
+          "clientCredentials": {
+            "tokenUrl": "https://api-user.integrations.ecimanufacturing.com/oauth2/api-user/token",
+            "scopes": {
+              "openid": "openid"
+            }
+          }
+        }
+      }
+    }
+  },
+  "security": [
+    {
+      "Bearer": [ ]
+    }
+  ]
+}

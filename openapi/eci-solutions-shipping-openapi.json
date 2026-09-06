@@ -1,0 +1,1111 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Shipping API",
+    "description": "Shipping Service API which provides integration with shipping services for shipping rates, purchasing labels, and tracking shipments.\n\nCurrently Support Shipping Services:\n\n- [EasyPost](https://www.easypost.com/)\n\n## Authentication\n\nTokens can be obtained from the Integration Engine OAuth2 endpoint.\n\n```Authorization: Bearer <token>```\n\n# Service Information \n\nBuild Version: `1.3.6+a49f73049e`\n\n## Test Mode\n\nWhen the integration is in TEST mode (specified during the connection flow), only test labels will be returned,\nand no charges will be incurred.\n\n## EasyPost\n\nAll endpoints are supported.\n\nThe following endpoints will always use the Production API key because test keys are not supported to obtain the\ncarrier list from EasyPost.\n\n- `GET /api/v1/carriers`\n\n> You can still use the carrier ID values returned by this endpoint to perform test shipments.\n\n- `GET /api/v1/carrier-types/{carrierType}/service-levels`\n\n\n\n",
+    "version": "1.3.6+a49f73049e"
+  },
+  "paths": {
+    "/api/v1/addresses": {
+      "post": {
+        "tags": [
+          "Addresses"
+        ],
+        "summary": "Create Address",
+        "description": "Creates a new address and optionally verifies it.",
+        "operationId": "CreateAddress",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddressModel"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddressModel"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddressModel"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/SavedAddressModel"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SavedAddressModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SavedAddressModel"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/carrier-types/{carrierType}/service-levels": {
+      "get": {
+        "tags": [
+          "Carriers"
+        ],
+        "summary": "Gets Service Levels",
+        "description": "Gets the list of service levels available for a given carrier type.",
+        "operationId": "GetCarrierTypeServiceLevels",
+        "parameters": [
+          {
+            "name": "carrierType",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ServiceModelListResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ServiceModelListResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ServiceModelListResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/carriers": {
+      "get": {
+        "tags": [
+          "Carriers"
+        ],
+        "summary": "Get Carriers",
+        "description": "Returns a list of available carriers.\r\n\r\nNotes:\r\n- When using an EasyPost Testing API Key, this endpoint will always return an empty list.",
+        "operationId": "GetCarriersList",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/CarrierModelListResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CarrierModelListResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CarrierModelListResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/carriers/{id}": {
+      "get": {
+        "tags": [
+          "Carriers"
+        ],
+        "summary": "Get Carrier",
+        "description": "Gets an available carrier by ID.\r\n\r\nNotes:\r\n- When using an EasyPost Testing API Key, this endpoint will always return 404.",
+        "operationId": "GetCarrierById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/CarrierModel"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CarrierModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CarrierModel"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/shipments": {
+      "post": {
+        "tags": [
+          "Shipment"
+        ],
+        "summary": "Create Shipment",
+        "description": "This API creates a shipment and returns rate options according to the parameters provided.\r\n\r\nYou can also perform a \"one-call\" buy by specifying a single value in `carrier_acccount_ids` and providing a value for `service`. In this case the response\r\nwill contain the rate and label information being purchased.",
+        "operationId": "CreateShipment",
+        "requestBody": {
+          "description": "The values with which to create the shipment.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateShipmentRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateShipmentRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateShipmentRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateShipmentResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateShipmentResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateShipmentResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/shipments/{id}/buy": {
+      "post": {
+        "tags": [
+          "Shipment"
+        ],
+        "summary": "Buy Shipment",
+        "description": "Purchase a shipment label for a shipment that was previously created by specifying a rate from\r\nthe list of rate options returned when creating the shipment.",
+        "operationId": "BuyShipmentLabel",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "The rate id values with which to buy the shipment.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BuyShipmentRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BuyShipmentRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/BuyShipmentRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/BuyShipmentResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BuyShipmentResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BuyShipmentResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/shipments/{id}/refund": {
+      "post": {
+        "tags": [
+          "Shipment"
+        ],
+        "summary": "Refund Shipment",
+        "description": "Refunds a shipment by its ID. The shipment can only be refunded within 30 days of purchase.",
+        "operationId": "RefundShipment",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        }
+      }
+    },
+    "/api/v1/units": {
+      "get": {
+        "tags": [
+          "Uom"
+        ],
+        "summary": "Get Units of Measure",
+        "description": "Returns a flat list of all supported units of measure with their types (weight or dimension).",
+        "operationId": "GetUnitsOfMeasure",
+        "parameters": [
+          {
+            "name": "type",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/UomType"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnitOfMeasureModelListResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnitOfMeasureModelListResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnitOfMeasureModelListResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/units/{id}/conversions/{targetId}": {
+      "post": {
+        "tags": [
+          "Uom"
+        ],
+        "summary": "Convert a value from one unit to another",
+        "description": "Returns the converted value.",
+        "operationId": "ConvertValue",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "targetId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConversionModel"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConversionModel"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConversionModel"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConversionModel"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConversionModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConversionModel"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AddressModel": {
+        "required": [
+          "postalCode"
+        ],
+        "type": "object",
+        "properties": {
+          "carrierFacility": {
+            "type": "string",
+            "description": "The specific designation for the address (only relevant if the address is a carrier facility).",
+            "nullable": true
+          },
+          "city": {
+            "type": "string",
+            "description": "The city the address is located in.",
+            "nullable": true
+          },
+          "company": {
+            "type": "string",
+            "description": "The name of the company.",
+            "nullable": true
+          },
+          "country": {
+            "type": "string",
+            "description": "The ISO 3166 code of the country the address is located in.",
+            "nullable": true
+          },
+          "email": {
+            "type": "string",
+            "description": "The email address of the person or organization.",
+            "nullable": true
+          },
+          "federalTaxId": {
+            "type": "string",
+            "description": "The federal tax ID of the person or organization.",
+            "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the person or organization.",
+            "nullable": true
+          },
+          "phone": {
+            "type": "string",
+            "description": "The phone number of the person or organization.",
+            "nullable": true
+          },
+          "residential": {
+            "type": "boolean",
+            "description": "Whether the address is a residential address.",
+            "nullable": true
+          },
+          "state": {
+            "type": "string",
+            "description": "The state the address is located in.",
+            "nullable": true
+          },
+          "stateTaxId": {
+            "type": "string",
+            "description": "The state tax ID of the person or organization.",
+            "nullable": true
+          },
+          "street1": {
+            "type": "string",
+            "description": "The first line of the street address.",
+            "nullable": true
+          },
+          "street2": {
+            "type": "string",
+            "description": "The second line of the street address.",
+            "nullable": true
+          },
+          "postalCode": {
+            "minLength": 1,
+            "type": "string",
+            "description": "The postal code the address is located in."
+          },
+          "verify": {
+            "type": "boolean",
+            "description": "Indicates if the address should be requested to be verified or not.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "AddressVerificationResult": {
+        "type": "object",
+        "properties": {
+          "verifiedPostalCode": {
+            "type": "boolean",
+            "description": "Indicates whether the postal code has been verified",
+            "nullable": true
+          },
+          "verifiedAddress": {
+            "type": "boolean",
+            "description": "Indicates whether the street/city/country has been verified",
+            "nullable": true
+          },
+          "postalCodeErrors": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Provides verification errors",
+            "nullable": true
+          },
+          "addressErrors": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Provides verification errors",
+            "nullable": true
+          },
+          "latitude": {
+            "type": "number",
+            "description": "The latitude of the address",
+            "format": "float",
+            "nullable": true
+          },
+          "longitude": {
+            "type": "number",
+            "description": "The longitude of the address",
+            "format": "float",
+            "nullable": true
+          },
+          "timeZone": {
+            "type": "string",
+            "description": "The time zone of the address",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Represents address verification results"
+      },
+      "BuyShipmentRequest": {
+        "required": [
+          "rateId"
+        ],
+        "type": "object",
+        "properties": {
+          "rateId": {
+            "minLength": 1,
+            "type": "string",
+            "description": "The id of the rate for which to buy the shipping label"
+          }
+        },
+        "additionalProperties": false
+      },
+      "BuyShipmentResponse": {
+        "type": "object",
+        "properties": {
+          "shipmentId": {
+            "type": "string",
+            "nullable": true
+          },
+          "labelId": {
+            "type": "string",
+            "nullable": true
+          },
+          "rateId": {
+            "type": "string",
+            "nullable": true
+          },
+          "labelUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "labelFileType": {
+            "type": "string",
+            "nullable": true
+          },
+          "labelType": {
+            "type": "string",
+            "nullable": true
+          },
+          "labelSize": {
+            "type": "string",
+            "nullable": true
+          },
+          "rate": {
+            "type": "number",
+            "format": "double"
+          },
+          "currency": {
+            "type": "string",
+            "nullable": true
+          },
+          "trackingNo": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "CarrierModel": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The carrier id",
+            "nullable": true
+          },
+          "displayName": {
+            "type": "string",
+            "description": "The service name",
+            "nullable": true
+          },
+          "type": {
+            "type": "string",
+            "description": "The type of carrier",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Carrier"
+      },
+      "CarrierModelListResponse": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CarrierModel"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ConversionModel": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "number",
+            "format": "double"
+          }
+        },
+        "additionalProperties": false
+      },
+      "CreateShipmentRequest": {
+        "required": [
+          "parcel"
+        ],
+        "type": "object",
+        "properties": {
+          "fromAddress": {
+            "$ref": "#/components/schemas/AddressModel"
+          },
+          "fromAddressId": {
+            "type": "string",
+            "description": "The address ID of a previously created address to use as the source. If this is specified, you cannot provide fromAddress.",
+            "nullable": true
+          },
+          "toAddress": {
+            "$ref": "#/components/schemas/AddressModel"
+          },
+          "toAddressId": {
+            "type": "string",
+            "description": "The address ID of a previously created address to use as the destination. If this is specified, you cannot specify a toAddress.",
+            "nullable": true
+          },
+          "parcel": {
+            "$ref": "#/components/schemas/ParcelModel"
+          },
+          "carrier_account_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Zero or more carrier IDs to restrict the results to. If not provided, all carriers will be considered.\r\nWhen 'service' is provided, exactly one carrier ID must be specified.",
+            "nullable": true
+          },
+          "service": {
+            "type": "string",
+            "description": "The shipping service to use for one-call buy. When specified, a shipment will be created and purchased in one step.\r\nOne and only one carrier ID must be provided in the CarrierIds property when this is specified.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "CreateShipmentResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "nullable": true
+          },
+          "fromAddress": {
+            "$ref": "#/components/schemas/SavedAddressModel"
+          },
+          "toAddress": {
+            "$ref": "#/components/schemas/SavedAddressModel"
+          },
+          "parcel": {
+            "$ref": "#/components/schemas/ParcelResponse"
+          },
+          "rates": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RateResponse"
+            },
+            "nullable": true
+          },
+          "status": {
+            "type": "string",
+            "nullable": true
+          },
+          "buyResult": {
+            "$ref": "#/components/schemas/BuyShipmentResponse"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ParcelModel": {
+        "required": [
+          "weight",
+          "weight_uom"
+        ],
+        "type": "object",
+        "properties": {
+          "length": {
+            "minimum": 0.01,
+            "type": "number",
+            "description": "Length of the parcel (default: inches)",
+            "format": "double",
+            "nullable": true
+          },
+          "width": {
+            "minimum": 0.01,
+            "type": "number",
+            "description": "Width of the parcel (default: inches)",
+            "format": "double",
+            "nullable": true
+          },
+          "height": {
+            "minimum": 0.01,
+            "type": "number",
+            "description": "Height of the parcel (default: inches)",
+            "format": "double",
+            "nullable": true
+          },
+          "weight": {
+            "minimum": 0.01,
+            "type": "number",
+            "description": "Weight of the parcel (default: ounces)",
+            "format": "double"
+          },
+          "weight_uom": {
+            "minLength": 1,
+            "type": "string",
+            "description": "The unit of measure for the shipping weight. See the list of supported units. The default value is 'lbs'"
+          },
+          "dimensions_uom": {
+            "type": "string",
+            "description": "The unit of measure for the shipping dimensions. See the list of supported units. The default value is 'in'",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Model representing a parcel's dimensions and weight"
+      },
+      "ParcelResponse": {
+        "required": [
+          "weight",
+          "weight_uom"
+        ],
+        "type": "object",
+        "properties": {
+          "length": {
+            "minimum": 0.01,
+            "type": "number",
+            "description": "Length of the parcel (default: inches)",
+            "format": "double",
+            "nullable": true
+          },
+          "width": {
+            "minimum": 0.01,
+            "type": "number",
+            "description": "Width of the parcel (default: inches)",
+            "format": "double",
+            "nullable": true
+          },
+          "height": {
+            "minimum": 0.01,
+            "type": "number",
+            "description": "Height of the parcel (default: inches)",
+            "format": "double",
+            "nullable": true
+          },
+          "weight": {
+            "minimum": 0.01,
+            "type": "number",
+            "description": "Weight of the parcel (default: ounces)",
+            "format": "double"
+          },
+          "weight_uom": {
+            "minLength": 1,
+            "type": "string",
+            "description": "The unit of measure for the shipping weight. See the list of supported units. The default value is 'lbs'"
+          },
+          "dimensions_uom": {
+            "type": "string",
+            "description": "The unit of measure for the shipping dimensions. See the list of supported units. The default value is 'in'",
+            "nullable": true
+          },
+          "id": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "RateResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "nullable": true
+          },
+          "service": {
+            "type": "string",
+            "nullable": true
+          },
+          "carrier": {
+            "type": "string",
+            "nullable": true
+          },
+          "rate": {
+            "type": "string",
+            "nullable": true
+          },
+          "currency": {
+            "type": "string",
+            "nullable": true
+          },
+          "billingType": {
+            "type": "string",
+            "nullable": true
+          },
+          "carrierAccountId": {
+            "type": "string",
+            "nullable": true
+          },
+          "deliveryDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "deliveryDateGuaranteed": {
+            "type": "boolean",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "SavedAddressModel": {
+        "required": [
+          "postalCode"
+        ],
+        "type": "object",
+        "properties": {
+          "carrierFacility": {
+            "type": "string",
+            "description": "The specific designation for the address (only relevant if the address is a carrier facility).",
+            "nullable": true
+          },
+          "city": {
+            "type": "string",
+            "description": "The city the address is located in.",
+            "nullable": true
+          },
+          "company": {
+            "type": "string",
+            "description": "The name of the company.",
+            "nullable": true
+          },
+          "country": {
+            "type": "string",
+            "description": "The ISO 3166 code of the country the address is located in.",
+            "nullable": true
+          },
+          "email": {
+            "type": "string",
+            "description": "The email address of the person or organization.",
+            "nullable": true
+          },
+          "federalTaxId": {
+            "type": "string",
+            "description": "The federal tax ID of the person or organization.",
+            "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the person or organization.",
+            "nullable": true
+          },
+          "phone": {
+            "type": "string",
+            "description": "The phone number of the person or organization.",
+            "nullable": true
+          },
+          "residential": {
+            "type": "boolean",
+            "description": "Whether the address is a residential address.",
+            "nullable": true
+          },
+          "state": {
+            "type": "string",
+            "description": "The state the address is located in.",
+            "nullable": true
+          },
+          "stateTaxId": {
+            "type": "string",
+            "description": "The state tax ID of the person or organization.",
+            "nullable": true
+          },
+          "street1": {
+            "type": "string",
+            "description": "The first line of the street address.",
+            "nullable": true
+          },
+          "street2": {
+            "type": "string",
+            "description": "The second line of the street address.",
+            "nullable": true
+          },
+          "postalCode": {
+            "minLength": 1,
+            "type": "string",
+            "description": "The postal code the address is located in."
+          },
+          "verify": {
+            "type": "boolean",
+            "description": "Indicates if the address should be requested to be verified or not.",
+            "nullable": true
+          },
+          "id": {
+            "type": "string",
+            "description": "Address unique ID",
+            "nullable": true
+          },
+          "verifications": {
+            "$ref": "#/components/schemas/AddressVerificationResult"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Represents an address that has been created and optionally verified"
+      },
+      "ServiceModel": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The service id",
+            "nullable": true
+          },
+          "displayName": {
+            "type": "string",
+            "description": "The service name",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "description": "The service description",
+            "nullable": true
+          },
+          "carrierType": {
+            "type": "string",
+            "description": "The carrier id",
+            "nullable": true
+          },
+          "maxWeight": {
+            "type": "number",
+            "description": "Maximum weight of the parcel for this service",
+            "format": "double",
+            "nullable": true
+          },
+          "notes": {
+            "type": "string",
+            "description": "Additional information about the service level.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Represents a shipping service offered by a carrier."
+      },
+      "ServiceModelListResponse": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ServiceModel"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "UnitOfMeasureModel": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The ID of the unit of measure",
+            "nullable": true
+          },
+          "displayName": {
+            "type": "string",
+            "description": "The human -readable name or code of the unit of measure",
+            "nullable": true
+          },
+          "type": {
+            "$ref": "#/components/schemas/UomType"
+          },
+          "aliases": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "A list of supported aliases for the unit of measure",
+            "nullable": true
+          },
+          "standardUnit": {
+            "type": "string",
+            "description": "The standard unit ID for this unit of measure, if applicable",
+            "nullable": true
+          },
+          "standardFactor": {
+            "type": "number",
+            "description": "The standard conversion factor for this unit of measure, if applicable",
+            "format": "double",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Represents a unit of measure with its type (weight or dimension)"
+      },
+      "UnitOfMeasureModelListResponse": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UnitOfMeasureModel"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "UomType": {
+        "enum": [
+          "Weight",
+          "Dimension"
+        ],
+        "type": "string",
+        "description": "Defines the type of Unit of Measure"
+      }
+    },
+    "securitySchemes": {
+      "Bearer": {
+        "type": "oauth2",
+        "description": "OAuth 2.0 Client Credentials Flow with API Users issued from Integration Engine Management Console",
+        "flows": {
+          "clientCredentials": {
+            "tokenUrl": "https://api-user.integrations.ecimanufacturing.com/oauth2/api-user/token",
+            "scopes": {
+              "openid": "openid"
+            }
+          }
+        }
+      }
+    }
+  },
+  "security": [
+    {
+      "Bearer": [ ]
+    }
+  ]
+}

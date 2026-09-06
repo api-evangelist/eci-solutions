@@ -1,0 +1,3127 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "ERP API v1",
+    "description": "Provides a common API surface for accessing ECI ERP products.\n\n<a name='erps'></a>\n## ERP Product Support\nThis version of the API is generally supported by:\n\n - M1\n - Macola\n - JobBOSS²\n\nSupport for some resources varies, so check the *Supported ERPs* section on each resource\nto see if it's supported before using it.\n\nThe API user account used to access the ERP API determines which ERP Product, Customer, \nand any specific database (Instance) of that ERP that will be accessed. Depending on the product,\nthe actual ERP database could be a cloud hosted ERP or on premises install, therefore, performance\nof the API may vary dramatically.\n\nThe [user-info endpoint](#/Account/get_api_v1_user_info) in this API will provide basic information \nabout the user account and company being accessed, such as the companyId and product. \nIt should be noted that the **CompanyID** does not uniquely identify the instance being accessed via the API.\n\n<a name='auth'></a>\n## Authentication\nPass an access token in the HTTP Authorization header of each request. For example:\n\n```Authorization: Bearer [token]```\n\nAccess tokens are obtained from the Management API. See the <a href='https://integrations.ecimanufacturing.com/authenticate.html#/OAuth2ApiUser/post_oauth2_api_user_token'>Management API OAuth 2.0 Token endpoint documentation</a> for more information.\n\n<a name='fields'></a>\n## Field Selection\nFor resources that support Field Selection, the `fields` parameter can be provided \nwith a comma separated list of fields to return in the result.\n\nFor example:\n\n```/api/v2/organizations?fields=name,country```\n\n<a name='filterexpr'></a>\n## Filter Expressions \n\nFor resources that support filtering, filter expressions can be applied as query string parameters in\nthe format ```field_name[operator]=value```\n\nNote, for simple equality, you can omit the operator and specify fieldname=value. e.g. ```?firstName=Jane```\n\n### Operators\n\n- [eq] Equal to the given value.\n- [ne] Not Equal to the given value.\n- [gte] Greater than or equal to the given value.\n- [lte] Less than or equal to the given value.\n- [gt] Greater than the given value.\n- [lt] Less than the given value.\n- [in] Is in a list of pipe separated values.\n- [notin] Is not in a list of pipe separated values.\n\n<a name='sortexpr'></a>\n## Sort Expressions\n\nFor resources that support sorting, the sort expression is specified by adding the ```sort``` query string parameter, with a comma separated list of expressions as its value,\neach expression having an optional prefix of + or - to indicate ascending or descending order.\n\nFor example:\n```\n?sort=firstname\n?sort=lastname,firstname\n?sort=-create_date\n```\n\n<a name='pageparam'></a>\n## Paging Parameters\n\nThe parameters ```take``` and ```skip``` can be provided separately but can be combined to implement server-side paging of results. \nSee the documentation for take and skip on each resource.\n\nFor example:\n```\n?take=100\n?take=100&skip=200\n```\n\n<a name='countparam'></a>\n## Count Parameter\n\nThe parameter ```count``` may be provided to change the data retrieval behavior.\n\nThe value of `0` returns the filtered, expanded, and paginated data in the `data` property of the response. The `count` property always contains the number of records in `data`. This is the default behavior when the `count` parameter is not provided.\n\nThe value of `1` returns an empty array in the `data` property and the total count of matching source records in the `count` property, applying any requested filters but ignoring any requested paging parameters.\n\nThe value of `2` returns both the `data` records, paginated if requested, and the `count` value with the total number of records in the source, ignoring pagination.\n\n```\n0 - Data Only\n1 - Total Count Only\n2 - Data and Total Count\n```\n\n## Expansions\n\nSome data sources have relationships that can be expanded. The list of supported\nexpansions is located in the documentation for each resource below.\n\nAn expansion expression is in the form:\n\n```expand=relationship_name(fields_expression)```\n\nfields_expression is optional.\n\nFor example, to expand the timecard for a timecard line\n\n```api/v1/view/timecardlines?expand=timecard```\n\nA resulting individual record would look like:\n\n```json\n{\n    \"timecardID\": 5,\n    \"timecard\": {\n      \"timecardID\": 5,\n      \"employeeID\": \"GROSE\",\n      \"shiftID\": 1,\n      \"timecardDate\": \"2000-11-06T00:00:00\",\n      \"uniqueID\": \"389fcb16-8740-467f-9273-9c383f1472c9\",\n      \"rowVersion\": 27569\n    }\n}\n```\n\nTo select only specific fields from an expansion, use an inner fields expression.\n\n```api/v1/view/timecardlines?expand=timecard(fields=uniqueid,employeeID)```\n\nAnd the resulting record would look like:\n```json\n{\n    \"timecardID\": 5,\n    \"timecard\": {\n      \"employeeID\": \"GROSE\",\n      \"uniqueID\": \"389fcb16-8740-467f-9273-9c383f1472c9\"\n    }\n}\n```\n\nExpansions can also be nested.\n\n```api/v1/view/timecardlines?expand=timecard(expand=employee)```\n\n\n## ConvertToUTC\nThe time zone in which Date/Time values are represented varies by ERP\nand some times data source. Pass the ConvertToUTC parameter\nwith a value of `yes` to indicate you want supported \ndate/time field values converted to UTC. \n\n```api/v1/view/timecardlines?ConvertToUTC=yes```\n\nSee resource specific documentation for which fields are supported.\n\n## Common Attributes\n### uniqueID\n\nThe ```uniqueID``` attribute, when present, uniquely identifies a record in the source system.\nThis identifier may not be globally unique. It is only guaranteed to be unique for the same resource\nand same Company account.\n\nIn general, the ERPs use the following data types in the uniqueID field:\n\n- Macola: GUID\n- M1: GUID\n- JobBOSS²: Int32\n\n### rowVersion\n\nThe value of the rowVersion attribute is a 64bit signed integer. This value can be used to query for \nnew or modified records in most resources. New and updated records will always receive a value higher than the\nrowVersion of any other record in the source data. There may be some variations in the implementation of\nthis attribute across ERP products.\n\n## Tracing\n\nThis API supports [W3C Trace Context](https://www.w3.org/TR/trace-context/). TraceIDs will be\ngenerated for each request and returned in each response in a *traceid* header. You should\ncapture this value in any responses and consider logging it as part of any integration\nbeing built. \n\nWhen reporting problems with this API, the *traceid* in the response is the single most important piece\nof information you can provide.\n\n```\ntraceid: 00-e352fa809e1a5b47ba4d88f8182b36f4-44902b415c593c4f-00\n```\n\nIn addition, the traceid value is provided in the body of error responses.\n\n```json\n{\n  \"type\": \"https://tools.ietf.org/html/rfc7231#section-6.5.4\",\n  \"title\": \"Not Found\",\n  \"status\": 404,\n  \"traceId\": \"00-c2857fd044158e41bf73349e95208f1e-9476acc2107e274d-00\"\n}\n```\n\nA caller can also provide their own W3C Trace Context compliant trace id\nvia the ```traceparent``` heeder in a request.\n\n```\ntraceparent: 00-0af7651916cd43dd8448eb211c80319c-b7ad6b7169203331-01\n```\n\n## Error Responses\n\nError responses will typically be in in [RFC7807](https://datatracker.ietf.org/doc/html/rfc7807) \n\"Problem details\" format as show below:\n\n### A sample 404 Not Found\n```json\n{\n  \"type\": \"https://tools.ietf.org/html/rfc7231#section-6.5.4\",\n  \"title\": \"Not Found\",\n  \"status\": 404,\n  \"traceId\": \"00-c2857fd044158e41bf73349e95208f1e-9476acc2107e274d-00\"\n}\n```\n\n### A sample 500 Internal Server Error\n```json\n{\n  \"type\": \"https://tools.ietf.org/html/rfc7231#section-6.6.1\",\n  \"title\": \"An error occured while processing your request.\",\n  \"status\": 500,\n  \"traceId\": \"00-fd1c6ec035a01943bec2ffabf2f1d6e2-9601a3cae715e143-00\"\n}\n```\n\n## Response Headers\n\n- **traceid:** The W3C Trace Context (see above)\n- **erp-company-id**: A value identifying the ERP Company where the data in the response originated.\n- **erp-instance-id**: A value indicating the database instance being accessed. Note this value is presently not immutable, and may change periodically.\n- **cdc-request-id**: For requests that were executed via a Cognytics Data Connector request, this provides the CDC Request ID\n\n## Management Console\nUse the <a href='https://integrations.ecimanufacturing.com'>Integration Engine Management Console</a> to configure and monitor access to this API.\n\n\n## Contact Information\n\nThis API is maintained by the ECI Manufacturing Integration Team.\n",
+    "contact": {
+      "name": "ECI Manufacturing Division Integration Team",
+      "url": "https://www.ecisolutions.com/support/"
+    },
+    "version": "3.5.585+b1e45fd230"
+  },
+  "servers": [
+    {
+      "url": "https://api-erp.integrations.ecimanufacturing.com:443",
+      "description": "Production"
+    }
+  ],
+  "paths": {
+    "/api/v1/Account/authenticate": {
+      "post": {
+        "tags": [
+          "Account"
+        ],
+        "summary": "Authenticate API User.",
+        "description": "## Supported ERPs\n",
+        "requestBody": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AuthenticateUser"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AuthenticateUser"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/AuthenticateUser"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "deprecated": true
+      }
+    },
+    "/api/v1/view/Departments": {
+      "get": {
+        "tags": [
+          "View"
+        ],
+        "summary": "Gets a list of Department",
+        "description": "Gets a list of Department.\n\n## Supported ERPs\n - Macola\n - M1\n - JobBOSS²\n - Deacom\n## Resource Features\nFeature     |Supported   |Notes\n------------|------------|------------\nFilter Expressions|**Yes**| \nSort Expressions|**Yes**\nField Selection|**Yes**\nPagination|**Yes**\nUniqueID|uniqueID|\n## Features by Field\nField       |Filterable  |Sortable    |Supported ERPs\n------------|------------|------------|------------\ndeptID|Yes|Yes|Macola, M1, JobBOSS², Deacom\nshortDesc|Yes|Yes|Macola, M1, JobBOSS², Deacom\nuniqueID|Yes|Yes|Macola, M1, JobBOSS², Deacom\nrowVersion|Yes|Yes|Macola, M1, JobBOSS², Deacom\n",
+        "operationId": "GET__api_v1_view_Departments",
+        "parameters": [
+          {
+            "name": "fields",
+            "in": "query",
+            "description": "A comma-separated list of fields to include in the result.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "A comma-separated list of <a href='#sortexpr'>sort expressions</a>.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "take",
+            "in": "query",
+            "description": "Limit the number of results being returned",
+            "schema": {
+              "minimum": 0,
+              "type": "integer"
+            }
+          },
+          {
+            "name": "skip",
+            "in": "query",
+            "description": "The number of results to skip. Combine with 'take' to fetch records in pages",
+            "schema": {
+              "minimum": 0,
+              "type": "integer"
+            }
+          },
+          {
+            "name": "count",
+            "in": "query",
+            "description": "<a href='#countparam'>Data and count</a> response behavior ",
+            "schema": {
+              "maximum": 2,
+              "minimum": 0,
+              "type": "integer"
+            }
+          },
+          {
+            "name": "filters",
+            "in": "query",
+            "description": "See <a href='#filterexpr'>Filter Expressions</a> for query string syntax. The Test UI and any generated code tool may expose filter parameters as a dictionary of name/value pairs, but if creating a raw HTTP request, they must be provided on the querystring as defined in the Filter Expression section.",
+            "style": "form",
+            "schema": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            },
+            "examples": {
+              "Empty": {
+                "description": "No filters applied"
+              },
+              "Example #1": {
+                "description": "A dictionary of name/value pairs that will be serialized as querystring parameters in the format ```name[operator]=value```",
+                "value": {
+                  "deptID[eq]": "abc123",
+                  "shortDesc[eq]": "abc123",
+                  "uniqueID[eq]": "cc90686b-399e-4094-b431-fa462f84b0a8",
+                  "rowVersion[gte]": 123
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Department"
+                      }
+                    },
+                    "resultCount": {
+                      "type": "integer",
+                      "nullable": true
+                    }
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Department"
+                      }
+                    },
+                    "resultCount": {
+                      "type": "integer",
+                      "nullable": true
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/view/Employees": {
+      "get": {
+        "tags": [
+          "View"
+        ],
+        "summary": "Gets a list of Employee",
+        "description": "Gets a list of Employee.\n\n## Supported ERPs\n - Macola\n - M1\n - JobBOSS²\n - Deacom\n## Resource Features\nFeature     |Supported   |Notes\n------------|------------|------------\nFilter Expressions|**Yes**| \nSort Expressions|**Yes**\nField Selection|**Yes**\nPagination|**Yes**\nUniqueID|uniqueID|\n## Features by Field\nField       |Filterable  |Sortable    |Supported ERPs\n------------|------------|------------|------------\nemployeeID|Yes|Yes|Macola, M1, JobBOSS², Deacom\nfirstName|Yes|Yes|Macola, M1, JobBOSS², Deacom\nlastName|Yes|Yes|Macola, M1, JobBOSS², Deacom\ntitle|Yes|Yes|Macola, M1, JobBOSS², Deacom\nsupervisorEmployeeID|Yes|Yes|Macola, M1, JobBOSS², Deacom\npayRate|Yes|Yes|Macola, M1, JobBOSS², Deacom\ndeptID|Yes|Yes|Macola, M1, JobBOSS², Deacom\nshiftID|Yes|Yes|Macola, M1, JobBOSS², Deacom\nuniqueID|Yes|Yes|Macola, M1, JobBOSS², Deacom\nrowVersion|Yes|Yes|Macola, M1, JobBOSS², Deacom\n",
+        "operationId": "GET__api_v1_view_Employees",
+        "parameters": [
+          {
+            "name": "fields",
+            "in": "query",
+            "description": "A comma-separated list of fields to include in the result.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "A comma-separated list of <a href='#sortexpr'>sort expressions</a>.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "take",
+            "in": "query",
+            "description": "Limit the number of results being returned",
+            "schema": {
+              "minimum": 0,
+              "type": "integer"
+            }
+          },
+          {
+            "name": "skip",
+            "in": "query",
+            "description": "The number of results to skip. Combine with 'take' to fetch records in pages",
+            "schema": {
+              "minimum": 0,
+              "type": "integer"
+            }
+          },
+          {
+            "name": "count",
+            "in": "query",
+            "description": "<a href='#countparam'>Data and count</a> response behavior ",
+            "schema": {
+              "maximum": 2,
+              "minimum": 0,
+              "type": "integer"
+            }
+          },
+          {
+            "name": "filters",
+            "in": "query",
+            "description": "See <a href='#filterexpr'>Filter Expressions</a> for query string syntax. The Test UI and any generated code tool may expose filter parameters as a dictionary of name/value pairs, but if creating a raw HTTP request, they must be provided on the querystring as defined in the Filter Expression section.",
+            "style": "form",
+            "schema": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            },
+            "examples": {
+              "Empty": {
+                "description": "No filters applied"
+              },
+              "Example #1": {
+                "description": "A dictionary of name/value pairs that will be serialized as querystring parameters in the format ```name[operator]=value```",
+                "value": {
+                  "employeeID[eq]": "abc123",
+                  "firstName[eq]": "abc123",
+                  "lastName[eq]": "abc123",
+                  "title[eq]": "abc123",
+                  "supervisorEmployeeID[gte]": 123,
+                  "payRate[gte]": 123,
+                  "deptID[eq]": "abc123",
+                  "shiftID[eq]": "abc123",
+                  "uniqueID[eq]": "cc90686b-399e-4094-b431-fa462f84b0a8",
+                  "rowVersion[gte]": 123
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Employee"
+                      }
+                    },
+                    "resultCount": {
+                      "type": "integer",
+                      "nullable": true
+                    }
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Employee"
+                      }
+                    },
+                    "resultCount": {
+                      "type": "integer",
+                      "nullable": true
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/view/JobOperations": {
+      "get": {
+        "tags": [
+          "View"
+        ],
+        "summary": "Gets a list of JobOperation",
+        "description": "Gets a list of JobOperation.\n\n## Supported ERPs\n - Macola\n - M1\n - JobBOSS²\n - Deacom\n## Resource Features\nFeature     |Supported   |Notes\n------------|------------|------------\nFilter Expressions|**Yes**| \nSort Expressions|**Yes**\nField Selection|**Yes**\nPagination|**Yes**\nUniqueID|uniqueID|\n## Features by Field\nField       |Filterable  |Sortable    |Supported ERPs\n------------|------------|------------|------------\njobID|Yes|Yes|Macola, M1, JobBOSS², Deacom\njobAssembly|Yes|Yes|Macola, M1, JobBOSS², Deacom\njobOperationSeq|Yes|Yes|Macola, M1, JobBOSS², Deacom\nstatus|Yes|Yes|Macola, M1, JobBOSS², Deacom\nworkCenterID|Yes|Yes|Macola, M1, JobBOSS², Deacom\nprocessID|Yes|Yes|Macola, M1, JobBOSS², Deacom\nshortDesc|Yes|Yes|Macola, M1, JobBOSS², Deacom\nlongDescText|Yes|Yes|Macola, M1, JobBOSS², Deacom\nlongDescFormatted|<span style='color:red'>No</span>|Yes|Macola, M1, JobBOSS², Deacom\noutsideOperation|Yes|Yes|Macola, M1, JobBOSS², Deacom\npartID|Yes|Yes|Macola, M1, JobBOSS², Deacom\npartRevisionID|Yes|Yes|Macola, M1, JobBOSS², Deacom\nschedStartDate|Yes|Yes|Macola, M1, JobBOSS², Deacom\nschedEndDate|Yes|Yes|Macola, M1, JobBOSS², Deacom\nactStartDate|Yes|Yes|Macola, M1, JobBOSS², Deacom\nactEndDate|Yes|Yes|Macola, M1, JobBOSS², Deacom\nestSetupHours|<span style='color:red'>No</span>|Yes|Macola, M1, JobBOSS², Deacom\nestProdHours|Yes|Yes|Macola, M1, JobBOSS², Deacom\nestQueueHours|Yes|Yes|Macola, M1, JobBOSS², Deacom\nestMoveHours|Yes|Yes|Macola, M1, JobBOSS², Deacom\nestQAHours|Yes|Yes|Macola, M1, JobBOSS², Deacom\nactSetupHours|Yes|Yes|Macola, M1, JobBOSS², Deacom\nactualProdHours|Yes|Yes|Macola, M1, JobBOSS², Deacom\nactQAHours|Yes|Yes|Macola, M1, JobBOSS², Deacom\nvendorID|Yes|Yes|Macola, M1, JobBOSS², Deacom\nuniqueID|Yes|Yes|Macola, M1, JobBOSS², Deacom\nrowVersion|Yes|Yes|Macola, M1, JobBOSS², Deacom\n",
+        "operationId": "GET__api_v1_view_JobOperations",
+        "parameters": [
+          {
+            "name": "fields",
+            "in": "query",
+            "description": "A comma-separated list of fields to include in the result.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "A comma-separated list of <a href='#sortexpr'>sort expressions</a>.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "take",
+            "in": "query",
+            "description": "Limit the number of results being returned",
+            "schema": {
+              "minimum": 0,
+              "type": "integer"
+            }
+          },
+          {
+            "name": "skip",
+            "in": "query",
+            "description": "The number of results to skip. Combine with 'take' to fetch records in pages",
+            "schema": {
+              "minimum": 0,
+              "type": "integer"
+            }
+          },
+          {
+            "name": "count",
+            "in": "query",
+            "description": "<a href='#countparam'>Data and count</a> response behavior ",
+            "schema": {
+              "maximum": 2,
+              "minimum": 0,
+              "type": "integer"
+            }
+          },
+          {
+            "name": "filters",
+            "in": "query",
+            "description": "See <a href='#filterexpr'>Filter Expressions</a> for query string syntax. The Test UI and any generated code tool may expose filter parameters as a dictionary of name/value pairs, but if creating a raw HTTP request, they must be provided on the querystring as defined in the Filter Expression section.",
+            "style": "form",
+            "schema": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            },
+            "examples": {
+              "Empty": {
+                "description": "No filters applied"
+              },
+              "Example #1": {
+                "description": "A dictionary of name/value pairs that will be serialized as querystring parameters in the format ```name[operator]=value```",
+                "value": {
+                  "jobID[eq]": "abc123",
+                  "jobAssembly[eq]": "abc123",
+                  "jobOperationSeq[gte]": 123,
+                  "status[eq]": "abc123",
+                  "workCenterID[eq]": "abc123",
+                  "processID[eq]": "abc123",
+                  "shortDesc[eq]": "abc123",
+                  "longDescText[eq]": "abc123",
+                  "outsideOperation[eq]": "abc123",
+                  "partID[eq]": "abc123",
+                  "partRevisionID[eq]": "abc123",
+                  "schedStartDate[gte]": "2020-09-25T04:03:00.0000000",
+                  "schedEndDate[gte]": "2020-09-25T04:03:00.0000000",
+                  "actStartDate[gte]": "2020-09-25T04:03:00.0000000",
+                  "actEndDate[gte]": "2020-09-25T04:03:00.0000000",
+                  "estProdHours[gte]": 123,
+                  "estQueueHours[gte]": 123,
+                  "estMoveHours[gte]": 123,
+                  "estQAHours[gte]": 123,
+                  "actSetupHours[gte]": 123,
+                  "actualProdHours[gte]": 123,
+                  "actQAHours[gte]": 123,
+                  "vendorID[eq]": "abc123",
+                  "uniqueID[eq]": "cc90686b-399e-4094-b431-fa462f84b0a8",
+                  "rowVersion[gte]": 123
+                }
+              }
+            }
+          },
+          {
+            "name": "convertToUTC",
+            "in": "query",
+            "description": "Convert suppported date/time values to UTC before returning the data.",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/JobOperation"
+                      }
+                    },
+                    "resultCount": {
+                      "type": "integer",
+                      "nullable": true
+                    }
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/JobOperation"
+                      }
+                    },
+                    "resultCount": {
+                      "type": "integer",
+                      "nullable": true
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/view/jobs": {
+      "get": {
+        "tags": [
+          "View"
+        ],
+        "summary": "Gets a list of Job",
+        "description": "Gets a list of Job.\n\n## Supported ERPs\n - Macola\n - M1\n - JobBOSS²\n - Deacom\n## Resource Features\nFeature     |Supported   |Notes\n------------|------------|------------\nFilter Expressions|**Yes**| \nSort Expressions|**Yes**\nField Selection|**Yes**\nPagination|**Yes**\nUniqueID|uniqueID|\n## Features by Field\nField       |Filterable  |Sortable    |Supported ERPs\n------------|------------|------------|------------\njobID|Yes|Yes|Macola, M1, JobBOSS², Deacom\ncustomerID|<span style='color:red'>No</span>|Yes|Macola, M1, JobBOSS², Deacom\npartID|<span style='color:red'>No</span>|Yes|Macola, M1, JobBOSS², Deacom\npartRevisionID|<span style='color:red'>No</span>|Yes|Macola, M1, JobBOSS², Deacom\norderQty|<span style='color:red'>No</span>|Yes|Macola, M1, JobBOSS², Deacom\nprodQty|<span style='color:red'>No</span>|Yes|Macola, M1, JobBOSS², Deacom\nschedStartDate|<span style='color:red'>No</span>|Yes|Macola, M1, JobBOSS², Deacom\nschedEndDate|<span style='color:red'>No</span>|Yes|Macola, M1, JobBOSS², Deacom\nestLeadTime|<span style='color:red'>No</span>|Yes|Macola, M1, JobBOSS², Deacom\nactStartDate|<span style='color:red'>No</span>|Yes|Macola, M1, JobBOSS², Deacom\nactEndDate|<span style='color:red'>No</span>|Yes|Macola, M1, JobBOSS², Deacom\ndueDate|<span style='color:red'>No</span>|Yes|Macola, M1, JobBOSS², Deacom\nstatus|<span style='color:red'>No</span>|Yes|Macola, M1, JobBOSS², Deacom\nuniqueID|Yes|Yes|Macola, M1, JobBOSS², Deacom\nrowVersion|Yes|Yes|Macola, M1, JobBOSS², Deacom\nparentJobID|<span style='color:red'>No</span>|Yes|JobBOSS²\n",
+        "operationId": "GET__api_v1_view_jobs",
+        "parameters": [
+          {
+            "name": "fields",
+            "in": "query",
+            "description": "A comma-separated list of fields to include in the result.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "A comma-separated list of <a href='#sortexpr'>sort expressions</a>.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "take",
+            "in": "query",
+            "description": "Limit the number of results being returned",
+            "schema": {
+              "minimum": 0,
+              "type": "integer"
+            }
+          },
+          {
+            "name": "skip",
+            "in": "query",
+            "description": "The number of results to skip. Combine with 'take' to fetch records in pages",
+            "schema": {
+              "minimum": 0,
+              "type": "integer"
+            }
+          },
+          {
+            "name": "count",
+            "in": "query",
+            "description": "<a href='#countparam'>Data and count</a> response behavior ",
+            "schema": {
+              "maximum": 2,
+              "minimum": 0,
+              "type": "integer"
+            }
+          },
+          {
+            "name": "filters",
+            "in": "query",
+            "description": "See <a href='#filterexpr'>Filter Expressions</a> for query string syntax. The Test UI and any generated code tool may expose filter parameters as a dictionary of name/value pairs, but if creating a raw HTTP request, they must be provided on the querystring as defined in the Filter Expression section.",
+            "style": "form",
+            "schema": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            },
+            "examples": {
+              "Empty": {
+                "description": "No filters applied"
+              },
+              "Example #1": {
+                "description": "A dictionary of name/value pairs that will be serialized as querystring parameters in the format ```name[operator]=value```",
+                "value": {
+                  "jobID[eq]": "abc123",
+                  "uniqueID[eq]": "cc90686b-399e-4094-b431-fa462f84b0a8",
+                  "rowVersion[gte]": 123
+                }
+              }
+            }
+          },
+          {
+            "name": "expand",
+            "in": "query",
+            "description": "### Supported Expansions\nAn expansion expression containing a comma separater list of relationships to expand.\nName        |Value       |Description\n------------|------------|-----------\njobOperations|JobOperations[]|\n",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "convertToUTC",
+            "in": "query",
+            "description": "Convert suppported date/time values to UTC before returning the data.",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Job"
+                      }
+                    },
+                    "resultCount": {
+                      "type": "integer",
+                      "nullable": true
+                    }
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Job"
+                      }
+                    },
+                    "resultCount": {
+                      "type": "integer",
+                      "nullable": true
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/view/PartOperations": {
+      "get": {
+        "tags": [
+          "View"
+        ],
+        "summary": "Gets a list of PartOperation",
+        "description": "Gets a list of PartOperation.\n\n## Supported ERPs\n - Macola\n - M1\n - JobBOSS²\n - Deacom\n## Resource Features\nFeature     |Supported   |Notes\n------------|------------|------------\nFilter Expressions|**Yes**| \nSort Expressions|**Yes**\nField Selection|**Yes**\nPagination|**Yes**\nUniqueID|uniqueID|\n## Features by Field\nField       |Filterable  |Sortable    |Supported ERPs\n------------|------------|------------|------------\npartID|Yes|Yes|Macola, M1, JobBOSS², Deacom\npartRevisionID|Yes|Yes|Macola, M1, JobBOSS², Deacom\npartOperationSeq|Yes|Yes|Macola, M1, JobBOSS², Deacom\nworkCenterID|Yes|Yes|Macola, M1, JobBOSS², Deacom\nprocessID|Yes|Yes|Macola, M1, JobBOSS², Deacom\nshortDesc|Yes|Yes|Macola, M1, JobBOSS², Deacom\nlongDescText|Yes|Yes|Macola, M1, JobBOSS², Deacom\nlongDescFormatted|Yes|Yes|Macola, M1, JobBOSS², Deacom\noutsideOperation|Yes|Yes|Macola, M1, JobBOSS², Deacom\nestSetupHours|Yes|Yes|Macola, M1, JobBOSS², Deacom\nestProdHours|Yes|Yes|Macola, M1, JobBOSS², Deacom\nestQueueHours|Yes|Yes|Macola, M1, JobBOSS², Deacom\nestMoveHours|Yes|Yes|Macola, M1, JobBOSS², Deacom\nestQAHours|Yes|Yes|Macola, M1, JobBOSS², Deacom\nvendorID|Yes|Yes|Macola, M1, JobBOSS², Deacom\nuniqueID|Yes|Yes|Macola, M1, JobBOSS², Deacom\nrowVersion|Yes|Yes|Macola, M1, JobBOSS², Deacom\n",
+        "operationId": "GET__api_v1_view_PartOperations",
+        "parameters": [
+          {
+            "name": "fields",
+            "in": "query",
+            "description": "A comma-separated list of fields to include in the result.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "A comma-separated list of <a href='#sortexpr'>sort expressions</a>.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "take",
+            "in": "query",
+            "description": "Limit the number of results being returned",
+            "schema": {
+              "minimum": 0,
+              "type": "integer"
+            }
+          },
+          {
+            "name": "skip",
+            "in": "query",
+            "description": "The number of results to skip. Combine with 'take' to fetch records in pages",
+            "schema": {
+              "minimum": 0,
+              "type": "integer"
+            }
+          },
+          {
+            "name": "count",
+            "in": "query",
+            "description": "<a href='#countparam'>Data and count</a> response behavior ",
+            "schema": {
+              "maximum": 2,
+              "minimum": 0,
+              "type": "integer"
+            }
+          },
+          {
+            "name": "filters",
+            "in": "query",
+            "description": "See <a href='#filterexpr'>Filter Expressions</a> for query string syntax. The Test UI and any generated code tool may expose filter parameters as a dictionary of name/value pairs, but if creating a raw HTTP request, they must be provided on the querystring as defined in the Filter Expression section.",
+            "style": "form",
+            "schema": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            },
+            "examples": {
+              "Empty": {
+                "description": "No filters applied"
+              },
+              "Example #1": {
+                "description": "A dictionary of name/value pairs that will be serialized as querystring parameters in the format ```name[operator]=value```",
+                "value": {
+                  "partID[eq]": "abc123",
+                  "partRevisionID[eq]": "abc123",
+                  "partOperationSeq[gte]": 123,
+                  "workCenterID[eq]": "abc123",
+                  "processID[eq]": "abc123",
+                  "shortDesc[eq]": "abc123",
+                  "longDescText[eq]": "abc123",
+                  "longDescFormatted[eq]": "abc123",
+                  "outsideOperation[eq]": "abc123",
+                  "estSetupHours[gte]": 123,
+                  "estProdHours[gte]": 123,
+                  "estQueueHours[gte]": 123,
+                  "estMoveHours[gte]": 123,
+                  "estQAHours[gte]": 123,
+                  "vendorID[eq]": "abc123",
+                  "uniqueID[eq]": "cc90686b-399e-4094-b431-fa462f84b0a8",
+                  "rowVersion[gte]": 123
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/PartOperation"
+                      }
+                    },
+                    "resultCount": {
+                      "type": "integer",
+                      "nullable": true
+                    }
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/PartOperation"
+                      }
+                    },
+                    "resultCount": {
+                      "type": "integer",
+                      "nullable": true
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/view/PartRevisions": {
+      "get": {
+        "tags": [
+          "View"
+        ],
+        "summary": "Gets a list of PartRevision",
+        "description": "Gets a list of PartRevision.\n\n## Supported ERPs\n - Macola\n - M1\n - JobBOSS²\n - Deacom\n## Resource Features\nFeature     |Supported   |Notes\n------------|------------|------------\nFilter Expressions|**Yes**| \nSort Expressions|**Yes**\nField Selection|**Yes**\nPagination|**Yes**\nUniqueID|uniqueID|\n## Features by Field\nField       |Filterable  |Sortable    |Supported ERPs\n------------|------------|------------|------------\npartID|Yes|Yes|Macola, M1, JobBOSS², Deacom\npartRevisionID|Yes|Yes|Macola, M1, JobBOSS², Deacom\nshortDesc|Yes|Yes|Macola, M1, JobBOSS², Deacom\nlongDescText|Yes|Yes|Macola, M1, JobBOSS², Deacom\nlongDescFormatted|Yes|Yes|Macola, M1, JobBOSS², Deacom\nuniqueID|Yes|Yes|Macola, M1, JobBOSS², Deacom\nrowVersion|Yes|Yes|Macola, M1, JobBOSS², Deacom\n",
+        "operationId": "GET__api_v1_view_PartRevisions",
+        "parameters": [
+          {
+            "name": "fields",
+            "in": "query",
+            "description": "A comma-separated list of fields to include in the result.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "A comma-separated list of <a href='#sortexpr'>sort expressions</a>.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "take",
+            "in": "query",
+            "description": "Limit the number of results being returned",
+            "schema": {
+              "minimum": 0,
+              "type": "integer"
+            }
+          },
+          {
+            "name": "skip",
+            "in": "query",
+            "description": "The number of results to skip. Combine with 'take' to fetch records in pages",
+            "schema": {
+              "minimum": 0,
+              "type": "integer"
+            }
+          },
+          {
+            "name": "count",
+            "in": "query",
+            "description": "<a href='#countparam'>Data and count</a> response behavior ",
+            "schema": {
+              "maximum": 2,
+              "minimum": 0,
+              "type": "integer"
+            }
+          },
+          {
+            "name": "filters",
+            "in": "query",
+            "description": "See <a href='#filterexpr'>Filter Expressions</a> for query string syntax. The Test UI and any generated code tool may expose filter parameters as a dictionary of name/value pairs, but if creating a raw HTTP request, they must be provided on the querystring as defined in the Filter Expression section.",
+            "style": "form",
+            "schema": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            },
+            "examples": {
+              "Empty": {
+                "description": "No filters applied"
+              },
+              "Example #1": {
+                "description": "A dictionary of name/value pairs that will be serialized as querystring parameters in the format ```name[operator]=value```",
+                "value": {
+                  "partID[eq]": "abc123",
+                  "partRevisionID[eq]": "abc123",
+                  "shortDesc[eq]": "abc123",
+                  "longDescText[eq]": "abc123",
+                  "longDescFormatted[eq]": "abc123",
+                  "uniqueID[eq]": "cc90686b-399e-4094-b431-fa462f84b0a8",
+                  "rowVersion[gte]": 123
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/PartRevision"
+                      }
+                    },
+                    "resultCount": {
+                      "type": "integer",
+                      "nullable": true
+                    }
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/PartRevision"
+                      }
+                    },
+                    "resultCount": {
+                      "type": "integer",
+                      "nullable": true
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/view/Processes": {
+      "get": {
+        "tags": [
+          "View"
+        ],
+        "summary": "Gets a list of Process",
+        "description": "Gets a list of Process.\n\n## Supported ERPs\n - Macola\n - M1\n - JobBOSS²\n - Deacom\n## Resource Features\nFeature     |Supported   |Notes\n------------|------------|------------\nFilter Expressions|**Yes**| \nSort Expressions|**Yes**\nField Selection|**Yes**\nPagination|**Yes**\nUniqueID|uniqueID|\n## Features by Field\nField       |Filterable  |Sortable    |Supported ERPs\n------------|------------|------------|------------\nprocessID|Yes|Yes|Macola, M1, JobBOSS², Deacom\nshortDesc|Yes|Yes|Macola, M1, JobBOSS², Deacom\nsetupRate|Yes|Yes|Macola, M1, JobBOSS², Deacom\nproductionRate|Yes|Yes|Macola, M1, JobBOSS², Deacom\nuniqueID|Yes|Yes|Macola, M1, JobBOSS², Deacom\nrowVersion|Yes|Yes|Macola, M1, JobBOSS², Deacom\n",
+        "operationId": "GET__api_v1_view_Processes",
+        "parameters": [
+          {
+            "name": "fields",
+            "in": "query",
+            "description": "A comma-separated list of fields to include in the result.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "A comma-separated list of <a href='#sortexpr'>sort expressions</a>.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "take",
+            "in": "query",
+            "description": "Limit the number of results being returned",
+            "schema": {
+              "minimum": 0,
+              "type": "integer"
+            }
+          },
+          {
+            "name": "skip",
+            "in": "query",
+            "description": "The number of results to skip. Combine with 'take' to fetch records in pages",
+            "schema": {
+              "minimum": 0,
+              "type": "integer"
+            }
+          },
+          {
+            "name": "count",
+            "in": "query",
+            "description": "<a href='#countparam'>Data and count</a> response behavior ",
+            "schema": {
+              "maximum": 2,
+              "minimum": 0,
+              "type": "integer"
+            }
+          },
+          {
+            "name": "filters",
+            "in": "query",
+            "description": "See <a href='#filterexpr'>Filter Expressions</a> for query string syntax. The Test UI and any generated code tool may expose filter parameters as a dictionary of name/value pairs, but if creating a raw HTTP request, they must be provided on the querystring as defined in the Filter Expression section.",
+            "style": "form",
+            "schema": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            },
+            "examples": {
+              "Empty": {
+                "description": "No filters applied"
+              },
+              "Example #1": {
+                "description": "A dictionary of name/value pairs that will be serialized as querystring parameters in the format ```name[operator]=value```",
+                "value": {
+                  "processID[eq]": "abc123",
+                  "shortDesc[eq]": "abc123",
+                  "setupRate[eq]": "abc123",
+                  "productionRate[eq]": "abc123",
+                  "uniqueID[eq]": "cc90686b-399e-4094-b431-fa462f84b0a8",
+                  "rowVersion[gte]": 123
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Process"
+                      }
+                    },
+                    "resultCount": {
+                      "type": "integer",
+                      "nullable": true
+                    }
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Process"
+                      }
+                    },
+                    "resultCount": {
+                      "type": "integer",
+                      "nullable": true
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/view/ProductionCalendars": {
+      "get": {
+        "tags": [
+          "View"
+        ],
+        "summary": "Gets a list of ProductionCalendar",
+        "description": "Gets a list of ProductionCalendar.\n\n## Supported ERPs\n - Macola\n - M1\n - JobBOSS²\n - Deacom\n## Resource Features\nFeature     |Supported   |Notes\n------------|------------|------------\nFilter Expressions|**Yes**| \nSort Expressions|**Yes**\nField Selection|**Yes**\nPagination|**Yes**\nUniqueID|uniqueID|\n## Features by Field\nField       |Filterable  |Sortable    |Supported ERPs\n------------|------------|------------|------------\nproductionDate|Yes|Yes|Macola, M1, JobBOSS², Deacom\nproductionHours|Yes|Yes|Macola, M1, JobBOSS², Deacom\nproductionStartTime|Yes|Yes|Macola, M1, JobBOSS², Deacom\nworkCenterID|Yes|Yes|Macola, M1, JobBOSS², Deacom\nplantID|Yes|Yes|Macola, M1, JobBOSS², Deacom\ndepartment|Yes|Yes|Macola, M1, JobBOSS², Deacom\nuniqueID|Yes|Yes|Macola, M1, JobBOSS², Deacom\nrowVersion|Yes|Yes|Macola, M1, JobBOSS², Deacom\n",
+        "operationId": "GET__api_v1_view_ProductionCalendars",
+        "parameters": [
+          {
+            "name": "fields",
+            "in": "query",
+            "description": "A comma-separated list of fields to include in the result.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "A comma-separated list of <a href='#sortexpr'>sort expressions</a>.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "take",
+            "in": "query",
+            "description": "Limit the number of results being returned",
+            "schema": {
+              "minimum": 0,
+              "type": "integer"
+            }
+          },
+          {
+            "name": "skip",
+            "in": "query",
+            "description": "The number of results to skip. Combine with 'take' to fetch records in pages",
+            "schema": {
+              "minimum": 0,
+              "type": "integer"
+            }
+          },
+          {
+            "name": "count",
+            "in": "query",
+            "description": "<a href='#countparam'>Data and count</a> response behavior ",
+            "schema": {
+              "maximum": 2,
+              "minimum": 0,
+              "type": "integer"
+            }
+          },
+          {
+            "name": "filters",
+            "in": "query",
+            "description": "See <a href='#filterexpr'>Filter Expressions</a> for query string syntax. The Test UI and any generated code tool may expose filter parameters as a dictionary of name/value pairs, but if creating a raw HTTP request, they must be provided on the querystring as defined in the Filter Expression section.",
+            "style": "form",
+            "schema": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            },
+            "examples": {
+              "Empty": {
+                "description": "No filters applied"
+              },
+              "Example #1": {
+                "description": "A dictionary of name/value pairs that will be serialized as querystring parameters in the format ```name[operator]=value```",
+                "value": {
+                  "productionDate[gte]": "2020-09-25T04:03:00.0000000",
+                  "productionHours[gte]": 123,
+                  "productionStartTime[eq]": "abc123",
+                  "workCenterID[eq]": "abc123",
+                  "plantID[eq]": "abc123",
+                  "department[eq]": "abc123",
+                  "uniqueID[eq]": "cc90686b-399e-4094-b431-fa462f84b0a8",
+                  "rowVersion[gte]": 123
+                }
+              }
+            }
+          },
+          {
+            "name": "convertToUTC",
+            "in": "query",
+            "description": "Convert suppported date/time values to UTC before returning the data.",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/ProductionCalendar"
+                      }
+                    },
+                    "resultCount": {
+                      "type": "integer",
+                      "nullable": true
+                    }
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/ProductionCalendar"
+                      }
+                    },
+                    "resultCount": {
+                      "type": "integer",
+                      "nullable": true
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/view/SalesOrderDeliveries": {
+      "get": {
+        "tags": [
+          "View"
+        ],
+        "summary": "Gets a list of SalesOrderDelivery",
+        "description": "Gets a list of SalesOrderDelivery.\n\n## Supported ERPs\n - Macola\n - M1\n - JobBOSS²\n - Deacom\n## Resource Features\nFeature     |Supported   |Notes\n------------|------------|------------\nFilter Expressions|**Yes**| \nSort Expressions|**Yes**\nField Selection|**Yes**\nPagination|**Yes**\nUniqueID|uniqueID|\n## Features by Field\nField       |Filterable  |Sortable    |Supported ERPs\n------------|------------|------------|------------\nsalesOrderID|Yes|Yes|Macola, M1, JobBOSS², Deacom\norderLine|Yes|Yes|Macola, M1, JobBOSS², Deacom\norderLineDelivery|Yes|Yes|Macola, M1, JobBOSS², Deacom\npromisedDate|Yes|Yes|Macola, M1, JobBOSS², Deacom\npromisedQty|Yes|Yes|Macola, M1, JobBOSS², Deacom\nshippedDate|Yes|Yes|Macola, M1, JobBOSS², Deacom\nshippedQty|Yes|Yes|Macola, M1, JobBOSS², Deacom\nuniqueID|Yes|Yes|Macola, M1, JobBOSS², Deacom\nrowVersion|Yes|Yes|Macola, M1, JobBOSS², Deacom\n",
+        "operationId": "GET__api_v1_view_SalesOrderDeliveries",
+        "parameters": [
+          {
+            "name": "fields",
+            "in": "query",
+            "description": "A comma-separated list of fields to include in the result.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "A comma-separated list of <a href='#sortexpr'>sort expressions</a>.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "take",
+            "in": "query",
+            "description": "Limit the number of results being returned",
+            "schema": {
+              "minimum": 0,
+              "type": "integer"
+            }
+          },
+          {
+            "name": "skip",
+            "in": "query",
+            "description": "The number of results to skip. Combine with 'take' to fetch records in pages",
+            "schema": {
+              "minimum": 0,
+              "type": "integer"
+            }
+          },
+          {
+            "name": "count",
+            "in": "query",
+            "description": "<a href='#countparam'>Data and count</a> response behavior ",
+            "schema": {
+              "maximum": 2,
+              "minimum": 0,
+              "type": "integer"
+            }
+          },
+          {
+            "name": "filters",
+            "in": "query",
+            "description": "See <a href='#filterexpr'>Filter Expressions</a> for query string syntax. The Test UI and any generated code tool may expose filter parameters as a dictionary of name/value pairs, but if creating a raw HTTP request, they must be provided on the querystring as defined in the Filter Expression section.",
+            "style": "form",
+            "schema": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            },
+            "examples": {
+              "Empty": {
+                "description": "No filters applied"
+              },
+              "Example #1": {
+                "description": "A dictionary of name/value pairs that will be serialized as querystring parameters in the format ```name[operator]=value```",
+                "value": {
+                  "salesOrderID[eq]": "abc123",
+                  "orderLine[gte]": 123,
+                  "orderLineDelivery[eq]": "abc123",
+                  "promisedDate[gte]": "2020-09-25T04:03:00.0000000",
+                  "promisedQty[gte]": 123,
+                  "shippedDate[gte]": "2020-09-25T04:03:00.0000000",
+                  "shippedQty[gte]": 123,
+                  "uniqueID[eq]": "cc90686b-399e-4094-b431-fa462f84b0a8",
+                  "rowVersion[gte]": 123
+                }
+              }
+            }
+          },
+          {
+            "name": "expand",
+            "in": "query",
+            "description": "### Supported Expansions\nAn expansion expression containing a comma separater list of relationships to expand.\nName        |Value       |Description\n------------|------------|-----------\nsalesOrderJobs|SalesOrderJobs[]|\n",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "convertToUTC",
+            "in": "query",
+            "description": "Convert suppported date/time values to UTC before returning the data.",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/SalesOrderDelivery"
+                      }
+                    },
+                    "resultCount": {
+                      "type": "integer",
+                      "nullable": true
+                    }
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/SalesOrderDelivery"
+                      }
+                    },
+                    "resultCount": {
+                      "type": "integer",
+                      "nullable": true
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/view/SalesOrderJobs": {
+      "get": {
+        "tags": [
+          "View"
+        ],
+        "summary": "Gets a list of SalesOrderJob",
+        "description": "Gets a list of SalesOrderJob.\n\n## Supported ERPs\n - Macola\n - M1\n - JobBOSS²\n - Deacom\n## Resource Features\nFeature     |Supported   |Notes\n------------|------------|------------\nFilter Expressions|**Yes**| \nSort Expressions|**Yes**\nField Selection|**Yes**\nPagination|**Yes**\nUniqueID|uniqueID|\n## Features by Field\nField       |Filterable  |Sortable    |Supported ERPs\n------------|------------|------------|------------\nsalesOrderID|Yes|Yes|Macola, M1, JobBOSS², Deacom\norderLine|Yes|Yes|Macola, M1, JobBOSS², Deacom\norderLineDelivery|Yes|Yes|Macola, M1, JobBOSS², Deacom\njobID|Yes|Yes|Macola, M1, JobBOSS², Deacom\norderJobSeq|Yes|Yes|Macola, M1, JobBOSS², Deacom\nuniqueID|Yes|Yes|Macola, M1, JobBOSS², Deacom\nrowVersion|Yes|Yes|Macola, M1, JobBOSS², Deacom\n",
+        "operationId": "GET__api_v1_view_SalesOrderJobs",
+        "parameters": [
+          {
+            "name": "fields",
+            "in": "query",
+            "description": "A comma-separated list of fields to include in the result.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "A comma-separated list of <a href='#sortexpr'>sort expressions</a>.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "take",
+            "in": "query",
+            "description": "Limit the number of results being returned",
+            "schema": {
+              "minimum": 0,
+              "type": "integer"
+            }
+          },
+          {
+            "name": "skip",
+            "in": "query",
+            "description": "The number of results to skip. Combine with 'take' to fetch records in pages",
+            "schema": {
+              "minimum": 0,
+              "type": "integer"
+            }
+          },
+          {
+            "name": "count",
+            "in": "query",
+            "description": "<a href='#countparam'>Data and count</a> response behavior ",
+            "schema": {
+              "maximum": 2,
+              "minimum": 0,
+              "type": "integer"
+            }
+          },
+          {
+            "name": "filters",
+            "in": "query",
+            "description": "See <a href='#filterexpr'>Filter Expressions</a> for query string syntax. The Test UI and any generated code tool may expose filter parameters as a dictionary of name/value pairs, but if creating a raw HTTP request, they must be provided on the querystring as defined in the Filter Expression section.",
+            "style": "form",
+            "schema": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            },
+            "examples": {
+              "Empty": {
+                "description": "No filters applied"
+              },
+              "Example #1": {
+                "description": "A dictionary of name/value pairs that will be serialized as querystring parameters in the format ```name[operator]=value```",
+                "value": {
+                  "salesOrderID[eq]": "abc123",
+                  "orderLine[gte]": 123,
+                  "orderLineDelivery[eq]": "abc123",
+                  "jobID[eq]": "abc123",
+                  "orderJobSeq[gte]": 123,
+                  "uniqueID[eq]": "cc90686b-399e-4094-b431-fa462f84b0a8",
+                  "rowVersion[gte]": 123
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/SalesOrderJob"
+                      }
+                    },
+                    "resultCount": {
+                      "type": "integer",
+                      "nullable": true
+                    }
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/SalesOrderJob"
+                      }
+                    },
+                    "resultCount": {
+                      "type": "integer",
+                      "nullable": true
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/view/SalesOrderLines": {
+      "get": {
+        "tags": [
+          "View"
+        ],
+        "summary": "Gets a list of SalesOrderLine",
+        "description": "Gets a list of SalesOrderLine.\n\n## Supported ERPs\n - Macola\n - M1\n - JobBOSS²\n - Deacom\n## Resource Features\nFeature     |Supported   |Notes\n------------|------------|------------\nFilter Expressions|**Yes**| \nSort Expressions|**Yes**\nField Selection|**Yes**\nPagination|**Yes**\nUniqueID|uniqueID|\n## Features by Field\nField       |Filterable  |Sortable    |Supported ERPs\n------------|------------|------------|------------\nsalesOrderID|Yes|Yes|Macola, M1, JobBOSS², Deacom\norderLine|Yes|Yes|Macola, M1, JobBOSS², Deacom\ntotalSalePrice|Yes|Yes|Macola, M1, JobBOSS², Deacom\nuniqueID|Yes|Yes|Macola, M1, JobBOSS², Deacom\nrowVersion|Yes|Yes|Macola, M1, JobBOSS², Deacom\n",
+        "operationId": "GET__api_v1_view_SalesOrderLines",
+        "parameters": [
+          {
+            "name": "fields",
+            "in": "query",
+            "description": "A comma-separated list of fields to include in the result.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "A comma-separated list of <a href='#sortexpr'>sort expressions</a>.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "take",
+            "in": "query",
+            "description": "Limit the number of results being returned",
+            "schema": {
+              "minimum": 0,
+              "type": "integer"
+            }
+          },
+          {
+            "name": "skip",
+            "in": "query",
+            "description": "The number of results to skip. Combine with 'take' to fetch records in pages",
+            "schema": {
+              "minimum": 0,
+              "type": "integer"
+            }
+          },
+          {
+            "name": "count",
+            "in": "query",
+            "description": "<a href='#countparam'>Data and count</a> response behavior ",
+            "schema": {
+              "maximum": 2,
+              "minimum": 0,
+              "type": "integer"
+            }
+          },
+          {
+            "name": "filters",
+            "in": "query",
+            "description": "See <a href='#filterexpr'>Filter Expressions</a> for query string syntax. The Test UI and any generated code tool may expose filter parameters as a dictionary of name/value pairs, but if creating a raw HTTP request, they must be provided on the querystring as defined in the Filter Expression section.",
+            "style": "form",
+            "schema": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            },
+            "examples": {
+              "Empty": {
+                "description": "No filters applied"
+              },
+              "Example #1": {
+                "description": "A dictionary of name/value pairs that will be serialized as querystring parameters in the format ```name[operator]=value```",
+                "value": {
+                  "salesOrderID[eq]": "abc123",
+                  "orderLine[gte]": 123,
+                  "totalSalePrice[gte]": 123,
+                  "uniqueID[eq]": "cc90686b-399e-4094-b431-fa462f84b0a8",
+                  "rowVersion[gte]": 123
+                }
+              }
+            }
+          },
+          {
+            "name": "expand",
+            "in": "query",
+            "description": "### Supported Expansions\nAn expansion expression containing a comma separater list of relationships to expand.\nName        |Value       |Description\n------------|------------|-----------\nsalesOrderDeliveries|SalesOrderDeliveries[]|\nsalesOrderJobs|SalesOrderJobs|\n",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/SalesOrderLine"
+                      }
+                    },
+                    "resultCount": {
+                      "type": "integer",
+                      "nullable": true
+                    }
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/SalesOrderLine"
+                      }
+                    },
+                    "resultCount": {
+                      "type": "integer",
+                      "nullable": true
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/view/ShiftDays": {
+      "get": {
+        "tags": [
+          "View"
+        ],
+        "summary": "Gets a list of ShiftDay",
+        "description": "Gets a list of ShiftDay.\n\n## Supported ERPs\n - Macola\n - M1\n - JobBOSS²\n - Deacom\n## Resource Features\nFeature     |Supported   |Notes\n------------|------------|------------\nFilter Expressions|**Yes**| \nSort Expressions|**Yes**\nField Selection|**Yes**\nPagination|**Yes**\nUniqueID|uniqueID|\n## Features by Field\nField       |Filterable  |Sortable    |Supported ERPs\n------------|------------|------------|------------\nshiftID|Yes|Yes|Macola, M1, JobBOSS², Deacom\nshiftDay|Yes|Yes|Macola, M1, JobBOSS², Deacom\nstartTime|Yes|Yes|Macola, M1, JobBOSS², Deacom\nendTime|Yes|Yes|Macola, M1, JobBOSS², Deacom\nuniqueID|Yes|Yes|Macola, M1, JobBOSS², Deacom\nrowVersion|Yes|Yes|Macola, M1, JobBOSS², Deacom\n",
+        "operationId": "GET__api_v1_view_ShiftDays",
+        "parameters": [
+          {
+            "name": "fields",
+            "in": "query",
+            "description": "A comma-separated list of fields to include in the result.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "A comma-separated list of <a href='#sortexpr'>sort expressions</a>.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "take",
+            "in": "query",
+            "description": "Limit the number of results being returned",
+            "schema": {
+              "minimum": 0,
+              "type": "integer"
+            }
+          },
+          {
+            "name": "skip",
+            "in": "query",
+            "description": "The number of results to skip. Combine with 'take' to fetch records in pages",
+            "schema": {
+              "minimum": 0,
+              "type": "integer"
+            }
+          },
+          {
+            "name": "count",
+            "in": "query",
+            "description": "<a href='#countparam'>Data and count</a> response behavior ",
+            "schema": {
+              "maximum": 2,
+              "minimum": 0,
+              "type": "integer"
+            }
+          },
+          {
+            "name": "filters",
+            "in": "query",
+            "description": "See <a href='#filterexpr'>Filter Expressions</a> for query string syntax. The Test UI and any generated code tool may expose filter parameters as a dictionary of name/value pairs, but if creating a raw HTTP request, they must be provided on the querystring as defined in the Filter Expression section.",
+            "style": "form",
+            "schema": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            },
+            "examples": {
+              "Empty": {
+                "description": "No filters applied"
+              },
+              "Example #1": {
+                "description": "A dictionary of name/value pairs that will be serialized as querystring parameters in the format ```name[operator]=value```",
+                "value": {
+                  "shiftID[eq]": "abc123",
+                  "shiftDay[eq]": "abc123",
+                  "startTime[eq]": "abc123",
+                  "endTime[eq]": "abc123",
+                  "uniqueID[eq]": "cc90686b-399e-4094-b431-fa462f84b0a8",
+                  "rowVersion[gte]": 123
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/ShiftDay"
+                      }
+                    },
+                    "resultCount": {
+                      "type": "integer",
+                      "nullable": true
+                    }
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/ShiftDay"
+                      }
+                    },
+                    "resultCount": {
+                      "type": "integer",
+                      "nullable": true
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/view/Shifts": {
+      "get": {
+        "tags": [
+          "View"
+        ],
+        "summary": "Gets a list of Shift",
+        "description": "Gets a list of Shift.\n\n## Supported ERPs\n - Macola\n - M1\n - JobBOSS²\n - Deacom\n## Resource Features\nFeature     |Supported   |Notes\n------------|------------|------------\nFilter Expressions|**Yes**| \nSort Expressions|**Yes**\nField Selection|**Yes**\nPagination|**Yes**\nUniqueID|uniqueID|\n## Features by Field\nField       |Filterable  |Sortable    |Supported ERPs\n------------|------------|------------|------------\nshiftID|Yes|Yes|Macola, M1, JobBOSS², Deacom\nshortDesc|Yes|Yes|Macola, M1, JobBOSS², Deacom\ninactiveDate|Yes|Yes|Macola, M1, JobBOSS², Deacom\nuniqueID|Yes|Yes|Macola, M1, JobBOSS², Deacom\nrowVersion|Yes|Yes|Macola, M1, JobBOSS², Deacom\n",
+        "operationId": "GET__api_v1_view_Shifts",
+        "parameters": [
+          {
+            "name": "fields",
+            "in": "query",
+            "description": "A comma-separated list of fields to include in the result.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "A comma-separated list of <a href='#sortexpr'>sort expressions</a>.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "take",
+            "in": "query",
+            "description": "Limit the number of results being returned",
+            "schema": {
+              "minimum": 0,
+              "type": "integer"
+            }
+          },
+          {
+            "name": "skip",
+            "in": "query",
+            "description": "The number of results to skip. Combine with 'take' to fetch records in pages",
+            "schema": {
+              "minimum": 0,
+              "type": "integer"
+            }
+          },
+          {
+            "name": "count",
+            "in": "query",
+            "description": "<a href='#countparam'>Data and count</a> response behavior ",
+            "schema": {
+              "maximum": 2,
+              "minimum": 0,
+              "type": "integer"
+            }
+          },
+          {
+            "name": "filters",
+            "in": "query",
+            "description": "See <a href='#filterexpr'>Filter Expressions</a> for query string syntax. The Test UI and any generated code tool may expose filter parameters as a dictionary of name/value pairs, but if creating a raw HTTP request, they must be provided on the querystring as defined in the Filter Expression section.",
+            "style": "form",
+            "schema": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            },
+            "examples": {
+              "Empty": {
+                "description": "No filters applied"
+              },
+              "Example #1": {
+                "description": "A dictionary of name/value pairs that will be serialized as querystring parameters in the format ```name[operator]=value```",
+                "value": {
+                  "shiftID[eq]": "abc123",
+                  "shortDesc[eq]": "abc123",
+                  "inactiveDate[gte]": "2020-09-25T04:03:00.0000000",
+                  "uniqueID[eq]": "cc90686b-399e-4094-b431-fa462f84b0a8",
+                  "rowVersion[gte]": 123
+                }
+              }
+            }
+          },
+          {
+            "name": "expand",
+            "in": "query",
+            "description": "### Supported Expansions\nAn expansion expression containing a comma separater list of relationships to expand.\nName        |Value       |Description\n------------|------------|-----------\nshiftDays|ShiftDays[]|\n",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "convertToUTC",
+            "in": "query",
+            "description": "Convert suppported date/time values to UTC before returning the data.",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Shift"
+                      }
+                    },
+                    "resultCount": {
+                      "type": "integer",
+                      "nullable": true
+                    }
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Shift"
+                      }
+                    },
+                    "resultCount": {
+                      "type": "integer",
+                      "nullable": true
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/view/TimecardLines": {
+      "get": {
+        "tags": [
+          "View"
+        ],
+        "summary": "Gets a list of TimecardLine",
+        "description": "Gets a list of TimecardLine.\n\n## Supported ERPs\n - Macola\n - M1\n - JobBOSS²\n - Deacom\n## Resource Features\nFeature     |Supported   |Notes\n------------|------------|------------\nFilter Expressions|**Yes**| \nSort Expressions|**Yes**\nField Selection|**Yes**\nPagination|**Yes**\nUniqueID|uniqueID|\n## Features by Field\nField       |Filterable  |Sortable    |Supported ERPs\n------------|------------|------------|------------\ntimecardID|Yes|Yes|Macola, M1, JobBOSS², Deacom\ntimecardLine|Yes|Yes|Macola, M1, JobBOSS², Deacom\njobID|Yes|Yes|Macola, M1, JobBOSS², Deacom\njobAssembly|Yes|Yes|Macola, M1, JobBOSS², Deacom\njobOperation|Yes|Yes|Macola, M1, JobBOSS², Deacom\nworkCenterID|Yes|Yes|Macola, M1, JobBOSS², Deacom\nprocessID|Yes|Yes|Macola, M1, JobBOSS², Deacom\nstatus|Yes|Yes|Macola, M1, JobBOSS², Deacom\ntimecardType|Yes|Yes|Macola, M1, JobBOSS², Deacom\ngoodQty|Yes|Yes|Macola, M1, JobBOSS², Deacom\nscrapQty|Yes|Yes|Macola, M1, JobBOSS², Deacom\nreworkQty|Yes|Yes|Macola, M1, JobBOSS², Deacom\nrejectQty|Yes|Yes|Macola, M1, JobBOSS², Deacom\nstartTime|Yes|Yes|Macola, M1, JobBOSS², Deacom\nendTime|Yes|Yes|Macola, M1, JobBOSS², Deacom\nmachineHours|Yes|Yes|Macola, M1, JobBOSS², Deacom\nlaborHours|Yes|Yes|Macola, M1, JobBOSS², Deacom\nuniqueID|Yes|Yes|Macola, M1, JobBOSS², Deacom\nrowVersion|Yes|Yes|Macola, M1, JobBOSS², Deacom\n",
+        "operationId": "GET__api_v1_view_TimecardLines",
+        "parameters": [
+          {
+            "name": "fields",
+            "in": "query",
+            "description": "A comma-separated list of fields to include in the result.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "A comma-separated list of <a href='#sortexpr'>sort expressions</a>.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "take",
+            "in": "query",
+            "description": "Limit the number of results being returned",
+            "schema": {
+              "minimum": 0,
+              "type": "integer"
+            }
+          },
+          {
+            "name": "skip",
+            "in": "query",
+            "description": "The number of results to skip. Combine with 'take' to fetch records in pages",
+            "schema": {
+              "minimum": 0,
+              "type": "integer"
+            }
+          },
+          {
+            "name": "count",
+            "in": "query",
+            "description": "<a href='#countparam'>Data and count</a> response behavior ",
+            "schema": {
+              "maximum": 2,
+              "minimum": 0,
+              "type": "integer"
+            }
+          },
+          {
+            "name": "filters",
+            "in": "query",
+            "description": "See <a href='#filterexpr'>Filter Expressions</a> for query string syntax. The Test UI and any generated code tool may expose filter parameters as a dictionary of name/value pairs, but if creating a raw HTTP request, they must be provided on the querystring as defined in the Filter Expression section.",
+            "style": "form",
+            "schema": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            },
+            "examples": {
+              "Empty": {
+                "description": "No filters applied"
+              },
+              "Example #1": {
+                "description": "A dictionary of name/value pairs that will be serialized as querystring parameters in the format ```name[operator]=value```",
+                "value": {
+                  "timecardID[eq]": "abc123",
+                  "timecardLine[eq]": "abc123",
+                  "jobID[eq]": "abc123",
+                  "jobAssembly[eq]": "abc123",
+                  "jobOperation[gte]": 123,
+                  "workCenterID[eq]": "abc123",
+                  "processID[eq]": "abc123",
+                  "status[eq]": "abc123",
+                  "timecardType[eq]": "abc123",
+                  "goodQty[gte]": 123,
+                  "scrapQty[gte]": 123,
+                  "reworkQty[gte]": 123,
+                  "rejectQty[gte]": 123,
+                  "startTime[gte]": "2020-09-25T04:03:00.0000000",
+                  "endTime[gte]": "2020-09-25T04:03:00.0000000",
+                  "machineHours[gte]": 123,
+                  "laborHours[gte]": 123,
+                  "uniqueID[eq]": "cc90686b-399e-4094-b431-fa462f84b0a8",
+                  "rowVersion[gte]": 123
+                }
+              }
+            }
+          },
+          {
+            "name": "expand",
+            "in": "query",
+            "description": "### Supported Expansions\nAn expansion expression containing a comma separater list of relationships to expand.\nName        |Value       |Description\n------------|------------|-----------\nworkCenters|WorkCenters[]|\ntimecards|Timecards[]|\njobs|Jobs|\nprocesses|Processes|\njobOperations|JobOperations|\nsalesOrderDeliveries|SalesOrderDeliveries[]|\nsalesOrderJobs|SalesOrderJobs|\n",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "convertToUTC",
+            "in": "query",
+            "description": "Convert suppported date/time values to UTC before returning the data.",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/TimecardLine"
+                      }
+                    },
+                    "resultCount": {
+                      "type": "integer",
+                      "nullable": true
+                    }
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/TimecardLine"
+                      }
+                    },
+                    "resultCount": {
+                      "type": "integer",
+                      "nullable": true
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/view/Timecards": {
+      "get": {
+        "tags": [
+          "View"
+        ],
+        "summary": "Gets a list of Timecard",
+        "description": "Gets a list of Timecard.\n\n## Supported ERPs\n - Macola\n - M1\n - JobBOSS²\n - Deacom\n## Resource Features\nFeature     |Supported   |Notes\n------------|------------|------------\nFilter Expressions|**Yes**| \nSort Expressions|**Yes**\nField Selection|**Yes**\nPagination|**Yes**\nUniqueID|uniqueID|\n## Features by Field\nField       |Filterable  |Sortable    |Supported ERPs\n------------|------------|------------|------------\ntimecardID|Yes|Yes|Macola, M1, JobBOSS², Deacom\nemployeeID|Yes|Yes|Macola, M1, JobBOSS², Deacom\nshiftID|Yes|Yes|Macola, M1, JobBOSS², Deacom\ntimecardDate|Yes|Yes|Macola, M1, JobBOSS², Deacom\nuniqueID|Yes|Yes|Macola, M1, JobBOSS², Deacom\nrowVersion|Yes|Yes|Macola, M1, JobBOSS², Deacom\n",
+        "operationId": "GET__api_v1_view_Timecards",
+        "parameters": [
+          {
+            "name": "fields",
+            "in": "query",
+            "description": "A comma-separated list of fields to include in the result.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "A comma-separated list of <a href='#sortexpr'>sort expressions</a>.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "take",
+            "in": "query",
+            "description": "Limit the number of results being returned",
+            "schema": {
+              "minimum": 0,
+              "type": "integer"
+            }
+          },
+          {
+            "name": "skip",
+            "in": "query",
+            "description": "The number of results to skip. Combine with 'take' to fetch records in pages",
+            "schema": {
+              "minimum": 0,
+              "type": "integer"
+            }
+          },
+          {
+            "name": "count",
+            "in": "query",
+            "description": "<a href='#countparam'>Data and count</a> response behavior ",
+            "schema": {
+              "maximum": 2,
+              "minimum": 0,
+              "type": "integer"
+            }
+          },
+          {
+            "name": "filters",
+            "in": "query",
+            "description": "See <a href='#filterexpr'>Filter Expressions</a> for query string syntax. The Test UI and any generated code tool may expose filter parameters as a dictionary of name/value pairs, but if creating a raw HTTP request, they must be provided on the querystring as defined in the Filter Expression section.",
+            "style": "form",
+            "schema": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            },
+            "examples": {
+              "Empty": {
+                "description": "No filters applied"
+              },
+              "Example #1": {
+                "description": "A dictionary of name/value pairs that will be serialized as querystring parameters in the format ```name[operator]=value```",
+                "value": {
+                  "timecardID[eq]": "abc123",
+                  "employeeID[eq]": "abc123",
+                  "shiftID[eq]": "abc123",
+                  "timecardDate[gte]": "2020-09-25T04:03:00.0000000",
+                  "uniqueID[eq]": "cc90686b-399e-4094-b431-fa462f84b0a8",
+                  "rowVersion[gte]": 123
+                }
+              }
+            }
+          },
+          {
+            "name": "expand",
+            "in": "query",
+            "description": "### Supported Expansions\nAn expansion expression containing a comma separater list of relationships to expand.\nName        |Value       |Description\n------------|------------|-----------\ntimecardlines|Timecardlines[]|\nemployees|Employees[]|\n",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "convertToUTC",
+            "in": "query",
+            "description": "Convert suppported date/time values to UTC before returning the data.",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Timecard"
+                      }
+                    },
+                    "resultCount": {
+                      "type": "integer",
+                      "nullable": true
+                    }
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Timecard"
+                      }
+                    },
+                    "resultCount": {
+                      "type": "integer",
+                      "nullable": true
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/view/TimeZones": {
+      "get": {
+        "tags": [
+          "View"
+        ],
+        "summary": "Gets a list of TimeZone",
+        "description": "Gets a list of TimeZone.\n\n## Supported ERPs\n - M1\n## Resource Features\nFeature     |Supported   |Notes\n------------|------------|------------\nFilter Expressions|**Yes**| \nSort Expressions|**Yes**\nField Selection|**Yes**\nPagination|**Yes**\nUniqueID|uniqueID|\n## Features by Field\nField       |Filterable  |Sortable    |Supported ERPs\n------------|------------|------------|------------\ntimeZoneName|Yes|Yes|M1\nuniqueID|Yes|Yes|M1\nrowVersion|Yes|Yes|M1\n",
+        "operationId": "GET__api_v1_view_TimeZones",
+        "parameters": [
+          {
+            "name": "fields",
+            "in": "query",
+            "description": "A comma-separated list of fields to include in the result.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "A comma-separated list of <a href='#sortexpr'>sort expressions</a>.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "take",
+            "in": "query",
+            "description": "Limit the number of results being returned",
+            "schema": {
+              "minimum": 0,
+              "type": "integer"
+            }
+          },
+          {
+            "name": "skip",
+            "in": "query",
+            "description": "The number of results to skip. Combine with 'take' to fetch records in pages",
+            "schema": {
+              "minimum": 0,
+              "type": "integer"
+            }
+          },
+          {
+            "name": "count",
+            "in": "query",
+            "description": "<a href='#countparam'>Data and count</a> response behavior ",
+            "schema": {
+              "maximum": 2,
+              "minimum": 0,
+              "type": "integer"
+            }
+          },
+          {
+            "name": "filters",
+            "in": "query",
+            "description": "See <a href='#filterexpr'>Filter Expressions</a> for query string syntax. The Test UI and any generated code tool may expose filter parameters as a dictionary of name/value pairs, but if creating a raw HTTP request, they must be provided on the querystring as defined in the Filter Expression section.",
+            "style": "form",
+            "schema": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            },
+            "examples": {
+              "Empty": {
+                "description": "No filters applied"
+              },
+              "Example #1": {
+                "description": "A dictionary of name/value pairs that will be serialized as querystring parameters in the format ```name[operator]=value```",
+                "value": {
+                  "timeZoneName[eq]": "abc123",
+                  "uniqueID[eq]": "cc90686b-399e-4094-b431-fa462f84b0a8",
+                  "rowVersion[gte]": 123
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/TimeZone"
+                      }
+                    },
+                    "resultCount": {
+                      "type": "integer",
+                      "nullable": true
+                    }
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/TimeZone"
+                      }
+                    },
+                    "resultCount": {
+                      "type": "integer",
+                      "nullable": true
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/view/WorkCenters": {
+      "get": {
+        "tags": [
+          "View"
+        ],
+        "summary": "Gets a list of WorkCenter",
+        "description": "Gets a list of WorkCenter.\n\n## Supported ERPs\n - Macola\n - M1\n - JobBOSS²\n - Deacom\n## Resource Features\nFeature     |Supported   |Notes\n------------|------------|------------\nFilter Expressions|**Yes**| \nSort Expressions|**Yes**\nField Selection|**Yes**\nPagination|**Yes**\nUniqueID|uniqueID|\n## Features by Field\nField       |Filterable  |Sortable    |Supported ERPs\n------------|------------|------------|------------\nworkCenterID|Yes|Yes|Macola, M1, JobBOSS², Deacom\nshortDesc|Yes|Yes|Macola, M1, JobBOSS², Deacom\ndeptID|Yes|Yes|Macola, M1, JobBOSS², Deacom\noverHeadRate|Yes|Yes|Macola, M1, JobBOSS², Deacom\nquoteRate|Yes|Yes|Macola, M1, JobBOSS², Deacom\nprocessID|Yes|Yes|Macola, M1, JobBOSS², Deacom\nparentWorkCenterID|Yes|Yes|Macola, M1, JobBOSS², Deacom\nshiftID|Yes|Yes|Macola, M1, JobBOSS², Deacom\nuniqueID|Yes|Yes|Macola, M1, JobBOSS², Deacom\nrowVersion|Yes|Yes|Macola, M1, JobBOSS², Deacom\n",
+        "operationId": "GET__api_v1_view_WorkCenters",
+        "parameters": [
+          {
+            "name": "fields",
+            "in": "query",
+            "description": "A comma-separated list of fields to include in the result.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "A comma-separated list of <a href='#sortexpr'>sort expressions</a>.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "take",
+            "in": "query",
+            "description": "Limit the number of results being returned",
+            "schema": {
+              "minimum": 0,
+              "type": "integer"
+            }
+          },
+          {
+            "name": "skip",
+            "in": "query",
+            "description": "The number of results to skip. Combine with 'take' to fetch records in pages",
+            "schema": {
+              "minimum": 0,
+              "type": "integer"
+            }
+          },
+          {
+            "name": "count",
+            "in": "query",
+            "description": "<a href='#countparam'>Data and count</a> response behavior ",
+            "schema": {
+              "maximum": 2,
+              "minimum": 0,
+              "type": "integer"
+            }
+          },
+          {
+            "name": "filters",
+            "in": "query",
+            "description": "See <a href='#filterexpr'>Filter Expressions</a> for query string syntax. The Test UI and any generated code tool may expose filter parameters as a dictionary of name/value pairs, but if creating a raw HTTP request, they must be provided on the querystring as defined in the Filter Expression section.",
+            "style": "form",
+            "schema": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            },
+            "examples": {
+              "Empty": {
+                "description": "No filters applied"
+              },
+              "Example #1": {
+                "description": "A dictionary of name/value pairs that will be serialized as querystring parameters in the format ```name[operator]=value```",
+                "value": {
+                  "workCenterID[eq]": "abc123",
+                  "shortDesc[eq]": "abc123",
+                  "deptID[eq]": "abc123",
+                  "overHeadRate[eq]": "abc123",
+                  "quoteRate[eq]": "abc123",
+                  "processID[eq]": "abc123",
+                  "parentWorkCenterID[eq]": "abc123",
+                  "shiftID[eq]": "abc123",
+                  "uniqueID[eq]": "cc90686b-399e-4094-b431-fa462f84b0a8",
+                  "rowVersion[gte]": 123
+                }
+              }
+            }
+          },
+          {
+            "name": "expand",
+            "in": "query",
+            "description": "### Supported Expansions\nAn expansion expression containing a comma separater list of relationships to expand.\nName        |Value       |Description\n------------|------------|-----------\ndepartments|Departments[]|\nshifts|Shifts[]|\n",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/WorkCenter"
+                      }
+                    },
+                    "resultCount": {
+                      "type": "integer",
+                      "nullable": true
+                    }
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/WorkCenter"
+                      }
+                    },
+                    "resultCount": {
+                      "type": "integer",
+                      "nullable": true
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AuthenticateUser": {
+        "required": [
+          "password",
+          "userName"
+        ],
+        "type": "object",
+        "properties": {
+          "userName": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "password": {
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Department": {
+        "title": "Department",
+        "type": "object",
+        "properties": {
+          "deptID": {
+            "type": "string"
+          },
+          "shortDesc": {
+            "type": "string"
+          },
+          "uniqueID": {
+            "type": "string"
+          },
+          "rowVersion": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "Employee": {
+        "title": "Employee",
+        "type": "object",
+        "properties": {
+          "employeeID": {
+            "type": "string"
+          },
+          "firstName": {
+            "type": "string"
+          },
+          "lastName": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "supervisorEmployeeID": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "payRate": {
+            "type": "number",
+            "format": "double"
+          },
+          "deptID": {
+            "type": "string"
+          },
+          "shiftID": {
+            "type": "string"
+          },
+          "uniqueID": {
+            "type": "string"
+          },
+          "rowVersion": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "Job": {
+        "title": "Job",
+        "type": "object",
+        "properties": {
+          "jobID": {
+            "type": "string"
+          },
+          "customerID": {
+            "type": "string"
+          },
+          "partID": {
+            "type": "string"
+          },
+          "partRevisionID": {
+            "type": "string"
+          },
+          "orderQty": {
+            "type": "number",
+            "format": "double"
+          },
+          "prodQty": {
+            "type": "number",
+            "format": "double"
+          },
+          "schedStartDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "schedEndDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "estLeadTime": {
+            "type": "number",
+            "format": "double"
+          },
+          "actStartDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "actEndDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "dueDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "status": {
+            "type": "string"
+          },
+          "uniqueID": {
+            "type": "string"
+          },
+          "rowVersion": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "parentJobID": {
+            "type": "string"
+          },
+          "jobOperations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/JobOperation"
+            }
+          }
+        }
+      },
+      "JobOperation": {
+        "title": "JobOperation",
+        "type": "object",
+        "properties": {
+          "jobID": {
+            "type": "string"
+          },
+          "jobAssembly": {
+            "type": "string"
+          },
+          "jobOperationSeq": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "status": {
+            "type": "string"
+          },
+          "workCenterID": {
+            "type": "string"
+          },
+          "processID": {
+            "type": "string"
+          },
+          "shortDesc": {
+            "type": "string"
+          },
+          "longDescText": {
+            "type": "string"
+          },
+          "longDescFormatted": {
+            "type": "string"
+          },
+          "outsideOperation": {
+            "type": "string"
+          },
+          "partID": {
+            "type": "string"
+          },
+          "partRevisionID": {
+            "type": "string"
+          },
+          "schedStartDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "schedEndDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "actStartDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "actEndDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "estSetupHours": {
+            "type": "number",
+            "format": "double"
+          },
+          "estProdHours": {
+            "type": "number",
+            "format": "double"
+          },
+          "estQueueHours": {
+            "type": "number",
+            "format": "double"
+          },
+          "estMoveHours": {
+            "type": "number",
+            "format": "double"
+          },
+          "estQAHours": {
+            "type": "number",
+            "format": "double"
+          },
+          "actSetupHours": {
+            "type": "number",
+            "format": "double"
+          },
+          "actualProdHours": {
+            "type": "number",
+            "format": "double"
+          },
+          "actQAHours": {
+            "type": "number",
+            "format": "double"
+          },
+          "vendorID": {
+            "type": "string"
+          },
+          "uniqueID": {
+            "type": "string"
+          },
+          "rowVersion": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "PartOperation": {
+        "title": "PartOperation",
+        "type": "object",
+        "properties": {
+          "partID": {
+            "type": "string"
+          },
+          "partRevisionID": {
+            "type": "string"
+          },
+          "partOperationSeq": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "workCenterID": {
+            "type": "string"
+          },
+          "processID": {
+            "type": "string"
+          },
+          "shortDesc": {
+            "type": "string"
+          },
+          "longDescText": {
+            "type": "string"
+          },
+          "longDescFormatted": {
+            "type": "string"
+          },
+          "outsideOperation": {
+            "type": "string"
+          },
+          "estSetupHours": {
+            "type": "number",
+            "format": "double"
+          },
+          "estProdHours": {
+            "type": "number",
+            "format": "double"
+          },
+          "estQueueHours": {
+            "type": "number",
+            "format": "double"
+          },
+          "estMoveHours": {
+            "type": "number",
+            "format": "double"
+          },
+          "estQAHours": {
+            "type": "number",
+            "format": "double"
+          },
+          "vendorID": {
+            "type": "string"
+          },
+          "uniqueID": {
+            "type": "string"
+          },
+          "rowVersion": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "PartRevision": {
+        "title": "PartRevision",
+        "type": "object",
+        "properties": {
+          "partID": {
+            "type": "string"
+          },
+          "partRevisionID": {
+            "type": "string"
+          },
+          "shortDesc": {
+            "type": "string"
+          },
+          "longDescText": {
+            "type": "string"
+          },
+          "longDescFormatted": {
+            "type": "string"
+          },
+          "uniqueID": {
+            "type": "string"
+          },
+          "rowVersion": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "Process": {
+        "title": "Process",
+        "type": "object",
+        "properties": {
+          "processID": {
+            "type": "string"
+          },
+          "shortDesc": {
+            "type": "string"
+          },
+          "setupRate": {
+            "type": "string"
+          },
+          "productionRate": {
+            "type": "string"
+          },
+          "uniqueID": {
+            "type": "string"
+          },
+          "rowVersion": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "ProductionCalendar": {
+        "title": "ProductionCalendar",
+        "type": "object",
+        "properties": {
+          "productionDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "productionHours": {
+            "type": "number",
+            "format": "double"
+          },
+          "productionStartTime": {
+            "type": "string"
+          },
+          "workCenterID": {
+            "type": "string"
+          },
+          "plantID": {
+            "type": "string"
+          },
+          "department": {
+            "type": "string"
+          },
+          "uniqueID": {
+            "type": "string"
+          },
+          "rowVersion": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "SalesOrderDelivery": {
+        "title": "SalesOrderDelivery",
+        "type": "object",
+        "properties": {
+          "salesOrderID": {
+            "type": "string"
+          },
+          "orderLine": {
+            "type": "integer"
+          },
+          "orderLineDelivery": {
+            "type": "string"
+          },
+          "promisedDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "promisedQty": {
+            "type": "number",
+            "format": "double"
+          },
+          "shippedDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "shippedQty": {
+            "type": "number",
+            "format": "double"
+          },
+          "uniqueID": {
+            "type": "string"
+          },
+          "rowVersion": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "salesOrderJobs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SalesOrderJob"
+            }
+          }
+        }
+      },
+      "SalesOrderJob": {
+        "title": "SalesOrderJob",
+        "type": "object",
+        "properties": {
+          "salesOrderID": {
+            "type": "string"
+          },
+          "orderLine": {
+            "type": "integer"
+          },
+          "orderLineDelivery": {
+            "type": "string"
+          },
+          "jobID": {
+            "type": "string"
+          },
+          "orderJobSeq": {
+            "type": "integer"
+          },
+          "uniqueID": {
+            "type": "string"
+          },
+          "rowVersion": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "SalesOrderLine": {
+        "title": "SalesOrderLine",
+        "type": "object",
+        "properties": {
+          "salesOrderID": {
+            "type": "string"
+          },
+          "orderLine": {
+            "type": "integer"
+          },
+          "totalSalePrice": {
+            "type": "number",
+            "format": "double"
+          },
+          "uniqueID": {
+            "type": "string"
+          },
+          "rowVersion": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "salesOrderDeliveries": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SalesOrderDelivery"
+            }
+          },
+          "salesOrderJobs": {
+            "$ref": "#/components/schemas/SalesOrderJob"
+          }
+        }
+      },
+      "Shift": {
+        "title": "Shift",
+        "type": "object",
+        "properties": {
+          "shiftID": {
+            "type": "number",
+            "format": "float"
+          },
+          "shortDesc": {
+            "type": "string"
+          },
+          "inactiveDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "uniqueID": {
+            "type": "string"
+          },
+          "rowVersion": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "shiftDays": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ShiftDay"
+            }
+          }
+        }
+      },
+      "ShiftDay": {
+        "title": "ShiftDay",
+        "type": "object",
+        "properties": {
+          "shiftID": {
+            "type": "number",
+            "format": "float"
+          },
+          "shiftDay": {
+            "type": "number",
+            "format": "float"
+          },
+          "startTime": {
+            "type": "string"
+          },
+          "endTime": {
+            "type": "string"
+          },
+          "uniqueID": {
+            "type": "string"
+          },
+          "rowVersion": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "TimeZone": {
+        "title": "TimeZone",
+        "type": "object",
+        "properties": {
+          "timeZoneName": {
+            "type": "string"
+          },
+          "uniqueID": {
+            "type": "string"
+          },
+          "rowVersion": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "Timecard": {
+        "title": "Timecard",
+        "type": "object",
+        "properties": {
+          "timecardID": {
+            "type": "string"
+          },
+          "employeeID": {
+            "type": "string"
+          },
+          "shiftID": {
+            "type": "number",
+            "format": "float"
+          },
+          "timecardDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "uniqueID": {
+            "type": "string"
+          },
+          "rowVersion": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "timecardlines": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TimecardLine"
+            }
+          },
+          "employees": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Employee"
+            }
+          }
+        }
+      },
+      "TimecardLine": {
+        "title": "TimecardLine",
+        "type": "object",
+        "properties": {
+          "timecardID": {
+            "type": "string"
+          },
+          "timecardLine": {
+            "type": "string"
+          },
+          "jobID": {
+            "type": "string"
+          },
+          "jobAssembly": {
+            "type": "string"
+          },
+          "jobOperation": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "workCenterID": {
+            "type": "string"
+          },
+          "processID": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "timecardType": {
+            "type": "string"
+          },
+          "goodQty": {
+            "type": "number",
+            "format": "double"
+          },
+          "scrapQty": {
+            "type": "number",
+            "format": "double"
+          },
+          "reworkQty": {
+            "type": "number",
+            "format": "double"
+          },
+          "rejectQty": {
+            "type": "number",
+            "format": "double"
+          },
+          "startTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "endTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "machineHours": {
+            "type": "number",
+            "format": "double"
+          },
+          "laborHours": {
+            "type": "number",
+            "format": "double"
+          },
+          "uniqueID": {
+            "type": "string"
+          },
+          "rowVersion": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "workCenters": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WorkCenter"
+            }
+          },
+          "timecards": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Timecard"
+            }
+          },
+          "jobs": {
+            "$ref": "#/components/schemas/Job"
+          },
+          "processes": {
+            "$ref": "#/components/schemas/Process"
+          },
+          "jobOperations": {
+            "$ref": "#/components/schemas/JobOperation"
+          },
+          "salesOrderDeliveries": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SalesOrderDelivery"
+            }
+          },
+          "salesOrderJobs": {
+            "$ref": "#/components/schemas/SalesOrderJob"
+          }
+        }
+      },
+      "WorkCenter": {
+        "title": "WorkCenter",
+        "type": "object",
+        "properties": {
+          "workCenterID": {
+            "type": "string"
+          },
+          "shortDesc": {
+            "type": "string"
+          },
+          "deptID": {
+            "type": "string"
+          },
+          "overHeadRate": {
+            "type": "string"
+          },
+          "quoteRate": {
+            "type": "string"
+          },
+          "processID": {
+            "type": "string"
+          },
+          "parentWorkCenterID": {
+            "type": "string"
+          },
+          "shiftID": {
+            "type": "string"
+          },
+          "uniqueID": {
+            "type": "string"
+          },
+          "rowVersion": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "departments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Department"
+            }
+          },
+          "shifts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Shift"
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "Bearer": {
+        "type": "oauth2",
+        "description": "OAuth 2.0 Client Credentials Flow with API Users issued from Integration Engine Management Console",
+        "flows": {
+          "clientCredentials": {
+            "tokenUrl": "https://api-user.integrations.ecimanufacturing.com/oauth2/api-user/token",
+            "scopes": {
+              "openid": "openid"
+            }
+          }
+        }
+      }
+    }
+  },
+  "security": [
+    {
+      "Bearer": [ ]
+    }
+  ]
+}

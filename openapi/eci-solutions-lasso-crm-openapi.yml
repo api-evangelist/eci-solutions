@@ -1,0 +1,5436 @@
+openapi: 3.0.2
+info:
+  title: Lasso API
+  description: |
+    <h3 id="overview">Overview</h3>
+    Use this API to manage Registrant, Project, and Inventory data within Lasso CRM.
+
+    <h4 id="auth">Authorization</h4>
+    An authorization header with a Bearer JWT API key token is required for all requests.
+    API keys are project/location based, and can be obtained from your business contact with Lasso Data Systems.
+
+    <h4 id="trycurl">Try it out with CURL</h4>
+    Here's an example of how to try it on the command line with curl:
+    <pre>
+      curl -X GET "https://api.lassocrm.com/v1/registrants/123456" \
+           -H "accept: application/json" \
+           -H "Authorization: Bearer ***apikey***"
+    </pre>
+    To find the curl command for a specific endpoint:
+    <ul>
+      <li>Select the `Authorize` button and place your api key in the textbox</li>
+      <li>Go to the route you want to try out in the swagger definition</li>
+      <li>Select `Try it out`</li>
+      <li>Input any required fields, query params, and request payload</li>
+      <li>Copy the curl command using the copy button</li>
+    </ul>
+
+    <h4 id="trydoc">Try it out in documentation</h4>
+    To try it out directly in the documentation:
+    <ul>
+      <li>Select the `Authorize` button and place your api key in the textbox</li>
+      <li>Ensure that the api key is prefixed with `Bearer` including a space separating `Bearer` from the api key</li>
+      <li>Go to the route you want to try out in the swagger definition</li>
+      <li>Select `Try it out`</li>
+      <li>Input any required fields, query params, and request payload</li>
+      <li>Select `Execute`</li>
+    </ul>
+
+    <h4 id="ratelimit">Rate Limiting</h4>
+    A Rate limit of 1,000 requests per minute applies to each API key
+
+    <h3 id="events">Lasso Event System</h3>
+    The event system listens for actions on a registrant in Lasso. An action can be any of; Create, Update, Delete.
+    When an action is performed on a registrant, the event system will fire off a webhook event to registered integrations.
+
+    However, not all actions on a registrant will fire off a webhook event. Only actions on certain registrant attributes
+    will trigger a webhook event.
+
+    The following actions will trigger a webhook event:
+    <ul>
+      <li>Create: Registrant</li>
+      <li>Delete: Registrant</li>
+      <li>Update: Registrant.person.firstName</li>
+      <li>Update: Registrant.person.lastName</li>
+      <li>Update: Registrant.person.nameTitle</li>
+      <li>Update: Registrant.person.contactPreference</li>
+      <li>Update: Registrant.person.company</li>
+      <li>Update: Registrant.person.birthday</li>
+      <li>Update: Registrant.person.gender</li>
+      <li>Update: Registrant.person.jobTitle</li>
+      <li>Update: Registrant.person.nickname</li>
+      <li>Update: Registrant.person.ssnSin</li>
+      <li>Update: Registrant.Rating</li>
+      <li>Update: Registrant.SourceType</li>
+      <li>Update: Registrant.SecondarySourceType</li>
+      <li>Update: Registrant.FollowUpProcess</li>
+      <li>Update: Registrant.registrationDate</li>
+      <li>Update: Registrant.emails</li>
+      <li>Update: Registrant.phones</li>
+      <li>Update: Registrant.addresses</li>
+      <li>Update: Registrant.notes</li>
+      <li>Update: Registrant.questions</li>
+      <li>Update: Registrant.excludeFromTraffic</li>
+      <li>Update: Registrant.status</li>
+      <li>Update: Registrant.relationships</li>
+      <li>Update: Registrant.assignedSalesReps</li>
+    </ul>
+
+    On update events, the webhook payload includes a <code>changed</code> array listing which
+    RegistrantRead fields triggered the event. Only a defined set of field names appear;
+    internal metadata (e.g. status, LastModified) is omitted even when it triggers the webhook.
+    This allows stateless consumers to skip irrelevant updates (e.g. when <code>changed</code>
+    is only <code>["history"]</code>) without diffing the full entity. The <code>changed</code>
+    array is empty on inserted and deleted events.
+
+    Possible values: person, rating, excludeFromTraffic, registrationDate, followUpProcess,
+    sourceType, secondarySourceType, questions, notes, assignedSalesReps, history.
+
+    <h3 id="routes">Routes</h3>
+  version: 1.0.39
+servers:
+- url: https://api.lassocrm.com/v1
+  description: 'Production endpoint'
+paths:
+  /registrants:
+    get:
+      summary: >-
+        List of registrants for a project.
+      operationId: 'get_registrants'
+      description: >-
+        Returns a full representation of a registrant, including notes and history
+        items excluding the history body. This may produce a lot of data, so the endpoint
+        is limited to 20 results at a time.
+
+        Because a history body can be quite large, a separate request must be made
+        to `/registrants/{registrantId}/histories/{historyId}` in order to retrieve
+        it.
+
+        Use the `next` link to page through the available registrants. Registrant
+        are sorted by creation date, with newest on top.
+      tags:
+      - Registrant
+      parameters:
+      - in: query
+        name: rating
+        schema:
+          type: string
+      - in: query
+        name: lastModifiedAfter
+        schema:
+          type: string
+          format: date
+        description: >-
+          Returns only registrants that were modified at least once since the given
+          date, in ISO 8601 UTC format
+      - in: query
+        name: lastModifiedBefore
+        schema:
+          type: string
+          format: date
+        description: >-
+          Returns only registrants that were last modified before this date. Combined
+          with lastModifiedAfter this allows to select registrants that were last
+          modified between two dates. Dates are in ISO 8601 UTC format.
+      - in: query
+        name: registeredAfter
+        schema:
+          type: string
+          format: date
+        description: >-
+          Returns only registrants that were registered since the given date, in ISO
+          8601 UTC format.
+      - in: query
+        name: registeredBefore
+        schema:
+          type: string
+          format: date
+        description: >-
+          Returns only registrants that were registered before this date. Combined
+          with registeredAfter this allows to select registrants that were registered
+          between two dates. Dates are in ISO 8601 UTC format.
+      - $ref: '#/components/parameters/Cursor'
+      security:
+      - JwtAuthorizer: []
+      responses:
+        200:
+          description: >-
+            Get a list of registrants, sorted newest-first. You can also limit the
+            selection of registrants by rating and creation date.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/RegistrantRead'
+                  links:
+                    type: object
+                    properties:
+                      next:
+                        type: string
+                        description: Link to the next batch of registrants
+                        example: '/registrants?cursor=fdslkb32b3o2o'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+    post:
+      summary: Create a registrant
+      operationId: 'post_registrants'
+      description: |
+        Notes:
+        - History body is not returned in the response payload. Because a history body can be quite large,
+          a separate request must be made to `/registrants/{registrantId}/histories/{historyId}`
+          in order to retrieve it.
+        - Automatic handling of duplicates (upsert) is available if `RegistrantWrite.automaticallyMerge` is set to true.
+          (See notes in schema for matching rules and precedence)
+      tags:
+      - Registrant
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegistrantWrite'
+      security:
+      - JwtAuthorizer: []
+      responses:
+        202:
+          description: Registrant has been created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegistrantAccepted'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+  '/registrants/search':
+    get:
+      summary: >-
+        Search registrants by name, email, phone, nickname, externalId, rating or
+        creation date.
+      operationId: 'get_registrants_search'
+      description: >-
+        This endpoint is optimized for speed with a smaller payload than `/registrants`.
+        This is handy for live search features, e.g. a drop-down with suggested results
+        for a search bar.
+
+        Note: History body is not returned in the response payload. Because a history
+        body can be quite large, a separate request must be made to `/registrants/{registrantId}/histories/{historyId}`
+        in order to retrieve it.
+      tags:
+      - Registrant
+      parameters:
+      - name: lastModified
+        in: query
+        schema:
+          type: string
+        description: Return only registrant modified after the specified date time,
+          in ISO 8601 UTC format.
+      - in: query
+        name: registeredAfter
+        schema:
+          type: string
+          format: date
+        description: >-
+          Returns only registrants that were registered since the given date, in ISO
+          8601 UTC format.
+      - in: query
+        name: registeredBefore
+        schema:
+          type: string
+          format: date
+        description: >-
+          Returns only registrants that were registered before this date. Combined
+          with registeredAfter this allows to select registrants that were registered
+          between two dates. Dates are in ISO 8601 UTC format.
+      - name: rating
+        in: query
+        schema:
+          type: string
+        description: Return only registrants who currently have the specified rating
+      - name: email
+        in: query
+        schema:
+          type: string
+        description: Search registrants by email address
+      - name: phone
+        in: query
+        schema:
+          type: string
+        description: Search registrants by phone number
+      - name: nickName
+        in: query
+        schema:
+          type: string
+        description: Search registrants by nickname
+      - name: name
+        in: query
+        schema:
+          type: string
+        description: >-
+          Search registrants by name. This is a loose search, the name will be parsed
+          into first and last name, and then partially matched. E.g. `Jim and Susan
+          Smith` will match `Jim Smith` and `Susan Smith`.
+      - name: fuzzy
+        in: query
+        schema:
+          type: boolean
+        description: >-
+          Default is `false`, turns on partial matching for specific field searches
+          where the provided value is a prefix or an exact match. E.g. `name=rob&fuzzy=true`
+          will match the name `Robert`. Affected fields are: name, nickName, phone,
+          email, externalId, and rating.
+      - name: externalId
+        in: query
+        schema:
+          type: string
+        description: >-
+          Search registrants by an integration externalId. The integration type will
+          be determined by the API key.
+      - name: smartSearch
+        in: query
+        schema:
+          type: string
+        description: >-
+          Searches for registrants where the given value is a prefix or exactly matches
+          at least one of first name, last name, full name, phone, email, nickName,
+          or company. E.g. `Jon`, `Jon Sno`, `Sno`, `Jo`  will all return `Jon Snow`.
+          `jonsnow@` and `jonsno` will return a registrant with the email `jonsnow@westeros.com`.
+      - $ref: '#/components/parameters/Cursor'
+      security:
+      - JwtAuthorizer: []
+      responses:
+        200:
+          description: Registrants found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  links:
+                    type: object
+                    properties:
+                      next:
+                        type: string
+                        description: Next batch of search results
+                        example: /registrants/search?name=Smith&cursor=32bj3k2b
+                  items:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        registrantId:
+                          type: string
+                          example: 123
+                        personalId:
+                          type: string
+                          example: 1234
+                        firstName:
+                          type: string
+                          example: John
+                        lastName:
+                          type: string
+                          example: Smith
+                        email:
+                          type: string
+                          description: Registrants primary email
+                          example: john.smith@example.com
+                        address:
+                          type: string
+                          description: Registrants primary address
+                          example: 335 Example St, ES, 38832, USA
+                        phone:
+                          type: string
+                          description: Registrants primary phone number
+                          example: 512-555-8787
+                        _links:
+                          type: object
+                          properties:
+                            self:
+                              type: string
+                              description: Link to the full representation of the
+                                registrant
+                              example: /registrants/123
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+  '/registrants/{registrantId}':
+    parameters:
+    - in: path
+      name: registrantId
+      schema:
+        type: string
+      required: true
+    put:
+      description: Update a registrants personal data
+      operationId: 'put_registrants_by_id'
+      tags:
+      - Registrant
+      security:
+      - JwtAuthorizer: []
+      responses:
+        200:
+          description: Registrants personal data successfully saved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegistrantRead'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegistrantPersonalInfo'
+    get:
+      summary: Extended data for a registrant
+      operationId: 'get_registrants_by_id'
+      description: >-
+        Note: History body is not returned in the response payload. Because a history
+        body can be quite large, a separate request must be made to `/registrants/{registrantId}/histories/{historyId}`
+        in order to retrieve it.
+      tags:
+      - Registrant
+      security:
+      - JwtAuthorizer: []
+      responses:
+        200:
+          description: Registrant exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegistrantRead'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+  '/registrants/{registrantId}/person/contact-information':
+    parameters:
+    - in: path
+      name: registrantId
+      schema:
+        type: string
+      required: true
+    put:
+      summary: Convenience method to update all of a registrant's contact information
+        in a single call
+      operationId: 'get_registrants_contact_information'
+      description: >-
+        Update a registrant's contact information. This will overwrite all of the
+        registrant's contact information with the entity provided in the request payload.
+        To avoid accidentally deleting contact information, first perform a GET on
+        the same resource, then modify the returned entity, and finally apply the
+        entity through this PUT method.
+      tags:
+      - Registrant Contact Information
+      security:
+      - JwtAuthorizer: []
+      responses:
+        200:
+          description: Registrant's contact information successfully saved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContactInformation'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+      requestBody:
+        description: >
+          Registrant's contact information for update.
+
+          Notes:
+
+          - emails, phones, addresses: for the collections that are non-empty, there
+          must be exactly
+            one entity within the collection that is a designated primary, otherwise
+          a 400 error will be returned
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ContactInformation'
+    get:
+      summary: Retrieve all of a registrant's contact information
+      operationId: 'put_registrants_contact_information'
+      description: >-
+        Retrieves all of a registrant's contact information. Use this method in conjunction
+        with the PUT method of the same resource to perform a safe update.
+      tags:
+      - Registrant Contact Information
+      security:
+      - JwtAuthorizer: []
+      responses:
+        200:
+          description: Registrant exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContactInformation'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+  '/registrants/{registrantId}/integrations':
+    parameters:
+    - in: path
+      name: registrantId
+      required: true
+      schema:
+        type: string
+    post:
+      tags:
+      - Registrant Integrations
+      operationId: 'post_registrants_integrations'
+      description: >-
+        Associate an external customer with a Lasso registrant. What this allows,
+        is for integration-specific triggers to automatically fire when an event is
+        registered for a registrant - for example, when a registrant is updated, Lasso
+        could fire off an event to an external integration. The integration type will
+        be determined from the API Key used to access this route.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExternalId'
+      security:
+      - JwtAuthorizer: []
+      responses:
+        200:
+          description: Integrations successfully updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExternalId'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+    delete:
+      tags:
+      - Registrant Integrations
+      operationId: 'delete_registrants_integrations'
+      description: >-
+        Disassociates a registrant from all externalId's of an integration. This means
+        that webhooks that trigger on externalId will no longer send events for this
+        registrant. The integration associated with the registrant will be determined
+        from the API Key used to access this route.
+      security:
+      - JwtAuthorizer: []
+      responses:
+        204:
+          description: registrant successfully disassociated from external registrant.
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+  '/registrants/{registrantId}/external/{externalId}':
+    parameters:
+    - in: path
+      name: registrantId
+      required: true
+      schema:
+        type: string
+    - in: path
+      name: externalId
+      required: true
+      schema:
+        type: string
+    delete:
+      tags:
+      - Registrant Integrations
+      operationId: 'delete_registrants_external'
+      description: >-
+        Disassociates a registrant from a specific externalId. This means that webhooks
+        that trigger on the specified externalId will no longer send events for this
+        registrant. The integration associated with the registrant will be determined
+        from the API Key used to access this route.
+      security:
+      - JwtAuthorizer: []
+      responses:
+        204:
+          description: registrant successfully disassociated from external registrant.
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+  '/registrants/{registrantId}/rating':
+    parameters:
+    - in: path
+      name: registrantId
+      required: true
+      schema:
+        type: string
+    put:
+      tags:
+      - Registrant Sales Details
+      operationId: 'put_registrants_rating'
+      description: >-
+        Set the rating for the registrant. If the rating does not exist, it will be
+        created.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Rating'
+      security:
+      - JwtAuthorizer: []
+      responses:
+        200:
+          description: Rating successfully updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Rating'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+  '/registrants/{registrantId}/follow-up-process':
+    parameters:
+    - in: path
+      name: registrantId
+      required: true
+      schema:
+        type: string
+    put:
+      tags:
+      - Registrant Sales Details
+      operationId: 'put_registrants_follow_up_process'
+      description: Set the follow-up process. If the follow-up process does not exist,
+        it will be created.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FollowUpProcess'
+      security:
+      - JwtAuthorizer: []
+      responses:
+        200:
+          description: Follow-up process successfully set.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FollowUpProcess'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+  '/registrants/{registrantId}/source-type':
+    parameters:
+    - in: path
+      name: registrantId
+      required: true
+      schema:
+        type: string
+    put:
+      tags:
+      - Registrant Sales Details
+      operationId: 'put_registrants_source_type'
+      description: Set the source type. If the source type does not exist, it will
+        be created.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SourceType'
+      security:
+      - JwtAuthorizer: []
+      responses:
+        200:
+          description: Source type successfully set.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SourceType'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+  '/registrants/{registrantId}/secondary-source-type':
+    parameters:
+    - in: path
+      name: registrantId
+      required: true
+      schema:
+        type: string
+    put:
+      tags:
+      - Registrant Sales Details
+      operationId: 'put_registrants_secondarysource_type'
+      description: Set the secondary source type. If the secondary source type does
+        not exist, it will be created.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SecondarySourceType'
+      security:
+      - JwtAuthorizer: []
+      responses:
+        200:
+          description: Secondary source type successfully set.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SecondarySourceType'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+  '/registrants/{registrantId}/assigned-sales-reps':
+    parameters:
+    - in: path
+      name: registrantId
+      required: true
+      schema:
+        type: string
+    get:
+      tags:
+      - Registrant Assigned Sales Reps
+      operationId: 'get_registrants_assigned_sales_reps'
+      description: >-
+        Gets a list of sales reps that this registrant is assigned to.
+      responses:
+        200:
+          description: >-
+            A list of sales reps that this registrant is assigned to.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SalesRepRead'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+    put:
+      tags:
+      - Registrant Assigned Sales Reps
+      operationId: 'put_registrants_assigned_sales_reps'
+      description: >-
+        Update a registrant's assigned sales reps. This list will overwrite the assigned
+        sales reps for the registrant.
+
+        Only one sales rep can be set to primary. If more than one has isPrimary set
+        to true, an error will be thrown.
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/SalesRepWrite'
+      security:
+      - JwtAuthorizer: []
+      responses:
+        200:
+          description: Sales reps successfully assigned.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SalesRepRead'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+  '/registrants/{registrantId}/emails':
+    parameters:
+    - in: path
+      name: registrantId
+      required: true
+      schema:
+        type: string
+    post:
+      tags:
+      - Registrant Contact Information
+      operationId: 'post_registrants_emails'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmailWrite'
+      security:
+      - JwtAuthorizer: []
+      responses:
+        201:
+          description: Email successfully created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmailRead'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+  '/registrants/{registrantId}/emails/{emailId}':
+    parameters:
+    - in: path
+      name: registrantId
+      required: true
+      schema:
+        type: string
+    - in: path
+      name: emailId
+      required: true
+      schema:
+        type: string
+    put:
+      tags:
+      - Registrant Contact Information
+      operationId: 'put_registrants_emails_by_id'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmailWrite'
+      security:
+      - JwtAuthorizer: []
+      responses:
+        200:
+          description: Email updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmailRead'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+    delete:
+      tags:
+      - Registrant Contact Information
+      operationId: 'delete_registrants_emails_by_id'
+      security:
+      - JwtAuthorizer: []
+      responses:
+        204:
+          description: Item deleted
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+  '/registrants/{registrantId}/phones':
+    parameters:
+    - in: path
+      name: registrantId
+      required: true
+      schema:
+        type: string
+    post:
+      tags:
+      - Registrant Contact Information
+      operationId: 'post_registrants_phones'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PhoneWrite'
+      security:
+      - JwtAuthorizer: []
+      responses:
+        201:
+          description: Phone number successfully created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PhoneRead'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+  '/registrants/{registrantId}/phones/{phoneId}':
+    parameters:
+    - in: path
+      name: registrantId
+      required: true
+      schema:
+        type: string
+    - in: path
+      name: phoneId
+      required: true
+      schema:
+        type: string
+    put:
+      tags:
+      - Registrant Contact Information
+      operationId: 'put_registrants_phones_by_id'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PhoneWrite'
+      security:
+      - JwtAuthorizer: []
+      responses:
+        200:
+          description: Phone number updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PhoneRead'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+    delete:
+      tags:
+      - Registrant Contact Information
+      operationId: 'delete_registrants_phones_by_id'
+      security:
+      - JwtAuthorizer: []
+      responses:
+        204:
+          description: Item deleted
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+  '/registrants/{registrantId}/addresses':
+    parameters:
+    - in: path
+      name: registrantId
+      required: true
+      schema:
+        type: string
+    post:
+      tags:
+      - Registrant Contact Information
+      operationId: 'post_registrants_addresses'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddressWrite'
+      security:
+      - JwtAuthorizer: []
+      responses:
+        201:
+          description: Address successfully created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AddressRead'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+  '/registrants/{registrantId}/addresses/{addressId}':
+    parameters:
+    - in: path
+      name: registrantId
+      required: true
+      schema:
+        type: string
+    - in: path
+      name: addressId
+      required: true
+      schema:
+        type: string
+    put:
+      tags:
+      - Registrant Contact Information
+      operationId: 'put_registrants_addresses_by_id'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddressWrite'
+      security:
+      - JwtAuthorizer: []
+      responses:
+        200:
+          description: Address updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AddressRead'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+    delete:
+      tags:
+      - Registrant Contact Information
+      operationId: 'delete_registrants_addresses_by_id'
+      security:
+      - JwtAuthorizer: []
+      responses:
+        204:
+          description: Item deleted
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+  '/registrants/{registrantId}/questions':
+    parameters:
+    - in: path
+      name: registrantId
+      required: true
+      schema:
+        type: string
+    post:
+      tags:
+      - Registrant Question Answers
+      operationId: 'post_registrants_questions'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Question'
+      security:
+      - JwtAuthorizer: []
+      responses:
+        201:
+          description: Question successfully answered
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Question'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+  '/registrants/{registrantId}/questions/{questionId}':
+    parameters:
+    - in: path
+      name: registrantId
+      required: true
+      schema:
+        type: string
+    - in: path
+      name: questionId
+      required: true
+      schema:
+        type: string
+    put:
+      tags:
+      - Registrant Question Answers
+      operationId: 'put_registrants_questions_by_id'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Answers'
+      security:
+      - JwtAuthorizer: []
+      responses:
+        200:
+          description: Question successfully answered
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Question'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+  '/registrants/{registrantId}/notes':
+    parameters:
+    - in: path
+      name: registrantId
+      required: true
+      schema:
+        type: string
+    post:
+      tags:
+      - Registrant Notes
+      operationId: 'post_registrants_notes'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegistrantNoteWrite'
+      security:
+      - JwtAuthorizer: []
+      responses:
+        201:
+          description: Note successfully created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegistrantNoteRead'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+  '/registrants/{registrantId}/histories':
+    parameters:
+    - in: path
+      name: registrantId
+      required: true
+      schema:
+        type: string
+    post:
+      tags:
+      - Registrant History
+      operationId: 'post_registrants_histories'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HistoryWrite'
+      security:
+      - JwtAuthorizer: []
+      responses:
+        201:
+          description: History successfully created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoryReadFull'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+  '/registrants/{registrantId}/histories/{historyId}':
+    parameters:
+    - in: path
+      name: registrantId
+      required: true
+      schema:
+        type: string
+    - in: path
+      name: historyId
+      schema:
+        type: string
+      required: true
+    get:
+      tags:
+      - Registrant History
+      operationId: 'get_registrants_histories_by_id'
+      security:
+      - JwtAuthorizer: []
+      responses:
+        200:
+          description: History item with full content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoryReadFull'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+    put:
+      tags:
+      - Registrant History
+      operationId: 'put_registrants_histories_by_id'
+      description: >-
+        Update a history item. `createdBy` is ignored and cannot be updated.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HistoryWrite'
+      security:
+      - JwtAuthorizer: []
+      responses:
+        200:
+          description: History item with full content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistoryReadFull'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+  '/registrants/{registrantId}/notes/{noteId}':
+    parameters:
+    - in: path
+      name: registrantId
+      required: true
+      schema:
+        type: string
+    - in: path
+      name: noteId
+      schema:
+        type: string
+      required: true
+    delete:
+      tags:
+      - Registrant Notes
+      operationId: 'delete_registrants_notes_by_id'
+      security:
+      - JwtAuthorizer: []
+      responses:
+        204:
+          description: Note successfully deleted
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+  '/registrants/{registrantId}/relationships':
+    parameters:
+    - in: path
+      name: registrantId
+      required: true
+      schema:
+        type: string
+    post:
+      tags:
+      - Registrant Relationships
+      operationId: 'postt_registrants_relationships'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegistrantRelationshipCreate'
+      security:
+      - JwtAuthorizer: []
+      responses:
+        201:
+          description: Relationship successfully created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegistrantRelationshipRead'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+  '/registrants/{registrantId}/relationships/{relationshipId}':
+    parameters:
+    - in: path
+      name: registrantId
+      required: true
+      schema:
+        type: string
+    - in: path
+      name: relationshipId
+      required: true
+      schema:
+        type: string
+    put:
+      tags:
+      - Registrant Relationships
+      operationId: 'put_registrants_relationships_by_id'
+      description: >-
+        Edits a relationship type only. This method cannot be used to edit a relationship's
+        registrant. To do so, please delete the relationship, then re-add.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegistrantRelationshipUpdate'
+      security:
+      - JwtAuthorizer: []
+      responses:
+        200:
+          description: Relationship successfully updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegistrantRelationshipRead'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+    delete:
+      tags:
+      - Registrant Relationships
+      operationId: 'delete_registrants_relationships_by_id'
+      security:
+      - JwtAuthorizer: []
+      responses:
+        204:
+          description: Relationship deleted
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+  '/registrants/{registrantId}/website-tracking/':
+    parameters:
+    - in: path
+      name: registrantId
+      required: true
+      schema:
+        type: string
+    post:
+      tags:
+      - Registrant Website Tracking
+      operationId: 'post_registrants_website_tracking'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegistrantWebsiteTrackingRequired'
+      security:
+      - JwtAuthorizer: []
+      responses:
+        200:
+          description: Registrant tracking information successfully added
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+  '/registrants/{registrantId}/appointments':
+    parameters:
+    - in: path
+      name: registrantId
+      required: true
+      schema:
+        type: string
+    get:
+      summary: Retrieve a registrant's appointments
+      operationId: 'get_registrants_appointments'
+      tags:
+      - Registrant Appointments
+      security:
+      - JwtAuthorizer: []
+      responses:
+        200:
+          description: Appointments found.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AppointmentRead'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+    post:
+      summary: Create an appointment
+      operationId: 'post_registrants_appointments'
+      tags:
+      - Registrant Appointments
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AppointmentCreate'
+      security:
+      - JwtAuthorizer: []
+      responses:
+        201:
+          description: Appointment successfully created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppointmentRead'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+  '/registrants/{registrantId}/appointments/{appointmentId}':
+    parameters:
+    - in: path
+      name: registrantId
+      required: true
+      schema:
+        type: string
+    - in: path
+      name: appointmentId
+      required: true
+      schema:
+        type: string
+    get:
+      summary: Retrieve a single appointment
+      operationId: 'get_registrants_appointments_by_id'
+      tags:
+      - Registrant Appointments
+      security:
+      - JwtAuthorizer: []
+      responses:
+        200:
+          description: Appointment found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppointmentRead'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+    put:
+      summary: Update an appointment
+      operationId: 'put_registrants_appointments_by_id'
+      description: >-
+        Update an appointment. This will overwrite all of the appointments data with
+        the entity provided in the request payload. To avoid accidentally deleting
+        appointment data, first perform a GET on the same resource, then modify the
+        returned entity, and finally apply the entity through this PUT method.
+      tags:
+      - Registrant Appointments
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AppointmentUpdate'
+      security:
+      - JwtAuthorizer: []
+      responses:
+        200:
+          description: Appointment successfully updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppointmentRead'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+    delete:
+      summary: Delete an appointment
+      operationId: 'delete_registrants_appointments_by_id'
+      tags:
+      - Registrant Appointments
+      security:
+      - JwtAuthorizer: []
+      responses:
+        204:
+          description: Appointment Deleted
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+  '/registrants/{registrantId}/appointments/{appointmentId}/email-confirmations':
+    parameters:
+    - in: path
+      name: registrantId
+      required: true
+      schema:
+        type: string
+    - in: path
+      name: appointmentId
+      required: true
+      schema:
+        type: string
+    post:
+      summary: Send email confirmations for an already existing appointment
+      operationId: 'post_registrants_appointments_email_confirmation'
+      tags:
+      - Registrant Appointments
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/AppointmentEmailConfirmationRecipient'
+      security:
+      - JwtAuthorizer: []
+      responses:
+        200:
+          description: Email confirmations successfully sent.
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+  '/emails/{email}/opted-status/':
+    parameters:
+    - in: path
+      name: email
+      required: true
+      schema:
+        type: string
+    get:
+      summary: Retrieve an opted status
+      operationId: 'get_registrants_opted_status_by_email'
+      tags:
+      - Registrant Opted-Status
+      security:
+      - JwtAuthorizer: []
+      responses:
+        200:
+          description: Opted-status found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OptedStatusRepresentation'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+    put:
+      summary: Update an opted-status
+      operationId: 'put_registrants_opted_status_by_email'
+      description: >-
+        Update an opted-status. This will overwrite the existing opted-status for
+        that user with the one in the request  payload. If the payload is not a valid
+        StatusEnum value ("Non-Opted", "Opted-In", or "Opted-Out"), the request  will
+        be discarded as malformed.
+      tags:
+      - Registrant Opted-Status
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OptedStatusRepresentation'
+      security:
+      - JwtAuthorizer: []
+      responses:
+        200:
+          description: Opted-status successfully updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OptedStatusRepresentation'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+  /projects/settings:
+    get:
+      summary: Retrieve a project's settings
+      operationId: 'get_project_settings'
+      tags:
+      - Project
+      security:
+      - JwtAuthorizer: []
+      responses:
+        200:
+          description: Settings for this project
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectSettings'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+  /projects/appointments:
+    get:
+      summary: Retrieves a project's appointments
+      operationId: 'get_project_appointments'
+      description: |
+        Fetches appointments for the project.
+
+        Paging: Use the `next` link to page through the available appointments.
+        Sort Order: Appointments are sorted by most recently created (largest appointmentId), with newest on top.
+        Page Limit: 1000 appointments per page is the maximum and also the default page limit if no initial cursor is specified.
+      tags:
+      - Project Appointments
+      parameters:
+      - $ref: '#/components/parameters/Cursor'
+      security:
+      - JwtAuthorizer: []
+      responses:
+        200:
+          description: >-
+            Fetches a list of appointments, sorted newest-first.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectAppointments'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+  /inventory/search:
+    get:
+      summary: 'Search inventories by strataLot and inventoryNumber.'
+      operationId: 'get_inventory_search'
+      description: >-
+        This endpoint is optimized for speed with a smaller payload than `/inventory`.
+        This is handy for live search features, e.g. a drop-down with suggested results
+        for a search bar.
+      tags:
+      - Inventory
+      parameters:
+      - name: strataLot
+        in: query
+        schema:
+          type: string
+        description: '/inventory/search?strataLot=123'
+      - name: inventoryNumber
+        in: query
+        schema:
+          type: string
+        description: '/inventory/search?inventoryNumber=123'
+      security:
+      - JwtAuthorizer: []
+      responses:
+        200:
+          description: Inventories found
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/InventoryRead'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+  /inventory:
+    get:
+      summary: 'Returns a list of all inventories'
+      operationId: 'get_inventory'
+      tags:
+      - Inventory
+      security:
+      - JwtAuthorizer: []
+      responses:
+        200:
+          description: Inventories found
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/InventoryRead'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+    post:
+      tags:
+      - Inventory
+      summary: Create an inventory
+      operationId: 'post_inventory_search'
+      description: >-
+        Creates an inventory, if no component is specified the default is used.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InventoryCreate'
+      security:
+      - JwtAuthorizer: []
+      responses:
+        201:
+          description: Inventory created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InventoryRead'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        409:
+          $ref: '#/components/responses/ErrorInventoryAlreadySynced'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+  '/inventory/{inventoryId}':
+    parameters:
+    - in: path
+      name: inventoryId
+      schema:
+        type: string
+      required: true
+      description: "/inventory/123"
+    get:
+      tags:
+      - Inventory
+      summary: Get a single inventory
+      operationId: 'get_inventory_by_id'
+      security:
+      - JwtAuthorizer: []
+      responses:
+        200:
+          description: Return an inventory item
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InventoryFull'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+    put:
+      tags:
+      - Inventory
+      summary: Update an inventory
+      operationId: 'put_inventory'
+      description: >-
+        Updates an inventory. Note that this will overwrite all of the inventory's
+        information with the entity provided in the request payload. To avoid accidentally
+        deleting existing information, first perform a GET on the same resource, then
+        modify the returned entity, then finally apply the entity through this PUT
+        method.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InventoryUpdate'
+      security:
+      - JwtAuthorizer: []
+      responses:
+        200:
+          description: Inventory updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InventoryRead'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        409:
+          $ref: '#/components/responses/ErrorInventoryAlreadySynced'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+    delete:
+      tags:
+      - Inventory
+      summary: Delete an inventory
+      operationId: 'delete_inventory'
+      description: >-
+        Deletes an inventory, in order to remove an inventory it must have a status
+        of "Available" and not be "locked"
+      security:
+      - JwtAuthorizer: []
+      responses:
+        204:
+          description: Inventory deleted
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        409:
+          $ref: '#/components/responses/ErrorInventoryCannotBeDeleted'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+  '/inventory/{inventoryId}/sync':
+    parameters:
+    - in: path
+      name: inventoryId
+      schema:
+        type: string
+      required: true
+      description: "/inventory/123/sync"
+    put:
+      tags:
+      - Inventory
+      summary: Sync an inventory
+      operationId: 'put_inventory_sync'
+      description: >-
+        Syncs an inventory item with Lasso. This can only be done once, afterwards
+        Lasso will reject any subsequent PUT request with a 409 error. This is done
+        to prevent accidental data loss in Lasso, as certain items may not be included
+        in the sync data.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InventorySync'
+      security:
+      - JwtAuthorizer: []
+      responses:
+        200:
+          description: Inventory updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InventoryFull'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        409:
+          $ref: '#/components/responses/ErrorInventoryAlreadySynced'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+  '/inventory/{inventoryId}/reset':
+    parameters:
+    - in: path
+      name: inventoryId
+      schema:
+        type: string
+      required: true
+      description: "/inventory/123/reset"
+    post:
+      tags:
+      - Inventory
+      summary: >-
+        Reset an inventory items. Deletes all associated data with the inventory item,
+        e.g. pricing information, options and upgrades, deposits, etc.
+      operationId: 'post_inventory_reset'
+      security:
+      - JwtAuthorizer: []
+      responses:
+        200:
+          description: Inventory was successfully reset.
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+  '/inventory/{inventoryId}/dates':
+    parameters:
+    - in: path
+      name: inventoryId
+      schema:
+        type: string
+      required: true
+      description: "/inventory/123/dates"
+    get:
+      tags:
+      - Inventory Dates
+      operationId: 'get_inventory_dates'
+      security:
+      - JwtAuthorizer: []
+      responses:
+        200:
+          description: Dates associated with this inventory
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dates'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+    put:
+      tags:
+      - Inventory Dates
+      operationId: 'put_inventory_dates'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Dates'
+      security:
+      - JwtAuthorizer: []
+      responses:
+        200:
+          description: Dates successfully updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dates'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+  '/inventory/{inventoryId}/pricing':
+    parameters:
+    - in: path
+      name: inventoryId
+      schema:
+        type: string
+      required: true
+    get:
+      tags:
+      - Inventory Pricing
+      operationId: 'get_inventory_pricing'
+      security:
+      - JwtAuthorizer: []
+      responses:
+        200:
+          description: Pricing associated with this inventory
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Pricing'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+    put:
+      tags:
+      - Inventory Pricing
+      operationId: 'put_inventory_pricing'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Pricing'
+      security:
+      - JwtAuthorizer: []
+      responses:
+        200:
+          description: Pricing successfully set
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Pricing'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+  '/inventory/{inventoryId}/purchasers':
+    parameters:
+    - in: path
+      name: inventoryId
+      schema:
+        type: string
+      required: true
+    put:
+      tags:
+      - Inventory Purchasers
+      operationId: 'put_inventory_purchasers'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/PurchaserCreate'
+      security:
+      - JwtAuthorizer: []
+      responses:
+        200:
+          description: Purchasers successfully set
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Purchaser'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+    get:
+      tags:
+      - Inventory Purchasers
+      operationId: 'get_inventory_purchasers'
+      security:
+      - JwtAuthorizer: []
+      responses:
+        200:
+          description: Purchasers associated with this inventory
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Purchaser'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+  '/inventory/{inventoryId}/pricing-revisions':
+    parameters:
+    - in: path
+      name: inventoryId
+      schema:
+        type: string
+      required: true
+    get:
+      tags:
+      - Inventory Pricing Revisions
+      operationId: 'get_inventory_pricing_revisions'
+      security:
+      - JwtAuthorizer: []
+      responses:
+        200:
+          description: Pricing revisions associated with this inventory
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PricingRevision'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+    post:
+      tags:
+      - Inventory Pricing Revisions
+      operationId: 'post_inventory_pricing_revisions'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PricingRevision'
+      security:
+      - JwtAuthorizer: []
+      responses:
+        201:
+          description: Add a pricing revision
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PricingRevision'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+  '/inventory/plans':
+    get:
+      tags:
+      - Inventory Plan Types
+      description: >-
+        Get the plan types associated with this project
+      operationId: 'get_inventory_plans'
+      security:
+      - JwtAuthorizer: []
+      responses:
+        200:
+          description: Plan types associated with this project
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PlanTypeRead'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+    post:
+      tags:
+      - Inventory Plan Types
+      description: >-
+        Create a new plan type for this project
+      operationId: 'post_inventory_plans'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PlanTypeWrite'
+      security:
+      - JwtAuthorizer: []
+      responses:
+        201:
+          description: Plan type created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlanTypeRead'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+  '/inventory/plans/{planTypeId}':
+    parameters:
+    - in: path
+      name: planTypeId
+      schema:
+        type: string
+      required: true
+    get:
+      tags:
+      - Inventory Plan Types
+      description: >-
+        Get a plan type associated with this project
+      operationId: 'get_inventory_plans_by_plan_id'
+      security:
+      - JwtAuthorizer: []
+      responses:
+        200:
+          description: Plan type associated with this project
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlanTypeRead'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+    put:
+      tags:
+      - Inventory Plan Types
+      description: >-
+        Update a plan type associated with this project
+      operationId: 'put_inventory_plans_by_plan_id'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PlanTypeWrite'
+      security:
+      - JwtAuthorizer: []
+      responses:
+        200:
+          description: Plan type updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlanTypeRead'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+  '/inventory/{inventoryId}/plans':
+    parameters:
+    - in: path
+      name: inventoryId
+      schema:
+        type: string
+      required: true
+    get:
+      tags:
+      - Inventory Plan Types
+      description: >-
+        Get the plan type associated with this inventory
+      operationId: 'get_inventory_plans_by_id'
+      security:
+      - JwtAuthorizer: []
+      responses:
+        200:
+          description: Plan type associated with this inventory
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlanTypeRead'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+    put:
+      tags:
+      - Inventory Plan Types
+      description: >-
+        Associate an inventory with a plan type by ID or by plan type. If both are
+        provided, then lookup will be by ID
+      operationId: 'put_inventory_plans_by_id'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InventoryPlanTypeWrite'
+      security:
+      - JwtAuthorizer: []
+      responses:
+        200:
+          description: Plan type updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlanTypeRead'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+components:
+  schemas:
+    Registrant:
+      title: Registrant
+      type: object
+      properties:
+        websiteTracking:
+          type: object
+          properties:
+            domainAccountId:
+              type: string
+              example: 'LAS-123456-01'
+            guid:
+              type: string
+              example: UID123
+        excludeFromTraffic:
+          type: boolean
+          description: Exclude this registrant from traffic reports
+          example: false
+        registrationDate:
+          type: string
+          format: datetime
+          description: When the registrant was created in the system. Dates are in
+            ISO 8601 UTC format.
+          example: '2017-08-31T21:18:39Z'
+        externalId:
+          type: string
+          example: 'ABC123'
+          description: >-
+            identifies this registrant in an externally linked system. The external
+            system is determined from the api key
+        externalDuplicateIds:
+          type: array
+          description: >-
+            a registrant that has been merged with another will inherit the other's
+            externalId. This list keeps track of all other externalId's linked to
+            this single registrant
+          items:
+            type: string
+            example: "DEF456"
+        person:
+          $ref: '#/components/schemas/RegistrantPersonalInfo'
+        rating:
+          $ref: '#/components/schemas/Rating'
+        sourceType:
+          $ref: '#/components/schemas/SourceType'
+        secondarySourceType:
+          $ref: '#/components/schemas/SecondarySourceType'
+        followUpProcess:
+          $ref: '#/components/schemas/FollowUpProcess'
+        assignedSalesReps:
+          type: array
+          items:
+            $ref: '#/components/schemas/SalesRepWrite'
+        questions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Question'
+    RegistrantRead:
+      title: RegistrantRead
+      type: object
+      properties:
+        websiteTracking:
+          type: object
+          properties:
+            domainAccountId:
+              type: string
+              example: 'LAS-123456-01'
+            guid:
+              type: string
+              example: UID123
+        excludeFromTraffic:
+          type: boolean
+          description: Exclude this registrant from traffic reports
+          example: false
+        registrationDate:
+          type: string
+          format: datetime
+          description: When the registrant was created in the system. Dates are in
+            ISO 8601 UTC format.
+          example: '2017-08-31T21:18:39Z'
+        externalId:
+          type: string
+          example: 'ABC123'
+          description: >-
+            identifies this registrant in an externally linked system. The external
+            system is determined from the api key
+        externalDuplicateIds:
+          type: array
+          description: >-
+            a registrant that has been merged with another will inherit the other's
+            externalId. This list keeps track of all other externalId's linked to
+            this single registrant
+          items:
+            type: string
+            example: "DEF456"
+        person:
+          $ref: '#/components/schemas/RegistrantPersonalInfo'
+        rating:
+          $ref: '#/components/schemas/Rating'
+        sourceType:
+          $ref: '#/components/schemas/SourceType'
+        secondarySourceType:
+          $ref: '#/components/schemas/SecondarySourceType'
+        followUpProcess:
+          $ref: '#/components/schemas/FollowUpProcess'
+        assignedSalesReps:
+          type: array
+          items:
+            $ref: '#/components/schemas/SalesRepWrite'
+        questions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Question'
+        registrantId:
+          type: string
+          example: 123
+        project:
+          $ref: '#/components/schemas/Project'
+        emails:
+          type: array
+          items:
+            $ref: '#/components/schemas/EmailRead'
+        phones:
+          type: array
+          items:
+            $ref: '#/components/schemas/PhoneRead'
+        addresses:
+          type: array
+          items:
+            $ref: '#/components/schemas/AddressRead'
+        history:
+          type: array
+          items:
+            $ref: '#/components/schemas/HistoryRead'
+        notes:
+          type: array
+          items:
+            $ref: '#/components/schemas/RegistrantNoteRead'
+        relationships:
+          type: array
+          items:
+            $ref: '#/components/schemas/RegistrantRelationshipRead'
+        appointments:
+          type: array
+          items:
+            $ref: '#/components/schemas/AppointmentRead'
+        _links:
+          $ref: '#/components/schemas/RegistrantLinks'
+    RegistrantAccepted:
+      type: object
+      title: RegistrantAccepted
+      properties:
+        registrantId:
+          type: string
+          example: 123
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/RegistrantCreateMessage'
+        _links:
+          $ref: '#/components/schemas/RegistrantLinks'
+    RegistrantCreateMessage:
+      type: object
+      title: RegistrantCreateMessage
+      properties:
+        message:
+          type: string
+          description: contains a message describing warnings and errors during processing
+          example: 'Warning: first name is greater than max size 20 and will be truncated'
+    RegistrantLinks:
+      type: object
+      properties:
+        self:
+          type: string
+          description: Link to the registrant
+          example: '/registrants/123'
+        update:
+          type: string
+          description: Link to update the registrant
+          example: '/registrants/123'
+    RegistrantPersonalInfo:
+      type: object
+      title: Registrant Personal Info
+      required:
+      - firstName
+      - lastName
+      properties:
+        personalId:
+          type: string
+          example: 1234
+          description: >-
+            Providing a personalId when creating a new registrant will attempt to
+            match and automatically merge the new registrant with an existing duplicate
+        nameTitle:
+          type: string
+          example: Mrs
+        firstName:
+          type: string
+          example: Jane
+        lastName:
+          type: string
+          example: Doe
+        company:
+          type: string
+          example: First Contracting
+        contactPreference:
+          type: string
+          description: How the registrant would like to be contacted
+          enum:
+          - noPreference
+          - any
+          - email
+          - mail
+          - phone
+          - text
+          - noEmail
+          - noContact
+          example: any
+        gender:
+          type: string
+          enum:
+          - unspecified
+          - male
+          - female
+          example: female
+        nickname:
+          type: string
+          example: Jane
+        birthday:
+          type: string
+          description: Contains only the month and day.
+          example: '08/14'
+        ssnSin:
+          type: string
+          description: >-
+            The social insurance number or social security number. Please ensure that
+            you are allowed to collect this information in your jurisdiction.
+          example: '046 454 286'
+    Project:
+      title: Project
+      type: object
+      properties:
+        name:
+          type: string
+          example: 'Birch Towers'
+        projectId:
+          type: string
+          example: 123
+    Rating:
+      type: object
+      title: Rating
+      description: If rating does not exist, it will be created
+      properties:
+        rating:
+          type: string
+          minLength: 1
+          maxLength: 50
+          example: A
+    SourceType:
+      type: object
+      title: Source Type
+      description: If the source type doesn't exist, it will be created
+      properties:
+        sourceType:
+          type: string
+          minLength: 1
+          maxLength: 100
+          example: 'Online Registration'
+    SecondarySourceType:
+      type: object
+      title: Secondary Source Type
+      description: If the secondary source type does not exist, it will be created
+      properties:
+        secondarySourceType:
+          type: string
+          minLength: 1
+          maxLength: 100
+          example: 'Facebook'
+    FollowUpProcess:
+      type: object
+      title: Follow-up Process
+      description: >-
+        If `followUpProcessId` is provided, the system will attempt to lookup the
+        process by id, and fail if not found. If `followUpProcessId` is not provided,
+        but `followUpProcess` is instead provided, the system will then attempt to
+        lookup the process by value. If the value doesn't exist, it will be created
+      properties:
+        followUpProcessId:
+          type: string
+          example: 1
+        followUpProcess:
+          type: string
+          minLength: 1
+          maxLength: 20
+          example: '30 day follow up'
+    ExternalId:
+      type: object
+      title: External ID
+      required:
+      - externalId
+      description: >-
+        Integration externalId associated with a registrant in Lasso
+      properties:
+        externalId:
+          type: string
+          example: '123ABC'
+    EmailRead:
+      type: object
+      title: Email Read
+      properties:
+        emailId:
+          type: string
+          example: 123
+        email:
+          type: string
+          example: 'test_registrant@lassocrm.com'
+        type:
+          type: string
+          example: 'Personal'
+        primary:
+          type: boolean
+          example: true
+        optedStatus:
+          type: string
+          enum:
+          - opted_in
+          - opted_out
+          - non_opted
+          example: opted_in
+    PhoneRead:
+      type: object
+      title: Phone Read
+      properties:
+        phoneId:
+          type: string
+          example: 123
+        phone:
+          type: string
+          example: '123-456-7890'
+        type:
+          type: string
+          example: 'Mobile'
+        primary:
+          type: boolean
+          example: true
+    AddressRead:
+      type: object
+      title: Address Read
+      properties:
+        addressId:
+          type: string
+          example: 123
+        address:
+          type: string
+          example: '350 Fifth Avenue'
+        city:
+          type: string
+          example: 'New York'
+        country:
+          type: string
+          example: 'USA'
+        state:
+          type: string
+          example: 'NY'
+        zipCode:
+          type: string
+          example: '10118'
+        type:
+          type: string
+          example: 'Mobile'
+        primary:
+          type: boolean
+          example: true
+    SalesRep:
+      type: object
+      title: SalesRep Generic Model
+      properties:
+        userId:
+          type: string
+          example: 123
+        firstName:
+          type: string
+          example: Lasso
+        lastName:
+          type: string
+          example: Autobot
+        isPrimary:
+          type: boolean
+          example: true
+    SalesRepWrite:
+      type: object
+      title: SalesRep Write Model
+      description: |
+        When inputting a salesRep, you can provide a userId and the system
+        will try to look up the salesRep by the ID.
+
+        If no userId is provided but a first and last name are, then
+        the system will lookup the salesRep by name and assign it to this registrant.
+
+        Otherwise, no salesRep will be assigned.
+
+        Notes:
+        - if multiple salesReps are being assigned, take care to only
+          choose one to be primary. If multiple are designated as primary, an error will
+          be returned
+        - on registrant create, if both rotationId and assignedSalesReps are specified,
+          assignedSalesReps will override rotationId in salesRep selection.
+      properties:
+        userId:
+          type: string
+          example: 123
+        firstName:
+          type: string
+          example: Lasso
+        lastName:
+          type: string
+          example: Autobot
+        isPrimary:
+          type: boolean
+          example: true
+    SalesRepRead:
+      type: object
+      title: SalesRep Read Model
+      description: >-
+        Describes a sales rep, typically assigned to a set of registrants.
+      properties:
+        userId:
+          type: string
+          example: 123
+        firstName:
+          type: string
+          example: Lasso
+        lastName:
+          type: string
+          example: Autobot
+        isPrimary:
+          type: boolean
+          example: true
+    Question:
+      type: object
+      title: Question
+      description: |
+        Questions in Lasso are sorted into folders. You can use `path` to
+        specify which folder the question should be saved to.
+
+        Specifying the questionId will override name and path and the
+        question will be looked up by its ID. If no question is found the
+        question is *not* created and the request fails.
+
+        Any existing registrant answers to the question will be replaced by the
+        answers from this request. Existing answer options on the question will
+        not be removed.
+
+        If the question does not exist and no question ID is provided, a new
+        question will be created. If the path is empty, the question will be
+        created in a folder named after the API key vendor type - ie, `lassoLeadCapture`.
+
+        The possible answer options are created for each answer provided in the
+        `answer` key. Only question type `checkbox` supports multiple answers. All
+        of them will be marked as checked for the registrant.
+      properties:
+        questionId:
+          type: string
+          description: >-
+            Specifies precisely which question
+          example: 123
+        type:
+          type: string
+          description: |
+            If the question does not exist, this defines which type of question is
+            going to be created. Defaults to type `Text`. Available types are:
+            - Checkbox
+              Multiple possible answers, and multiple set answers
+            - Text
+              Only one possible answer which is freeform text
+            - Date
+              Only one possible answer, a date in the ISO 8601 UTC format
+            - Single Select
+              Only one possible answer from a set of answers
+            - Multi Select
+              Multiple possible answers from a set of answers
+          enum:
+          - checkbox
+          - text
+          - single_select
+          - multi_select
+          - date
+          example: checkbox
+        name:
+          type: string
+          example: How did you hear about us?
+          maxLength: 100
+        path:
+          type: string
+          description: >-
+            Specify which folder the question is in. Format: `/folder/subfolder`.
+            If no path is given, the `integrations` folder will be used.
+          example: /marketing/inbound
+          maxLength: 40
+        answers:
+          type: array
+          items:
+            $ref: '#/components/schemas/Answer'
+    Answers:
+      type: object
+      title: Question Answers
+      description: Represents a collection of answers for a question
+      properties:
+        answers:
+          type: array
+          items:
+            $ref: '#/components/schemas/Answer'
+    Answer:
+      type: object
+      title: Question Answer
+      description: Represents an answer for a question for the registrant
+      properties:
+        answerId:
+          type: string
+          description: >-
+            Specifies the answer by id. If present, `answer` will be ignored. If no
+            answer matches `answerId` the answer will be looked-up by its answer string.
+          example: 123
+        answer:
+          type: string
+          description: >-
+            If no `answerId` is given, the answer will be looked-up by its answer
+            string. If no answer with the given answer string exists, the answer will
+            be created.
+          example: 'Recommended by a friend'
+    HistoryWithoutContent:
+      type: object
+      description: >-
+        History tracks communication with the registrant. Various types of history
+        items are supported, e.g. emails, phone call or appointments. The content
+        for history items is limited to the first 200 characters, as emails may grow
+        very large and include embedded content (e.g. images) that makes transferring
+        all history content at once unfeasible. If you need the full content for any
+        given history item, you can request it from the `self` link.
+      properties:
+        type:
+          type: string
+          description: >
+            Clients can create their own history types, so an exhaustive list of available
+            history items is currently not available. Defaults:
+
+            Appointment Cancelled Appointment Email Email Reply Fax Mail Mass Mail
+            Merge Opted-Out Phone - Left Message Return Visit SSRU Visit
+          example: Email
+        typeId:
+          type: string
+          description: ID of the history type (could be client-created)
+          example: 123
+        subject:
+          type: string
+          description: Short summary of history item
+          example: 'Welcome to Birch Towers'
+        date:
+          type: string
+          format: datetime
+          description: When the history item was received, e.g. send-date for email
+          example: '2017-08-31T21:18:39Z'
+        createdBy:
+          $ref: '#/components/schemas/Creator'
+        _links:
+          type: object
+          properties:
+            self:
+              type: string
+              example: '/registrants/123/history/123'
+    HistoryRead:
+      type: object
+      title: History Read Item
+      properties:
+        type:
+          type: string
+          description: >
+            Clients can create their own history types, so an exhaustive list of available
+            history items is currently not available. Defaults:
+
+            Appointment Cancelled Appointment Email Email Reply Fax Mail Mass Mail
+            Merge Opted-Out Phone - Left Message Return Visit SSRU Visit
+          example: Email
+        typeId:
+          type: string
+          description: ID of the history type (could be client-created)
+          example: 123
+        subject:
+          type: string
+          description: Short summary of history item
+          example: 'Welcome to Birch Towers'
+        date:
+          type: string
+          format: datetime
+          description: When the history item was received, e.g. send-date for email
+          example: '2017-08-31T21:18:39Z'
+        createdBy:
+          $ref: '#/components/schemas/Creator'
+        _links:
+          type: object
+          properties:
+            self:
+              type: string
+              example: '/registrants/123/history/123'
+        historyId:
+          type: string
+          example: 123
+    RegistrantNoteRead:
+      type: object
+      title: Note Read
+      description: Contains a free-form text field
+      properties:
+        noteId:
+          type: string
+          example: 123
+        note:
+          type: string
+          example: Offer a $10.000 credit
+        createdBy:
+          $ref: '#/components/schemas/Creator'
+        _links:
+          $ref: '#/components/schemas/RegistrantNoteLinks'
+    RegistrantNoteLinks:
+      type: object
+      properties:
+        delete:
+          type: string
+          example: '/registrants/123/notes/123'
+    RegistrantRelationshipRead:
+      type: object
+      title: Relationship Read
+      description: Contains a registrant's relationships
+      properties:
+        relationshipId:
+          type: string
+          example: 123
+        registrantId:
+          type: string
+          example: 456
+        relationship:
+          type: string
+          example: Wife
+        reverse:
+          type: string
+          example: Husband
+        firstName:
+          type: string
+          example: John
+        lastName:
+          type: string
+          example: Doe
+    Creator:
+      type: object
+      title: Creator
+      description: |
+        Determines the user that created this entity based on an ordered set of Heuristics:
+        - if creator is null or empty, then default to user: Lasso Autobot
+        - if userId is provided, then lookup user by id, respond with 400 level error if specified user does not exist
+        - if user first and last name are provided, then lookup user by name, otherwise default to user: Lasso Autobot
+      properties:
+        firstName:
+          type: string
+          example: John
+        lastName:
+          type: string
+          example: Smith
+        userId:
+          type: string
+          example: 123
+    EmailTemplateMetadata:
+      type: object
+      title: Email Template Metadata
+      description: |
+        Size conservative metadata representation of Email Template i.e. no content body
+      properties:
+        templateId:
+          type: string
+          example: 123
+        folderId:
+          type: string
+          example: 123
+        name:
+          type: string
+          example: 'Welcoming email'
+        subject:
+          type: string
+          example: 'You are offically welcomed'
+    AppointmentRegistrant:
+      type: object
+      title: Appointment Registrant
+      description: >-
+        This model is a subset of `RegistrantRead`, which describes a minimal set
+        of details of an appointment registrant. Use the `GET /registrants/{registrantId}`
+        route to get full details on this registrant.
+      properties:
+        registrantId:
+          type: string
+          example: '123'
+        person:
+          $ref: '#/components/schemas/RegistrantPersonalInfo'
+        project:
+          $ref: '#/components/schemas/Project'
+        emails:
+          type: array
+          items:
+            $ref: '#/components/schemas/EmailRead'
+        phones:
+          type: array
+          items:
+            $ref: '#/components/schemas/PhoneRead'
+        addresses:
+          type: array
+          items:
+            $ref: '#/components/schemas/AddressRead'
+        assignedSalesReps:
+          type: array
+          items:
+            $ref: '#/components/schemas/SalesRepRead'
+        _links:
+          $ref: '#/components/schemas/RegistrantLinks'
+    Appointment:
+      type: object
+      title: Appointment
+      description: >-
+        Describes the basic details of a scheduled appointment.
+
+        Limitations: Note that only the appointment's registrant as well as their
+        assigned sales reps are described here. Additional attendee information that
+        is not described here, are those that were sent out calendar invites, as well
+        as any SMS text message reminder recipients.
+      properties:
+        name:
+          type: string
+          example: 'Design Center Selections'
+        description:
+          type: string
+          example: 'Come on in and make it yours'
+        details:
+          type: string
+          example: 'Appointment to make selection'
+        startTime:
+          type: string
+          format: datetime
+          description: When the appointment is scheduled to start. Datetimes are in
+            ISO-8601 UTC format.
+          example: '2019-01-31T18:30:00Z'
+        endTime:
+          type: string
+          format: datetime
+          description: When the appointment is scheduled to end. Datetimes are in
+            ISO-8601 UTC format.
+          example: '2019-01-31T19:30:00Z'
+        location:
+          type: string
+          example: '4601 US-377, Brownwood, TX 76801, United States'
+        isPublic:
+          type: boolean
+          example: false
+        status:
+          type: string
+          enum:
+          - Open
+          - Tentative
+          - Confirmed
+          - Cancelled
+          - Completed
+          - No Show
+    AppointmentEmailConfirmationRecipient:
+      type: object
+      title: Appointment Confirmation Recipient
+      required:
+      - email
+      properties:
+        firstName:
+          type: string
+          example: John
+        lastName:
+          type: string
+          example: Smith
+        email:
+          type: string
+          minLength: 1
+          maxLength: 50
+          example: 'test_registrant@lassocrm.com'
+    AppointmentSmsReminderRecipient:
+      type: object
+      title: AppointmentReminderRecipient
+      properties:
+        phone:
+          type: string
+          minLength: 1
+          maxLength: 20
+          example: '123-456-7890'
+        message:
+          type: string
+          example: 'Del Boca Vista: your appt is Today at 9:45 am with Andrew. Call
+            123.456.7890 to contact us. Reply STOP to opt out'
+    AppointmentRead:
+      title: Appointment Read
+      type: object
+      properties:
+        name:
+          type: string
+          example: 'Design Center Selections'
+        description:
+          type: string
+          example: 'Come on in and make it yours'
+        details:
+          type: string
+          example: 'Appointment to make selection'
+        startTime:
+          type: string
+          format: datetime
+          description: When the appointment is scheduled to start. Datetimes are in
+            ISO-8601 UTC format.
+          example: '2019-01-31T18:30:00Z'
+        endTime:
+          type: string
+          format: datetime
+          description: When the appointment is scheduled to end. Datetimes are in
+            ISO-8601 UTC format.
+          example: '2019-01-31T19:30:00Z'
+        location:
+          type: string
+          example: '4601 US-377, Brownwood, TX 76801, United States'
+        isPublic:
+          type: boolean
+          example: false
+        status:
+          type: string
+          enum:
+          - Open
+          - Tentative
+          - Confirmed
+          - Cancelled
+          - Completed
+          - No Show
+        appointmentId:
+          type: string
+          example: '123'
+        scheduledSmsReminders:
+          type: array
+          items:
+            $ref: '#/components/schemas/AppointmentSmsReminderRecipient'
+        createdBy:
+          $ref: '#/components/schemas/Creator'
+        _links:
+          $ref: '#/components/schemas/AppointmentLinks'
+    AppointmentLinks:
+      type: object
+      properties:
+        self:
+          type: string
+          description: Link to the appointment
+          example: '/registrants/456/appointments/123'
+        update:
+          type: string
+          description: Link to update the appointment
+          example: '/registrants/456/appointments/123'
+        delete:
+          type: string
+          description: Link to delete the appointment
+          example: '/registrants/456/appointments/123'
+    StandardError:
+      type: object
+      title: Standard Error
+      description: >-
+        A standard error response format.
+      properties:
+        errorCode:
+          type: integer
+          example: 4xx
+        error:
+          type: string
+          description: A summary of the error
+          example: A summary of the error
+        errorMessage:
+          type: string
+          description: Details of the error
+          example: Details of the error
+    RegistrantWebhookEvent:
+      title: Registrant Webhook Event
+      type: object
+      description: >
+        This format describes a webhook event that is fired off to an external system
+        when an action is performed on a registrant. It is an envelope that wraps
+        the RegistrantRead entity, as well as containing additional metadata.
+      properties:
+        timestamp:
+          type: string
+          format: datetime
+          example: '2017-08-31T21:18:39Z'
+          description: the time of the event in ISO 8601 UTC format
+        id:
+          type: string
+          example: '123'
+          description: >-
+            The Lasso registrantId. This is useful in case the enclosed entity is
+            null (ie, on a deleted event)
+        externalId:
+          type: string
+          example: '345'
+          description: >-
+            The external integrated system's ID associated to this registrant. This
+            is the same externalId found in RegistrantRead.externalId. This is useful
+            in case the enclosed entity is null (ie, on a deleted event)
+        action:
+          type: string
+          enum:
+          - inserted
+          - deleted
+          - updated
+          example: 'updated'
+          description: >-
+            Describes the action that took place on the registrant that triggered
+            this event. On 'inserted' and 'updated', the 'entity' field will be set.
+            On 'deleted', the 'entity' field will not be set.
+        customParams:
+          type: array
+          description: >-
+            Static custom values that are passed through from the webhook configuration.
+            These values are manually set on the webhook configuration page. They
+            can be useful for mapping a webhook event to a specific value that's meaningful
+            in another system. For example, if the external system has the concept
+            of a "community", then a unique community ID can be set at the Lasso project-level
+            webhook configuration. Then, any events on registrants to that project
+            will propagate this unique community ID with the webhook event. The external
+            system could then use this community ID to map the event to.
+          items:
+            type: object
+            properties:
+              key:
+                type: string
+                example: 'communityId'
+              value:
+                type: string
+                example: '12345'
+        changed:
+          type: array
+          description: >-
+            On update events, lists the RegistrantRead field names that triggered
+            this webhook. Empty on inserted and deleted events. Only the following
+            field names may appear: person, rating, excludeFromTraffic, registrationDate,
+            followUpProcess, sourceType, secondarySourceType, questions, notes, assignedSalesReps,
+            history. Changes to person include personal info, emails, phones, addresses,
+            and relationships. Internal metadata changes (status, LastModified, activities,
+            emailOptedStatus) trigger webhooks but are not included in this list.
+          items:
+            type: string
+          example:
+          - person
+          - rating
+        entity:
+          $ref: '#/components/schemas/RegistrantRead'
+    RegistrantWrite:
+      title: RegistrantWrite
+      type: object
+      properties:
+        websiteTracking:
+          type: object
+          properties:
+            domainAccountId:
+              type: string
+              example: 'LAS-123456-01'
+            guid:
+              type: string
+              example: UID123
+        excludeFromTraffic:
+          type: boolean
+          description: Exclude this registrant from traffic reports
+          example: false
+        registrationDate:
+          type: string
+          format: datetime
+          description: When the registrant was created in the system. Dates are in
+            ISO 8601 UTC format.
+          example: '2017-08-31T21:18:39Z'
+        externalId:
+          type: string
+          example: 'ABC123'
+          description: >-
+            identifies this registrant in an externally linked system. The external
+            system is determined from the api key
+        externalDuplicateIds:
+          type: array
+          description: >-
+            a registrant that has been merged with another will inherit the other's
+            externalId. This list keeps track of all other externalId's linked to
+            this single registrant
+          items:
+            type: string
+            example: "DEF456"
+        person:
+          $ref: '#/components/schemas/RegistrantPersonalInfo'
+        rating:
+          $ref: '#/components/schemas/Rating'
+        sourceType:
+          $ref: '#/components/schemas/SourceType'
+        secondarySourceType:
+          $ref: '#/components/schemas/SecondarySourceType'
+        followUpProcess:
+          $ref: '#/components/schemas/FollowUpProcess'
+        assignedSalesReps:
+          type: array
+          items:
+            $ref: '#/components/schemas/SalesRepWrite'
+        questions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Question'
+        emails:
+          type: array
+          items:
+            $ref: '#/components/schemas/EmailWrite'
+        phones:
+          type: array
+          items:
+            $ref: '#/components/schemas/PhoneWrite'
+        addresses:
+          type: array
+          items:
+            $ref: '#/components/schemas/AddressWrite'
+        history:
+          type: array
+          items:
+            $ref: '#/components/schemas/HistoryWrite'
+        notes:
+          type: array
+          items:
+            $ref: '#/components/schemas/RegistrantNoteWrite'
+        sendSalesRepAssignmentNotification:
+          type: boolean
+          example: true
+        thankYouEmailTemplateId:
+          type: string
+          example: 123
+        sendOptInEmail:
+          type: boolean
+          example: true
+        rotationId:
+          type: string
+          description: >-
+            Assign a sales rep from next in rotation. assignedSalesReps override rotationId
+          example: 1
+        automaticallyMerge:
+          type: boolean
+          example: true
+          description: "Set this directive to true to tell the system to look for\
+            \ and merge this new lead with an existing\nduplicate registrant. Defaults\
+            \ to true if not set. \n\nA duplicate registrant will be matched according\
+            \ to these criteria: (in order of precedence)\n- Match by personalId provided\
+            \ in `RegistrantWrite.personalId`\n- Match by email provided in `RegistrantWrite.emails[].email`\
+            \ (if multiple emails, then match at least one)\n- Match by phone provided\
+            \ in `RegistrantWrite.phones[].phone` (if multiple phones, then match\
+            \ at least one)\n"
+        _links:
+          $ref: '#/components/schemas/RegistrantLinks'
+    ContactInformation:
+      type: object
+      title: Contact Information
+      required:
+      - firstName
+      - lastName
+      properties:
+        personalId:
+          type: string
+          example: 1234
+        nameTitle:
+          type: string
+          example: Mrs
+        firstName:
+          type: string
+          example: Jane
+        lastName:
+          type: string
+          example: Doe
+        company:
+          type: string
+          example: First Contracting
+        contactPreference:
+          type: string
+          description: How the registrant would like to be contacted
+          enum:
+          - noPreference
+          - any
+          - email
+          - mail
+          - phone
+          - text
+          - noEmail
+          - noContact
+          example: any
+        gender:
+          type: string
+          enum:
+          - unspecified
+          - male
+          - female
+          example: female
+        nickname:
+          type: string
+          example: Jane
+        birthday:
+          type: string
+          description: Contains only the month and day.
+          example: '08/14'
+        emails:
+          type: array
+          items:
+            $ref: '#/components/schemas/Email'
+        phones:
+          type: array
+          items:
+            $ref: '#/components/schemas/Phone'
+        addresses:
+          type: array
+          items:
+            $ref: '#/components/schemas/Address'
+    EmailWrite:
+      type: object
+      title: Email Write
+      properties:
+        email:
+          type: string
+          minLength: 1
+          maxLength: 50
+          example: 'test_registrant@lassocrm.com'
+        type:
+          type: string
+          minLength: 0
+          maxLength: 25
+          example: 'Personal'
+        primary:
+          type: boolean
+          example: true
+    Email:
+      type: object
+      title: Email
+      properties:
+        email:
+          type: string
+          minLength: 1
+          maxLength: 50
+          example: 'test_registrant@lassocrm.com'
+        type:
+          type: string
+          minLength: 0
+          maxLength: 25
+          example: 'Personal'
+        primary:
+          type: boolean
+          description: there can be only one primary email in a non-empty collection
+            of emails
+          example: true
+    PhoneWrite:
+      type: object
+      title: Phone Write
+      properties:
+        phone:
+          type: string
+          minLength: 1
+          maxLength: 20
+          example: '123-456-7890'
+        type:
+          type: string
+          minLength: 0
+          maxLength: 25
+          example: 'Mobile'
+        primary:
+          type: boolean
+          example: true
+    Phone:
+      type: object
+      title: Phone
+      properties:
+        phone:
+          type: string
+          minLength: 1
+          maxLength: 20
+          example: '123-456-7890'
+        type:
+          type: string
+          minLength: 0
+          maxLength: 25
+          example: 'Mobile'
+        primary:
+          type: boolean
+          description: there can be only one primary phone in a non-empty collection
+            of phones
+          example: true
+    AddressWrite:
+      type: object
+      title: Address Write
+      properties:
+        address:
+          type: string
+          example: '350 Fifth Avenue'
+        city:
+          type: string
+          example: 'New York'
+        country:
+          type: string
+          example: 'USA'
+        state:
+          type: string
+          example: 'NY'
+        zipCode:
+          minLength: 0
+          maxLength: 15
+          type: string
+          example: '10118'
+        type:
+          type: string
+          example: 'Mobile'
+        primary:
+          type: boolean
+          example: true
+    Address:
+      type: object
+      title: Address
+      properties:
+        address:
+          type: string
+          example: '350 Fifth Avenue'
+        city:
+          type: string
+          example: 'New York'
+        country:
+          type: string
+          example: 'USA'
+        state:
+          type: string
+          example: 'NY'
+        zipCode:
+          type: string
+          example: '10118'
+        type:
+          type: string
+          example: 'Mobile'
+        primary:
+          type: boolean
+          description: there can be only one primary address in a non-empty collection
+            of addresses
+          example: true
+    HistoryWrite:
+      type: object
+      title: History Write Item
+      properties:
+        type:
+          type: string
+          description: >
+            Clients can create their own history types, so an exhaustive list of available
+            history items is currently not available. Defaults:
+
+            Appointment Cancelled Appointment Email Email Reply Fax Mail Mass Mail
+            Merge Opted-Out Phone - Left Message Return Visit SSRU Visit
+          example: Email
+        typeId:
+          type: string
+          description: ID of the history type (could be client-created)
+          example: 123
+        subject:
+          type: string
+          description: Short summary of history item
+          example: 'Welcome to Birch Towers'
+        date:
+          type: string
+          format: datetime
+          description: When the history item was received, e.g. send-date for email
+          example: '2017-08-31T21:18:39Z'
+        createdBy:
+          $ref: '#/components/schemas/Creator'
+        _links:
+          type: object
+          properties:
+            self:
+              type: string
+              example: '/registrants/123/history/123'
+        body:
+          type: string
+          description: |
+            Full content of history item. For emails, this may include
+            serialized attachments, which may lead to a large payload.
+
+            Limitations: 4-byte UTF-8 characters are not supported and will be stripped during write.
+            This means that some emoticons and foreign language characters are unsupported.
+    HistoryReadFull:
+      type: object
+      title: History Read With Full Content
+      properties:
+        type:
+          type: string
+          description: >
+            Clients can create their own history types, so an exhaustive list of available
+            history items is currently not available. Defaults:
+
+            Appointment Cancelled Appointment Email Email Reply Fax Mail Mass Mail
+            Merge Opted-Out Phone - Left Message Return Visit SSRU Visit
+          example: Email
+        typeId:
+          type: string
+          description: ID of the history type (could be client-created)
+          example: 123
+        subject:
+          type: string
+          description: Short summary of history item
+          example: 'Welcome to Birch Towers'
+        date:
+          type: string
+          format: datetime
+          description: When the history item was received, e.g. send-date for email
+          example: '2017-08-31T21:18:39Z'
+        createdBy:
+          $ref: '#/components/schemas/Creator'
+        _links:
+          type: object
+          properties:
+            self:
+              type: string
+              example: '/registrants/123/history/123'
+        historyId:
+          type: string
+          example: 123
+        body:
+          type: string
+          description: >-
+            Full content of history item. For emails, this may include serialized
+            attachments, which may lead to a large payload.
+    RegistrantNoteWrite:
+      type: object
+      title: Note Write
+      description: |
+        Contains a free-form text field.
+
+        Limitations: 4-byte UTF-8 characters are not supported and will be stripped during write.
+        This means that some emoticons and foreign language characters are unsupported.
+      properties:
+        note:
+          type: string
+          example: Offer a $10.000 credit
+        createdBy:
+          $ref: '#/components/schemas/Creator'
+        _links:
+          $ref: '#/components/schemas/RegistrantNoteLinks'
+    RegistrantRelationshipCreate:
+      type: object
+      title: Relationship Create
+      required:
+      - registrantId
+      description: Data for creating a relationship
+      properties:
+        registrantId:
+          type: string
+          example: 456
+          description: >-
+            Identifies the registrant related to this registrant.
+        relationship:
+          type: string
+          example: Realtor
+          description: >-
+            The related registrant's relationship to this registrant.
+    RegistrantRelationshipUpdate:
+      type: object
+      title: Relationship Update
+      description: Data for updating a relationship
+      properties:
+        relationship:
+          type: string
+          example: Realtor
+          description: >-
+            The related registrant's relationship to this registrant.
+    RegistrantWebsiteTrackingRequired:
+      type: object
+      required:
+      - domainAccountId
+      - guid
+      properties:
+        domainAccountId:
+          type: string
+          example: 'LAS-123456-01'
+        guid:
+          type: string
+          example: UID123
+    AppointmentCreate:
+      type: object
+      title: Appointment Create
+      required:
+      - name
+      - startTime
+      - endTime
+      properties:
+        name:
+          type: string
+          example: 'Design Center Selections'
+        description:
+          type: string
+          example: 'Come on in and make it yours'
+        details:
+          type: string
+          example: 'Appointment to make selection'
+        startTime:
+          type: string
+          format: datetime
+          description: When the appointment is scheduled to start. Datetimes are in
+            ISO-8601 UTC format.
+          example: '2019-01-31T18:30:00Z'
+        endTime:
+          type: string
+          format: datetime
+          description: When the appointment is scheduled to end. Datetimes are in
+            ISO-8601 UTC format.
+          example: '2019-01-31T19:30:00Z'
+        location:
+          type: string
+          example: '4601 US-377, Brownwood, TX 76801, United States'
+        isPublic:
+          type: boolean
+          example: false
+        status:
+          type: string
+          enum:
+          - Open
+          - Tentative
+          - Confirmed
+          - Cancelled
+          - Completed
+          - No Show
+        sendEmailConfirmation:
+          type: array
+          items:
+            $ref: '#/components/schemas/AppointmentEmailConfirmationRecipient'
+        scheduledSmsReminders:
+          type: array
+          items:
+            $ref: '#/components/schemas/AppointmentSmsReminderRecipient'
+        createdBy:
+          $ref: '#/components/schemas/Creator'
+    AppointmentUpdate:
+      type: object
+      title: Appointment Update
+      required:
+      - name
+      - startTime
+      - endTime
+      properties:
+        name:
+          type: string
+          example: 'Design Center Selections'
+        description:
+          type: string
+          example: 'Come on in and make it yours'
+        details:
+          type: string
+          example: 'Appointment to make selection'
+        startTime:
+          type: string
+          format: datetime
+          description: When the appointment is scheduled to start. Datetimes are in
+            ISO-8601 UTC format.
+          example: '2019-01-31T18:30:00Z'
+        endTime:
+          type: string
+          format: datetime
+          description: When the appointment is scheduled to end. Datetimes are in
+            ISO-8601 UTC format.
+          example: '2019-01-31T19:30:00Z'
+        location:
+          type: string
+          example: '4601 US-377, Brownwood, TX 76801, United States'
+        isPublic:
+          type: boolean
+          example: false
+        status:
+          type: string
+          enum:
+          - Open
+          - Tentative
+          - Confirmed
+          - Cancelled
+          - Completed
+          - No Show
+        scheduledSmsReminders:
+          type: array
+          items:
+            $ref: '#/components/schemas/AppointmentSmsReminderRecipient'
+        createdBy:
+          $ref: '#/components/schemas/Creator'
+    OptedStatusRepresentation:
+      type: object
+      title: The representation of the opted-status for an e-mail
+      properties:
+        status:
+          type: string
+          enum:
+          - Non-Opted
+          - Opted-In
+          - Opted-Out
+          description: This registrant's opted-status value
+    ProjectSettings:
+      type: object
+      title: ProjectSettings
+      properties:
+        project:
+          $ref: '#/components/schemas/Project'
+        websiteTracking:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProjectWebsiteTracking'
+        rotations:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProjectRotation'
+        salesReps:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProjectSalesRep'
+        sourceTypes:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProjectSourceType'
+        secondarySourceTypes:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProjectSecondarySourceType'
+        ratings:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProjectRating'
+        followUpProcesses:
+          type: array
+          items:
+            $ref: '#/components/schemas/FollowUpProcess'
+        questions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Question'
+        autoReplyTemplates:
+          type: array
+          items:
+            $ref: '#/components/schemas/EmailTemplateMetadata'
+    ProjectWebsiteTracking:
+      type: object
+      title: Website Tracking
+      properties:
+        domainAccountId:
+          type: string
+          example: 'LAS-123456-01'
+        domain:
+          type: string
+          example: 'http://example.com/'
+    ProjectRotation:
+      type: object
+      title: Rotation
+      properties:
+        rotationId:
+          type: string
+          example: 123
+        rotationName:
+          type: string
+          example: 'Newsletter'
+    ProjectSourceType:
+      type: object
+      title: Source Type
+      properties:
+        sourceTypeId:
+          type: string
+          example: 123
+        sourceType:
+          type: string
+          example: 'Online Registration'
+    ProjectSecondarySourceType:
+      type: object
+      title: Secondary Source Type
+      properties:
+        secondarySourceTypeId:
+          type: string
+          example: 123
+        secondarySourceType:
+          type: string
+          example: 'Facebook'
+    ProjectRating:
+      type: object
+      title: Rating
+      properties:
+        ratingId:
+          type: string
+          example: 123
+        rating:
+          type: string
+          example: 'A'
+    ProjectSalesRep:
+      type: object
+      title: Sales Rep
+      properties:
+        userId:
+          type: string
+          example: 123
+        firstName:
+          type: string
+          example: 'Lasso'
+        lastName:
+          type: string
+          example: 'Autobot'
+        email:
+          type: string
+          example: 'john.smith@example.com'
+        phone:
+          type: string
+          example: '123-456-7890'
+    ProjectAppointment:
+      title: Project Appointment
+      type: object
+      properties:
+        name:
+          type: string
+          example: 'Design Center Selections'
+        description:
+          type: string
+          example: 'Come on in and make it yours'
+        details:
+          type: string
+          example: 'Appointment to make selection'
+        startTime:
+          type: string
+          format: datetime
+          description: When the appointment is scheduled to start. Datetimes are in
+            ISO-8601 UTC format.
+          example: '2019-01-31T18:30:00Z'
+        endTime:
+          type: string
+          format: datetime
+          description: When the appointment is scheduled to end. Datetimes are in
+            ISO-8601 UTC format.
+          example: '2019-01-31T19:30:00Z'
+        location:
+          type: string
+          example: '4601 US-377, Brownwood, TX 76801, United States'
+        isPublic:
+          type: boolean
+          example: false
+        status:
+          type: string
+          enum:
+          - Open
+          - Tentative
+          - Confirmed
+          - Cancelled
+          - Completed
+          - No Show
+        appointmentId:
+          type: string
+          example: '123'
+        owner:
+          $ref: '#/components/schemas/Creator'
+        registrant:
+          $ref: '#/components/schemas/AppointmentRegistrant'
+    ProjectAppointments:
+      type: object
+      title: Project Appointments
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProjectAppointment'
+        links:
+          type: object
+          properties:
+            next:
+              type: string
+              description: Link to the next page of appointments
+              example: '/appointments?cursor=ewogICJ2IjogIjEuMCIsCiAgIm8iOiAiMTIzIiwKICAibCI6ICIxMDAiCn0='
+    Inventory:
+      title: Inventory
+      type: object
+      properties:
+        statusOverwrite:
+          type: string
+          description: >-
+            Current status of inventory. Will default to existing value if not provided.
+          enum:
+          - Available
+          - Unavailable
+          - Reserved
+          - Subject
+          - Firm
+          - Firm(R)
+          - Offer
+          - Closed
+          example: Available
+        plan:
+          type: string
+          example: 'E2'
+          description: >-
+            This field has to be set up in Lasso. It is matched to an existing option
+            via the name. If no existing option is found, a new one is created. Will
+            default to existing value if not provided.
+        squareFootage:
+          type: number
+          example: 1251
+          description: >-
+            Will default to existing value if not provided.
+        patioSquareFootage:
+          type: number
+          example: 70
+          description: >-
+            Will default to existing value if not provided.
+        colorScheme:
+          type: string
+          example: 'Beige'
+          description: >-
+            This field has to be set up in Lasso. It is matched to an existing option
+            via the name. If no existing option is found, a new one is created. Will
+            default to existing value if not provided.
+        maintenanceFee:
+          type: number
+          example: '351.12'
+          description: >-
+            Will default to existing value if not provided.
+        floor:
+          type: number
+          example: 11
+          description: >-
+            Will default to existing value if not provided.
+        bedrooms:
+          type: string
+          example: 2 Bedroom + Den
+          description: >-
+            This field has to be set up in Lasso. It is matched to an existing option
+            via the name. If no existing option is found, a new one is created. Will
+            default to existing value if not provided.
+        bathrooms:
+          type: string
+          example: 2 1/2
+          description: >-
+            Will default to existing value if not provided.
+        direction:
+          type: string
+          example: SE
+          description: >-
+            This field has to be set up in Lasso. It is matched to an existing option
+            via the name. If no existing option is found, a new one is created. Will
+            default to existing value if not provided.
+        exposure:
+          type: string
+          example: South East
+          description: >-
+            This field has to be set up in Lasso. It is matched to an existing option
+            via the name. If no existing option is found, a new one is created. Will
+            default to existing value if not provided.
+        definition:
+          type: string
+          enum:
+          - Unit
+          - Townhome
+          - Lot
+          - Homesite
+          example: Unit
+          description: >-
+            Will default to existing value if not provided.
+        dates:
+          $ref: '#/components/schemas/Dates'
+        pricing:
+          $ref: '#/components/schemas/Pricing'
+        _links:
+          type: object
+          properties:
+            self:
+              type: string
+              example: '/inventory/123-123'
+            delete:
+              type: string
+              example: '/inventory/123-123'
+    InventoryCreate:
+      title: InventoryCreate
+      required:
+      - strataLot
+      - inventoryNumber
+      properties:
+        statusOverwrite:
+          type: string
+          description: >-
+            Current status of inventory. Will default to existing value if not provided.
+          enum:
+          - Available
+          - Unavailable
+          - Reserved
+          - Subject
+          - Firm
+          - Firm(R)
+          - Offer
+          - Closed
+          example: Available
+        plan:
+          type: string
+          example: 'E2'
+          description: >-
+            This field has to be set up in Lasso. It is matched to an existing option
+            via the name. If no existing option is found, a new one is created. Will
+            default to existing value if not provided.
+        squareFootage:
+          type: number
+          example: 1251
+          description: >-
+            Will default to existing value if not provided.
+        patioSquareFootage:
+          type: number
+          example: 70
+          description: >-
+            Will default to existing value if not provided.
+        colorScheme:
+          type: string
+          example: 'Beige'
+          description: >-
+            This field has to be set up in Lasso. It is matched to an existing option
+            via the name. If no existing option is found, a new one is created. Will
+            default to existing value if not provided.
+        maintenanceFee:
+          type: number
+          example: '351.12'
+          description: >-
+            Will default to existing value if not provided.
+        floor:
+          type: number
+          example: 11
+          description: >-
+            Will default to existing value if not provided.
+        bedrooms:
+          type: string
+          example: 2 Bedroom + Den
+          description: >-
+            This field has to be set up in Lasso. It is matched to an existing option
+            via the name. If no existing option is found, a new one is created. Will
+            default to existing value if not provided.
+        bathrooms:
+          type: string
+          example: 2 1/2
+          description: >-
+            Will default to existing value if not provided.
+        direction:
+          type: string
+          example: SE
+          description: >-
+            This field has to be set up in Lasso. It is matched to an existing option
+            via the name. If no existing option is found, a new one is created. Will
+            default to existing value if not provided.
+        exposure:
+          type: string
+          example: South East
+          description: >-
+            This field has to be set up in Lasso. It is matched to an existing option
+            via the name. If no existing option is found, a new one is created. Will
+            default to existing value if not provided.
+        definition:
+          type: string
+          enum:
+          - Unit
+          - Townhome
+          - Lot
+          - Homesite
+          example: Unit
+          description: >-
+            Will default to existing value if not provided.
+        dates:
+          $ref: '#/components/schemas/Dates'
+        pricing:
+          $ref: '#/components/schemas/Pricing'
+        _links:
+          type: object
+          properties:
+            self:
+              type: string
+              example: '/inventory/123-123'
+            delete:
+              type: string
+              example: '/inventory/123-123'
+        component:
+          $ref: '#/components/schemas/Component'
+        strataLot:
+          type: string
+          example: 123
+        inventoryNumber:
+          type: string
+          example: 123
+    InventoryUpdate:
+      title: InventoryUpdate
+      properties:
+        statusOverwrite:
+          type: string
+          description: >-
+            Current status of inventory. Will default to existing value if not provided.
+          enum:
+          - Available
+          - Unavailable
+          - Reserved
+          - Subject
+          - Firm
+          - Firm(R)
+          - Offer
+          - Closed
+          example: Available
+        plan:
+          type: string
+          example: 'E2'
+          description: >-
+            This field has to be set up in Lasso. It is matched to an existing option
+            via the name. If no existing option is found, a new one is created. Will
+            default to existing value if not provided.
+        squareFootage:
+          type: number
+          example: 1251
+          description: >-
+            Will default to existing value if not provided.
+        patioSquareFootage:
+          type: number
+          example: 70
+          description: >-
+            Will default to existing value if not provided.
+        colorScheme:
+          type: string
+          example: 'Beige'
+          description: >-
+            This field has to be set up in Lasso. It is matched to an existing option
+            via the name. If no existing option is found, a new one is created. Will
+            default to existing value if not provided.
+        maintenanceFee:
+          type: number
+          example: '351.12'
+          description: >-
+            Will default to existing value if not provided.
+        floor:
+          type: number
+          example: 11
+          description: >-
+            Will default to existing value if not provided.
+        bedrooms:
+          type: string
+          example: 2 Bedroom + Den
+          description: >-
+            This field has to be set up in Lasso. It is matched to an existing option
+            via the name. If no existing option is found, a new one is created. Will
+            default to existing value if not provided.
+        bathrooms:
+          type: string
+          example: 2 1/2
+          description: >-
+            Will default to existing value if not provided.
+        direction:
+          type: string
+          example: SE
+          description: >-
+            This field has to be set up in Lasso. It is matched to an existing option
+            via the name. If no existing option is found, a new one is created. Will
+            default to existing value if not provided.
+        exposure:
+          type: string
+          example: South East
+          description: >-
+            This field has to be set up in Lasso. It is matched to an existing option
+            via the name. If no existing option is found, a new one is created. Will
+            default to existing value if not provided.
+        definition:
+          type: string
+          enum:
+          - Unit
+          - Townhome
+          - Lot
+          - Homesite
+          example: Unit
+          description: >-
+            Will default to existing value if not provided.
+        dates:
+          $ref: '#/components/schemas/Dates'
+        pricing:
+          $ref: '#/components/schemas/Pricing'
+        _links:
+          type: object
+          properties:
+            self:
+              type: string
+              example: '/inventory/123-123'
+            delete:
+              type: string
+              example: '/inventory/123-123'
+        strataLot:
+          type: string
+          example: 123
+          minLength: 1
+          maxLength: 15
+        inventoryNumber:
+          type: string
+          example: 123
+          minLength: 1
+          maxLength: 11
+    InventoryRead:
+      title: InventoryRead
+      properties:
+        statusOverwrite:
+          type: string
+          description: >-
+            Current status of inventory. Will default to existing value if not provided.
+          enum:
+          - Available
+          - Unavailable
+          - Reserved
+          - Subject
+          - Firm
+          - Firm(R)
+          - Offer
+          - Closed
+          example: Available
+        plan:
+          type: string
+          example: 'E2'
+          description: >-
+            This field has to be set up in Lasso. It is matched to an existing option
+            via the name. If no existing option is found, a new one is created. Will
+            default to existing value if not provided.
+        squareFootage:
+          type: number
+          example: 1251
+          description: >-
+            Will default to existing value if not provided.
+        patioSquareFootage:
+          type: number
+          example: 70
+          description: >-
+            Will default to existing value if not provided.
+        colorScheme:
+          type: string
+          example: 'Beige'
+          description: >-
+            This field has to be set up in Lasso. It is matched to an existing option
+            via the name. If no existing option is found, a new one is created. Will
+            default to existing value if not provided.
+        maintenanceFee:
+          type: number
+          example: '351.12'
+          description: >-
+            Will default to existing value if not provided.
+        floor:
+          type: number
+          example: 11
+          description: >-
+            Will default to existing value if not provided.
+        bedrooms:
+          type: string
+          example: 2 Bedroom + Den
+          description: >-
+            This field has to be set up in Lasso. It is matched to an existing option
+            via the name. If no existing option is found, a new one is created. Will
+            default to existing value if not provided.
+        bathrooms:
+          type: string
+          example: 2 1/2
+          description: >-
+            Will default to existing value if not provided.
+        direction:
+          type: string
+          example: SE
+          description: >-
+            This field has to be set up in Lasso. It is matched to an existing option
+            via the name. If no existing option is found, a new one is created. Will
+            default to existing value if not provided.
+        exposure:
+          type: string
+          example: South East
+          description: >-
+            This field has to be set up in Lasso. It is matched to an existing option
+            via the name. If no existing option is found, a new one is created. Will
+            default to existing value if not provided.
+        definition:
+          type: string
+          enum:
+          - Unit
+          - Townhome
+          - Lot
+          - Homesite
+          example: Unit
+          description: >-
+            Will default to existing value if not provided.
+        dates:
+          $ref: '#/components/schemas/Dates'
+        pricing:
+          $ref: '#/components/schemas/Pricing'
+        _links:
+          type: object
+          properties:
+            self:
+              type: string
+              example: '/inventory/123-123'
+            delete:
+              type: string
+              example: '/inventory/123-123'
+        inventoryId:
+          type: string
+          description: Lasso-internal inventory ID
+          example: 123
+        component:
+          $ref: '#/components/schemas/Component'
+        project:
+          $ref: '#/components/schemas/Project'
+        strataLot:
+          type: string
+          example: 123
+        inventoryNumber:
+          type: string
+          example: 123
+    Component:
+      title: Component
+      type: object
+      properties:
+        name:
+          type: string
+          example: 'Birch Towers'
+        componentId:
+          type: string
+          example: 123
+    InventorySync:
+      title: InventorySync
+      properties:
+        statusOverwrite:
+          type: string
+          description: >-
+            Current status of inventory. Will default to existing value if not provided.
+          enum:
+          - Available
+          - Unavailable
+          - Reserved
+          - Subject
+          - Firm
+          - Firm(R)
+          - Offer
+          - Closed
+          example: Available
+        plan:
+          type: string
+          example: 'E2'
+          description: >-
+            This field has to be set up in Lasso. It is matched to an existing option
+            via the name. If no existing option is found, a new one is created. Will
+            default to existing value if not provided.
+        squareFootage:
+          type: number
+          example: 1251
+          description: >-
+            Will default to existing value if not provided.
+        patioSquareFootage:
+          type: number
+          example: 70
+          description: >-
+            Will default to existing value if not provided.
+        colorScheme:
+          type: string
+          example: 'Beige'
+          description: >-
+            This field has to be set up in Lasso. It is matched to an existing option
+            via the name. If no existing option is found, a new one is created. Will
+            default to existing value if not provided.
+        maintenanceFee:
+          type: number
+          example: '351.12'
+          description: >-
+            Will default to existing value if not provided.
+        floor:
+          type: number
+          example: 11
+          description: >-
+            Will default to existing value if not provided.
+        bedrooms:
+          type: string
+          example: 2 Bedroom + Den
+          description: >-
+            This field has to be set up in Lasso. It is matched to an existing option
+            via the name. If no existing option is found, a new one is created. Will
+            default to existing value if not provided.
+        bathrooms:
+          type: string
+          example: 2 1/2
+          description: >-
+            Will default to existing value if not provided.
+        direction:
+          type: string
+          example: SE
+          description: >-
+            This field has to be set up in Lasso. It is matched to an existing option
+            via the name. If no existing option is found, a new one is created. Will
+            default to existing value if not provided.
+        exposure:
+          type: string
+          example: South East
+          description: >-
+            This field has to be set up in Lasso. It is matched to an existing option
+            via the name. If no existing option is found, a new one is created. Will
+            default to existing value if not provided.
+        definition:
+          type: string
+          enum:
+          - Unit
+          - Townhome
+          - Lot
+          - Homesite
+          example: Unit
+          description: >-
+            Will default to existing value if not provided.
+        dates:
+          $ref: '#/components/schemas/Dates'
+        pricing:
+          $ref: '#/components/schemas/Pricing'
+        _links:
+          type: object
+          properties:
+            self:
+              type: string
+              example: '/inventory/123-123'
+            delete:
+              type: string
+              example: '/inventory/123-123'
+        revisions:
+          type: array
+          items:
+            $ref: '#/components/schemas/PricingRevision'
+        notes:
+          type: array
+          items:
+            $ref: '#/components/schemas/Note'
+        subjects:
+          type: array
+          items:
+            $ref: '#/components/schemas/Subject'
+        deposits:
+          type: array
+          items:
+            $ref: '#/components/schemas/Deposit'
+        realtors:
+          type: array
+          description: >-
+            Realtors associated with the inventory. Only a realtor's compensation
+            may be updated, all non compensation fields will be ignored.
+          items:
+            $ref: '#/components/schemas/Realtor'
+        bicycleLockers:
+          type: array
+          items:
+            $ref: '#/components/schemas/BicycleLocker'
+        storageLockers:
+          type: array
+          items:
+            $ref: '#/components/schemas/StorageLocker'
+        parkingStalls:
+          type: array
+          items:
+            $ref: '#/components/schemas/ParkingStall'
+        assignedSalesReps:
+          type: array
+          description: Assigned sales reps to this inventory
+          items:
+            $ref: '#/components/schemas/InventorySalesRep'
+        salesReps:
+          type: array
+          items:
+            type: string
+            description: Name of sales rep. Deprecated, use `assignedSalesReps` instead
+            example: 'John Smith'
+            deprecated: true
+        purchasers:
+          type: array
+          description: >-
+            List of registrant IDs to associate as purchasers with this inventory.
+            Use the registrant create route to create a registrant if it does not
+            exist yet.
+          example: [123, 456]
+          items:
+            type: string
+        options:
+          type: array
+          items:
+            $ref: '#/components/schemas/Option'
+    InventorySalesRep:
+      type: object
+      title: SalesRep Read Model
+      description: >-
+        Describes a sales rep.
+      properties:
+        firstName:
+          type: string
+          example: 'John'
+        lastName:
+          type: string
+          example: 'Doe'
+    InventoryFull:
+      title: InventoryFull
+      properties:
+        statusOverwrite:
+          type: string
+          description: >-
+            Current status of inventory. Will default to existing value if not provided.
+          enum:
+          - Available
+          - Unavailable
+          - Reserved
+          - Subject
+          - Firm
+          - Firm(R)
+          - Offer
+          - Closed
+          example: Available
+        plan:
+          type: string
+          example: 'E2'
+          description: >-
+            This field has to be set up in Lasso. It is matched to an existing option
+            via the name. If no existing option is found, a new one is created. Will
+            default to existing value if not provided.
+        squareFootage:
+          type: number
+          example: 1251
+          description: >-
+            Will default to existing value if not provided.
+        patioSquareFootage:
+          type: number
+          example: 70
+          description: >-
+            Will default to existing value if not provided.
+        colorScheme:
+          type: string
+          example: 'Beige'
+          description: >-
+            This field has to be set up in Lasso. It is matched to an existing option
+            via the name. If no existing option is found, a new one is created. Will
+            default to existing value if not provided.
+        maintenanceFee:
+          type: number
+          example: '351.12'
+          description: >-
+            Will default to existing value if not provided.
+        floor:
+          type: number
+          example: 11
+          description: >-
+            Will default to existing value if not provided.
+        bedrooms:
+          type: string
+          example: 2 Bedroom + Den
+          description: >-
+            This field has to be set up in Lasso. It is matched to an existing option
+            via the name. If no existing option is found, a new one is created. Will
+            default to existing value if not provided.
+        bathrooms:
+          type: string
+          example: 2 1/2
+          description: >-
+            Will default to existing value if not provided.
+        direction:
+          type: string
+          example: SE
+          description: >-
+            This field has to be set up in Lasso. It is matched to an existing option
+            via the name. If no existing option is found, a new one is created. Will
+            default to existing value if not provided.
+        exposure:
+          type: string
+          example: South East
+          description: >-
+            This field has to be set up in Lasso. It is matched to an existing option
+            via the name. If no existing option is found, a new one is created. Will
+            default to existing value if not provided.
+        definition:
+          type: string
+          enum:
+          - Unit
+          - Townhome
+          - Lot
+          - Homesite
+          example: Unit
+          description: >-
+            Will default to existing value if not provided.
+        dates:
+          $ref: '#/components/schemas/Dates'
+        pricing:
+          $ref: '#/components/schemas/Pricing'
+        _links:
+          type: object
+          properties:
+            self:
+              type: string
+              example: '/inventory/123-123'
+            delete:
+              type: string
+              example: '/inventory/123-123'
+        inventoryId:
+          type: string
+          description: Lasso-internal inventory ID
+          example: 123
+        component:
+          $ref: '#/components/schemas/Component'
+        project:
+          $ref: '#/components/schemas/Project'
+        strataLot:
+          type: string
+          example: 123
+        inventoryNumber:
+          type: string
+          example: 123
+        revisions:
+          type: array
+          items:
+            $ref: '#/components/schemas/PricingRevision'
+        notes:
+          type: array
+          items:
+            $ref: '#/components/schemas/Note'
+        subjects:
+          type: array
+          items:
+            $ref: '#/components/schemas/Subject'
+        deposits:
+          type: array
+          items:
+            $ref: '#/components/schemas/Deposit'
+        realtors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Realtor'
+        bicycleLockers:
+          type: array
+          items:
+            $ref: '#/components/schemas/BicycleLocker'
+        storageLockers:
+          type: array
+          items:
+            $ref: '#/components/schemas/StorageLocker'
+        parkingStalls:
+          type: array
+          items:
+            $ref: '#/components/schemas/ParkingStall'
+        assignedSalesReps:
+          type: array
+          description: Assigned sales reps to this inventory
+          items:
+            $ref: '#/components/schemas/InventorySalesRep'
+        salesReps:
+          type: array
+          items:
+            type: string
+            description: Name of sales rep. Deprecated, use `assignedSalesReps` instead
+            example: 'John Smith'
+            deprecated: true
+        purchasers:
+          type: array
+          description: >-
+            List of registrant IDs to associate as purchasers with this inventory.
+            Use the registrant create route to create a registrant if it does not
+            exist yet.
+          example: [123, 456]
+          items:
+            type: string
+        options:
+          type: array
+          items:
+            $ref: '#/components/schemas/Option'
+    PricingRevision:
+      title: PricingRevision
+      type: object
+      required:
+      - name
+      - amount
+      properties:
+        name:
+          type: string
+          example: Adapt to higher mortgage rates
+        amount:
+          type: number
+          example: '-100000'
+    Purchaser:
+      title: Purchaser
+      type: object
+      required:
+      - registrantId
+      properties:
+        registrantId:
+          type: string
+          example: 1
+        firstName:
+          type: string
+          example: John
+        lastName:
+          type: string
+          example: Doe
+        purchaserType:
+          type: string
+          example: Assignee
+        purchaserReason:
+          type: string
+          example: Investment Property
+        dateAssigned:
+          type: string
+          description: Date in the ISO 8601 UTC format
+          example: '2017-08-30T05:48:35Z'
+    PurchaserCreate:
+      title: Purchaser
+      type: object
+      required:
+      - registrantId
+      properties:
+        registrantId:
+          type: string
+          example: 1
+        purchaserType:
+          type: string
+          example: Assignee
+        purchaserReason:
+          type: string
+          example: Investment Property
+    Note:
+      title: Note
+      type: object
+      required:
+      - note
+      properties:
+        noteId:
+          type: string
+          example: '123'
+        note:
+          type: string
+          example: Offered $10.000 credit
+        createdAt:
+          type: string
+          description: Date in the ISO 8601 UTC format
+          example: '2017-08-30T05:48:35Z'
+    Dates:
+      title: Dates
+      type: object
+      description: >-
+        All dates are in the ISO 8601 UTC format, limited to year, month and day (YYYY-MM-DD).
+        Will set all dates to blank if not provided.
+      properties:
+        contract:
+          type: string
+          format: date
+          example: '2017-08-05'
+        acceptance:
+          type: string
+          format: date
+          example: '2017-08-08'
+        completion:
+          type: string
+          format: date
+          example: '2017-08-11'
+        release:
+          type: string
+          format: date
+          example: '2017-08-08'
+        possession:
+          type: string
+          format: date
+          example: '2017-08-15'
+        occupancy:
+          type: string
+          format: date
+          example: '2017-08-19'
+        sendToLawyer:
+          type: string
+          format: date
+          example: '2017-08-12'
+        adjustment:
+          type: string
+          format: date
+          example: '2017-08-30'
+        _links:
+          type: object
+          properties:
+            self:
+              type: string
+              example: '/inventory/123-123/dates'
+            update:
+              type: string
+              example: '/inventory/123-123/dates'
+    Pricing:
+      title: Pricing
+      type: object
+      description: >-
+        Sets the pricing information for the inventory in Lasso. Setting all fields
+        to 0 except the `initialPrice` allows you to specify an exact sales price.
+      required:
+      - initialPrice
+      properties:
+        initialPrice:
+          type: number
+          description: Base price of inventory
+          example: '4300000'
+        adjustedGrossPrice:
+          type: number
+          example: '-50000'
+        offTheTopDiscount:
+          type: number
+          example: '-10000'
+        inLieuOfIncentive:
+          type: number
+          example: '10000'
+        credit:
+          type: number
+          example: '25000'
+        _links:
+          type: object
+          properties:
+            self:
+              type: string
+              example: '/inventory/123-123/pricing'
+            update:
+              type: string
+              example: '/inventory/123-123/pricing'
+    Storage:
+      type: object
+      description: >-
+        For all storage types, if no specific storage option is given (by setting
+        `uniqueId`), the next unassigned storage option is associated to the inventory.
+      required:
+      - price
+      properties:
+        uniqueId:
+          type: string
+          example: '077'
+        price:
+          type: number
+          example: '12000'
+        date:
+          type: string
+          format: date
+          example: '2017-08-30'
+        paymentReceivedDate:
+          type: string
+          format: date
+          example: '2017-08-30'
+        outsideOfContract:
+          type: boolean
+          example: true
+        description:
+          type: string
+          example: Part of storage package
+    ParkingStall:
+      title: Parking Stall
+      properties:
+        uniqueId:
+          type: string
+          example: '077'
+        price:
+          type: number
+          example: '12000'
+        date:
+          type: string
+          format: date
+          example: '2017-08-30'
+        paymentReceivedDate:
+          type: string
+          format: date
+          example: '2017-08-30'
+        outsideOfContract:
+          type: boolean
+          example: true
+        description:
+          type: string
+          example: Part of storage package
+    StorageLocker:
+      title: Storage Locker
+      properties:
+        uniqueId:
+          type: string
+          example: '077'
+        price:
+          type: number
+          example: '12000'
+        date:
+          type: string
+          format: date
+          example: '2017-08-30'
+        paymentReceivedDate:
+          type: string
+          format: date
+          example: '2017-08-30'
+        outsideOfContract:
+          type: boolean
+          example: true
+        description:
+          type: string
+          example: Part of storage package
+    BicycleLocker:
+      title: Bicycle Locker
+      properties:
+        uniqueId:
+          type: string
+          example: '077'
+        price:
+          type: number
+          example: '12000'
+        date:
+          type: string
+          format: date
+          example: '2017-08-30'
+        paymentReceivedDate:
+          type: string
+          format: date
+          example: '2017-08-30'
+        outsideOfContract:
+          type: boolean
+          example: true
+        description:
+          type: string
+          example: Part of storage package
+    Deposit:
+      title: Deposit
+      required:
+      - amount
+      - dueDate
+      properties:
+        depositId:
+          type: string
+          example: '123'
+        amount:
+          type: number
+          example: '145000'
+        dueDate:
+          type: string
+          format: date
+          example: '2017-08-30'
+        amountReceived:
+          type: number
+          example: '145000'
+        receivedDate:
+          type: string
+          format: date
+          example: '2017-09-10'
+    Realtor:
+      type: object
+      required:
+      - firstName
+      - lastName
+      - company
+      properties:
+        realtorId:
+          type: string
+          example: '123'
+        nameTitle:
+          type: string
+          example: Mrs
+        firstName:
+          type: string
+          example: Susan
+        lastName:
+          type: string
+          example: Smith
+        email:
+          type: string
+          example: susan.smith@example.com
+        fax:
+          type: string
+          example: '(604) 123-1234'
+        phone:
+          type: string
+          example: '(604) 555-1234'
+        company:
+          type: string
+          example: Realtor Inc
+        address:
+          type: string
+          example: '123 Street'
+        city:
+          type: string
+          example: 'Vancouver'
+        province:
+          type: string
+          example: 'BC'
+        postalCode:
+          type: string
+          example: 'V6V1T1'
+        country:
+          type: string
+          example: 'Canada'
+        gender:
+          type: string
+          enum:
+          - unspecified
+          - male
+          - female
+          example: female
+        compensation:
+          $ref: '#/components/schemas/RealtorCompensation'
+    RealtorCompensation:
+      type: object
+      properties:
+        bonuses:
+          type: array
+          items:
+            type: number
+            example: '10000.00'
+        percentages:
+          type: array
+          items:
+            type: object
+            properties:
+              cutOff:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    enum:
+                    - under
+                    - over
+                    example: under
+                  value:
+                    type: number
+                    example: '100000'
+              margin:
+                type: number
+                description: Percentage as fraction of 100 as float, e.g. '0.0125'
+                  => 1.25%
+                example: '0.022'
+    Option:
+      type: object
+      required:
+      - name
+      - price
+      properties:
+        name:
+          type: string
+          example: 'Marble counter tops'
+        description:
+          type: string
+          example: 'Upgrade for kitchen counter tops'
+        price:
+          type: number
+          example: '1000'
+        area:
+          type: string
+          example: 'Kitchen'
+          description: >-
+            Areas have to be set up in Lasso, they are matched via string. If no area
+            is found, one will be created.
+        date:
+          type: string
+          format: date
+          example: '2017-08-29'
+        outsideContract:
+          type: boolean
+          example: true
+    Subject:
+      type: object
+      required:
+      - purchaser
+      - subjectDate
+      - description
+      properties:
+        purchaser:
+          type: string
+          example: '123'
+          description: >-
+            RegistrantId of a registrant assigned to the inventory
+        subjectDate:
+          type: string
+          format: date
+          example: '2017-08-14'
+        description:
+          type: string
+          example: 'Adjust doors that do not close properly'
+        removed:
+          type: boolean
+          example: false
+        removalDate:
+          type: string
+          format: date
+          example: '2017-08-25'
+        removalDescription:
+          type: string
+          example: 'Contractor sanded doors, all close properly now'
+    PlanTypeRead:
+      title: Plan Type (Read)
+      type: object
+      properties:
+        planTypeId:
+          type: string
+          example: 1
+        planType:
+          type: string
+          example: 'E2'
+        planPrice:
+          type: number
+          example: '13000'
+    PlanTypeWrite:
+      title: Plan Type (Write)
+      type: object
+      required:
+      - planType
+      - planPrice
+      properties:
+        planType:
+          type: string
+          minLength: 1
+          maxLength: 20
+          example: 'E2'
+        planPrice:
+          type: number
+          example: '13000'
+    InventoryPlanTypeWrite:
+      title: Inventory Plan Type (Write)
+      type: object
+      description: >-
+        Associate an inventory with a plan type by ID or by plan type. If both are
+        provided, then lookup will be by ID
+      properties:
+        planTypeId:
+          type: string
+          example: 1
+        planType:
+          type: string
+          example: 'E2'
+  responses:
+    Forbidden:
+      description: The provided authentication credentials does not have sufficient
+        privileges to access this resource
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/StandardError'
+    NotFound:
+      description: The specified resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/StandardError'
+    Unauthorized:
+      description: The request has not been fulfilled because it lacks valid authentication
+        credentials
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/StandardError'
+    BadRequest:
+      description: |
+        The request could not be processed due to invalid input:
+        - Is the request payload malformed?
+        - Are all required fields present?
+        - Are field values of the expected type (ie, number format, date format)?
+        - Are field values within the expected constraints (ie, greater than max size of string)?
+        - Are query params of the expected format?
+
+        Check the body model for more documentation on field constraints and limits.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/StandardError'
+    InternalServerError:
+      description: Receiving a 5xx response indicates an error on Lasso's end. Please
+        contact us to report the problem
+    ErrorInventoryCannotBeDeleted:
+      description: The inventory you tried to delete was either "locked" or its status
+        is not "Available"
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/StandardError'
+    ErrorInventoryAlreadySynced:
+      description: |
+        The inventory item you tried to create or sync with Lasso already exists
+        or is already synced. Right now, it is only possible to sync an inventory
+        item with Lasso once. Any subsequent changes will have to be applied
+        manually (ie, adding a note)
+
+        Alternatively, you can reset the inventory and sync again. Resetting
+        the inventory will remove any associated information (ie, deposits,
+        notes, etc). Any information that is not included in the sync will be
+        lost. In addition, there may be issues with custom reports that inspect
+        the system creation date of data (this is not related to dates included
+        in the sync, like the deposit received date). If you choose to reset
+        and sync the inventory, please ensure that you are not deleted data
+        in Lasso.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/StandardError'
+  parameters:
+    Cursor:
+      name: cursor
+      in: query
+      schema:
+        type: string
+      description: >-
+        A cursor for the next batch of registrants is providing in the metadata of
+        the body. Provide the `next` cursor as a query parameter in your next request
+        to access the next batch of registrants.
+
+        It's a base64 encoded json object with the fields `v` for version, `o` for
+        offset and `l` for limit. You don't have to create the cursor object as it
+        is embedded in the `next` link provided in the result set.
+
+        Version is an integer that indicates the layout of the cursor. Future layouts
+        may provide a different way to access parts of a result set, e.g. by providing
+        a primary key as a reference point. This prevents the missing/repeated data
+        issue with paged results, if the result set is modified during paging (e.g.
+        a registrant is added while on page 2, and when loading page 3, the last registrant
+        from page is pushed down to be the first registrant on page three and being
+        included in two result pages. The opposite happens if a registrant is deleted,
+        one result will be skipped.)
+  securitySchemes:
+    JwtAuthorizer:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

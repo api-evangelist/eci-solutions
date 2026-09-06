@@ -1,0 +1,41 @@
+overlay: 1.0.0
+info:
+  title: Lasso CRM API — API Evangelist Overlay
+  version: 1.0.0
+extends: openapi/eci-solutions-lasso-crm-openapi.yml
+x-generated: '2026-09-06'
+x-method: generated
+x-source: derived from openapi/eci-solutions-lasso-crm-openapi.yml; captures API Evangelist enhancements
+  only. The original contract is NEVER mutated.
+x-note: 'The Lasso contract is otherwise complete on operationIds, but four of them are wrong: two are
+  swapped between the verbs on one path, one has a doubled letter, and one names a search operation on
+  a create route. 44 of 68 operations carry no summary.'
+x-operations-missing-operationid: 0
+actions:
+- target: $.info
+  description: Add a contact block; the published Lasso contract has none. API keys are issued by a Lasso
+    business contact, so the support page is the correct entry point.
+  update:
+    contact:
+      name: ECI Solutions — Lasso CRM
+      url: https://www.ecisolutions.com/support/
+- target: $.paths['/registrants/{registrantId}/person/contact-information'].put
+  description: 'DEFECT IN THE PUBLISHED CONTRACT: the operationIds on this path pair are swapped — the
+    PUT carries get_registrants_contact_information and the GET carries put_registrants_contact_information.
+    Any generated client binds the wrong name to the wrong verb. Corrected here.'
+  update:
+    operationId: put_registrants_contact_information
+- target: $.paths['/registrants/{registrantId}/person/contact-information'].get
+  description: Second half of the swapped-operationId correction above.
+  update:
+    operationId: get_registrants_contact_information
+- target: $.paths['/registrants/{registrantId}/relationships'].post
+  description: 'Typo in the published contract: operationId is "postt_registrants_relationships" with
+    a doubled t.'
+  update:
+    operationId: post_registrants_relationships
+- target: $.paths['/inventory'].post
+  description: The published operationId for POST /inventory is "post_inventory_search", which names a
+    different operation. Per the changelog (v1.0.31) this route creates an inventory record.
+  update:
+    operationId: post_inventory

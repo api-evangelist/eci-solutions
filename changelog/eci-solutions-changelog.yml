@@ -1,0 +1,88 @@
+generated: '2026-09-06'
+method: searched
+source: https://platform.lassocrm.com/api/changelog/CHANGELOG.md
+provider: ECI Solutions
+providerId: eci-solutions
+coverage: partial
+note: >-
+  Exactly one of ECI's eighteen public contracts publishes a change log: Lasso CRM, in Keep a
+  Changelog format, fetched anonymously at HTTP 200 and rendered from the API reference's version
+  stamp. None of the fourteen ECI Manufacturing Integration Engine APIs publishes one — their only
+  version signal is a build stamp inside info.version that changes with no note attached. The Lasso
+  log is also STALE: its newest entry is v1.0.38 dated 2019-12-03, while the spec served today at
+  platform.lassocrm.com/api/lasso.yml declares info.version 1.0.39. Whatever changed in 1.0.39 is
+  not written down.
+logs:
+  - api: eci-solutions:eci-solutions-lasso-crm
+    url: https://platform.lassocrm.com/api/changelog/index.html
+    raw: https://platform.lassocrm.com/api/changelog/CHANGELOG.md
+    status: 200
+    format: keep-a-changelog
+    scheme: semver-ish (v1.0.x)
+    current_spec_version: 1.0.39
+    latest_logged_version: v1.0.38
+    latest_logged_date: '2019-12-03'
+    entry_count: 38
+    categories_used: [Added, Fixed, Updated, Moved, Model Changes]
+    entries:
+      - version: v1.0.38
+        date: '2019-12-03'
+        breaking: false
+        additions:
+          - GET /projects/appointments — fetch all project appointments
+      - version: v1.0.37
+        date: '2019-10-24'
+        breaking: false
+        additions:
+          - POST /registrants/{registrantId}/website-tracking/ — add a registrant's website tracking details
+        highlights:
+          - POST /registrants/{registrantId}/questions gained single-select and multi-select question types
+      - version: v1.0.36
+        date: '2019-02-14'
+        breaking: false
+        highlights:
+          - Fixed — the free Lasso Registration API key no longer fails to authenticate on POST /registrants (regression from v1.0.35)
+          - Fixed — null values handled on registrant questions; Checkbox type corrected
+      - version: v1.0.35
+        date: '2019-02-06'
+        breaking: false
+        additions:
+          - GET /project/settings — get the project's available settings
+        highlights:
+          - Non-numeric input on numeric fields now returns 406 instead of failing
+          - Null isPrimary in assignedSalesReps no longer 500s
+      - version: v1.0.34
+        date: '2019-01-22'
+        breaking: false
+        additions:
+          - GET/POST /inventory/plans, GET/PUT /inventory/plans/{planTypeId}
+          - GET/PUT /inventory/{inventoryId}/plans
+        highlights:
+          - Contact-information fields now enforce min/max length and return 400 when violated
+      - version: v1.0.31
+        date: '2018-10-30'
+        breaking: true
+        additions:
+          - POST/PUT/DELETE /inventory and /inventory/{inventoryId}
+          - GET/PUT /inventory/{inventoryId}/purchasers
+          - GET/POST /inventory/{inventoryId}/pricing-revisions
+          - POST/PUT/DELETE /registrants/{registrantId}/relationships
+        highlights:
+          - "Model change — planPrice REMOVED from Inventory.Pricing"
+          - "Model change — pricing revisions MOVED off the Pricing model onto their own routes"
+      - version: v1.0.29
+        date: '2018-09-27'
+        breaking: true
+        highlights:
+          - "Moved — PUT /inventory/{inventoryId} became PUT /inventory/{inventoryId}/sync"
+missing:
+  - api: eci-solutions:eci-solutions-platform
+    note: No change log. ERP v1, v2 and v2.1 are served concurrently; the only version signal is info.version 3.5.585+b1e45fd230.
+  - api: eci-solutions:eci-solutions-jobboss2
+    note: No change log.
+  - api: eci-solutions:eci-solutions-m1
+    note: No change log for a 1,208-operation contract.
+  - api: eci-solutions:eci-solutions-integration-management
+    note: >-
+      No change log, and the spec description carries an undated breaking-change warning —
+      "This API is undergoing breaking changes. Please contact the team with any questions."

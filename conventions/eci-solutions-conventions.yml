@@ -1,0 +1,225 @@
+generated: '2026-09-06'
+method: searched
+source: >-
+  the info.description conventions sections published inside
+  openapi/eci-solutions-erp-v2-1-openapi.json, openapi/eci-solutions-jobboss2-openapi.json,
+  openapi/eci-solutions-m1-openapi.json, openapi/eci-solutions-authentication-openapi.json,
+  openapi/eci-solutions-management-openapi.json and openapi/eci-solutions-lasso-crm-openapi.yml,
+  cross-checked against the operations and securitySchemes in all 18 harvested contracts
+provider: ECI Solutions
+providerId: eci-solutions
+note: >-
+  ECI does not run one API — it runs a federation. The ECI Manufacturing Integration Engine family
+  (ERP, JobBOSS², M1, Management, Authentication, Payment, Financial, Ecommerce, Einvoice, Currency,
+  Shipping, AP/AR Commerce, Office, Notification) shares an auth model and a filter grammar but not
+  a pagination scheme; Lasso CRM shares nothing with it. Read every section below per family.
+authentication:
+  style: oauth2-client-credentials
+  detail: >-
+    Fifteen contracts declare OAuth 2.0 client credentials against
+    https://api-user.integrations.ecimanufacturing.com/oauth2/api-user/token with the single scope
+    `openid`. Tokens are valid for exactly 3,600 seconds; there is NO refresh token, so a client
+    caches the access token and re-presents the client id and secret when it expires. The
+    Authentication and Management APIs additionally accept an OpenID Connect id_token from the ECI
+    Cognito user pool (for administrators, product managers and company managers) or an API key over
+    HTTP Basic. Lasso CRM is separate: a per-project or per-location Bearer JWT API key obtained
+    from a Lasso business contact. The Notification API is the only contract using two token issuers
+    at once — Integration Engine tokens to create notifications, Nexus Auth0 user tokens to read
+    them.
+  artifact: authentication/eci-solutions-authentication.yml
+  scopes: scopes/eci-solutions-scopes.yml
+idempotency:
+  coverage: partial
+  scope:
+    - POST /api/v2/general-journal-entries (Financial v2 — "Create (or update) general journal entry")
+    - POST /api/v2/bills (Financial v2 — "Create (or update) a bill")
+    - POST /api/v2/purchase-journal-entries (Financial v2 — "Create (or update) a purchase journal entry")
+    - POST /api/v2/customers (Financial v2 — "Create a new customer, or update an existing one")
+    - POST /api/v2/invoices (Financial v2 — "Create (or update) a sales invoice")
+    - POST /api/v2/orders (Financial v2 — "Create (or update) an order")
+    - POST /api/v2/sales-journal-entries (Financial v2 — "Create (or update) sales journal entry")
+  header: null
+  retention: null
+  detail: >-
+    There is NO Idempotency-Key header anywhere in ECI's eighteen contracts, and no documented
+    replay-protection mechanism. What exists is upsert-by-natural-key on seven named Financial
+    Integration v2 write operations, whose published summaries say "Create (or update)" — replaying
+    those is safe by construction. Every other write in the estate is at-least-once unsafe: POST
+    /api/v2.1/sales-orders, POST /api/v2.1/timecards/clock-in, POST /api/v2.1/jobs/{uniqueID}/
+    part-production, POST /registrants and the ~360 other creating operations will produce duplicate
+    records on a retried request. An agent driving ECI writes must dedupe on its own side.
+pagination:
+  detail: Four different schemes across the estate; there is no house style.
+  schemes:
+    - style: take/skip
+      params: [take, skip]
+      applies_to: [ERP v1/v2/v2.1, JobBOSS², Management, Einvoice, Notification, Financial v1]
+      default: take=200 (JobBOSS², stated in the spec description)
+      response_fields: [data, count]
+      note: >-
+        The ERP API adds a `count` parameter with three modes — 0 data only (default), 1 total count
+        only, 2 data plus total count ignoring paging. That is a real, documented way to get a total
+        without walking pages.
+    - style: top/skip
+      params: [top, skip]
+      applies_to: [AP/AR Commerce, Management (some operations)]
+    - style: page-size
+      params: [pageSize]
+      applies_to: [M1 Public API]
+    - style: cursor
+      params: [nextPageToken]
+      applies_to: [Office Integration API]
+      note: Inherited from the Microsoft Graph surface it proxies.
+    - style: none
+      applies_to: [Lasso CRM]
+      note: >-
+        Lasso list endpoints (GET /registrants, GET /inventory, GET /registrants/search,
+        GET /inventory/search) declare no paging parameters in the contract.
+filtering:
+  detail: >-
+    Documented filter grammar, uniform across the ERP and JobBOSS² APIs and near-identical on M1.
+  syntax: fieldName[operator]=value
+  m1_syntax: M1Field[operator]value
+  operators: [eq, ne, gt, gte, lt, lte, in, notin, "null (JobBOSS² only)"]
+  note: >-
+    Equality may omit the operator (?firstName=Jane). `in`/`notin` take pipe-separated lists.
+    JobBOSS² documents one landmine: fieldName[NULL]=true on `revisedDate` always returns 500,
+    because that field can never be null.
+sorting:
+  syntax: sort=+field,-field
+  applies_to: [ERP, JobBOSS²]
+  note: "+ ascending, - descending, comma-separated; prefix optional."
+field_selection:
+  syntax: fields=fieldOne,fieldTwo
+  applies_to: [ERP, JobBOSS²]
+  note: >-
+    Most GET requests deliberately do NOT return all available fields by default; each resource
+    documents its default field set. This is sparse-fieldsets by design, not an optimisation.
+expansion:
+  syntax: expand=relationship_name(fields=a,b)
+  applies_to: [ERP v2.1]
+  note: >-
+    Nestable — expand=timecard(expand=employee). Supported relationships are listed per resource.
+    This is the closest thing ECI has to a graph traversal; see data-model/.
+change_tracking:
+  field: rowVersion
+  type: int64
+  applies_to: [ERP v1/v2/v2.1]
+  detail: >-
+    A 64-bit signed integer that always increases; new and updated records receive a value higher
+    than any other record in the source. Polling `rowVersion[gt]=<last seen>` is the documented way
+    to pull deltas out of an ECI ERP. This matters because ECI publishes no webhooks on the ERP
+    side — rowVersion polling is the ONLY incremental sync mechanism available.
+identity:
+  field: uniqueID
+  detail: >-
+    Uniquely identifies a record in the source system but is NOT globally unique — guaranteed unique
+    only for the same resource within the same company account. Underlying type varies by ERP:
+    Macola GUID, M1 GUID, JobBOSS² Int32. Also note the ERP spec's own warning that CompanyID does
+    not uniquely identify the ERP instance being reached; call GET /api/v2.1/user-info to learn
+    which product and company the token is bound to.
+dates:
+  erp_jobboss2: >-
+    JobBOSS² assumes and returns UTC (yyyy-MM-ddTHH:mm:ssZ or yyyy-MM-dd). M1 assumes and returns
+    LOCAL time (yyyy-MM-ddTHH:mm:ss or yyyy-MM-dd). The two sibling APIs disagree, which is a real
+    integration hazard.
+  convert_to_utc: >-
+    The ERP API exposes a ConvertToUTC=yes query parameter because the source timezone varies by ERP
+    and sometimes by data source; supported fields are listed per resource.
+currency:
+  detail: >-
+    JobBOSS² Quote and QuoteLineItem carry paired fields — price1/price1Foreign,
+    miscCharge/miscChargeForeign. The non-Foreign field is the company's currency, the Foreign field
+    is the customer's. On POST or PATCH you may set exactly ONE of the pair; the other is computed
+    from the exchange rate. Sending both is not supported.
+versioning:
+  detail: See lifecycle/eci-solutions-lifecycle.yml — path-segment versioning, three concurrent ERP versions.
+error_envelope:
+  detail: See errors/eci-solutions-problem-types.yml — RFC 7807-shaped, never application/problem+json, three different envelopes.
+request_id:
+  detail: >-
+    JobBOSS² returns a TraceId inside its error envelope, which is the only correlation identifier
+    published anywhere in the estate. No request-id REQUEST header is documented, and no other
+    contract returns a trace field.
+rate_limit_signalling:
+  detail: >-
+    Limits are documented in prose only (see rate-limits/eci-solutions-rate-limits.yml). No contract
+    declares RateLimit-*, X-RateLimit-* or Retry-After response headers, and only Financial v2
+    declares a 429 at all. A client discovers exhaustion by getting an error, not by reading a
+    header.
+dry_run_mode:
+  supported: none
+  detail: >-
+    No preview, validate-only, simulate or dry-run parameter exists on any write operation in any of
+    the eighteen contracts. An agent cannot rehearse an ECI write.
+reversibility:
+  grade: documented
+  detail: >-
+    Reversal paths exist for the record-creating flows, and NOT ONE of them carries a stated window.
+    ECI publishes no time limit, no grace period and no restore endpoint anywhere, so this is
+    documented (0.4) and cannot be verified (1.0). Recording an invented window here would be the
+    most expensive possible error in this artifact, so none is asserted.
+  surfaces:
+    - write: POST /api/v1/customers (AP/AR Commerce)
+      reversal: DELETE /api/v1/customers/{id}
+      window: null
+      window_source: null
+    - write: POST /api/v1/customers/{id}/invoices (AP/AR Commerce)
+      reversal: DELETE /api/v1/customers/{id}/invoices/{invoiceId}
+      window: null
+    - write: POST /api/v1/customers/{id}/sales-orders (AP/AR Commerce)
+      reversal: DELETE /api/v1/customers/{id}/sales-orders/{salesOrderId}
+      window: null
+    - write: POST /api/v1/vendors (AP/AR Commerce)
+      reversal: DELETE /api/v1/vendors/{id}
+      window: null
+    - write: POST /api/v1/vendors/{id}/payments (AP/AR Commerce)
+      reversal: DELETE /api/v1/vendor-payments/{id}
+      window: null
+      note: >-
+        A vendor payment moves money through Nuvei's Commerce Portal. The contract offers a hard
+        DELETE and states nothing at all about whether it is possible after settlement, or by when.
+        Treat this as unreversible in an agent policy until ECI documents the window.
+    - write: POST /registrants (Lasso CRM)
+      reversal: none
+      window: null
+      note: >-
+        There is no DELETE /registrants/{registrantId}. Sub-records can be deleted individually
+        (emails, phones, addresses, notes, relationships, appointments) but the registrant itself
+        cannot be removed through the API. DELETE /registrants/{registrantId}/external/{externalId}
+        only detaches an integration mapping.
+    - write: POST /inventory (Lasso CRM)
+      reversal: DELETE /inventory/{inventoryId}
+      window: null
+      note: POST /inventory/{inventoryId}/reset also exists but the contract does not say what it restores.
+    - write: POST /api/v2.1/sales-orders (ECI Manufacturing ERP)
+      reversal: none
+      window: null
+      note: >-
+        The ERP API is create-and-patch only. There is no DELETE on jobs, sales orders, sales order
+        lines, parts, part revisions, work centers, locations, organizations, contacts, timecards or
+        timecard lines. Once an agent posts an ERP record it cannot take it back through the API.
+    - write: POST /api/v2.1/timecards/clock-in (ECI Manufacturing ERP)
+      reversal: POST /api/v2.1/timecards/clock-out
+      window: null
+      note: >-
+        Semantically the closing half of the pair rather than a true undo — it completes the
+        timecard, it does not remove it.
+    - write: POST /api/payment/accountVaultTransaction (Payment API)
+      reversal: none
+      window: null
+      note: >-
+        The Payment API charges an account vault through Paya and publishes NO refund, void or
+        reversal operation. PUT /api/payment/updateauthonlytransaction completes an auth-only
+        transaction (it captures, it does not release). DELETE /api/accountvault removes a stored
+        payment instrument, not a charge.
+  read_only_surfaces:
+    - openapi/eci-solutions-currency-openapi.json
+    - openapi/eci-solutions-erp-v1-openapi.json
+    - openapi/eci-solutions-erp-v2-openapi.json
+cross_links:
+  errors: errors/eci-solutions-problem-types.yml
+  lifecycle: lifecycle/eci-solutions-lifecycle.yml
+  authentication: authentication/eci-solutions-authentication.yml
+  rate_limits: rate-limits/eci-solutions-rate-limits.yml
+  data_model: data-model/eci-solutions-data-model.yml

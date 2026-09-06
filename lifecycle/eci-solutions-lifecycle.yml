@@ -1,0 +1,86 @@
+generated: '2026-09-06'
+method: searched
+source: >-
+  https://integrations.ecimanufacturing.com/ , the info.version and deprecated flags in openapi/,
+  https://platform.lassocrm.com/api/changelog/CHANGELOG.md , https://www.ecisolutions.com/support/
+provider: ECI Solutions
+providerId: eci-solutions
+versioning:
+  scheme: path-segment major/minor
+  detail: >-
+    Version is carried in the URL path (/api/v1/, /api/v2/, /api/v2.1/ on the ERP API; /api/v1/ on
+    JobBOSS², M1, Payment, AP/AR Commerce; /api/v2/ on Financial v2; /v1 in the Lasso server URL).
+    Three ERP versions and two Financial versions are served concurrently from the same host, so a
+    consumer pins by path and is not forced to move.
+  build_stamps: >-
+    info.version on the Integration Engine contracts is a real build identifier, not a marketing
+    number — ERP 3.5.585+b1e45fd230, Management and Authentication 2.22.273+b02c1dfd00, Payment
+    2.9.29+ff43d60aad, Shipping 1.3.6+a49f73049e, Notification 1.0.54+b21b1bcedd. The portal itself
+    reports version 0.1.70-preview+164d1b5537 in config.js.
+  environments:
+    published_in: https://integrations.ecimanufacturing.com/shared.js
+    values: [Development, Staging, Production]
+    regions: [us-east-1, us-gov-west-1]
+    note: >-
+      The portal manifest declares which environments and AWS regions each API is available in. The
+      ERP, JobBOSS², M1, Management and Authentication APIs are the five published in us-gov-west-1
+      as well as us-east-1 — a GovCloud footprint consistent with ECI's public CMMC 2.0 readiness
+      claim for JobBOSS and M1.
+deprecation:
+  policy_published: false
+  sunset_header: false
+  deprecation_header: false
+  detail: >-
+    ECI publishes no written deprecation or sunset policy, and no contract declares RFC 8594 Sunset
+    or Deprecation response headers. Deprecation is signalled only by the OpenAPI `deprecated: true`
+    flag on individual operations, which is real but silent at runtime.
+  deprecated_operations:
+    - spec: openapi/eci-solutions-erp-v1-openapi.json
+      operation: POST /api/v1/Account/authenticate
+    - spec: openapi/eci-solutions-financial-v1-openapi.json
+      operation: POST /api/account/authenticate
+    - spec: openapi/eci-solutions-payment-openapi.json
+      operation: POST /api/account/authenticate
+  note: >-
+    All three deprecated operations are the same thing: the old per-API username/password
+    authenticate endpoint, superseded by the central OAuth 2.0 client-credentials token endpoint on
+    api-user.integrations.ecimanufacturing.com. The Management API description also warns in prose
+    "This API is undergoing breaking changes. Please contact the team with any questions." — a
+    breaking-change notice with no dated schedule attached.
+change_log:
+  published: partial
+  detail: >-
+    Only Lasso CRM publishes a dated change log
+    (https://platform.lassocrm.com/api/changelog/CHANGELOG.md, HTTP 200, Keep a Changelog format).
+    Its last dated entry is v1.0.38 on 2019-12-03 while the served spec is info.version 1.0.39, so
+    the current version is not in the log. No ECI Manufacturing Integration Engine API publishes a
+    change log at all; the only version signal is the build stamp in info.version, which changes
+    without a note.
+  artifact: changelog/eci-solutions-changelog.yml
+status_page:
+  published: false
+  detail: >-
+    No status page found. status.ecisolutions.com does not resolve (DNS NXDOMAIN); no status,
+    uptime, trust-status or incident-history link appears on www.ecisolutions.com, in
+    www.ecisolutions.com/llms.txt, on the ECI Manufacturing developer portal, or on
+    trust.ecisolutions.com. No StatusPage pointer is emitted, because there is nothing to point at.
+sla:
+  published: false
+  detail: >-
+    No public SLA or uptime commitment. Support is an authenticated Salesforce Community
+    (customerportal.ecisolutions.com) reached from https://www.ecisolutions.com/support/.
+support:
+  url: https://www.ecisolutions.com/support/
+  portal: https://customerportal.ecisolutions.com/
+  api_contact: mfg-integration-support@ecisolutions.com
+  note: >-
+    The API-specific contact comes from the Integration Engine security.txt; the spec info.contact
+    blocks name "ECI Manufacturing Integration Team" / "ECI Support" and link to the general support
+    page rather than an address.
+activation_gate:
+  detail: >-
+    "All APIs must be activated by ECI before use. Please contact your Account Manager or support
+    for more information on activating APIs." — stated on the developer-portal landing page. The
+    CONTRACTS are public and anonymously readable; the CREDENTIALS are not self-serve. JobBOSS² API
+    access is further limited to hosted (Cloud) customers, and M1 hosted customers must connect
+    through the Integration Engine.

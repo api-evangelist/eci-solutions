@@ -1,0 +1,4787 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Ecommerce.API",
+    "version": "1.0"
+  },
+  "paths": {
+    "/api/v1/customers": {
+      "get": {
+        "tags": [
+          "Customer"
+        ],
+        "summary": "Get a list of customers.",
+        "operationId": "GetCustomers",
+        "parameters": [
+          {
+            "name": "take",
+            "in": "query",
+            "description": "Maximum number of records to return. Default: 100. Max: 100.",
+            "schema": {
+              "maximum": 100,
+              "minimum": 1,
+              "type": "integer",
+              "format": "int32",
+              "default": 100
+            }
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "description": "The value from which to start taking records. Default: 0.",
+            "schema": {
+              "maximum": 2147483647,
+              "minimum": 0,
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          },
+          {
+            "name": "customerIds",
+            "in": "query",
+            "description": "Comma-separated list of one or more Customer Ids from the Ecommerce system.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "companyName",
+            "in": "query",
+            "description": "The company name by which to search for the customer",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "accountNumber",
+            "in": "query",
+            "description": "The company name by which to search for the customer",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EcommerceCustomerResponseListResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EcommerceCustomerResponseListResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EcommerceCustomerResponseListResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Customer"
+        ],
+        "summary": "Create a new customer with addresses.",
+        "operationId": "CreateCustomer",
+        "requestBody": {
+          "description": "EcommerceCustomerRequest",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EcommerceCustomerRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EcommerceCustomerRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/EcommerceCustomerRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EcommerceCustomerWithAddressResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EcommerceCustomerWithAddressResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EcommerceCustomerWithAddressResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/customers/{customerId}": {
+      "get": {
+        "tags": [
+          "Customer"
+        ],
+        "summary": "Get a single customer by Id.",
+        "operationId": "GetCustomer",
+        "parameters": [
+          {
+            "name": "customerId",
+            "in": "path",
+            "description": "The unique value by which to search for the customer.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EcommerceCustomerResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EcommerceCustomerResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EcommerceCustomerResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Customer"
+        ],
+        "summary": "Update a single customer by Id.",
+        "operationId": "UpdateCustomer",
+        "parameters": [
+          {
+            "name": "customerId",
+            "in": "path",
+            "description": "The unique value by which to find the customer to update.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "The values with which to update the customer.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EcommerceCustomerUpdateRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EcommerceCustomerUpdateRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/EcommerceCustomerUpdateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EcommerceCustomerResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EcommerceCustomerResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EcommerceCustomerResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/customers/{customerId}/addresses": {
+      "get": {
+        "tags": [
+          "Customer"
+        ],
+        "summary": "Get a list of customer addresses.",
+        "operationId": "GetAddresses",
+        "parameters": [
+          {
+            "name": "customerId",
+            "in": "path",
+            "description": "The unique value by which to search for the customer.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "take",
+            "in": "query",
+            "description": "Maximum number of records to return. Default: 100. Max: 100.",
+            "schema": {
+              "maximum": 100,
+              "minimum": 1,
+              "type": "integer",
+              "format": "int32",
+              "default": 100
+            }
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "description": "The value from which to start taking records. Default: 0.",
+            "schema": {
+              "maximum": 2147483647,
+              "minimum": 0,
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          },
+          {
+            "name": "addressIds",
+            "in": "query",
+            "description": "Comma-separated list of one or more Address Ids from the Ecommerce system.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "description": "Valid values are AllPurpose = 0, Billing = 1, Shipping = 2.\r\nIf no types are specified, all addresses will be returned.",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EcommerceCustomerAddressResponseListResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EcommerceCustomerAddressResponseListResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EcommerceCustomerAddressResponseListResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Customer"
+        ],
+        "summary": "Create an address for a customer by Id.",
+        "operationId": "CreateAddress",
+        "parameters": [
+          {
+            "name": "customerId",
+            "in": "path",
+            "description": "The unique value by which to find the customer to create an address.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "EcommerceAddress",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EcommerceAddress"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EcommerceAddress"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/EcommerceAddress"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EcommerceAddressResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EcommerceAddressResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EcommerceAddressResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/customers/{customerId}/addresses/{addressId}": {
+      "patch": {
+        "tags": [
+          "Customer"
+        ],
+        "summary": "Update an address for a customer.",
+        "operationId": "UpdateAddress",
+        "parameters": [
+          {
+            "name": "customerId",
+            "in": "path",
+            "description": "The unique value by which to find the customer to update an address.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "addressId",
+            "in": "path",
+            "description": "The unique value by which to find the customer address to update.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "EcommerceUpdateAddressRequest",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EcommerceUpdateAddressRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EcommerceUpdateAddressRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/EcommerceUpdateAddressRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EcommerceAddressResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EcommerceAddressResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EcommerceAddressResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/customers/{customerId}/contract-pricing": {
+      "put": {
+        "tags": [
+          "Customer"
+        ],
+        "summary": "Create or update the customer contract pricing.",
+        "operationId": "AddUpdateCustomerContractPricing",
+        "parameters": [
+          {
+            "name": "customerId",
+            "in": "path",
+            "description": "The unique value by which to find the customer to add or update contract pricing.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "EcommerceCustomerContractPricingRequest",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EcommerceCustomerContractPricingRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EcommerceCustomerContractPricingRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/EcommerceCustomerContractPricingRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "No Content"
+          }
+        }
+      }
+    },
+    "/api/v1/customers/{customerId}/product-aliases": {
+      "get": {
+        "tags": [
+          "Customer"
+        ],
+        "summary": "Get a list of customer product aliases by Id.",
+        "operationId": "GetCustomerProductAliasesByCustomerId",
+        "parameters": [
+          {
+            "name": "customerId",
+            "in": "path",
+            "description": "The unique value by which to search for the customer.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "take",
+            "in": "query",
+            "description": "Maximum number of records to return. Default: 100. Max: 100.",
+            "schema": {
+              "maximum": 100,
+              "minimum": 1,
+              "type": "integer",
+              "format": "int32",
+              "default": 100
+            }
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "description": "The product alias value from which to start taking records.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sku",
+            "in": "query",
+            "description": "",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EcommerceCustomerProductAliasesResponseProductAliasesListResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EcommerceCustomerProductAliasesResponseProductAliasesListResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EcommerceCustomerProductAliasesResponseProductAliasesListResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Customer"
+        ],
+        "summary": "Create a customer product alias by Id.",
+        "operationId": "CreateCustomerProductAlias",
+        "parameters": [
+          {
+            "name": "customerId",
+            "in": "path",
+            "description": "The unique value by which to find the customer to create a product alias.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "EcommerceCustomerProductAliasRequest",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EcommerceCustomerProductAliasRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EcommerceCustomerProductAliasRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/EcommerceCustomerProductAliasRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EcommerceCustomerProductAliasResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EcommerceCustomerProductAliasResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EcommerceCustomerProductAliasResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Customer"
+        ],
+        "summary": "Update a customer product alias by Id.",
+        "operationId": "UpdateCustomerProductAlias",
+        "parameters": [
+          {
+            "name": "customerId",
+            "in": "path",
+            "description": "The unique value by which to find the customer to update a product alias.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "EcommerceUpdateCustomerProductAliasRequest",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EcommerceUpdateCustomerProductAliasRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EcommerceUpdateCustomerProductAliasRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/EcommerceUpdateCustomerProductAliasRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EcommerceCustomerProductAliasResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EcommerceCustomerProductAliasResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EcommerceCustomerProductAliasResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Customer"
+        ],
+        "summary": "Delete a single customer product aliases by customer Id.",
+        "operationId": "DeleteCustomerProductAliases",
+        "parameters": [
+          {
+            "name": "customerId",
+            "in": "path",
+            "description": "The unique value by which to find the customer product aliases to delete.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "alias",
+            "in": "query",
+            "description": "",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sku",
+            "in": "query",
+            "description": "",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        }
+      }
+    },
+    "/api/v1/evox/erp-customer-balance-lookup": {
+      "post": {
+        "tags": [
+          "EvoX"
+        ],
+        "summary": "Get live customer A/R balances from the ERP",
+        "operationId": "RequestCustomerBalanceLookup",
+        "requestBody": {
+          "description": "A model containing the customer account for which to request the A/R balance.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ErpCustomerBalanceRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ErpCustomerBalanceRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ErpCustomerBalanceRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErpCustomerBalanceResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErpCustomerBalanceResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErpCustomerBalanceResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/evox/erp-customer-lookup": {
+      "post": {
+        "tags": [
+          "EvoX"
+        ],
+        "summary": "Get customer live from the ERP.",
+        "operationId": "ErpCustomerLookup",
+        "requestBody": {
+          "description": "A model containing the customer account for which to request customer.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ErpCustomerLookupRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ErpCustomerLookupRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ErpCustomerLookupRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErpCustomerLookupResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErpCustomerLookupResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErpCustomerLookupResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/evox/erp-inventory-lookup": {
+      "post": {
+        "tags": [
+          "EvoX"
+        ],
+        "summary": "Get inventory items from the ERP.",
+        "operationId": "RequestErpInventoryLookup",
+        "requestBody": {
+          "description": "A model containing the customer account and list of items sku for which to request inventory items.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ErpProductInventoryRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ErpProductInventoryRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ErpProductInventoryRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErpProductInventoryListResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErpProductInventoryListResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErpProductInventoryListResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/evox/erp-invoice-document-lookup": {
+      "post": {
+        "tags": [
+          "EvoX"
+        ],
+        "summary": "Get an invoice document from the ERP.",
+        "operationId": "ErpInvoiceDocument",
+        "requestBody": {
+          "description": "A model containing the customer account and document information to look up.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ErpInvoiceDocumentRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ErpInvoiceDocumentRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ErpInvoiceDocumentRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErpInvoiceDocumentResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErpInvoiceDocumentResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErpInvoiceDocumentResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/evox/erp-invoice-lookup-by-id": {
+      "post": {
+        "tags": [
+          "EvoX"
+        ],
+        "summary": "Get invoice by id from the ERP.",
+        "operationId": "ErpInvoiceLookupById",
+        "requestBody": {
+          "description": "A model containing the customer account and invoice id for which to get invoice information.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ErpInvoiceLookupByIdRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ErpInvoiceLookupByIdRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ErpInvoiceLookupByIdRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErpInvoiceLookupByIdResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErpInvoiceLookupByIdResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErpInvoiceLookupByIdResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/evox/erp-invoice-lookup": {
+      "post": {
+        "tags": [
+          "EvoX"
+        ],
+        "summary": "Get Invoices from the ERP.",
+        "operationId": "LookupErpInvoiceHistory",
+        "requestBody": {
+          "description": "A model containing the customer account and start and end date filters for which to request orders.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ErpInvoiceHistoryRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ErpInvoiceHistoryRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ErpInvoiceHistoryRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErpInvoiceHistoryResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErpInvoiceHistoryResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErpInvoiceHistoryResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/evox/erp-order-lookup-by-id": {
+      "post": {
+        "tags": [
+          "EvoX"
+        ],
+        "summary": "Get customer order by id from the ERP.",
+        "operationId": "LookupErpOrderHistoryById",
+        "requestBody": {
+          "description": "A model containing the customer account and sellere reference and order id for which to request order.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ErpOrderHistoryByIdRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ErpOrderHistoryByIdRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ErpOrderHistoryByIdRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErpOrderHistoryByIdResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErpOrderHistoryByIdResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErpOrderHistoryByIdResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/evox/erp-order-lookup": {
+      "post": {
+        "tags": [
+          "EvoX"
+        ],
+        "summary": "Get customer orders from the ERP.",
+        "operationId": "LookupErpOrderHistory",
+        "requestBody": {
+          "description": "A model containing the customer account and start and end date filters for which to request orders.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ErpOrderHistoryRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ErpOrderHistoryRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ErpOrderHistoryRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErpOrderHistoryResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErpOrderHistoryResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErpOrderHistoryResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/evox/erp-pricing-lookup": {
+      "post": {
+        "tags": [
+          "EvoX"
+        ],
+        "summary": "Get live item pricing from the ERP.",
+        "operationId": "RequestErpPricingLookup",
+        "requestBody": {
+          "description": "A model containing the customer account and list of item SKUs for which to request pricing.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ErpProductPricingRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ErpProductPricingRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ErpProductPricingRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErpProductPricingListResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErpProductPricingListResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErpProductPricingListResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/evox/erp-purchased-product-lookup": {
+      "post": {
+        "tags": [
+          "EvoX"
+        ],
+        "summary": "Get live recent purchased items from the ERP.",
+        "operationId": "LookupErpPurchasedProducts",
+        "requestBody": {
+          "description": "A model containing the customer account and start and end date filters for which to request recent purchased items.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ErpPurchasedProductRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ErpPurchasedProductRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ErpPurchasedProductRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErpPurchasedProductListResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErpPurchasedProductListResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErpPurchasedProductListResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/evox/erp-shipping-method-lookup": {
+      "post": {
+        "tags": [
+          "EvoX"
+        ],
+        "summary": "Get checkout shipping methods from the ERP.",
+        "operationId": "ErpShippingMethodLookup",
+        "requestBody": {
+          "description": "A model containing the customer account and list of items for which to request shipping method information.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ErpShippingMethodRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ErpShippingMethodRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ErpShippingMethodRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ShippingMethodResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ShippingMethodResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ShippingMethodResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/evox/erp-tax-lookup": {
+      "post": {
+        "tags": [
+          "EvoX"
+        ],
+        "summary": "Get checkout tax from the ERP.",
+        "operationId": "ErpCheckoutTaxLookup",
+        "requestBody": {
+          "description": "A model containing the customer account and list of item SKUs for which to request tax information.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ErpCheckoutTaxRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ErpCheckoutTaxRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ErpCheckoutTaxRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErpCheckoutTaxResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErpCheckoutTaxResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErpCheckoutTaxResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/evox/process-order-payment": {
+      "post": {
+        "tags": [
+          "EvoX"
+        ],
+        "summary": "Submit a payment for an existing order to the ERP for processing.",
+        "operationId": "ProcessErpOrderPayment",
+        "requestBody": {
+          "description": "A model containing the order payment details necessary for processing by the ERP.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ErpProcessCustomerOrderPaymentRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ErpProcessCustomerOrderPaymentRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ErpProcessCustomerOrderPaymentRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErpOrderPaymentCreateResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErpOrderPaymentCreateResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErpOrderPaymentCreateResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/evox/process-order": {
+      "post": {
+        "tags": [
+          "EvoX"
+        ],
+        "summary": "Submit a created order to the ERP for processing.",
+        "operationId": "ProcessErpOrder",
+        "requestBody": {
+          "description": "A model containing the created order details necessary for processing by the ERP.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ErpProcessOrderRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ErpProcessOrderRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ErpProcessOrderRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErpProcessOrderResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErpProcessOrderResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErpProcessOrderResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/product-location-quantities": {
+      "put": {
+        "tags": [
+          "ProductLocationQuantity"
+        ],
+        "summary": "The bulk create or update product inventory.",
+        "operationId": "AddUpdateProductInventory",
+        "requestBody": {
+          "description": "The list with which to create or update the product inventory and the current limit are set to 750.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/EcommerceProductInventoryRequest"
+                }
+              }
+            },
+            "text/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/EcommerceProductInventoryRequest"
+                }
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/EcommerceProductInventoryRequest"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        }
+      }
+    },
+    "/api/v1/products": {
+      "get": {
+        "tags": [
+          "Product"
+        ],
+        "summary": "Get a list of products.",
+        "operationId": "GetProducts",
+        "parameters": [
+          {
+            "name": "take",
+            "in": "query",
+            "description": "Maximum number of records to return. Default: 100. Max: 100.",
+            "schema": {
+              "maximum": 100,
+              "minimum": 1,
+              "type": "integer",
+              "format": "int32",
+              "default": 100
+            }
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "description": "The value from which to start taking records. Default: 0.",
+            "schema": {
+              "maximum": 2147483647,
+              "minimum": 0,
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          },
+          {
+            "name": "skus",
+            "in": "query",
+            "description": "Comma-separated list of one or more SKUs.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "productIds",
+            "in": "query",
+            "description": "Comma-separated list of one or more Product Ids from the Ecommerce system.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EcommerceProductResponseListResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EcommerceProductResponseListResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EcommerceProductResponseListResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Product"
+        ],
+        "summary": "Create a new product.",
+        "operationId": "CreateProduct",
+        "requestBody": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EcommerceProductRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EcommerceProductRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/EcommerceProductRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EcommerceProductResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EcommerceProductResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EcommerceProductResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/products/{productId}": {
+      "get": {
+        "tags": [
+          "Product"
+        ],
+        "summary": "Get a single product by Id.",
+        "operationId": "GetProduct",
+        "parameters": [
+          {
+            "name": "productId",
+            "in": "path",
+            "description": "The unique value by which to search for the product.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EcommerceProductResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EcommerceProductResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EcommerceProductResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Product"
+        ],
+        "summary": "Update a single product by Id.",
+        "operationId": "UpdateProduct",
+        "parameters": [
+          {
+            "name": "productId",
+            "in": "path",
+            "description": "The unique value by which to find the product to update.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "The values with which to update the product.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EcommerceProductRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EcommerceProductRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/EcommerceProductRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EcommerceProductResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EcommerceProductResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EcommerceProductResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Product"
+        ],
+        "summary": "Delete a single product by Id.",
+        "operationId": "DeleteProduct",
+        "parameters": [
+          {
+            "name": "productId",
+            "in": "path",
+            "description": "The unique value by which to find the product to delete.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AliasOldNewValue": {
+        "required": [
+          "newValue",
+          "oldValue"
+        ],
+        "type": "object",
+        "properties": {
+          "oldValue": {
+            "maxLength": 1008,
+            "minLength": 0,
+            "type": "string"
+          },
+          "newValue": {
+            "maxLength": 1008,
+            "minLength": 0,
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "BillingAddress": {
+        "type": "object",
+        "properties": {
+          "address_code": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "address1": {
+            "type": "string",
+            "nullable": true
+          },
+          "address2": {
+            "type": "string",
+            "nullable": true
+          },
+          "address3": {
+            "type": "string",
+            "nullable": true
+          },
+          "city": {
+            "type": "string",
+            "nullable": true
+          },
+          "state": {
+            "type": "string",
+            "nullable": true
+          },
+          "postal_code": {
+            "type": "string",
+            "nullable": true
+          },
+          "country": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Branch": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "code": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Data": {
+        "type": "object",
+        "properties": {
+          "salestax_amount": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "EcommerceAddress": {
+        "required": [
+          "country"
+        ],
+        "type": "object",
+        "properties": {
+          "type": {
+            "$ref": "#/components/schemas/EcommerceAddressType"
+          },
+          "title": {
+            "type": "string",
+            "nullable": true
+          },
+          "line1": {
+            "type": "string",
+            "nullable": true
+          },
+          "line2": {
+            "type": "string",
+            "nullable": true
+          },
+          "line3": {
+            "type": "string",
+            "nullable": true
+          },
+          "city": {
+            "type": "string",
+            "nullable": true
+          },
+          "state": {
+            "type": "string",
+            "nullable": true
+          },
+          "postalCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "country": {
+            "maxLength": 2,
+            "minLength": 0,
+            "type": "string"
+          },
+          "referenceCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "isEnabled": {
+            "type": "boolean",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "EcommerceAddressResponse": {
+        "type": "object",
+        "properties": {
+          "addressId": {
+            "type": "string",
+            "nullable": true
+          },
+          "type": {
+            "$ref": "#/components/schemas/EcommerceAddressType"
+          },
+          "title": {
+            "type": "string",
+            "nullable": true
+          },
+          "referenceCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "isEnabled": {
+            "type": "boolean",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "EcommerceAddressType": {
+        "enum": [
+          0,
+          1,
+          2
+        ],
+        "type": "integer",
+        "format": "int32"
+      },
+      "EcommerceCustomerAddress": {
+        "type": "object",
+        "properties": {
+          "addressId": {
+            "type": "string",
+            "nullable": true
+          },
+          "title": {
+            "type": "string",
+            "nullable": true
+          },
+          "type": {
+            "type": "string",
+            "nullable": true
+          },
+          "referenceCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "isEnabled": {
+            "type": "boolean",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "EcommerceCustomerAddressResponse": {
+        "type": "object",
+        "properties": {
+          "addressId": {
+            "type": "string",
+            "nullable": true
+          },
+          "type": {
+            "$ref": "#/components/schemas/EcommerceAddressType"
+          },
+          "title": {
+            "type": "string",
+            "nullable": true
+          },
+          "line1": {
+            "type": "string",
+            "nullable": true
+          },
+          "line2": {
+            "type": "string",
+            "nullable": true
+          },
+          "line3": {
+            "type": "string",
+            "nullable": true
+          },
+          "city": {
+            "type": "string",
+            "nullable": true
+          },
+          "state": {
+            "type": "string",
+            "nullable": true
+          },
+          "postalCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "country": {
+            "type": "string",
+            "nullable": true
+          },
+          "referenceCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "isEnabled": {
+            "type": "boolean",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "EcommerceCustomerAddressResponseListResponse": {
+        "type": "object",
+        "properties": {
+          "count": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "nextFrom": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EcommerceCustomerAddressResponse"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "EcommerceCustomerContractPricingRequest": {
+        "required": [
+          "endDate",
+          "name",
+          "productPricing",
+          "startDate"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "startDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "endDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "productPricing": {
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProductPricing"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "EcommerceCustomerProductAliasRequest": {
+        "required": [
+          "alias",
+          "sku"
+        ],
+        "type": "object",
+        "properties": {
+          "sku": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "alias": {
+            "maxLength": 1008,
+            "minLength": 0,
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "EcommerceCustomerProductAliasResponse": {
+        "type": "object",
+        "properties": {
+          "customerId": {
+            "type": "string",
+            "nullable": true
+          },
+          "sku": {
+            "type": "string",
+            "nullable": true
+          },
+          "alias": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "EcommerceCustomerProductAliasesResponse": {
+        "type": "object",
+        "properties": {
+          "sku": {
+            "type": "string",
+            "nullable": true
+          },
+          "alias": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "EcommerceCustomerProductAliasesResponseProductAliasesListResponse": {
+        "type": "object",
+        "properties": {
+          "count": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "nextFrom": {
+            "type": "string",
+            "nullable": true
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EcommerceCustomerProductAliasesResponse"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "EcommerceCustomerRequest": {
+        "required": [
+          "companyName"
+        ],
+        "type": "object",
+        "properties": {
+          "companyName": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "accountNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "parentCustomerId": {
+            "type": "string",
+            "nullable": true
+          },
+          "referenceCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "addresses": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EcommerceAddress"
+            },
+            "nullable": true
+          },
+          "isEnabled": {
+            "type": "boolean"
+          },
+          "rewardsStatus": {
+            "$ref": "#/components/schemas/EcommerceCustomerRewardsStatus"
+          },
+          "isPoNumberRequired": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "poNumberMask": {
+            "type": "string",
+            "nullable": true
+          },
+          "locationReferenceCode": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "EcommerceCustomerResponse": {
+        "type": "object",
+        "properties": {
+          "customerId": {
+            "type": "string",
+            "nullable": true
+          },
+          "accountNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "parentCustomerId": {
+            "type": "string",
+            "nullable": true
+          },
+          "companyName": {
+            "type": "string",
+            "nullable": true
+          },
+          "isEnabled": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "referenceCode": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "EcommerceCustomerResponseListResponse": {
+        "type": "object",
+        "properties": {
+          "count": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "nextFrom": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EcommerceCustomerResponse"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "EcommerceCustomerRewardsStatus": {
+        "enum": [
+          0,
+          1
+        ],
+        "type": "integer",
+        "format": "int32"
+      },
+      "EcommerceCustomerUpdateRequest": {
+        "required": [
+          "companyName"
+        ],
+        "type": "object",
+        "properties": {
+          "companyName": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "accountNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "parentCustomerId": {
+            "type": "string",
+            "nullable": true
+          },
+          "referenceCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "isEnabled": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "rewardsStatus": {
+            "$ref": "#/components/schemas/EcommerceCustomerRewardsStatus"
+          },
+          "isPoNumberRequired": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "poNumberMask": {
+            "type": "string",
+            "nullable": true
+          },
+          "locationReferenceCode": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "EcommerceCustomerWithAddressResponse": {
+        "type": "object",
+        "properties": {
+          "accountNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "companyName": {
+            "type": "string",
+            "nullable": true
+          },
+          "customerId": {
+            "type": "string",
+            "nullable": true
+          },
+          "parentCustomerId": {
+            "type": "string",
+            "nullable": true
+          },
+          "isEnabled": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "referenceCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "addresses": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EcommerceCustomerAddress"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "EcommerceProductInventoryRequest": {
+        "required": [
+          "locationReferenceCode",
+          "quantity",
+          "sku"
+        ],
+        "type": "object",
+        "properties": {
+          "sku": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "locationReferenceCode": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "quantity": {
+            "minimum": 0,
+            "type": "number",
+            "format": "double",
+            "default": 0
+          }
+        },
+        "additionalProperties": false
+      },
+      "EcommerceProductRequest": {
+        "type": "object",
+        "properties": {
+          "sku": {
+            "type": "string",
+            "nullable": true
+          },
+          "title": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "supplierId": {
+            "type": "string",
+            "nullable": true
+          },
+          "defaultCategoryId": {
+            "type": "string",
+            "nullable": true
+          },
+          "leadTime": {
+            "type": "string",
+            "nullable": true
+          },
+          "price": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "costPrice": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "packSize": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "packUom": {
+            "type": "string",
+            "nullable": true
+          },
+          "minimumOrder": {
+            "maximum": 2147483647,
+            "minimum": 0,
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "orderIncrement": {
+            "maximum": 2147483647,
+            "minimum": 0,
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "isEnabled": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "isTaxable": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "isHazmat": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "visibility": {
+            "$ref": "#/components/schemas/EcommerceProductVisibility"
+          }
+        },
+        "additionalProperties": false
+      },
+      "EcommerceProductResponse": {
+        "type": "object",
+        "properties": {
+          "catalogId": {
+            "type": "string",
+            "nullable": true
+          },
+          "isEnabled": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "productId": {
+            "type": "string",
+            "nullable": true
+          },
+          "sku": {
+            "type": "string",
+            "nullable": true
+          },
+          "supplierId": {
+            "type": "string",
+            "nullable": true
+          },
+          "title": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "EcommerceProductResponseListResponse": {
+        "type": "object",
+        "properties": {
+          "count": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "nextFrom": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EcommerceProductResponse"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "EcommerceProductVisibility": {
+        "enum": [
+          0,
+          1,
+          2
+        ],
+        "type": "integer",
+        "format": "int32"
+      },
+      "EcommerceUpdateAddressRequest": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "$ref": "#/components/schemas/EcommerceAddressType"
+          },
+          "title": {
+            "type": "string",
+            "nullable": true
+          },
+          "line1": {
+            "type": "string",
+            "nullable": true
+          },
+          "line2": {
+            "type": "string",
+            "nullable": true
+          },
+          "line3": {
+            "type": "string",
+            "nullable": true
+          },
+          "city": {
+            "type": "string",
+            "nullable": true
+          },
+          "state": {
+            "type": "string",
+            "nullable": true
+          },
+          "postalCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "country": {
+            "maxLength": 2,
+            "minLength": 0,
+            "type": "string",
+            "nullable": true
+          },
+          "referenceCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "isEnabled": {
+            "type": "boolean",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "EcommerceUpdateCustomerProductAliasRequest": {
+        "required": [
+          "alias",
+          "sku"
+        ],
+        "type": "object",
+        "properties": {
+          "sku": {
+            "$ref": "#/components/schemas/SkuOldNewValue"
+          },
+          "alias": {
+            "$ref": "#/components/schemas/AliasOldNewValue"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ErpCheckoutTaxRequest": {
+        "type": "object",
+        "properties": {
+          "request": {
+            "$ref": "#/components/schemas/Request"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ErpCheckoutTaxResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/Data"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ErpCustomerBalanceAccount": {
+        "type": "object",
+        "properties": {
+          "seller_reference": {
+            "type": "string",
+            "nullable": true
+          },
+          "balance": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "total_due": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "last_charge_date": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "last_sale_date": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "last_payment_date": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "last_payment_amount": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "due_30_days": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "due_60_days": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "due_90_days": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "due_over_90_days": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "open_credits": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "credit_available": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ErpCustomerBalanceRequest": {
+        "required": [
+          "customer_code"
+        ],
+        "type": "object",
+        "properties": {
+          "customer_code": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "seller_reference": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ErpCustomerBalanceResponse": {
+        "type": "object",
+        "properties": {
+          "customer_code": {
+            "type": "string",
+            "nullable": true
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ErpCustomerBalanceAccount"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ErpCustomerLookupRequest": {
+        "required": [
+          "customer_code"
+        ],
+        "type": "object",
+        "properties": {
+          "customer_code": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "seller_reference": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ErpCustomerLookupResponse": {
+        "type": "object",
+        "properties": {
+          "customer_code": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "email": {
+            "type": "string",
+            "nullable": true
+          },
+          "phone": {
+            "type": "string",
+            "nullable": true
+          },
+          "is_enable": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "is_prepay": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "po_required": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "shipping_address": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ShippingAddress"
+            },
+            "nullable": true
+          },
+          "billing_address": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BillingAddress"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ErpInvoiceDocumentRequest": {
+        "required": [
+          "customer_code",
+          "document_id"
+        ],
+        "type": "object",
+        "properties": {
+          "customer_code": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "seller_reference": {
+            "type": "string",
+            "nullable": true
+          },
+          "document_id": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "document_type": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ErpInvoiceDocumentResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/InvoiceData"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ErpInvoiceFilterRequest": {
+        "type": "object",
+        "properties": {
+          "invoice_id": {
+            "type": "string",
+            "nullable": true
+          },
+          "customer_po": {
+            "type": "string",
+            "nullable": true
+          },
+          "third_party_order_number": {
+            "type": "string",
+            "nullable": true
+          },
+          "start_date": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "end_date": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ErpInvoiceHistoryRequest": {
+        "required": [
+          "customer_code"
+        ],
+        "type": "object",
+        "properties": {
+          "customer_code": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "seller_reference": {
+            "type": "string",
+            "nullable": true
+          },
+          "filters": {
+            "$ref": "#/components/schemas/ErpInvoiceFilterRequest"
+          },
+          "current_page": {
+            "type": "string",
+            "nullable": true
+          },
+          "per_page": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ErpInvoiceHistoryResponse": {
+        "type": "object",
+        "properties": {
+          "invoices": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ErpInvoiceModel"
+            },
+            "nullable": true
+          },
+          "total_invoices": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ErpInvoiceLookupByIdRequest": {
+        "required": [
+          "customer_code",
+          "invoice_id"
+        ],
+        "type": "object",
+        "properties": {
+          "customer_code": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "seller_reference": {
+            "type": "string",
+            "nullable": true
+          },
+          "invoice_id": {
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ErpInvoiceLookupByIdResponse": {
+        "type": "object",
+        "properties": {
+          "invoice_id": {
+            "type": "number",
+            "format": "double"
+          },
+          "customer_code": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "billing_details": {
+            "$ref": "#/components/schemas/InvoiceBillingDetails"
+          },
+          "shipping_details": {
+            "$ref": "#/components/schemas/InvoiceShippingDetails"
+          },
+          "order_id": {
+            "type": "number",
+            "format": "double"
+          },
+          "invoice_status_description": {
+            "type": "string",
+            "nullable": true
+          },
+          "order_date": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "invoice_date": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "duedate": {
+            "type": "string",
+            "nullable": true
+          },
+          "discount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "sub_total": {
+            "type": "number",
+            "format": "double"
+          },
+          "tax_total": {
+            "type": "number",
+            "format": "double"
+          },
+          "total": {
+            "type": "number",
+            "format": "double"
+          },
+          "balance": {
+            "type": "number",
+            "format": "double"
+          },
+          "customer_po": {
+            "type": "string",
+            "nullable": true
+          },
+          "third_party_order_number": {
+            "type": "string",
+            "nullable": true
+          },
+          "note": {
+            "type": "string",
+            "nullable": true
+          },
+          "invoice_lines": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/InvoiceLines"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ErpInvoiceModel": {
+        "type": "object",
+        "properties": {
+          "invoice_id": {
+            "type": "string",
+            "nullable": true
+          },
+          "customer_code": {
+            "type": "string",
+            "nullable": true
+          },
+          "billing_details": {
+            "$ref": "#/components/schemas/InvoiceBillingDetails"
+          },
+          "shipping_details": {
+            "$ref": "#/components/schemas/InvoiceShippingDetails"
+          },
+          "order_id": {
+            "type": "string",
+            "nullable": true
+          },
+          "invoice_status_description": {
+            "type": "string",
+            "nullable": true
+          },
+          "invoice_date": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "duedate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "discount_total": {
+            "type": "number",
+            "format": "double"
+          },
+          "sub_total": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "tax_total": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "total": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "balance": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "customer_po": {
+            "type": "string",
+            "nullable": true
+          },
+          "third_party_order_number": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ErpOrderHistoryByIdRequest": {
+        "required": [
+          "customer_code",
+          "order_id"
+        ],
+        "type": "object",
+        "properties": {
+          "customer_code": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "seller_reference": {
+            "type": "string",
+            "nullable": true
+          },
+          "order_id": {
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ErpOrderHistoryByIdResponse": {
+        "type": "object",
+        "properties": {
+          "order_id": {
+            "type": "string",
+            "nullable": true
+          },
+          "customer_code": {
+            "type": "string",
+            "nullable": true
+          },
+          "billing_details": {
+            "$ref": "#/components/schemas/OrderBillingDetails"
+          },
+          "shipping_details": {
+            "$ref": "#/components/schemas/OrderShippingDetails"
+          },
+          "order_type_description": {
+            "type": "string",
+            "nullable": true
+          },
+          "order_status_description": {
+            "type": "string",
+            "nullable": true
+          },
+          "order_date": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "ship_date": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "discount_total": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "sub_total": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "tax_total": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "total": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "ordered_by": {
+            "type": "string",
+            "nullable": true
+          },
+          "customer_po": {
+            "type": "string",
+            "nullable": true
+          },
+          "order_comments": {
+            "type": "string",
+            "nullable": true
+          },
+          "third_party_order_number": {
+            "type": "string",
+            "nullable": true
+          },
+          "order_lines": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrderLine"
+            },
+            "nullable": true
+          },
+          "tracking_information": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TrackingInformation"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ErpOrderHistoryRequest": {
+        "required": [
+          "customer_code"
+        ],
+        "type": "object",
+        "properties": {
+          "customer_code": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "seller_reference": {
+            "type": "string",
+            "nullable": true
+          },
+          "filters": {
+            "$ref": "#/components/schemas/ErpProductOrderFilterRequest"
+          },
+          "current_page": {
+            "type": "string",
+            "nullable": true
+          },
+          "per_page": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ErpOrderHistoryResponse": {
+        "type": "object",
+        "properties": {
+          "orders": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ErpOrderHistoryResponseData"
+            },
+            "nullable": true
+          },
+          "total_orders": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ErpOrderHistoryResponseData": {
+        "type": "object",
+        "properties": {
+          "order_id": {
+            "type": "string",
+            "nullable": true
+          },
+          "customer_code": {
+            "type": "string",
+            "nullable": true
+          },
+          "seller_reference": {
+            "type": "string",
+            "nullable": true
+          },
+          "order_type_description": {
+            "type": "string",
+            "nullable": true
+          },
+          "order_status_description": {
+            "type": "string",
+            "nullable": true
+          },
+          "order_date": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "ship_date": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "discount_total": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "sub_total": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "tax_total": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "total": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "customer_po": {
+            "type": "string",
+            "nullable": true
+          },
+          "order_comments": {
+            "type": "string",
+            "nullable": true
+          },
+          "third_party_order_number": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ErpOrderPaymentAppliedPayment": {
+        "type": "object",
+        "properties": {
+          "order_id": {
+            "type": "string",
+            "nullable": true
+          },
+          "total": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "is_auth_only": {
+            "type": "boolean",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ErpOrderPaymentCreateResponse": {
+        "type": "object",
+        "properties": {
+          "customer_code": {
+            "type": "string",
+            "nullable": true
+          },
+          "seller_reference": {
+            "type": "string",
+            "nullable": true
+          },
+          "payments_applied": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ErpOrderPaymentAppliedPayment"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ErpProcessCustomerOrderPaymentRequest": {
+        "required": [
+          "customer_code",
+          "data",
+          "orders"
+        ],
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ErpProcessOrderPaymentRequestData"
+            }
+          },
+          "customer_code": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "seller_reference": {
+            "type": "string",
+            "nullable": true
+          },
+          "orders": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ErpProcessOrderPaymentRequestOrders"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "ErpProcessOrderPaymentRequest": {
+        "required": [
+          "data"
+        ],
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ErpProcessOrderPaymentRequestData"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "ErpProcessOrderPaymentRequestData": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "method_id": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "title": {
+            "type": "string",
+            "nullable": true
+          },
+          "gateway": {
+            "$ref": "#/components/schemas/ErpProcessOrderRequestDataGateway"
+          },
+          "surcharge": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "subtotal": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "total": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "capture": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "status_id": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "status": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ErpProcessOrderPaymentRequestOrders": {
+        "required": [
+          "order_id",
+          "total"
+        ],
+        "type": "object",
+        "properties": {
+          "order_id": {
+            "minLength": 1,
+            "type": "string",
+            "description": "The ID of the order in the ERP system."
+          },
+          "total": {
+            "type": "number",
+            "description": "The total amount of the payment that should be applied to this order.",
+            "format": "double"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ErpProcessOrderRequest": {
+        "required": [
+          "data"
+        ],
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/ErpProcessOrderRequestData"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ErpProcessOrderRequestData": {
+        "required": [
+          "object"
+        ],
+        "type": "object",
+        "properties": {
+          "object": {
+            "$ref": "#/components/schemas/ErpProcessOrderRequestDataObject"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ErpProcessOrderRequestDataGateway": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "customer": {
+            "type": "string",
+            "nullable": true
+          },
+          "token": {
+            "type": "string",
+            "nullable": true
+          },
+          "authorization": {
+            "type": "string",
+            "nullable": true
+          },
+          "card_type": {
+            "type": "string",
+            "nullable": true
+          },
+          "card_last4": {
+            "type": "string",
+            "nullable": true
+          },
+          "card_exp_month": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "card_exp_year": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ErpProcessOrderRequestDataObject": {
+        "required": [
+          "customer",
+          "items"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "customer": {
+            "$ref": "#/components/schemas/ErpProcessOrderRequestDataObjectCustomer"
+          },
+          "branch": {
+            "$ref": "#/components/schemas/ErpProcessOrderRequestDataObjectBranch"
+          },
+          "currency": {
+            "type": "string",
+            "nullable": true
+          },
+          "note": {
+            "type": "string",
+            "nullable": true
+          },
+          "po_reference": {
+            "type": "string",
+            "nullable": true
+          },
+          "alternative_po": {
+            "type": "string",
+            "nullable": true
+          },
+          "shipping_amount": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "total": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "tax": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "payment": {
+            "$ref": "#/components/schemas/ErpProcessOrderPaymentRequest"
+          },
+          "shipping": {
+            "$ref": "#/components/schemas/ErpProcessOrderRequestDataObjectShipping"
+          },
+          "items": {
+            "$ref": "#/components/schemas/ErpProcessOrderRequestDataObjectItems"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ErpProcessOrderRequestDataObjectBranch": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "code": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ErpProcessOrderRequestDataObjectCustomer": {
+        "required": [
+          "account_number",
+          "customer_seller_reference"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "customer_seller_reference": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "account_number": {
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ErpProcessOrderRequestDataObjectItems": {
+        "required": [
+          "data"
+        ],
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ErpProcessOrderRequestDataObjectItemsData"
+            }
+          },
+          "weight": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "count": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ErpProcessOrderRequestDataObjectItemsData": {
+        "required": [
+          "quantity",
+          "sku",
+          "total"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "sku": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "title": {
+            "type": "string",
+            "nullable": true
+          },
+          "item_price": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "item_price_raw": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "uom": {
+            "type": "string",
+            "nullable": true
+          },
+          "taxable": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "quantity": {
+            "type": "number",
+            "format": "double"
+          },
+          "notes": {
+            "type": "string",
+            "nullable": true
+          },
+          "subtotal": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "tax": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "total": {
+            "type": "number",
+            "format": "double"
+          },
+          "seller_reference": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ErpProcessOrderRequestDataObjectShipping": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ErpProcessOrderRequestDataObjectShippingData"
+            },
+            "nullable": true
+          },
+          "items_count": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "weight": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "subtotal": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "tax": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "total": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ErpProcessOrderRequestDataObjectShippingData": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "title": {
+            "type": "string",
+            "nullable": true
+          },
+          "label": {
+            "type": "string",
+            "nullable": true
+          },
+          "supplier_id": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "items_count": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "weight": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "subtotal": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "tax": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "total": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ErpProcessOrderResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "nullable": true
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          },
+          "object": {
+            "$ref": "#/components/schemas/ErpProcessOrderResponseObject"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ErpProcessOrderResponseObject": {
+        "type": "object",
+        "properties": {
+          "order_id": {
+            "type": "string",
+            "nullable": true
+          },
+          "ship_to_id": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ErpProductInventory": {
+        "type": "object",
+        "properties": {
+          "item_sku": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ErpProductInventoryListResponse": {
+        "type": "object",
+        "properties": {
+          "products": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ErpProductResponseData"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ErpProductInventoryRequest": {
+        "required": [
+          "products"
+        ],
+        "type": "object",
+        "properties": {
+          "customer_code": {
+            "type": "string",
+            "nullable": true
+          },
+          "products": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ErpProductInventory"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "ErpProductInventoryResponseData": {
+        "type": "object",
+        "properties": {
+          "location_code": {
+            "type": "string",
+            "nullable": true
+          },
+          "qty": {
+            "type": "number",
+            "format": "double"
+          },
+          "is_quantity_control": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ErpProductOrderFilterRequest": {
+        "type": "object",
+        "properties": {
+          "order_id": {
+            "type": "string",
+            "nullable": true
+          },
+          "customer_po": {
+            "type": "string",
+            "nullable": true
+          },
+          "third_party_order_number": {
+            "type": "string",
+            "nullable": true
+          },
+          "start_date": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "end_date": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ErpProductPricingListResponse": {
+        "type": "object",
+        "properties": {
+          "customer_code": {
+            "type": "string",
+            "nullable": true
+          },
+          "seller_reference": {
+            "type": "string",
+            "nullable": true
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ErpProductPricingResponseData"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ErpProductPricingRequest": {
+        "required": [
+          "customer_code",
+          "products"
+        ],
+        "type": "object",
+        "properties": {
+          "customer_code": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "seller_reference": {
+            "type": "string",
+            "nullable": true
+          },
+          "branch": {
+            "$ref": "#/components/schemas/Branch"
+          },
+          "products": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ErpProductPricingRequestProduct"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "ErpProductPricingRequestProduct": {
+        "required": [
+          "item_sku"
+        ],
+        "type": "object",
+        "properties": {
+          "item_sku": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "uom": {
+            "type": "string",
+            "nullable": true
+          },
+          "quantity": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ErpProductPricingResponseData": {
+        "type": "object",
+        "properties": {
+          "item_sku": {
+            "type": "string",
+            "nullable": true
+          },
+          "uom": {
+            "type": "string",
+            "nullable": true
+          },
+          "quantity": {
+            "type": "number",
+            "format": "double"
+          },
+          "unit_price": {
+            "type": "number",
+            "format": "double"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ErpProductResponseData": {
+        "type": "object",
+        "properties": {
+          "item_sku": {
+            "type": "string",
+            "nullable": true
+          },
+          "uom": {
+            "type": "string",
+            "nullable": true
+          },
+          "inventory": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ErpProductInventoryResponseData"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ErpPurchasedProductFilterRequest": {
+        "type": "object",
+        "properties": {
+          "start_date": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "end_date": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ErpPurchasedProductListResponse": {
+        "type": "object",
+        "properties": {
+          "count": {
+            "type": "string",
+            "nullable": true
+          },
+          "customer_code": {
+            "type": "string",
+            "nullable": true
+          },
+          "seller_reference": {
+            "type": "string",
+            "nullable": true
+          },
+          "products": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ErpPurchasedProductResponseData"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ErpPurchasedProductRequest": {
+        "required": [
+          "customer_code"
+        ],
+        "type": "object",
+        "properties": {
+          "customer_code": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "seller_reference": {
+            "type": "string",
+            "nullable": true
+          },
+          "filters": {
+            "$ref": "#/components/schemas/ErpPurchasedProductFilterRequest"
+          },
+          "current_page": {
+            "type": "string",
+            "nullable": true
+          },
+          "per_page": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ErpPurchasedProductResponseData": {
+        "type": "object",
+        "properties": {
+          "sku": {
+            "type": "string",
+            "nullable": true
+          },
+          "last_ordered_date": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "total_qty_ordered": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "times_ordered": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "uom": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ErpShippingMethodRequest": {
+        "required": [
+          "customer_code"
+        ],
+        "type": "object",
+        "properties": {
+          "customer_code": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "seller_reference": {
+            "type": "string",
+            "nullable": true
+          },
+          "address1": {
+            "type": "string",
+            "nullable": true
+          },
+          "address2": {
+            "type": "string",
+            "nullable": true
+          },
+          "address3": {
+            "type": "string",
+            "nullable": true
+          },
+          "city": {
+            "type": "string",
+            "nullable": true
+          },
+          "state": {
+            "type": "string",
+            "nullable": true
+          },
+          "country": {
+            "type": "string",
+            "nullable": true
+          },
+          "zip": {
+            "type": "string",
+            "nullable": true
+          },
+          "branch": {
+            "$ref": "#/components/schemas/Branch"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Items"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Header": {
+        "required": [
+          "customer_code"
+        ],
+        "type": "object",
+        "properties": {
+          "customer_code": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "seller_reference": {
+            "type": "string",
+            "nullable": true
+          },
+          "shiptopostcode": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "InvoiceBillingDetails": {
+        "type": "object",
+        "properties": {
+          "customer_id": {
+            "type": "string",
+            "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "address1": {
+            "type": "string",
+            "nullable": true
+          },
+          "address2": {
+            "type": "string",
+            "nullable": true
+          },
+          "address3": {
+            "type": "string",
+            "nullable": true
+          },
+          "city": {
+            "type": "string",
+            "nullable": true
+          },
+          "state": {
+            "type": "string",
+            "nullable": true
+          },
+          "postal_code": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "InvoiceData": {
+        "type": "object",
+        "properties": {
+          "customer_code": {
+            "type": "string",
+            "nullable": true
+          },
+          "file_base64": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "InvoiceLines": {
+        "type": "object",
+        "properties": {
+          "item_id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "sku": {
+            "type": "string",
+            "nullable": true
+          },
+          "qty": {
+            "type": "number",
+            "format": "double"
+          },
+          "qty_shipped": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "uom": {
+            "type": "string",
+            "nullable": true
+          },
+          "unit_price": {
+            "type": "number",
+            "format": "double"
+          },
+          "tax": {
+            "type": "string",
+            "nullable": true
+          },
+          "price": {
+            "type": "number",
+            "format": "double"
+          },
+          "note": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "InvoiceShippingDetails": {
+        "type": "object",
+        "properties": {
+          "customer_id": {
+            "type": "string",
+            "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "address1": {
+            "type": "string",
+            "nullable": true
+          },
+          "address2": {
+            "type": "string",
+            "nullable": true
+          },
+          "address3": {
+            "type": "string",
+            "nullable": true
+          },
+          "city": {
+            "type": "string",
+            "nullable": true
+          },
+          "state": {
+            "type": "string",
+            "nullable": true
+          },
+          "postal_code": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Items": {
+        "type": "object",
+        "properties": {
+          "sku": {
+            "type": "string",
+            "nullable": true
+          },
+          "quantity": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "uom": {
+            "type": "string",
+            "nullable": true
+          },
+          "unit_price": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "total_price": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Lines": {
+        "type": "object",
+        "properties": {
+          "item_sku": {
+            "type": "string",
+            "nullable": true
+          },
+          "line_amount": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "qty": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "OrderBillingDetails": {
+        "type": "object",
+        "properties": {
+          "customer_code": {
+            "type": "string",
+            "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "address1": {
+            "type": "string",
+            "nullable": true
+          },
+          "address2": {
+            "type": "string",
+            "nullable": true
+          },
+          "address3": {
+            "type": "string",
+            "nullable": true
+          },
+          "city": {
+            "type": "string",
+            "nullable": true
+          },
+          "state": {
+            "type": "string",
+            "nullable": true
+          },
+          "postal_code": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "OrderLine": {
+        "type": "object",
+        "properties": {
+          "line_no": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "product_id": {
+            "type": "string",
+            "nullable": true
+          },
+          "sku": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "note": {
+            "type": "string",
+            "nullable": true
+          },
+          "uom": {
+            "type": "string",
+            "nullable": true
+          },
+          "qty": {
+            "type": "string",
+            "nullable": true
+          },
+          "qty_shipped": {
+            "type": "string",
+            "nullable": true
+          },
+          "unit_price": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "tax": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "total": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "OrderShippingDetails": {
+        "type": "object",
+        "properties": {
+          "customer_code": {
+            "type": "string",
+            "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "address1": {
+            "type": "string",
+            "nullable": true
+          },
+          "address2": {
+            "type": "string",
+            "nullable": true
+          },
+          "address3": {
+            "type": "string",
+            "nullable": true
+          },
+          "city": {
+            "type": "string",
+            "nullable": true
+          },
+          "state": {
+            "type": "string",
+            "nullable": true
+          },
+          "postal_code": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ProblemDetails": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "nullable": true
+          },
+          "title": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "detail": {
+            "type": "string",
+            "nullable": true
+          },
+          "instance": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": { }
+      },
+      "ProductPricing": {
+        "required": [
+          "price",
+          "quantity",
+          "sku"
+        ],
+        "type": "object",
+        "properties": {
+          "sku": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "quantity": {
+            "minimum": 0,
+            "type": "number",
+            "format": "double"
+          },
+          "price": {
+            "minimum": 0.01,
+            "type": "number",
+            "format": "double"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Request": {
+        "type": "object",
+        "properties": {
+          "header": {
+            "$ref": "#/components/schemas/Header"
+          },
+          "branch": {
+            "$ref": "#/components/schemas/Branch"
+          },
+          "lines": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Lines"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ShippingAddress": {
+        "type": "object",
+        "properties": {
+          "address_code": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "address1": {
+            "type": "string",
+            "nullable": true
+          },
+          "address2": {
+            "type": "string",
+            "nullable": true
+          },
+          "address3": {
+            "type": "string",
+            "nullable": true
+          },
+          "city": {
+            "type": "string",
+            "nullable": true
+          },
+          "state": {
+            "type": "string",
+            "nullable": true
+          },
+          "postal_code": {
+            "type": "string",
+            "nullable": true
+          },
+          "country": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ShippingMethodResponse": {
+        "type": "object",
+        "properties": {
+          "shipping_methods": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ShippingMethods"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ShippingMethods": {
+        "type": "object",
+        "properties": {
+          "label": {
+            "type": "string",
+            "nullable": true
+          },
+          "fixed_rate": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "total": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "SkuOldNewValue": {
+        "required": [
+          "newValue",
+          "oldValue"
+        ],
+        "type": "object",
+        "properties": {
+          "oldValue": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "newValue": {
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "TrackingInformation": {
+        "type": "object",
+        "properties": {
+          "carrier_account_number": {
+            "type": "string",
+            "nullable": true
+          },
+          "delivery_charge": {
+            "type": "string",
+            "nullable": true
+          },
+          "delivery_date": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "shipping_date": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "status": {
+            "type": "string",
+            "nullable": true
+          },
+          "status_time": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "weight": {
+            "type": "string",
+            "nullable": true
+          },
+          "note": {
+            "type": "string",
+            "nullable": true
+          },
+          "tracking_number": {
+            "type": "string",
+            "nullable": true
+          },
+          "tracking_url": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "securitySchemes": {
+      "Bearer": {
+        "type": "oauth2",
+        "description": "OAuth 2.0 Client Credentials Flow with API Users issued from Integration Engine Management Console",
+        "flows": {
+          "clientCredentials": {
+            "tokenUrl": "https://api-user.integrations.ecimanufacturing.com/oauth2/api-user/token",
+            "scopes": {
+              "openid": "openid"
+            }
+          }
+        }
+      }
+    }
+  },
+  "security": [
+    {
+      "Bearer": [ ]
+    }
+  ]
+}

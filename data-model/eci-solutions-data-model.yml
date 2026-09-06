@@ -1,0 +1,301 @@
+generated: '2026-09-06'
+method: derived
+source: >-
+  openapi/eci-solutions-erp-v2-1-openapi.json (129 component schemas) and
+  openapi/eci-solutions-lasso-crm-openapi.yml, read via $ref links and *ID reference fields
+provider: ECI Solutions
+providerId: eci-solutions
+note: >-
+  The ECI Manufacturing ERP API is the canonical model — it is the product-agnostic projection ECI
+  built over Deacom, M1, Macola and JobBOSS², so its 129 schemas describe the shape ECI itself
+  considers common across four ERPs. Lasso CRM is an unrelated domain (new-home sales) and is
+  modelled separately. Relationships below were read from declared $ref links and from *ID fields
+  whose target entity is itself a schema in the same contract; nothing is inferred from prose.
+identity:
+  primary_key_field: uniqueID
+  note: >-
+    Unique per resource per company account, NOT globally unique. Underlying type varies by backing
+    ERP — Macola GUID, M1 GUID, JobBOSS² Int32. Entities additionally carry a domain key
+    (jobID, partID, quoteID, salesOrderID, organizationID …). rowVersion (int64, monotonic) is the
+    change cursor for incremental sync.
+  id_prefixes: none
+  id_prefix_note: >-
+    ECI does not use typed id prefixes. An id is bare, so a client cannot tell a partID from a
+    jobID by looking at it.
+domains:
+  - name: Manufacturing ERP
+    api: eci-solutions:eci-solutions-platform
+    entities:
+      - name: Organization
+        description: The party record — a customer, a supplier, or both. The root of the commercial graph.
+        relationships:
+          - has_many: Location
+            via: organizationID
+          - has_many: Contact
+            via: organizationID
+          - has_many: OrganizationPart
+            via: organizationID
+          - belongs_to: PaymentTerm
+            via: customerPaymentTermID, supplierPaymentTermID
+          - belongs_to: TaxCode
+            via: customerTaxCodeID, supplierTaxCodeID
+          - belongs_to: SalesAccount
+            via: salesAccountID
+      - name: Part
+        description: The item master. Everything manufactured, bought or sold hangs off it.
+        relationships:
+          - has_many: PartRevision
+            via: partID
+          - has_many: PartMaterial
+            via: partID
+          - has_many: PartOperation
+            via: partID
+          - has_many: PartPrice
+            via: partID
+          - has_many: PartCost
+            via: partID
+          - has_many: PartBin
+            via: partID
+          - belongs_to: PartClass
+            via: partClassID
+          - belongs_to: PartGroup
+            via: partGroupID
+          - belongs_to: CycleCode
+            via: cycleCodeID
+          - has_one: Part
+            via: alternatePartID
+      - name: PartRevision
+        relationships:
+          - belongs_to: Part
+            via: partID
+          - belongs_to: Organization
+            via: supplierOrganizationID
+      - name: Quote
+        relationships:
+          - has_many: QuoteLine
+            via: quoteID
+          - has_many: QuoteQuantity
+            via: quoteID
+          - has_many: QuoteSalesPerson
+            via: quoteID
+          - belongs_to: Organization
+            via: organizationID, customerID, shipToOrganizationID
+          - belongs_to: Contact
+            via: contactID, shipToContactID
+          - belongs_to: Location
+            via: locationID, invoiceLocationID
+          - belongs_to: Employee
+            via: employeeID
+          - belongs_to: Project
+            via: projectID
+          - belongs_to: Plant
+            via: plantID
+      - name: QuoteLine
+        relationships:
+          - belongs_to: Quote
+            via: quoteID
+          - belongs_to: Part
+            via: partID
+          - belongs_to: PartRevision
+            via: partRevisionID
+          - belongs_to: Reason
+            via: resolutionReasonID
+      - name: SalesOrder
+        relationships:
+          - has_many: SalesOrderLine
+            via: salesOrderID
+          - has_many: SalesOrderDelivery
+            via: salesOrderID
+          - has_many: SalesOrderJob
+            via: salesOrderID
+          - has_many: SalesOrderSalesPerson
+            via: salesOrderID
+          - belongs_to: Organization
+            via: customerID
+          - belongs_to: Quote
+            via: quoteID
+          - belongs_to: Project
+            via: projectID
+          - belongs_to: Plant
+            via: plantID
+      - name: SalesOrderLine
+        relationships:
+          - belongs_to: SalesOrder
+            via: salesOrderID
+          - belongs_to: Part
+            via: partID
+          - belongs_to: PartRevision
+            via: partRevisionID
+          - has_many: SalesOrderJob
+            via: salesOrderLineID
+      - name: Job
+        description: The work order. The centre of the shop-floor graph.
+        relationships:
+          - has_many: JobOperation
+            via: jobID
+          - has_many: JobMaterial
+            via: jobID
+          - has_many: JobAssembly
+            via: jobID
+          - has_one: Job
+            via: parentJobID
+          - belongs_to: Organization
+            via: customerID
+          - belongs_to: Part
+            via: partID
+          - belongs_to: PartRevision
+            via: partRevisionID
+          - belongs_to: Project
+            via: projectID
+          - belongs_to: Employee
+            via: plannerEmployeeID
+          - belongs_to: Plant
+            via: plantID
+      - name: JobOperation
+        relationships:
+          - belongs_to: Job
+            via: jobID
+          - belongs_to: WorkCenter
+            via: workCenterID
+          - belongs_to: Process
+            via: processID
+          - belongs_to: PurchaseOrder
+            via: purchaseOrderID
+          - belongs_to: Organization
+            via: supplierOrganizationID, vendorID
+      - name: Timecard
+        relationships:
+          - has_many: TimecardLine
+            via: timecardID
+          - belongs_to: Employee
+            via: employeeID
+          - belongs_to: Shift
+            via: shiftID
+      - name: TimecardLine
+        description: The join between labour and work — the row an agent writes when it clocks time to a job.
+        relationships:
+          - belongs_to: Timecard
+            via: timecardID
+          - belongs_to: Job
+            via: jobID
+          - belongs_to: JobOperation
+            via: jobOperationID
+          - belongs_to: WorkCenter
+            via: workCenterID
+          - belongs_to: Process
+            via: processID
+          - belongs_to: Employee
+            via: employeeID
+      - name: PurchaseOrder
+        relationships:
+          - has_many: PurchaseOrderLine
+            via: purchaseOrderID
+          - belongs_to: Organization
+            via: supplierOrganizationID
+          - belongs_to: Employee
+            via: buyerEmployeeID
+      - name: PartTransaction
+        description: >-
+          The inventory ledger, and the busiest join in the model — it references part, revision,
+          warehouse, bin, purchase order, job, supplier, shipment, shipment line, receipt and DMR
+          shipment.
+      - name: WorkCenter
+        relationships:
+          - belongs_to: Department
+            via: deptID
+          - belongs_to: Process
+            via: processID
+          - belongs_to: Shift
+            via: shiftID
+          - has_one: WorkCenter
+            via: parentWorkCenterID
+      - name: Employee
+        relationships:
+          - has_one: Employee
+            via: supervisorEmployeeID
+          - belongs_to: Department
+            via: deptID
+          - belongs_to: Shift
+            via: shiftID
+      - name: RmaClaim
+        relationships:
+          - has_many: RmaClaimLine
+            via: claimID
+          - has_many: RmaReceiptLine
+            via: claimID
+          - belongs_to: Organization
+            via: customerOrganizationID
+      - name: DmrClaim
+        relationships:
+          - has_many: DmrClaimLine
+            via: claimID
+          - belongs_to: Organization
+            via: supplierOrganizationID
+      - name: ARInvoice
+        relationships:
+          - belongs_to: Organization
+            via: customerID
+          - has_many: ARInvoiceSalesPerson
+            via: invoiceID
+      - name: APInvoice
+        relationships:
+          - belongs_to: Organization
+            via: supplierID
+          - has_many: APInvoiceLine
+            via: invoiceID
+  - name: New-home sales CRM
+    api: eci-solutions:eci-solutions-lasso-crm
+    entities:
+      - name: Registrant
+        description: The prospective home buyer. Root of the Lasso graph; created but never deletable via the API.
+        relationships:
+          - has_many: Email
+            via: registrantId
+          - has_many: Phone
+            via: registrantId
+          - has_many: Address
+            via: registrantId
+          - has_many: Note
+            via: registrantId
+          - has_many: QuestionAnswer
+            via: registrantId
+          - has_many: History
+            via: registrantId
+          - has_many: Appointment
+            via: registrantId
+          - has_many: Relationship
+            via: registrantId
+          - has_many: AssignedSalesRep
+            via: registrantId
+          - has_many: Integration
+            via: registrantId, externalId
+      - name: Inventory
+        description: A home, lot or unit for sale.
+        relationships:
+          - has_one: PlanType
+            via: planTypeId
+          - has_many: PricingRevision
+            via: inventoryId
+          - has_many: Purchaser
+            via: inventoryId
+          - has_one: Pricing
+            via: inventoryId
+          - has_one: InventoryDates
+            via: inventoryId
+      - name: Project
+        description: The community or development. API keys are scoped per project or location.
+        relationships:
+          - has_many: Appointment
+            via: project scope
+          - has_one: ProjectSettings
+            via: project scope
+traversal:
+  detail: >-
+    The ERP API is the only ECI surface that can traverse these relationships in one call, via
+    expand=relationship(fields=…), nestable — e.g.
+    /api/v2.1/view/timecardlines?expand=timecard(expand=employee). Everywhere else a client joins
+    client-side on the *ID fields above.
+gaps:
+  - No JSON Schema, JSON-LD or vocabulary artifact is published by ECI; the component schemas inside each OpenAPI are the only formal model.
+  - No id prefixes, so ids are not self-describing.
+  - The same entity has different names across the estate (ERP Organization vs AP/AR Commerce Customer and Vendor vs Financial v2 Supplier), and no crosswalk is published.

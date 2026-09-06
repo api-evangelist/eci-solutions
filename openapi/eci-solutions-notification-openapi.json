@@ -1,0 +1,772 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Notification API",
+    "description": "Notification Service API which provides message notification services.\n\nCurrently Support Notifications via:\n- Email (via AWS SES)\n- REST API or Web Sockets (in-app)\n\n## Authentication\n\nPass an access token in the HTTP Authorization header of each request.\n\nFor example:\n```\nAuthorization: Bearer [token]\n```\n\n### Token Types by Endpoint\n\n**For creating notifications (POST /api/v1/notifications):**\nAccess tokens are obtained from the Integration Engine Management API OAuth2 endpoint using the client credentials flow. See the [Management API OAuth 2.0 Token endpoint documentation](https://dev.int.ecimfgtest.com/api.html?id=authentication-v1#/AuthApi/ApiUserToken) for more information.\n\n**For retrieving and managing notifications (GET and PATCH /api/v1/notifications/me/):**\nAccess tokens are obtained from Nexus Auth0 authentication. These endpoints require the authenticated user's own bearer token to access their personal notifications.\n\n## Prerequisites\n\nBefore using the Notification API, ensure the following prerequisites are met:\n\n**Nexus Entities:**\n- Application ID must exist in Nexus and be valid for your environment\n- Application Deployment ID (if used) must exist in Nexus and be valid for the specified Application\n- Recipient User IDs must be valid Nexus user identifiers\n\n**Integration Engine Setup:**\n- API credentials must be configured in the Integration Engine Management System\n- Credentials must have appropriate permissions to access the Notification API\n- For OAuth2 token generation, client ID and client secret must be available\n\n**User Configuration:**\n- Users must have valid email addresses in their Nexus profiles for email delivery\n\n## Template System\n\nThe Notification API uses a template system with dynamic placeholders to personalize messages for each recipient.\n\n### Placeholder Format\nPlaceholders use double curly braces: `{{fieldName}}`\n\n### Available Placeholders\n- `{{id}}` - Nexus user ID\n- `{{emailAddress}}` - User's email address\n- `{{givenName}}` - User's first name\n- `{{familyName}}` - User's last name\n- `{{displayName}}` - User's full display name\n\n### Placeholder Rules\n- If a placeholder field has no value or is null, it will be replaced with an empty string\n- Placeholders are case-insensitive\n- Unrecognized placeholders are replaced with empty strings\n\n### Template Examples\n\n**Simple Welcome Message:**\n```\nsubjectTemplate: \"Welcome, {{givenName}}!\"\nbodyTemplate: \"Hello {{displayName}}, thank you for joining our platform.\"\n```\n\n**Report Notification:**\n```\nsubjectTemplate: \"Your Monthly Report is Ready\"\nbodyTemplate: \"Hi {{givenName}},\n\nYour monthly report has been generated and is ready for review.\n\nIf you have questions, contact support.\n\nBest regards,\nThe Team\"\n```\n\n**System Alert:**\n```\nsubjectTemplate: \"Security Alert for {{displayName}}\"\nbodyTemplate: \"User {{id}}: A new login was detected for account {{emailAddress}}.\"\n```\n\n**HTML Formatted Notification:**\n```\nsubjectTemplate: \"Action Required: Review Document\"\nbodyTemplate: \"<html><body><h2>Hello {{givenName}} {{familyName}}</h2><p>Please review the document sent to {{emailAddress}}.</p></body></html>\"\nbodyFormat: \"HTML\"\n```\n\n## Usage\n\nThe API supports the following main operations:\n\n- Create and send notifications to users via email and in-app delivery\n- Retrieve notifications for the authenticated user with filtering options\n- Mark in-app notifications as read or unread\n\n## Common Workflows\n\n### Sending Notifications from an Application\n\nTo send notifications to users from your application, use the following sequence:\n\nFirst, obtain an access token from the Integration Engine Management API using your API credentials via the OAuth2 client credentials flow. Then call the POST /api/v1/notifications endpoint with the bearer token, providing the application ID, recipient user IDs, and notification template content. The API will validate all Nexus entities, process templates with user-specific data, and deliver notifications via configured methods based on user preferences.\n\n### Retrieving User Notifications\n\nTo retrieve notifications for an authenticated user, the user must first authenticate with Nexus Auth0 to obtain their bearer token. Then call the GET /api/v1/notifications/me/notifications endpoint with the user's bearer token. The endpoint supports filtering by application, deployment, importance level, read status, date range, and delivery method. Results are paginated using skip and take parameters.\n\n### Managing Notification Read Status\n\nTo mark notifications as read or unread, the authenticated user calls the PATCH /api/v1/notifications/me/notifications/{id} endpoint with their Auth0 bearer token, providing the notification ID and desired read status. This operation applies only to in-app notifications and requires the user to be the recipient of the notification.\n\n## Delivery Methods\n\n- **In-App**: Always delivered to all recipients and accessible via the GET endpoint\n- **Email**: Delivered only when notification importance meets or exceeds the user's minimum email importance preference\n\nFor more details, see the API endpoint documentation below or contact ECI support.\n\n## Service Information\n\nBuild Version: `1.0.54+b21b1bcedd`",
+    "version": "1.0.54+b21b1bcedd"
+  },
+  "paths": {
+    "/api/v1/notifications": {
+      "post": {
+        "tags": [
+          "Notification"
+        ],
+        "summary": "Creates a new notification for delivery to specified recipients",
+        "description": "This endpoint creates and delivers notifications to users via email and/or in-app delivery methods.\r\n\r\n## Authentication\r\nRequires Integration Engine API credentials (Bearer token from OAuth2 client credentials flow).\r\n\r\n## Template Placeholders\r\nBoth subjectTemplate and bodyTemplate support dynamic placeholders that are replaced with user-specific values.\r\nPlaceholders use the format {{fieldName}} and are replaced with data from the recipient's Nexus user profile.\r\n\r\nAvailable placeholders:\r\n- {{id}} - Nexus user ID\r\n- {{emailAddress}} - User's email address\r\n- {{givenName}} - User's first name\r\n- {{familyName}} - User's last name\r\n- {{displayName}} - User's full display name\r\n\r\nIf a placeholder references a field with no value or null, it will be replaced with an empty string.\r\n\r\n## Template Examples\r\n\r\n**Simple text notification:**\r\n```\r\nsubjectTemplate: \"Welcome to the system, {{givenName}}!\"\r\nbodyTemplate: \"Hello {{displayName}}, your account has been created successfully.\"\r\n```\r\n\r\n**Report notification:**\r\n```\r\nsubjectTemplate: \"Monthly Report Ready\"\r\nbodyTemplate: \"Hi {{givenName}},\\n\\nYour monthly report is now available for review.\\n\\nBest regards,\\nThe Team\"\r\n```\r\n\r\n**HTML formatted notification:**\r\n```\r\nsubjectTemplate: \"Action Required: Review Document\"\r\nbodyTemplate: \"<html><body><h2>Hello {{givenName}} {{familyName}}</h2><p>Please review the document sent to {{emailAddress}}.</p></body></html>\"\r\nbodyFormat: \"HTML\"\r\n```\r\n\r\n**System alert:**\r\n```\r\nsubjectTemplate: \"Security Alert for {{displayName}}\"\r\nbodyTemplate: \"User {{id}} - A login attempt was detected from a new device for account {{emailAddress}}.\"\r\n```\r\n\r\n## Delivery Methods\r\nNotifications are delivered based on:\r\n- **In-app**: Always delivered to all recipients\r\n- **Email**: Delivered only if notification importance is greater than or equal to the user's minimum email importance preference\r\n\r\n## Example Request\r\n```json\r\n{\r\n  \"applicationId\": 123,\r\n  \"applicationDeploymentId\": 456,\r\n  \"applicationComponent\": \"Security\",\r\n  \"subjectTemplate\": \"Security Alert for {{displayName}}\",\r\n  \"bodyTemplate\": \"User {{id}} - A login attempt was detected from a new device for account {{emailAddress}}. If this was not you, please contact support immediately.\",\r\n  \"bodyFormat\": \"Plain\",\r\n  \"importance\": 3,\r\n  \"recipientUserIds\": [\"01HX5ZZKWQR8Y9TPQR8Y9TPQR8\"]\r\n}\r\n```",
+        "requestBody": {
+          "description": "Notification creation request",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateNotificationRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateNotificationRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateNotificationRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateNotificationResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/notifications/me/messages": {
+      "get": {
+        "tags": [
+          "Notification"
+        ],
+        "summary": "Get messages for authenticated user",
+        "description": "This endpoint returns all notification messages for the current user from both email and in-app delivery methods.\r\n\r\n## Authentication\r\nRequires Auth0 bearer token issued by Nexus for the authenticated user. The token must contain the user's Nexus ID (nxs_id) claim.\r\nThis endpoint uses user-level authentication, not Integration Engine API credentials.\r\n\r\n## Filtering Options\r\n\r\n- **delivery_methods**: Filter by delivery method (case-insensitive). Values: \"app\", \"email\". Can specify multiple methods.\r\n- **application_id**: Filter by specific Nexus application ID.\r\n- **application_deployment_id**: Filter by specific Nexus application deployment ID.\r\n- **is_read**: Filter by read status. For email: based on whether email was opened. For app: based on isRead flag.\r\n- **after**: Filter notifications created after a specific date (ISO 8601 format). Accepted formats: \"2024-01-01\", \"2024-01-01T10:30:00Z\", or \"2024-01-01T10:30:00.1234567Z\".\r\n- **min_importance**: Filter by minimum importance level. Values: 1 (Low), 2 (Medium), 3 (High). Returns notifications with importance greater than or equal to specified value.\r\n\r\n## Pagination\r\n\r\n- **skip**: Number of notifications to skip.\r\n- **take**: Number of notifications to return.\r\n\r\nBoth skip and take must be provided together for pagination to be applied.\r\n\r\n## Response Structure\r\n\r\nEach notification includes: basic notification information (id, subject, body, created date, importance), application context (applicationId, applicationDeploymentId), delivery methods used, email delivery properties (if delivered via email), and app delivery properties (if delivered in-app).\r\n\r\n## Example Request\r\n```\r\nGET /api/v1/notifications/me/messages?delivery_methods=app&is_read=false&take=20\r\nAuthorization: Bearer {user-auth0-token}\r\n```",
+        "parameters": [
+          {
+            "name": "delivery_methods",
+            "in": "query",
+            "description": "List of keywords to filter the notifications by delivery methods (Currently supported for 'app' and 'email', case insensitive).",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "description": "Filter for notifications that have (undeleted) messages of this type.\r\n            Differs from delivery_method filter, which only considers the initial delivery of the notification when created,\r\n            but does not take into account if a message was later deleted by the recipient.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "application_id",
+            "in": "query",
+            "description": "Filter for a specific application ID.",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "application_deployment_id",
+            "in": "query",
+            "description": "Filter for a specific application deployment ID.",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "is_read",
+            "in": "query",
+            "description": "Filter for read/unread notifications.",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "after",
+            "in": "query",
+            "description": "Filter for notifications created after a certain date.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "min_importance",
+            "in": "query",
+            "description": "Filter for minimum importance level.",
+            "schema": {
+              "$ref": "#/components/schemas/ImportanceLevel"
+            }
+          },
+          {
+            "name": "skip",
+            "in": "query",
+            "description": "Number of notifications to skip (for pagination).",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "take",
+            "in": "query",
+            "description": "Number of notifications to take (for pagination).",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessagesResponseListResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/notifications/me/messages/{id}": {
+      "patch": {
+        "tags": [
+          "Notification"
+        ],
+        "summary": "Marks in-app notification read/unread",
+        "description": "This endpoint allows users to update the read status of their in-app notifications.\r\n\r\n## Authentication\r\nRequires Auth0 bearer token issued by Nexus for the authenticated user. The token must contain the user's Nexus ID (nxs_id) claim.\r\nThis endpoint uses user-level authentication, not Integration Engine API credentials.\r\n\r\n## Authorization\r\nOnly the recipient of the notification can update its read status. Attempts to modify notifications belonging to other users will result in a 404 Not Found response.\r\n\r\n## Scope\r\nThis operation applies only to in-app notifications. Email notifications do not have a manually controlled read status; they are considered read when opened by the recipient.\r\n\r\n## Request Body\r\n```json\r\n{\r\n  \"isRead\": true\r\n}\r\n```\r\n\r\nSet `isRead` to `true` to mark as read, or `false` to mark as unread.\r\n\r\n## Example Request\r\n```\r\nPATCH /api/v1/notifications/me/messages/01HX5ZZKWQR8Y9TPQR8Y9TPQR8\r\nAuthorization: Bearer {user-auth0-token}\r\nContent-Type: application/json\r\n\r\n{\r\n  \"isRead\": true\r\n}\r\n```",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The ID of the notification to mark as read/unread",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Request containing the new read status",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MarkMessageReadRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MarkMessageReadRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/MarkMessageReadRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AppDeliveryPropertiesResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Notification"
+        ],
+        "summary": "Delete a single in-app message",
+        "description": "This delete an in-app message, and doesn't affect the notification itself or associated email message, if present.\r\n            This action deletes the message for the authenticated user only, and similar messages sent as part of the same notification to other users are not affected.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The unique identifier of the message to delete",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AppDeliveryPropertiesResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AppDeliveryInfo": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "description": "Delivery status",
+            "nullable": true
+          },
+          "appDeliveryId": {
+            "type": "string",
+            "description": "App delivery ID",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "App delivery details"
+      },
+      "AppDeliveryPropertiesResponse": {
+        "type": "object",
+        "properties": {
+          "isRead": {
+            "type": "boolean",
+            "description": "Property indicating whether the message has been read."
+          }
+        },
+        "additionalProperties": false,
+        "description": "Response object for application delivery properties"
+      },
+      "CreateNotificationRequest": {
+        "required": [
+          "applicationId",
+          "bodyTemplate",
+          "recipientUserIds",
+          "subjectTemplate"
+        ],
+        "type": "object",
+        "properties": {
+          "applicationId": {
+            "type": "integer",
+            "description": "The Nexus product ID (required)",
+            "format": "int32"
+          },
+          "applicationDeploymentId": {
+            "type": "integer",
+            "description": "The Nexus application deployment ID (optional)",
+            "format": "int32",
+            "nullable": true
+          },
+          "applicationComponent": {
+            "maxLength": 100,
+            "minLength": 0,
+            "type": "string",
+            "description": "This is generic name of a system component",
+            "nullable": true
+          },
+          "subjectTemplate": {
+            "minLength": 1,
+            "type": "string",
+            "description": "Template for the notification subject line with optional placeholders.\r\nSupports {{fieldName}} syntax for dynamic values (e.g., \"Hello {{givenName}}\").\r\nAvailable placeholders: id, emailAddress, givenName, familyName, displayName.",
+            "example": "Welcome back, {{givenName}}!"
+          },
+          "bodyTemplate": {
+            "minLength": 1,
+            "type": "string",
+            "description": "Template for the notification message body with optional placeholders.\r\nSupports {{fieldName}} syntax for dynamic values.\r\nAvailable placeholders: id, emailAddress, givenName, familyName, displayName.\r\nMaximum length: 32,768 bytes (32KB).",
+            "example": "Hello {{displayName}}, your report is ready for review."
+          },
+          "bodyFormat": {
+            "$ref": "#/components/schemas/Format"
+          },
+          "importance": {
+            "$ref": "#/components/schemas/ImportanceLevel"
+          },
+          "recipientUserIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "List of Nexus user IDs to receive the notification (required)"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Request model for creating a notification."
+      },
+      "CreateNotificationResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The created notification ID",
+            "nullable": true
+          },
+          "status": {
+            "type": "string",
+            "description": "Overall status of the notification",
+            "nullable": true
+          },
+          "deliveryStatus": {
+            "type": "object",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/DeliveryStatusInfo"
+            },
+            "description": "Delivery status information per user",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Response model for creating a notification"
+      },
+      "DeliveryStatusInfo": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "$ref": "#/components/schemas/EmailDeliveryInfo"
+          },
+          "app": {
+            "$ref": "#/components/schemas/AppDeliveryInfo"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Delivery status information for a specific user"
+      },
+      "EmailDeliveryInfo": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "description": "Delivery status",
+            "nullable": true
+          },
+          "messageId": {
+            "type": "string",
+            "description": "SES Message ID",
+            "nullable": true
+          },
+          "detail": {
+            "type": "string",
+            "description": "Additional details",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Email delivery status"
+      },
+      "EmailDeliveryPropertiesResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "$ref": "#/components/schemas/EmailStatus"
+          },
+          "statusUpdatedDate": {
+            "type": "string",
+            "description": "The date when the status was last updated",
+            "format": "date-time",
+            "nullable": true
+          },
+          "statusMessage": {
+            "type": "string",
+            "description": "The status message associated with the email delivery",
+            "nullable": true
+          },
+          "failureDate": {
+            "type": "string",
+            "description": "The failure date if the email delivery failed",
+            "format": "date-time",
+            "nullable": true
+          },
+          "failureStatus": {
+            "type": "string",
+            "description": "The failure status if the email delivery failed",
+            "nullable": true
+          },
+          "failureReason": {
+            "type": "string",
+            "description": "The failure reason if the email delivery failed",
+            "nullable": true
+          },
+          "hasComplaint": {
+            "type": "boolean",
+            "description": "Property indicating if the email is compliant to email regulations"
+          },
+          "isOpened": {
+            "type": "boolean",
+            "description": "Property indicating whether the email has been opened."
+          },
+          "isClicked": {
+            "type": "boolean",
+            "description": "Property indicating whether the email has been clicked."
+          },
+          "isUnsubscribed": {
+            "type": "boolean",
+            "description": "Property indicating whether the email has been unsubscribed."
+          }
+        },
+        "additionalProperties": false,
+        "description": "Email delivery properties response model"
+      },
+      "EmailStatus": {
+        "enum": [
+          "None",
+          "Sent",
+          "Rejected",
+          "Delivered",
+          "Bounced",
+          "Delayed"
+        ],
+        "type": "string",
+        "description": "Status of the email"
+      },
+      "Format": {
+        "enum": [
+          "Plain",
+          "HTML"
+        ],
+        "type": "string",
+        "description": "Format of the content"
+      },
+      "ImportanceLevel": {
+        "enum": [
+          "Low",
+          "Medium",
+          "High"
+        ],
+        "type": "string",
+        "description": "Importance level of the notification"
+      },
+      "MarkMessageReadRequest": {
+        "type": "object",
+        "properties": {
+          "isRead": {
+            "type": "boolean",
+            "description": "Indicates whether the message should be marked as read (true) or unread (false).",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Request model for marking a message as read or unread"
+      },
+      "MessagesResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The unique identifier of the message",
+            "nullable": true
+          },
+          "notificationId": {
+            "type": "string",
+            "description": "The unique identifier of the notification that this message belongs to",
+            "nullable": true
+          },
+          "applicationId": {
+            "type": "integer",
+            "description": "Application identifier associated with the message",
+            "format": "int32"
+          },
+          "applicationDeploymentId": {
+            "type": "integer",
+            "description": "Application deployment identifier associated with the message",
+            "format": "int32",
+            "nullable": true
+          },
+          "body": {
+            "type": "string",
+            "description": "The body content of the message",
+            "nullable": true
+          },
+          "subject": {
+            "type": "string",
+            "description": "The subject of the message",
+            "nullable": true
+          },
+          "createdDate": {
+            "type": "string",
+            "description": "The creation date of the message",
+            "format": "date-time"
+          },
+          "deliveryMethods": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Delivery methods used for filtering the messages",
+            "nullable": true
+          },
+          "importance": {
+            "$ref": "#/components/schemas/ImportanceLevel"
+          },
+          "email": {
+            "$ref": "#/components/schemas/EmailDeliveryPropertiesResponse"
+          },
+          "app": {
+            "$ref": "#/components/schemas/AppDeliveryPropertiesResponse"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Response for message details"
+      },
+      "MessagesResponseListResponse": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MessagesResponse"
+            },
+            "description": "The collection of items in the response",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false,
+        "description": "Object representing a list response"
+      },
+      "ProblemDetails": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "nullable": true
+          },
+          "title": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "detail": {
+            "type": "string",
+            "nullable": true
+          },
+          "instance": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": { }
+      },
+      "ValidationProblemDetails": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "nullable": true
+          },
+          "title": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "detail": {
+            "type": "string",
+            "nullable": true
+          },
+          "instance": {
+            "type": "string",
+            "nullable": true
+          },
+          "errors": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": { }
+      }
+    },
+    "securitySchemes": {
+      "Auth0": {
+        "type": "http",
+        "description": "Enter your token",
+        "scheme": "Bearer",
+        "bearerFormat": "JWT"
+      },
+      "ClientToken": {
+        "type": "oauth2",
+        "description": "OAuth 2.0 Client Credentials Flow with API Users from Integration Engine",
+        "flows": {
+          "clientCredentials": {
+            "tokenUrl": "https://api-user.integrations.ecimanufacturing.com/oauth2/api-user/token",
+            "scopes": {
+              "openid": "openid"
+            }
+          }
+        }
+      }
+    }
+  },
+  "security": [
+    {
+      "ClientToken": [ ],
+      "Auth0": [ ]
+    }
+  ]
+}

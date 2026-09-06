@@ -1,0 +1,126 @@
+generated: '2026-09-06'
+method: derived
+source: >-
+  derived from openapi/eci-solutions-erp-v2-1-openapi.json, openapi/eci-solutions-jobboss2-openapi.json
+  and openapi/eci-solutions-lasso-crm-openapi.yml after searching for a first-party server
+provider: ECI Solutions
+providerId: eci-solutions
+status: candidate
+deployment:
+  mode: none
+  auth: oauth
+  verified: searched
+  note: >-
+    ECI Software Solutions ships no MCP server. Searched the ECI Manufacturing developer portal, the
+    ECI website, the llms.txt ECI publishes at www.ecisolutions.com/llms.txt, npm, PyPI and GitHub;
+    probed https://integrations.ecimanufacturing.com/mcp (200, but the Swagger-UI HTML catch-all,
+    not a JSON-RPC endpoint) and https://api-erp.integrations.ecimanufacturing.com/mcp (404). No
+    hosted endpoint and no first-party stdio package exist, so mode is none and endpoint/install are
+    deliberately empty. `auth: oauth` records what a server WOULD have to use — the Integration
+    Engine OAuth 2.0 client-credentials token — not a server that exists.
+third_party_servers:
+  - name: jobboss2-mcp
+    repository: https://github.com/kilwizac/jobboss2-mcp
+    official: false
+    mode: local-stdio
+    note: >-
+      Unofficial community MCP server for the JobBOSS² Public API, source-only (no npm/PyPI
+      release). Listed for accuracy about what an agent operator will find; it is NOT an ECI
+      surface and does not earn ECI an MCPServer credit for a server it publishes.
+  - name: mcp-jobboss2-server
+    directory_listing: https://lobehub.com/mcp/zcad-products-mcp-jobboss2-server
+    official: false
+    mode: local-stdio
+candidate_tools:
+  note: >-
+    Derived one-for-one from real operations in the harvested contracts. Every `rest` value below is
+    a path+method that exists in the named spec; the ERP and JobBOSS² write operations carry no
+    operationId in the published spec, so they are addressed by METHOD path, which is what the
+    contract actually provides. Nothing here is offered by ECI.
+  tools:
+    - name: erp_list_jobs
+      description: List jobs across the connected ECI ERP (Deacom, M1, Macola or JobBOSS²).
+      api: eci-solutions:eci-solutions-platform
+      rest: GET /api/v2.1/view/jobs
+      operationId: GET__api_v2.1_view_jobs
+      read_only: true
+    - name: erp_get_job
+      description: Retrieve a single job by id.
+      api: eci-solutions:eci-solutions-platform
+      rest: GET /api/v2.1/jobs/{id}
+      read_only: true
+    - name: erp_update_job
+      description: Patch a job record.
+      api: eci-solutions:eci-solutions-platform
+      rest: PATCH /api/v2.1/jobs/{id}
+      read_only: false
+    - name: erp_report_part_production
+      description: Report part production against a job.
+      api: eci-solutions:eci-solutions-platform
+      rest: POST /api/v2.1/jobs/{uniqueID}/part-production
+      read_only: false
+    - name: erp_list_sales_orders
+      description: List sales orders with filter, sort and take/skip paging.
+      api: eci-solutions:eci-solutions-platform
+      rest: GET /api/v2.1/view/sales-orders
+      operationId: GET__api_v2.1_view_sales-orders
+      read_only: true
+    - name: erp_create_sales_order
+      description: Create a sales order.
+      api: eci-solutions:eci-solutions-platform
+      rest: POST /api/v2.1/sales-orders
+      read_only: false
+    - name: erp_create_sales_order_line
+      description: Add a line to a sales order.
+      api: eci-solutions:eci-solutions-platform
+      rest: POST /api/v2.1/sales-order-lines
+      read_only: false
+    - name: erp_list_parts
+      description: List parts with field selection and expansion.
+      api: eci-solutions:eci-solutions-platform
+      rest: GET /api/v2.1/view/parts
+      operationId: GET__api_v2.1_view_parts
+      read_only: true
+    - name: erp_clock_in
+      description: Clock an employee in against a job operation.
+      api: eci-solutions:eci-solutions-platform
+      rest: POST /api/v2.1/timecards/clock-in
+      read_only: false
+    - name: erp_clock_out
+      description: Clock an employee out.
+      api: eci-solutions:eci-solutions-platform
+      rest: POST /api/v2.1/timecards/clock-out
+      read_only: false
+    - name: erp_whoami
+      description: Return the company, ERP product and instance the API user is bound to.
+      api: eci-solutions:eci-solutions-platform
+      rest: GET /api/v2.1/user-info
+      read_only: true
+    - name: jobboss2_list_orders
+      description: List JobBOSS² orders.
+      api: eci-solutions:eci-solutions-jobboss2
+      rest: GET /api/v1/orders
+      read_only: true
+    - name: jobboss2_list_quotes
+      description: List JobBOSS² quotes.
+      api: eci-solutions:eci-solutions-jobboss2
+      rest: GET /api/v1/quotes
+      read_only: true
+    - name: lasso_search_registrants
+      description: Search Lasso CRM registrants.
+      api: eci-solutions:eci-solutions-lasso-crm
+      rest: GET /registrants/search
+      operationId: get_registrants_search
+      read_only: true
+    - name: lasso_create_registrant
+      description: Create a Lasso CRM registrant.
+      api: eci-solutions:eci-solutions-lasso-crm
+      rest: POST /registrants
+      operationId: post_registrants
+      read_only: false
+    - name: lasso_search_inventory
+      description: Search Lasso CRM inventory (homes, lots, plans).
+      api: eci-solutions:eci-solutions-lasso-crm
+      rest: GET /inventory/search
+      operationId: get_inventory_search
+      read_only: true

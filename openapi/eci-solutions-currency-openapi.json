@@ -1,0 +1,207 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "CurrencyData.API",
+    "version": "1.0"
+  },
+  "paths": {
+    "/api/v1/currencies": {
+      "get": {
+        "tags": [
+          "Currency"
+        ],
+        "summary": "Gets a list of currency codes for which rates are available.",
+        "operationId": "GetSupportedCurrencyList",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetSupportedCurrencyCodeListResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetSupportedCurrencyCodeListResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetSupportedCurrencyCodeListResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/currencies/{currency_code}/conversion-rates": {
+      "get": {
+        "tags": [
+          "Currency"
+        ],
+        "summary": "Gets a list of currency rates.",
+        "operationId": "GetConversionRatesListByCode",
+        "parameters": [
+          {
+            "name": "currency_code",
+            "in": "path",
+            "description": "Code",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetConversionRateListByCurrencyCodeResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetConversionRateListByCurrencyCodeResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetConversionRateListByCurrencyCodeResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/currencies/{currency_code}/conversion-rates/{foreign_code}": {
+      "get": {
+        "tags": [
+          "Currency"
+        ],
+        "summary": "Gets a foreign currency rate.",
+        "operationId": "GetConversionRateByCodes",
+        "parameters": [
+          {
+            "name": "currency_code",
+            "in": "path",
+            "description": "Code",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "foreign_code",
+            "in": "path",
+            "description": "Foreign Code",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetConversionRateByCurrencyCodesResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetConversionRateByCurrencyCodesResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetConversionRateByCurrencyCodesResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "GetConversionRateByCurrencyCodesResponse": {
+        "type": "object",
+        "properties": {
+          "rate": {
+            "type": "number",
+            "format": "double"
+          },
+          "lastUpdated": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "GetConversionRateListByCurrencyCodeResponse": {
+        "type": "object",
+        "properties": {
+          "rates": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "number",
+              "format": "double"
+            },
+            "nullable": true
+          },
+          "baseCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "lastUpdated": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "GetSupportedCurrencyCodeListResponse": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "securitySchemes": {
+      "Bearer": {
+        "type": "oauth2",
+        "description": "OAuth 2.0 Client Credentials Flow with API Users issued from Integration Engine Management Console",
+        "flows": {
+          "clientCredentials": {
+            "tokenUrl": "https://api-user.integrations.ecimanufacturing.com/oauth2/api-user/token",
+            "scopes": {
+              "openid": "openid"
+            }
+          }
+        }
+      }
+    }
+  },
+  "security": [
+    {
+      "Bearer": [ ]
+    }
+  ]
+}

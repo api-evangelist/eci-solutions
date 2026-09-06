@@ -1,0 +1,2408 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "ECI MFG Payment API",
+    "description": "# PaymentIntegration API User Guide\n\nThis guide explains how to use the PaymentIntegration API to process payments and manage customer data.\n\n## Introduction\n\nThe PaymentIntegration API allows you to integrate payment processing capabilities directly into your application. It provides a secure and straightforward way to handle online payments, manage saved customer payment methods, and maintain customer contact information through the Paya Payment Gateway.\n\n### Core Features\n-   **Process Payments**: Charge credit cards and ACH accounts, issue refunds, and void transactions.\n-   **Manage Saved Payment Methods**: Securely save, update, and delete customer payment methods in a \"vault\" for easy reuse.\n-   **Manage Customer Contacts**: Create, update, and retrieve customer contact information associated with payments.\n-   **Launch Secure Payment Forms**: Generate and launch Paya-hosted payment forms to securely capture customer payment information for one-time payments or for saving new payment methods to the vault. This helps with PCI compliance by ensuring sensitive payment data is entered directly into the payment gateway's secure environment.\n\n## Authentication\n\nTo use the API, you must include an access token with each request. The token should be provided in the `Authorization` header.\n\n**Example:**\n`Authorization: Bearer <your_access_token>`\n\nAll API requests must be made over HTTPS.\n\n## API Features and Endpoints\n\nThe API provides a set of endpoints to access its features. The main resources are Payments, Account Vaults, and Contacts.\n\n### Payments\n\nThe Payments functionality allows you to manage the full lifecycle of payment transactions. You can process new payments against saved payment methods, complete payments that were previously authorized, and perform follow-up actions such as refunds, voids, or partial reversals. The API also supports retrieving lists of transactions, which can be filtered by various criteria including contact, location, transaction ID, or status.\n\n### Account Vault (Saved Payment Methods)\n\nThe Account Vault is used to securely manage a customer's saved payment methods. It provides the capabilities to retrieve the details of a specific payment method, update its information (such as an expiration date), or remove it from the vault entirely.\n\n### Contacts\n\nThe Contacts functionality is used to manage customer contact information. You can create new contacts, update existing ones, and retrieve the details for a specific contact. The API also allows you to get a list of all saved payment methods for a contact and to find contacts that are associated with a specific account number.\n\n## Error Handling\n\nIf an API request fails, you will receive a response with an appropriate HTTP status code (e.g., `400` for a bad request, `401` for an authentication error) and a JSON body containing a `Message` field that explains the reason for the error.\n\n",
+    "contact": {
+      "name": "ECI Manufacturing Division Integration Team",
+      "url": "https://www.ecisolutions.com/support/"
+    },
+    "version": "2.9.29+ff43d60aad"
+  },
+  "paths": {
+    "/api/account/authenticate": {
+      "post": {
+        "tags": [
+          "Account"
+        ],
+        "summary": "Authenticate user credentials.",
+        "description": "***This method is obsolete.  Use the Integration Authentication API instead.***\r\n\r\nThis API authenticates the user credentials. After successful authentication, it returns token and refresh token",
+        "requestBody": {
+          "description": "This is an object which contains username and password and both are required",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AuthenticateUser"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AuthenticateUser"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/AuthenticateUser"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthenticateUserResponseAPIResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthenticateUserResponseAPIResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthenticateUserResponseAPIResponse"
+                }
+              }
+            }
+          }
+        },
+        "deprecated": true
+      }
+    },
+    "/api/account/register": {
+      "post": {
+        "tags": [
+          "Account"
+        ],
+        "summary": "Creates a new Payment API user account and possibly company.",
+        "description": "This API registers the user, and creates a company also. After successful registration, user will receive a verification mail which has to be confirmed before proceeding further. \r\n\r\n**application_type** - Valid values are: Deacom, JobBOSS, JobBOSS2, M1, Macola, and Max\r\n\r\n**company_name and customer_id** - Currently, Company name and customer id are not required, if one is being provided then other one will be required. \r\nUser can provide existing company name and customer id for creating company, otherwise this request will use [last_name, first_name, user_name] as company name and user_name as customer id for creating a company.\n\r\nIf the customer_id of an existing Company with the same matching application_type (Product) is provided, the API user will be added\r\nto the existing Company. Otherwise, a new Company will be created.\r\n\r\n**enable_password_reset** - Allows user to reset password in future.\r\n\r\n\n\r\n**allowed_origin_domains** - Optional. Space‑separated list of domains allowed to call the API, e.g. *.example.com.\r\n\r\nFor existing company: If not provided, the Company's existing value is used. If provided, the new domains are added to the existing list.\r\nSupplying the same domain multiple times has no effect on the final list.\r\n\n\r\n**merchant_country** - Optional. Valid values: [United States, Canada].\r\nIf the Company does not already support the specified country, the Company properties are updated to include it,\r\nand the user is associated with the provided country.\r\n\r\n\r\n**Note**: allowed_origin_domains and merchant_country properties has update effect for existing companies. A domain or country will never be removed from company,\r\nas these values could be associated to other users; only additions are made.",
+        "requestBody": {
+          "description": "This is an object which contains all required and optional fields to register user",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegistrationModel"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegistrationModel"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegistrationModel"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/StringAPIResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StringAPIResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StringAPIResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/account/verifypayamerchantaccount": {
+      "post": {
+        "tags": [
+          "Account"
+        ],
+        "summary": "Verify paya merchant account",
+        "description": "This Api allows to verify the merchant account.",
+        "requestBody": {
+          "description": "This is an object which contains developer id and location id of merchant",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MerchantAccountModel"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MerchantAccountModel"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/MerchantAccountModel"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/StringAPIResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StringAPIResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StringAPIResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/account/resendconfirmationemail": {
+      "post": {
+        "tags": [
+          "Account"
+        ],
+        "summary": "Resend confirmation mail",
+        "description": "This Api resends the mail to confirm or verify the registration.",
+        "requestBody": {
+          "description": "This is an object which contains username",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResendConfirmEmailModel"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResendConfirmEmailModel"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResendConfirmEmailModel"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/StringAPIResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StringAPIResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StringAPIResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/account/verifymerchantaccountandauthenticateuser": {
+      "post": {
+        "tags": [
+          "Account"
+        ],
+        "summary": "Verify paya merchant account with user credentials",
+        "description": "This Api allows to verify the merchant account.\r\nAdditionally, it validates the user credentials.",
+        "requestBody": {
+          "description": "This is an object which contains developer id and location id of merchant and user credential details",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MerchantUserModel"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MerchantUserModel"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/MerchantUserModel"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/StringAPIResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StringAPIResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StringAPIResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/account/me": {
+      "get": {
+        "tags": [
+          "Account"
+        ],
+        "summary": "Get details about the current user",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiUserSettingsAPIResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiUserSettingsAPIResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiUserSettingsAPIResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/accountvault": {
+      "get": {
+        "tags": [
+          "AccountVault"
+        ],
+        "summary": "Gets account vault details.",
+        "description": "### Gets account vault details\r\nThis API retrieves information for account vault records that have already been associated with the account.",
+        "parameters": [
+          {
+            "name": "accountVaultId",
+            "in": "query",
+            "description": "This field contains the account vault ID.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "developerId",
+            "in": "query",
+            "description": "This field contains the developer ID.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountVaultDetailResponseAPIResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountVaultDetailResponseAPIResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountVaultDetailResponseAPIResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "AccountVault"
+        ],
+        "summary": "Updates account vault details.",
+        "description": "### Updates account vault details\r\nThis API updates information such as the expiry date and account holder name of account vault records.",
+        "requestBody": {
+          "description": "This is an object which contains the required fields to process this request.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AccountVaultUpdateModel"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AccountVaultUpdateModel"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/AccountVaultUpdateModel"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/StringAPIResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StringAPIResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StringAPIResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "AccountVault"
+        ],
+        "summary": "Deletes an account vault.",
+        "description": "### Deletes an account vault\r\nThis API deletes an associated account vault.",
+        "requestBody": {
+          "description": "This is an object which contains the required fields to process this request.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AccountVaultDetailRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AccountVaultDetailRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/AccountVaultDetailRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/StringAPIResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StringAPIResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StringAPIResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/contact": {
+      "post": {
+        "tags": [
+          "Contact"
+        ],
+        "summary": "Creates a Paya contact.",
+        "description": "### Creates a Paya Contact\r\n\r\nCreating a contact is the first step to enabling payment processing for a customer. A contact represents an individual or entity within the Paya system.\r\n\r\n#### Why create a contact?\r\n- **Store Payment Methods:** Once a contact is created, you can securely save their payment methods (credit cards, bank accounts) in a Paya \"Account Vault\".\r\n- **Process Transactions:** With a stored payment method, you can easily process future transactions like sales, refunds, or authorizations without requiring the customer to re-enter their details.\r\n- **Streamline Billing:** It is essential for recurring billing, subscriptions, and providing a quick checkout experience for returning customers.\r\n\r\nThis endpoint captures the necessary customer information to establish their record in the Paya gateway.",
+        "requestBody": {
+          "description": "An object containing the details of the contact to be created, such as name, email, and address.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Contact"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Contact"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Contact"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/StringAPIResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StringAPIResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StringAPIResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Contact"
+        ],
+        "summary": "Gets contact details.",
+        "description": "### Gets contact details\r\nThis API shows all details of a desired contact.",
+        "parameters": [
+          {
+            "name": "contactId",
+            "in": "query",
+            "description": "This field contains the desired contact ID.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "developerId",
+            "in": "query",
+            "description": "This field contains the desired developer ID.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContactAPIResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContactAPIResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContactAPIResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/contact/{id}": {
+      "patch": {
+        "tags": [
+          "Contact"
+        ],
+        "summary": "Updates a contact.",
+        "description": "### Updates a contact\r\nThis API patches or updates only the desired records of a contact, which are provided in the request model.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "This field requires the contact ID.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "This is an object which can contain only the desired fields to patch or update. (Developer ID is required).",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateContact"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateContact"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateContact"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/StringAPIResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StringAPIResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StringAPIResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/contact/getaccountvaultsforcontact": {
+      "get": {
+        "tags": [
+          "Contact"
+        ],
+        "summary": "Gets contact account vaults.",
+        "description": "### Gets contact account vaults\r\nThis API allows you to get all account vault details associated with the account, or you can filter by providing a contact ID.",
+        "parameters": [
+          {
+            "name": "contactId",
+            "in": "query",
+            "description": "This field contains the desired contact ID.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "developerId",
+            "in": "query",
+            "description": "This field contains the developer ID, which is required.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountVaultListResponseAPIResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountVaultListResponseAPIResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountVaultListResponseAPIResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/contact/GetAccountNumberContacts": {
+      "get": {
+        "tags": [
+          "Contact"
+        ],
+        "summary": "Gets contacts by account number.",
+        "description": "### Gets contacts by account number\r\nThis API allows you to get all contact details associated with the account, or you can filter by providing an account number and location ID.",
+        "parameters": [
+          {
+            "name": "accountNumber",
+            "in": "query",
+            "description": "This field contains the account number.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "developerId",
+            "in": "query",
+            "description": "This field contains the developer ID, which is required.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "locationId",
+            "in": "query",
+            "description": "This field contains the location ID.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountNumberContactsAPIResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountNumberContactsAPIResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountNumberContactsAPIResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/payment/accountVaultTransaction": {
+      "post": {
+        "tags": [
+          "Payment"
+        ],
+        "summary": "Charges an account vault.",
+        "description": "### Charges an account vault\r\nThis API allows you to charge a customer through an associated account vault.\r\n\r\nThis endpoint supports the following actions:\r\n* `sale`: A standard transaction that charges the customer's card and marks it for settlement.\r\n* `authonly`: Authorizes an amount on the customer's card but does not charge it. The funds are held for a period of time.\r\n* `debit`: A transaction that debits a bank account (ACH).\r\n* `avsonly`: Performs an Address Verification System (AVS) check only, without charging the card.\r\n\r\nOther actions like `refund`, `void`, `credit`, etc., are supported via the `POST /api/payment/updatetransaction` endpoint.\r\nThe `edit` action is supported via the `PUT /api/payment/accountVaultTransaction` endpoint.",
+        "requestBody": {
+          "description": "This is an object which contains all required fields to process the request.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AccountVaultTransaction"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AccountVaultTransaction"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/AccountVaultTransaction"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/TransactionResponseAPIResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TransactionResponseAPIResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TransactionResponseAPIResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Payment"
+        ],
+        "summary": "Updates a transaction description.",
+        "description": "### Updates a transaction description\r\nThis API allows you to update a description for any transaction using the `edit` action.",
+        "requestBody": {
+          "description": "This is an object which contains all required fields to proceed further.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PaymentTransaction"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PaymentTransaction"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/PaymentTransaction"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/StringAPIResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StringAPIResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StringAPIResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/payment/updateauthonlytransaction": {
+      "put": {
+        "tags": [
+          "Payment"
+        ],
+        "summary": "Completes auth-only transactions.",
+        "description": "### Completes auth-only transactions\r\nThis API allows you to perform a complete on auth-only transactions.",
+        "requestBody": {
+          "description": "This is a list object which contains all auth-only transaction IDs.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AuthOnlyTransactionDetails"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AuthOnlyTransactionDetails"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/AuthOnlyTransactionDetails"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/StringAPIResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StringAPIResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StringAPIResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/payment/updateauthonlytransactionbyid": {
+      "put": {
+        "tags": [
+          "Payment"
+        ],
+        "summary": "Completes a single transaction.",
+        "description": "### Completes a single transaction\r\nThis API allows you to perform a complete on a desired transaction. It uses the `authcomplete` action.",
+        "requestBody": {
+          "description": "This is an object which contains the transaction ID and can provide a transaction amount for a lesser amount than authorized.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AuthOnlyTransactionDetail"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AuthOnlyTransactionDetail"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/AuthOnlyTransactionDetail"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/StringAPIResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StringAPIResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StringAPIResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/payment/getalltransactions": {
+      "get": {
+        "tags": [
+          "Payment"
+        ],
+        "summary": "Retrieves all transactions.",
+        "description": "### Retrieves all transactions\r\nThis API allows you to retrieve all transactions associated with the account. You can filter the transaction by providing a location ID and contact ID.",
+        "parameters": [
+          {
+            "name": "contactId",
+            "in": "query",
+            "description": "This field contains the contact ID to filter the transactions.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "locationId",
+            "in": "query",
+            "description": "This field contains the location ID to filter the transactions.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "developerId",
+            "in": "query",
+            "description": "This field contains the developer ID which is required to retrieve the transactions.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "transactionId",
+            "in": "query",
+            "description": "This field contains the transaction ID to filter the transactions.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/TransactionUIResponseRootAPIResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TransactionUIResponseRootAPIResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TransactionUIResponseRootAPIResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/payment/gettransactionsbystatus": {
+      "get": {
+        "tags": [
+          "Payment"
+        ],
+        "summary": "Retrieves transactions by status.",
+        "description": "### Retrieves transactions by status\r\nThis API allows you to retrieve all transactions which have the provided status. You can provide a contact ID and location ID to filter the response.\r\nThe following statuses can be used:\r\n`Approved`, `AuthOnly`, `Refunded`, `AvsOnly`, `PendingOrigination`, `Settled`, `Voided`, `Declined`, `ChargedBack`",
+        "parameters": [
+          {
+            "name": "contactId",
+            "in": "query",
+            "description": "This field contains the contact ID to filter the transactions.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "description": "This field contains the status.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "locationId",
+            "in": "query",
+            "description": "This field contains the location ID to filter the transactions.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "developerId",
+            "in": "query",
+            "description": "This field contains the developer ID which is required to retrieve the transactions.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/TransactionStatusResponseRootAPIResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TransactionStatusResponseRootAPIResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TransactionStatusResponseRootAPIResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/payment/updatetransaction": {
+      "post": {
+        "tags": [
+          "Payment"
+        ],
+        "summary": "Updates a transaction.",
+        "description": "### Updates a transaction\r\nAllows the following actions for CC transactions: `authonly`, `authincrement`, `refund`, `partialreversal`, and `void`. \r\nAllows the `credit` action for ACH transactions.",
+        "requestBody": {
+          "description": "This is an object which contains all required fields to proceed further.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TransactionUpdateRequestModel"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TransactionUpdateRequestModel"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/TransactionUpdateRequestModel"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AccountNumberContacts": {
+        "type": "object",
+        "properties": {
+          "contacts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Contact"
+            },
+            "nullable": true
+          },
+          "tokenExpire": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "AccountNumberContactsAPIResponse": {
+        "type": "object",
+        "properties": {
+          "version": {
+            "type": "string",
+            "nullable": true
+          },
+          "statusCode": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          },
+          "responseException": {
+            "$ref": "#/components/schemas/ApiError"
+          },
+          "result": {
+            "$ref": "#/components/schemas/AccountNumberContacts"
+          }
+        },
+        "additionalProperties": false
+      },
+      "AccountVaultDetail": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "nullable": true
+          },
+          "payment_method": {
+            "type": "string",
+            "nullable": true
+          },
+          "title": {
+            "type": "string",
+            "nullable": true
+          },
+          "account_holder_name": {
+            "type": "string",
+            "nullable": true
+          },
+          "first_six": {
+            "type": "string",
+            "nullable": true
+          },
+          "last_four": {
+            "type": "string",
+            "nullable": true
+          },
+          "billing_address": {
+            "type": "string",
+            "nullable": true
+          },
+          "billing_zip": {
+            "type": "string",
+            "nullable": true
+          },
+          "exp_date": {
+            "type": "string",
+            "nullable": true
+          },
+          "routing": {
+            "nullable": true
+          },
+          "account_type": {
+            "type": "string",
+            "nullable": true
+          },
+          "is_company": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "created_ts": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "modified_ts": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "account_vault_api_id": {
+            "nullable": true
+          },
+          "contact_id": {
+            "type": "string",
+            "nullable": true
+          },
+          "location_id": {
+            "type": "string",
+            "nullable": true
+          },
+          "expiring_in_months": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "has_recurring": {
+            "type": "boolean"
+          },
+          "accountvault_c1": {
+            "nullable": true
+          },
+          "accountvault_c2": {
+            "nullable": true
+          },
+          "accountvault_c3": {
+            "nullable": true
+          },
+          "active": {
+            "type": "string",
+            "nullable": true
+          },
+          "dl_number": {
+            "nullable": true
+          },
+          "dl_state": {
+            "nullable": true
+          },
+          "ssn4": {
+            "nullable": true
+          },
+          "dob_year": {
+            "nullable": true
+          },
+          "billing_state": {
+            "nullable": true
+          },
+          "billing_city": {
+            "type": "string",
+            "nullable": true
+          },
+          "billing_phone": {
+            "nullable": true
+          },
+          "customer_id": {
+            "nullable": true
+          },
+          "_links": {
+            "$ref": "#/components/schemas/Links"
+          }
+        },
+        "additionalProperties": false
+      },
+      "AccountVaultDetailRequest": {
+        "required": [
+          "account_vault_id",
+          "developer_id"
+        ],
+        "type": "object",
+        "properties": {
+          "account_vault_id": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "developer_id": {
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "AccountVaultDetailResponse": {
+        "type": "object",
+        "properties": {
+          "accountvault": {
+            "$ref": "#/components/schemas/AccountVaultDetail"
+          }
+        },
+        "additionalProperties": false
+      },
+      "AccountVaultDetailResponseAPIResponse": {
+        "type": "object",
+        "properties": {
+          "version": {
+            "type": "string",
+            "nullable": true
+          },
+          "statusCode": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          },
+          "responseException": {
+            "$ref": "#/components/schemas/ApiError"
+          },
+          "result": {
+            "$ref": "#/components/schemas/AccountVaultDetailResponse"
+          }
+        },
+        "additionalProperties": false
+      },
+      "AccountVaultListResponse": {
+        "type": "object",
+        "properties": {
+          "accountVaults": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AccountVaultDetail"
+            },
+            "nullable": true
+          },
+          "action": {
+            "type": "string",
+            "nullable": true
+          },
+          "locale": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "AccountVaultListResponseAPIResponse": {
+        "type": "object",
+        "properties": {
+          "version": {
+            "type": "string",
+            "nullable": true
+          },
+          "statusCode": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          },
+          "responseException": {
+            "$ref": "#/components/schemas/ApiError"
+          },
+          "result": {
+            "$ref": "#/components/schemas/AccountVaultListResponse"
+          }
+        },
+        "additionalProperties": false
+      },
+      "AccountVaultTransaction": {
+        "required": [
+          "account_vault_id",
+          "action",
+          "developer_id",
+          "location_id",
+          "payment_method",
+          "transaction_amount"
+        ],
+        "type": "object",
+        "properties": {
+          "location_id": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "developer_id": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "payment_method": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "action": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "account_vault_id": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "transaction_amount": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "transaction_c1": {
+            "type": "string",
+            "nullable": true
+          },
+          "order_num": {
+            "maxLength": 32,
+            "pattern": "^[a-zA-Z0-9]*$",
+            "type": "string",
+            "nullable": true
+          },
+          "po_number": {
+            "maxLength": 24,
+            "pattern": "^[a-zA-Z0-9]*$",
+            "type": "string",
+            "nullable": true
+          },
+          "clerk_number": {
+            "type": "string",
+            "description": "The Clerk ID",
+            "nullable": true
+          },
+          "tax": {
+            "type": "number",
+            "description": "Sales Tax which is added in the final amount.",
+            "format": "double"
+          },
+          "description": {
+            "maxLength": 64,
+            "type": "string",
+            "nullable": true
+          },
+          "locale": {
+            "type": "string",
+            "description": "Locale: Value used \"en_CA\" to indicate \"English Canada\" in order to enable Canadian-specific labels. Only Required for canadian Merchant Processing.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "AccountVaultUpdate": {
+        "required": [
+          "account_holder_name",
+          "account_vault_id",
+          "developer_id",
+          "exp_date"
+        ],
+        "type": "object",
+        "properties": {
+          "account_vault_id": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "exp_date": {
+            "minLength": 1,
+            "pattern": "^(0[1-9]|1[0-2])([0-9]{2})$",
+            "type": "string"
+          },
+          "account_holder_name": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "developer_id": {
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "AccountVaultUpdateModel": {
+        "type": "object",
+        "properties": {
+          "accountvault": {
+            "$ref": "#/components/schemas/AccountVaultUpdate"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ApiError": {
+        "type": "object",
+        "properties": {
+          "isError": {
+            "type": "boolean"
+          },
+          "exceptionMessage": {
+            "type": "string",
+            "nullable": true
+          },
+          "details": {
+            "type": "string",
+            "nullable": true
+          },
+          "referenceErrorCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "referenceDocumentLink": {
+            "type": "string",
+            "nullable": true
+          },
+          "validationErrors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ApiUserSettings": {
+        "type": "object",
+        "properties": {
+          "companyId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "productName": {
+            "type": "string",
+            "nullable": true
+          },
+          "integrationId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "integrationName": {
+            "type": "string",
+            "nullable": true
+          },
+          "systemId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "systemName": {
+            "type": "string",
+            "nullable": true
+          },
+          "allowedDomains": {
+            "type": "string",
+            "nullable": true
+          },
+          "merchantCountry": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ApiUserSettingsAPIResponse": {
+        "type": "object",
+        "properties": {
+          "version": {
+            "type": "string",
+            "nullable": true
+          },
+          "statusCode": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          },
+          "responseException": {
+            "$ref": "#/components/schemas/ApiError"
+          },
+          "result": {
+            "$ref": "#/components/schemas/ApiUserSettings"
+          }
+        },
+        "additionalProperties": false
+      },
+      "AuthOnlyTransactionDetail": {
+        "required": [
+          "developer_id",
+          "location_id",
+          "transaction_id"
+        ],
+        "type": "object",
+        "properties": {
+          "location_id": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "developer_id": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "transaction_id": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "transaction_amount": {
+            "type": "number",
+            "description": "Can provide transaction_amount for lesser amount than auth",
+            "format": "double"
+          },
+          "tax": {
+            "type": "number",
+            "format": "double"
+          }
+        },
+        "additionalProperties": false
+      },
+      "AuthOnlyTransactionDetailNoBase": {
+        "required": [
+          "transaction_id"
+        ],
+        "type": "object",
+        "properties": {
+          "transaction_id": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "transaction_amount": {
+            "type": "number",
+            "description": "Can provide transaction_amount for lesser amount than auth",
+            "format": "double"
+          },
+          "tax": {
+            "type": "number",
+            "format": "double"
+          }
+        },
+        "additionalProperties": false
+      },
+      "AuthOnlyTransactionDetails": {
+        "required": [
+          "developer_id",
+          "location_id",
+          "transactions"
+        ],
+        "type": "object",
+        "properties": {
+          "location_id": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "developer_id": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "transactions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AuthOnlyTransactionDetailNoBase"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "AuthenticateUser": {
+        "required": [
+          "password",
+          "user_name"
+        ],
+        "type": "object",
+        "properties": {
+          "user_name": {
+            "maxLength": 50,
+            "minLength": 1,
+            "type": "string"
+          },
+          "password": {
+            "maxLength": 64,
+            "minLength": 6,
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "AuthenticateUserResponse": {
+        "required": [
+          "password",
+          "user_name"
+        ],
+        "type": "object",
+        "properties": {
+          "user_name": {
+            "maxLength": 50,
+            "minLength": 1,
+            "type": "string"
+          },
+          "password": {
+            "maxLength": 64,
+            "minLength": 6,
+            "type": "string"
+          },
+          "token": {
+            "type": "string",
+            "nullable": true
+          },
+          "refreshToken": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "AuthenticateUserResponseAPIResponse": {
+        "type": "object",
+        "properties": {
+          "version": {
+            "type": "string",
+            "nullable": true
+          },
+          "statusCode": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          },
+          "responseException": {
+            "$ref": "#/components/schemas/ApiError"
+          },
+          "result": {
+            "$ref": "#/components/schemas/AuthenticateUserResponse"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Contact": {
+        "required": [
+          "developer_id",
+          "last_name",
+          "location_id"
+        ],
+        "type": "object",
+        "properties": {
+          "location_id": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "developer_id": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "id": {
+            "type": "string",
+            "nullable": true
+          },
+          "first_name": {
+            "maxLength": 64,
+            "minLength": 0,
+            "type": "string",
+            "nullable": true
+          },
+          "last_name": {
+            "maxLength": 64,
+            "minLength": 0,
+            "type": "string"
+          },
+          "email": {
+            "pattern": "^(([\\w-]+\\.)+[\\w-]+|([a-zA-Z]{1}|[\\w+-]{2,}))@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.)|(([\\w-]+\\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\\]?)$",
+            "type": "string",
+            "nullable": true
+          },
+          "address": {
+            "maxLength": 255,
+            "minLength": 0,
+            "type": "string",
+            "nullable": true
+          },
+          "city": {
+            "maxLength": 36,
+            "minLength": 0,
+            "type": "string",
+            "nullable": true
+          },
+          "state": {
+            "maxLength": 24,
+            "minLength": 0,
+            "type": "string",
+            "nullable": true
+          },
+          "zip": {
+            "pattern": "^.{5,10}$",
+            "type": "string",
+            "nullable": true
+          },
+          "cell_phone": {
+            "maxLength": 10,
+            "minLength": 0,
+            "pattern": "^[0-9]*$",
+            "type": "string",
+            "nullable": true
+          },
+          "account_number": {
+            "type": "string",
+            "description": "Account number for Macola - Customers Number should be added in that.",
+            "nullable": true
+          },
+          "company_name": {
+            "type": "string",
+            "description": "Company Name for Macola contacts - Customer Name should be added in that.",
+            "nullable": true
+          },
+          "tokenExpire": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "locale": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ContactAPIResponse": {
+        "type": "object",
+        "properties": {
+          "version": {
+            "type": "string",
+            "nullable": true
+          },
+          "statusCode": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          },
+          "responseException": {
+            "$ref": "#/components/schemas/ApiError"
+          },
+          "result": {
+            "$ref": "#/components/schemas/Contact"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Links": {
+        "type": "object",
+        "properties": {
+          "self": {
+            "$ref": "#/components/schemas/Self"
+          }
+        },
+        "additionalProperties": false
+      },
+      "MerchantAccountModel": {
+        "required": [
+          "developer_id",
+          "location_id"
+        ],
+        "type": "object",
+        "properties": {
+          "location_id": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "developer_id": {
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "MerchantUserModel": {
+        "type": "object",
+        "properties": {
+          "merchant": {
+            "$ref": "#/components/schemas/MerchantAccountModel"
+          },
+          "user": {
+            "$ref": "#/components/schemas/AuthenticateUser"
+          }
+        },
+        "additionalProperties": false
+      },
+      "PaymentTransaction": {
+        "required": [
+          "developer_id",
+          "id",
+          "location_id"
+        ],
+        "type": "object",
+        "properties": {
+          "location_id": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "developer_id": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "id": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "RegistrationModel": {
+        "required": [
+          "application_type",
+          "confirmPassword",
+          "first_name",
+          "password",
+          "user_name"
+        ],
+        "type": "object",
+        "properties": {
+          "user_name": {
+            "maxLength": 50,
+            "minLength": 1,
+            "pattern": "^[\\w-_@&+.,]*$",
+            "type": "string"
+          },
+          "email": {
+            "pattern": ".+@.+",
+            "type": "string",
+            "nullable": true
+          },
+          "password": {
+            "maxLength": 64,
+            "minLength": 16,
+            "pattern": "^(?=.*?[A-Z])(?=.*?[a-z]).{16,}$",
+            "type": "string",
+            "description": "Password should have at least 16 characters and must contain uppercase lowercase characters and should not be same as or contain company name, username, email."
+          },
+          "confirmPassword": {
+            "maxLength": 64,
+            "minLength": 16,
+            "type": "string"
+          },
+          "first_name": {
+            "maxLength": 32,
+            "minLength": 1,
+            "type": "string"
+          },
+          "last_name": {
+            "type": "string",
+            "nullable": true
+          },
+          "application_type": {
+            "minLength": 1,
+            "type": "string",
+            "description": "Valid application type values are: M1, Macola, Max, JobBOSS or JobBOSS2"
+          },
+          "company_name": {
+            "maxLength": 50,
+            "minLength": 2,
+            "type": "string",
+            "description": "A unique display name for the company/tenant for which this user account will be used.",
+            "nullable": true
+          },
+          "customer_id": {
+            "maxLength": 50,
+            "minLength": 2,
+            "type": "string",
+            "description": "A unique identifier for the company/tenant for which this user account will be used.\r\nThis field is required, if company_name is being provided.",
+            "nullable": true
+          },
+          "enable_password_reset": {
+            "type": "boolean",
+            "description": "Allows user reset password in future.",
+            "default": false
+          },
+          "allowed_origin_domains": {
+            "type": "string",
+            "description": "A space separated list of domain names that will be allowed as origins \r\nfor communication between the Payment UI and the hosting application using postMessage.\r\nThe wildcard character * is supported, so, if you want to support example.com and any subdomain,\r\nyou can specify a value of 'example.com *.example.com'. NOTE: This value can only be specified when specifying a CustomerId that does NOT already exist.",
+            "nullable": true
+          },
+          "merchant_country": {
+            "type": "string",
+            "description": "Optional property for the country of the merchant.\r\nThe value should match with the information retrieved from the integration if exists.",
+            "default": null,
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ResendConfirmEmailModel": {
+        "required": [
+          "userName"
+        ],
+        "type": "object",
+        "properties": {
+          "userName": {
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Self": {
+        "type": "object",
+        "properties": {
+          "href": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "StringAPIResponse": {
+        "type": "object",
+        "properties": {
+          "version": {
+            "type": "string",
+            "nullable": true
+          },
+          "statusCode": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          },
+          "responseException": {
+            "$ref": "#/components/schemas/ApiError"
+          },
+          "result": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "TransactionResponse": {
+        "type": "object",
+        "properties": {
+          "transaction_id": {
+            "type": "string",
+            "nullable": true
+          },
+          "avs": {
+            "type": "string",
+            "nullable": true
+          },
+          "avs_detail": {
+            "type": "string",
+            "nullable": true
+          },
+          "statusId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "statusMessage": {
+            "type": "string",
+            "nullable": true
+          },
+          "response_reason_code": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "response_reason_message": {
+            "type": "string",
+            "nullable": true
+          },
+          "payment_method": {
+            "type": "string",
+            "nullable": true
+          },
+          "type_id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "action": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "TransactionResponseAPIResponse": {
+        "type": "object",
+        "properties": {
+          "version": {
+            "type": "string",
+            "nullable": true
+          },
+          "statusCode": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          },
+          "responseException": {
+            "$ref": "#/components/schemas/ApiError"
+          },
+          "result": {
+            "$ref": "#/components/schemas/TransactionResponse"
+          }
+        },
+        "additionalProperties": false
+      },
+      "TransactionStatusDetail": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "nullable": true
+          },
+          "payment_method": {
+            "type": "string",
+            "nullable": true
+          },
+          "transaction_amount": {
+            "type": "string",
+            "nullable": true
+          },
+          "transaction_c1": {
+            "type": "string",
+            "nullable": true
+          },
+          "status_id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "order_num": {
+            "type": "string",
+            "nullable": true
+          },
+          "po_number": {
+            "type": "string",
+            "nullable": true
+          },
+          "created_ts": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "last_four": {
+            "type": "string",
+            "nullable": true
+          },
+          "account_vault_id": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "TransactionStatusResponseRoot": {
+        "type": "object",
+        "properties": {
+          "transactions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TransactionStatusDetail"
+            },
+            "nullable": true
+          },
+          "tokenExpiryTime": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "TransactionStatusResponseRootAPIResponse": {
+        "type": "object",
+        "properties": {
+          "version": {
+            "type": "string",
+            "nullable": true
+          },
+          "statusCode": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          },
+          "responseException": {
+            "$ref": "#/components/schemas/ApiError"
+          },
+          "result": {
+            "$ref": "#/components/schemas/TransactionStatusResponseRoot"
+          }
+        },
+        "additionalProperties": false
+      },
+      "TransactionUIDetail": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "nullable": true
+          },
+          "payment_method": {
+            "type": "string",
+            "nullable": true
+          },
+          "transaction_amount": {
+            "type": "string",
+            "nullable": true
+          },
+          "order_num": {
+            "type": "string",
+            "nullable": true
+          },
+          "po_number": {
+            "type": "string",
+            "nullable": true
+          },
+          "status_id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "process": {
+            "type": "boolean"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "last_four": {
+            "type": "string",
+            "nullable": true
+          },
+          "account_vault_id": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "TransactionUIResponseRoot": {
+        "type": "object",
+        "properties": {
+          "transactions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TransactionUIDetail"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "TransactionUIResponseRootAPIResponse": {
+        "type": "object",
+        "properties": {
+          "version": {
+            "type": "string",
+            "nullable": true
+          },
+          "statusCode": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          },
+          "responseException": {
+            "$ref": "#/components/schemas/ApiError"
+          },
+          "result": {
+            "$ref": "#/components/schemas/TransactionUIResponseRoot"
+          }
+        },
+        "additionalProperties": false
+      },
+      "TransactionUpdateModel": {
+        "required": [
+          "action",
+          "developer_id",
+          "id",
+          "location_id"
+        ],
+        "type": "object",
+        "properties": {
+          "location_id": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "developer_id": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "action": {
+            "minLength": 1,
+            "type": "string",
+            "description": "Action to take on the transaction. Value can be: void, refund, authcomplete, authonly, authincrement, partialreversal."
+          },
+          "id": {
+            "minLength": 1,
+            "type": "string",
+            "description": "The id of the transaction to update. For the authonly action, this id is for a previous (potentially voided)\r\ntransaction and will be used to retrieve payment method, amount, and tax for the new authorized transaction.\r\nTo perform an authonly without a previous transaction use POST /api/payment/accountVaultTransaction."
+          },
+          "transaction_amount": {
+            "type": "number",
+            "description": "Required when PaymentIntegration.Models.RequestModels.TransactionUpdateModel.Action is authincrement or partialreversal. Optional when action is authonly (CC), authcomplete (CC), or credit (ACH).\r\nIgnored if provided for other actions. Authcomplete total may be less than or equal to the authorized amount.\r\nFor partialreversal, this value should be the final settlement total for the transaction. For credit, this value should be the amount being credited back to the original payer.",
+            "format": "double",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "TransactionUpdateRequestModel": {
+        "required": [
+          "transaction"
+        ],
+        "type": "object",
+        "properties": {
+          "transaction": {
+            "$ref": "#/components/schemas/TransactionUpdateModel"
+          }
+        },
+        "additionalProperties": false,
+        "description": "For updating an existing transaction by id"
+      },
+      "UpdateContact": {
+        "required": [
+          "developer_id"
+        ],
+        "type": "object",
+        "properties": {
+          "first_name": {
+            "maxLength": 64,
+            "minLength": 0,
+            "type": "string",
+            "nullable": true
+          },
+          "last_name": {
+            "maxLength": 64,
+            "minLength": 0,
+            "type": "string",
+            "nullable": true
+          },
+          "email": {
+            "pattern": "^(([\\w-]+\\.)+[\\w-]+|([a-zA-Z]{1}|[\\w+-]{2,}))@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.)|(([\\w-]+\\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\\]?)$",
+            "type": "string",
+            "nullable": true
+          },
+          "address": {
+            "maxLength": 255,
+            "minLength": 0,
+            "type": "string",
+            "nullable": true
+          },
+          "city": {
+            "maxLength": 36,
+            "minLength": 0,
+            "type": "string",
+            "nullable": true
+          },
+          "state": {
+            "maxLength": 24,
+            "minLength": 0,
+            "type": "string",
+            "nullable": true
+          },
+          "zip": {
+            "pattern": "^.{5,10}$",
+            "type": "string",
+            "nullable": true
+          },
+          "cell_phone": {
+            "maxLength": 10,
+            "minLength": 0,
+            "pattern": "^[0-9]*$",
+            "type": "string",
+            "nullable": true
+          },
+          "account_number": {
+            "type": "string",
+            "description": "Account number for Macola - Customers Number should be added in that.",
+            "nullable": true
+          },
+          "company_name": {
+            "type": "string",
+            "description": "Company Name for Macola contacts - Customer Name should be added in that.",
+            "nullable": true
+          },
+          "tokenExpire": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "developer_id": {
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ValidationError": {
+        "type": "object",
+        "properties": {
+          "field": {
+            "type": "string",
+            "nullable": true
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "securitySchemes": {
+      "Bearer": {
+        "type": "oauth2",
+        "description": "OAuth 2.0 Client Credentials Flow with API Users issued from Integration Engine Management Console",
+        "flows": {
+          "clientCredentials": {
+            "tokenUrl": "https://api-user.integrations.ecimanufacturing.com/oauth2/api-user/token",
+            "scopes": {
+              "openid": "openid"
+            }
+          }
+        }
+      }
+    }
+  },
+  "security": [
+    {
+      "Bearer": [ ]
+    }
+  ]
+}

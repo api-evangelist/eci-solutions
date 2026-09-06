@@ -1,0 +1,615 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Authentication API",
+    "description": "Provides common authentication endpoints for ECI APIs.\n\nThis API enforces a rate limit of 100 requests per minute from the same Source IP. Other more specific rate limits may also apply.\n\nFAQs\n-----------------\n**Q:** How long is the access token valid?\\\n**A:** The token is valid for 60 minutes (3600 seconds). This duration is fixed.\n\n**Q:** Is there a refresh token available?\\\n**A:** No, there is no refresh token. The system uses the \"client_credentials\" OAuth2 grant type, which always requires the original clientId and secret to obtain a new access token.\n\n**Q:** How should the clientId and secret be stored?\\\n**A:** They should be stored securely. It is recommended to encrypt at least the secret at rest.\n\n**Q:** What is the recommended approach for handling token expiration?\\\n**A:** Cache the access token and use it until it is expired or nearly expired.\nThe caller can choose when to refresh: for example, 5 minutes before expiration, or after receiving a 401 response.\nIt's up to the caller's implementation strategy.\n\n**Q:** What happens when the access token is invalid or expired?\\\n**A:** You will receive a 401 Unauthorized response.\n\n**Q:** What is the best practice for handling 401 errors due to token expiration?\\\n**A:** Implement a retry handler that detects the 401 error, obtains a fresh token, and retries the failed call.\nEnsure the retry logic does not retry infinitely. Typically, no more than 3 attempts should be made before logging the failure.\nThis helps confirm whether the issue is truly related to authentication.",
+    "contact": {
+      "name": "ECI Manufacturing Integration Team",
+      "url": "https://www.ecisolutions.com/support/"
+    },
+    "version": "2.22.273+b02c1dfd00"
+  },
+  "servers": [
+    {
+      "url": "https://api-user.integrations.ecimanufacturing.com:443",
+      "description": "Production"
+    }
+  ],
+  "paths": {
+    "/api/devices": {
+      "post": {
+        "tags": [
+          "AuthApi"
+        ],
+        "summary": "Create Device",
+        "description": "This endpoint is used for device registraiton and activation. It is used by devices\r\nto initiate device activation by calling this endpoint and then displaying the activation\r\ncode to a user. \r\n<br>\r\nAn authenticated user then calls the PUT /devices/authorization endpoint\r\nwhich authorizes the activation of a device and provides data that will be\r\nsent back to the device waiting for action. It also optionally indicates\r\nthat a device credential should be created and issued to the waiting device.\r\n<br>\r\nThe device periodically calls GET /devices/{id}, waiting for isActivated\r\nto become true and to receive the properties and/or credentials generated.\r\n<list type=\"bullet\"><item>Returns 201 when a device is created.</item></list>",
+        "operationId": "CreateDevice",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/DeviceCreateModel"
+                  }
+                ]
+              }
+            },
+            "text/json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/DeviceCreateModel"
+                  }
+                ]
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/DeviceCreateModel"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeviceCreateResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeviceCreateResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeviceCreateResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/devices/{id}/activation": {
+      "post": {
+        "tags": [
+          "AuthApi"
+        ],
+        "summary": "Activate Device",
+        "description": "Attempts to activate a device that has bene authorized for activation. Devices typically\r\npoll this endpoing periodically waiting for activation to complete.\r\n<list type=\"bullet\"><item>\r\nReturns 200 OK when the device is activated.\r\n</item><item>\r\nReturns 204 No Content when the device code has not yet been activated.\r\n</item></list>",
+        "operationId": "TryActivateDevice",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/DeviceActivateRequestModel"
+                  }
+                ]
+              }
+            },
+            "text/json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/DeviceActivateRequestModel"
+                  }
+                ]
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/DeviceActivateRequestModel"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeviceActivatedResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeviceActivatedResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeviceActivatedResponse"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/oauth2/api-user/token": {
+      "post": {
+        "tags": [
+          "AuthApi"
+        ],
+        "summary": "Authenticate an API User via the OAuth 2.0 Client Credentials Grant/Flow.",
+        "description": "Accessible By: Everyone can use this api because it's Anonymous.\\\r\nAccessed From: Financial Integration.\\\r\nDescription:\r\n<br>\r\nThe API username and password must be provided in the client_id and client_secret parameters OR via the username/password values\r\nof an HTTP Basic Authentication header value.\r\n<br>\r\nThe scope value should be set to openid unless otherwise indicated.\r\n<br>\r\nThe grant_type value must be client_credentials.\r\n",
+        "operationId": "GetApiUserToken",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "description": "You can provide the API username/password as an HTTP Basic authentication header or as a client_id and client_secret form encoded value",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "client_id": {
+                    "type": "string"
+                  },
+                  "client_secret": {
+                    "type": "string"
+                  },
+                  "scope": {
+                    "type": "string"
+                  },
+                  "grant_type": {
+                    "type": "string"
+                  }
+                }
+              },
+              "encoding": {
+                "client_id": {
+                  "style": "form"
+                },
+                "client_secret": {
+                  "style": "form"
+                },
+                "scope": {
+                  "style": "form"
+                },
+                "grant_type": {
+                  "style": "form"
+                }
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "client_id": {
+                    "type": "string"
+                  },
+                  "client_secret": {
+                    "type": "string"
+                  },
+                  "scope": {
+                    "type": "string"
+                  },
+                  "grant_type": {
+                    "type": "string"
+                  }
+                }
+              },
+              "encoding": {
+                "client_id": {
+                  "style": "form"
+                },
+                "client_secret": {
+                  "style": "form"
+                },
+                "scope": {
+                  "style": "form"
+                },
+                "grant_type": {
+                  "style": "form"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/OAuthAccessTokenResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OAuthAccessTokenResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OAuthAccessTokenResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Server Error"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "DeviceActivateRequestModel": {
+        "required": [
+          "code"
+        ],
+        "type": "object",
+        "properties": {
+          "code": {
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "DeviceActivatedResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The device unique ID",
+            "format": "uuid"
+          },
+          "isActivated": {
+            "type": "boolean",
+            "description": "Indicates if the device is activated"
+          },
+          "properties": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "description": "Additional information provided by the activator",
+            "nullable": true
+          },
+          "credential": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/DeviceCredentialModel"
+              }
+            ],
+            "description": "If the device activation requested an access token and refresh token\r\nfor the device, this property will contain the token information",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "DeviceCreateModel": {
+        "required": [
+          "clientId"
+        ],
+        "type": "object",
+        "properties": {
+          "clientId": {
+            "type": "string",
+            "description": "The client ID of the application registered to create devices.",
+            "format": "uuid"
+          },
+          "credentialType": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/DeviceCredentialType"
+              }
+            ],
+            "description": "The requested type of credential to obtain along with the device\r\nregistration. This is not required and will default to None.",
+            "nullable": true
+          },
+          "description": {
+            "maxLength": 100,
+            "type": "string",
+            "description": "A description of the device to be displayed to the\r\nuser who will authorize activation of the device.",
+            "nullable": true
+          },
+          "origin": {
+            "maxLength": 250,
+            "type": "string",
+            "description": "The domain origin, if applicable, of the device.\r\nWill be displayed to the user who will authorize activation of the device.",
+            "nullable": true
+          },
+          "deviceType": {
+            "maxLength": 50,
+            "type": "string",
+            "description": "An application specific identifier for the type of device.\r\nWill be displayed to the user who will authorize activation of the device.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "DeviceCreateResponse": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "description": "The device activation code to be displayed to the user",
+            "nullable": true
+          },
+          "id": {
+            "type": "string",
+            "description": "The device unique id",
+            "format": "uuid"
+          },
+          "codeExpires": {
+            "type": "string",
+            "description": "The expiration date/time of the activation code in UTC",
+            "format": "date-time",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "DeviceCredentialModel": {
+        "type": "object",
+        "properties": {
+          "secret": {
+            "type": "string",
+            "description": "If requested, this will contain the secret that can be used\r\nto obtain tokens from the token_url using a resource-owner-password\r\ngrant.",
+            "nullable": true
+          },
+          "tokenEndpoint": {
+            "type": "string",
+            "description": "When a token is provided, this URL can be used with a refresh_token OAuth2 grant\r\nto obtain a new set of tokens.",
+            "nullable": true
+          },
+          "tokenIssuer": {
+            "type": "string",
+            "nullable": true
+          },
+          "tokenType": {
+            "type": "string",
+            "nullable": true
+          },
+          "accessToken": {
+            "type": "string",
+            "nullable": true
+          },
+          "idToken": {
+            "type": "string",
+            "nullable": true
+          },
+          "clientId": {
+            "type": "string",
+            "nullable": true
+          },
+          "expiresAt": {
+            "type": "integer",
+            "description": "The expiration date in unix epoch seconds.",
+            "format": "int64",
+            "nullable": true
+          },
+          "refreshToken": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "DeviceCredentialType": {
+        "enum": [
+          "None",
+          "Token",
+          "Secret",
+          "TokenAndSecret"
+        ],
+        "type": "string"
+      },
+      "OAuthAccessTokenResponse": {
+        "type": "object",
+        "properties": {
+          "access_token": {
+            "type": "string",
+            "nullable": true
+          },
+          "token_type": {
+            "type": "string",
+            "nullable": true
+          },
+          "expires_in": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "refresh_token": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ProblemDetails": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "nullable": true
+          },
+          "title": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "detail": {
+            "type": "string",
+            "nullable": true
+          },
+          "instance": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": { }
+      }
+    },
+    "securitySchemes": {
+      "oidc": {
+        "type": "openIdConnect",
+        "description": "Use id_token obtained from OpenID Connect flow.",
+        "openIdConnectUrl": "https://cognito-idp.us-east-1.amazonaws.com/us-east-1_9IYBf4TpD/.well-known/openid-configuration",
+        "x-tokenName": "id_token"
+      },
+      "Basic": {
+        "type": "http",
+        "description": "Username is ClientID, Password is Client Secret.",
+        "scheme": "Basic"
+      }
+    }
+  },
+  "security": [
+    {
+      "oidc": [
+        "openid"
+      ]
+    },
+    {
+      "Basic": [ ]
+    }
+  ]
+}
