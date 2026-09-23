@@ -1,0 +1,476 @@
+openapi: 3.2.0
+info:
+  title: Authentication Auth API
+  description: Provides common authentication endpoints for ECI APIs.
+  contact:
+    name: ECI Manufacturing Integration Team
+    url: https://www.ecisolutions.com/support/
+  version: 2.22.273+b02c1dfd00
+servers:
+- url: https://api-user.integrations.ecimanufacturing.com:443
+  description: Production
+security:
+- oidc:
+  - openid
+- Basic: []
+tags:
+- name: Auth API
+paths:
+  /api/devices:
+    post:
+      tags:
+      - Auth API
+      summary: Create Device
+      description: 'This endpoint is used for device registraiton and activation. It is used by devices
+
+        to initiate device activation by calling this endpoint and then displaying the activation
+
+        code to a user.
+
+
+        An authenticated user then calls the PUT /devices/authorization endpoint
+
+        which authorizes the activation of a device and provides data that will be
+
+        sent back to the device waiting for action. It also optionally indicates
+
+        that a device credential should be created and issued to the waiting device.
+
+
+        The device periodically calls GET /devices/{id}, waiting for isActivated
+
+        to become true and to receive the properties and/or credentials generated.
+
+        Returns 201 when a device is created.'
+      operationId: CreateDevice
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/DeviceCreateModel'
+          text/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/DeviceCreateModel'
+          application/*+json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/DeviceCreateModel'
+      responses:
+        '201':
+          description: Created
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/DeviceCreateResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeviceCreateResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/DeviceCreateResponse'
+        '400':
+          description: Bad Request
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+  /api/devices/{id}/activation:
+    post:
+      tags:
+      - Auth API
+      summary: Activate Device
+      description: 'Attempts to activate a device that has bene authorized for activation. Devices typically
+
+        poll this endpoing periodically waiting for activation to complete.
+
+
+        Returns 200 OK when the device is activated.
+
+
+        Returns 204 No Content when the device code has not yet been activated.'
+      operationId: TryActivateDevice
+      parameters:
+      - name: id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/DeviceActivateRequestModel'
+          text/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/DeviceActivateRequestModel'
+          application/*+json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/DeviceActivateRequestModel'
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/DeviceActivatedResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeviceActivatedResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/DeviceActivatedResponse'
+        '204':
+          description: No Content
+        '400':
+          description: Bad Request
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '404':
+          description: Not Found
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+  /oauth2/api-user/token:
+    post:
+      tags:
+      - Auth API
+      summary: Authenticate an API User via the OAuth 2.0 Client Credentials Grant/Flow
+      description: 'Accessible By: Everyone can use this api because it''s Anonymous.\
+
+        Accessed From: Financial Integration.\
+
+        Description:
+
+
+        The API username and password must be provided in the client_id and client_secret parameters OR via the username/password values
+
+        of an HTTP Basic Authentication header value.
+
+
+        The scope value should be set to openid unless otherwise indicated.
+
+
+        The grant_type value must be client_credentials.'
+      operationId: GetApiUserToken
+      parameters:
+      - name: authorization
+        in: header
+        description: You can provide the API username/password as an HTTP Basic authentication header or as a client_id and client_secret form encoded value
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                client_id:
+                  type: string
+                client_secret:
+                  type: string
+                scope:
+                  type: string
+                grant_type:
+                  type: string
+            encoding:
+              client_id:
+                style: form
+              client_secret:
+                style: form
+              scope:
+                style: form
+              grant_type:
+                style: form
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                client_id:
+                  type: string
+                client_secret:
+                  type: string
+                scope:
+                  type: string
+                grant_type:
+                  type: string
+            encoding:
+              client_id:
+                style: form
+              client_secret:
+                style: form
+              scope:
+                style: form
+              grant_type:
+                style: form
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/OAuthAccessTokenResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OAuthAccessTokenResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/OAuthAccessTokenResponse'
+        '400':
+          description: Bad Request
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '401':
+          description: Unauthorized
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '503':
+          description: Server Error
+components:
+  schemas:
+    DeviceCredentialModel:
+      type: object
+      properties:
+        secret:
+          type:
+          - string
+          - 'null'
+          description: 'If requested, this will contain the secret that can be used
+
+            to obtain tokens from the token_url using a resource-owner-password
+
+            grant.'
+        tokenEndpoint:
+          type:
+          - string
+          - 'null'
+          description: 'When a token is provided, this URL can be used with a refresh_token OAuth2 grant
+
+            to obtain a new set of tokens.'
+        tokenIssuer:
+          type:
+          - string
+          - 'null'
+        tokenType:
+          type:
+          - string
+          - 'null'
+        accessToken:
+          type:
+          - string
+          - 'null'
+        idToken:
+          type:
+          - string
+          - 'null'
+        clientId:
+          type:
+          - string
+          - 'null'
+        expiresAt:
+          type:
+          - integer
+          - 'null'
+          description: The expiration date in unix epoch seconds.
+          format: int64
+        refreshToken:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    OAuthAccessTokenResponse:
+      type: object
+      properties:
+        access_token:
+          type:
+          - string
+          - 'null'
+        token_type:
+          type:
+          - string
+          - 'null'
+        expires_in:
+          type: integer
+          format: int32
+        refresh_token:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+        title:
+          type:
+          - string
+          - 'null'
+        status:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        detail:
+          type:
+          - string
+          - 'null'
+        instance:
+          type:
+          - string
+          - 'null'
+      additionalProperties: {}
+    DeviceCredentialType:
+      enum:
+      - None
+      - Token
+      - Secret
+      - TokenAndSecret
+      type: string
+    DeviceActivateRequestModel:
+      required:
+      - code
+      type: object
+      properties:
+        code:
+          minLength: 1
+          type: string
+      additionalProperties: false
+    DeviceCreateModel:
+      required:
+      - clientId
+      type: object
+      properties:
+        clientId:
+          type: string
+          description: The client ID of the application registered to create devices.
+          format: uuid
+        credentialType:
+          allOf:
+          - $ref: '#/components/schemas/DeviceCredentialType'
+          description: 'The requested type of credential to obtain along with the device
+
+            registration. This is not required and will default to None.'
+        description:
+          maxLength: 100
+          type:
+          - string
+          - 'null'
+          description: 'A description of the device to be displayed to the
+
+            user who will authorize activation of the device.'
+        origin:
+          maxLength: 250
+          type:
+          - string
+          - 'null'
+          description: 'The domain origin, if applicable, of the device.
+
+            Will be displayed to the user who will authorize activation of the device.'
+        deviceType:
+          maxLength: 50
+          type:
+          - string
+          - 'null'
+          description: 'An application specific identifier for the type of device.
+
+            Will be displayed to the user who will authorize activation of the device.'
+      additionalProperties: false
+    DeviceCreateResponse:
+      type: object
+      properties:
+        code:
+          type:
+          - string
+          - 'null'
+          description: The device activation code to be displayed to the user
+        id:
+          type: string
+          description: The device unique id
+          format: uuid
+        codeExpires:
+          type:
+          - string
+          - 'null'
+          description: The expiration date/time of the activation code in UTC
+          format: date-time
+      additionalProperties: false
+    DeviceActivatedResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The device unique ID
+          format: uuid
+        isActivated:
+          type: boolean
+          description: Indicates if the device is activated
+        properties:
+          type:
+          - object
+          - 'null'
+          additionalProperties:
+            type: string
+          description: Additional information provided by the activator
+        credential:
+          allOf:
+          - $ref: '#/components/schemas/DeviceCredentialModel'
+          description: 'If the device activation requested an access token and refresh token
+
+            for the device, this property will contain the token information'
+      additionalProperties: false
+  securitySchemes:
+    oidc:
+      type: openIdConnect
+      description: Use id_token obtained from OpenID Connect flow.
+      openIdConnectUrl: https://cognito-idp.us-east-1.amazonaws.com/us-east-1_9IYBf4TpD/.well-known/openid-configuration
+      x-tokenName: id_token
+    Basic:
+      type: http
+      description: Username is ClientID, Password is Client Secret.
+      scheme: Basic

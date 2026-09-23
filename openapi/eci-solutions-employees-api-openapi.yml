@@ -1,0 +1,691 @@
+openapi: 3.2.0
+info:
+  title: JobBOSS² Public Employees API
+  description: Provides a common API surface for accessing ECI ERP JobBOSS².
+  version: v1
+servers:
+- url: https://api-jb2.integrations.ecimanufacturing.com:443
+  description: API Host
+security:
+- Bearer: []
+tags:
+- name: Employees
+paths:
+  /api/v1/employees:
+    get:
+      tags:
+      - Employees
+      summary: Gets a list of Employees
+      description: 'By default an employee response will include only the fields: active, city, country, departmentNumber, employeeCode, employeeName, employeeShortName, lastModDate, phone, rate1, shiftID, state, uniqueID. You may specify the exact fields to return using the fields parameter.'
+      parameters:
+      - name: fields
+        in: query
+        description: A comma separated list of fields to include in the result.
+        schema:
+          type: string
+      - name: sort
+        in: query
+        description: A comma separated list of field to sort by. See the <a href='#sort-expressions'>Sort Expressions</a> section for more information.
+        schema:
+          type: string
+      - name: filters
+        in: query
+        description: Filters must be provided as query string parameters as defined in the <a href='#filter-expressions'>Filter Expressions</a> section.
+        schema:
+          type: object
+          additionalProperties:
+            type: string
+        examples:
+          No filters: {}
+          Filter by Department Number:
+            value:
+              departmentNumber: TURNING
+      - name: skip
+        in: query
+        description: The number of records at the start of the result set to skip over.
+        schema:
+          type: string
+      - name: take
+        in: query
+        description: The number of records to retrieve.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmployeeListSuccessResponse'
+              example:
+                Data:
+                - accountingID: string
+                  active: false
+                  address1: string
+                  allowBatchAtClock: false
+                  applyAutoBreak: false
+                  break1Duration: 0
+                  break1Time: string
+                  break2Duration: 0
+                  break2Time: string
+                  break3Duration: 0
+                  break3Time: string
+                  break4Duration: 0
+                  break4Time: string
+                  city: string
+                  companyShipToLocation: string
+                  country: string
+                  defaultPayrollRate: 0
+                  departmentNumber: string
+                  employeeCode: 0
+                  employeeCodeImageFile: string
+                  employeeName: string
+                  employeeShortName: string
+                  geoFenceRadius: 0
+                  hireDate: '2026-09-06T17:13:12.0000000+00:00'
+                  imageRepositoryID: 0
+                  isDataCollectionUser: false
+                  isGeoFenceEnabled: false
+                  isSSIDFenceEnabled: false
+                  lastModDate: '2026-09-06T17:13:12.0000000+00:00'
+                  lastModUser: string
+                  lastReview: '2026-09-06T17:13:12.0000000+00:00'
+                  nextReview: '2026-09-06T17:13:12.0000000+00:00'
+                  notes: string
+                  overtimeFactor: 0
+                  overtimeMethod: string
+                  overtimeThreshold: 0
+                  phone: string
+                  rate1: 0
+                  rate10: 0
+                  rate2: 0
+                  rate3: 0
+                  rate4: 0
+                  rate5: 0
+                  rate6: 0
+                  rate7: 0
+                  rate8: 0
+                  rate9: 0
+                  shiftBegin: string
+                  shiftEnd: string
+                  shiftID: 0
+                  signatureImageFile: string
+                  signatureRepositoryID: 0
+                  SSID: string
+                  state: string
+                  terminationDate: '2026-09-06T17:13:12.0000000+00:00'
+                  uniqueID: 0
+                  user_Currency1: 0
+                  user_Currency2: 0
+                  user_Date1: '2026-09-06T17:13:12.0000000+00:00'
+                  user_Date2: '2026-09-06T17:13:12.0000000+00:00'
+                  user_Memo1: string
+                  user_Number1: 0
+                  user_Number2: 0
+                  user_Number3: 0
+                  user_Number4: 0
+                  user_Text1: string
+                  user_Text2: string
+                  user_Text3: string
+                  user_Text4: string
+                  userID: string
+                  workFriday: false
+                  workMonday: false
+                  workSaturday: false
+                  workSunday: false
+                  workThursday: false
+                  workTuesday: false
+                  workWednesday: false
+                  zipCode: string
+      operationId: getApiV1Employees
+      x-operation-id-source: derived
+  /api/v1/employees/{employeeCode}:
+    patch:
+      tags:
+      - Employees
+      summary: Updates an Employee
+      parameters:
+      - name: employeeCode
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmployeeUpdate'
+            example:
+              departmentNumber: string
+              employeeName: string
+              rate1: 0
+              shiftID: 0
+              user_Currency1: 0
+              user_Currency2: 0
+              user_Date1: '2026-09-06T17:13:12.0000000+00:00'
+              user_Date2: '2026-09-06T17:13:12.0000000+00:00'
+              user_Memo1: string
+              user_Number1: 0
+              user_Number2: 0
+              user_Number3: 0
+              user_Number4: 0
+              user_Text1: string
+              user_Text2: string
+              user_Text3: string
+              user_Text4: string
+      responses:
+        '204':
+          description: Success
+      operationId: patchApiV1EmployeesByEmployeeCode
+      x-operation-id-source: derived
+components:
+  schemas:
+    EmployeeUpdate:
+      type: object
+      properties:
+        departmentNumber:
+          type:
+          - string
+          - 'null'
+        employeeName:
+          type:
+          - string
+          - 'null'
+        rate1:
+          type:
+          - number
+          - 'null'
+          format: double
+        shiftID:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        user_Currency1:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Currency2:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Date1:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        user_Date2:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        user_Memo1:
+          type:
+          - string
+          - 'null'
+        user_Number1:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Number2:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Number3:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Number4:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Text1:
+          type:
+          - string
+          - 'null'
+        user_Text2:
+          type:
+          - string
+          - 'null'
+        user_Text3:
+          type:
+          - string
+          - 'null'
+        user_Text4:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    Employee:
+      type: object
+      properties:
+        accountingID:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        active:
+          type: boolean
+          readOnly: true
+        address1:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        allowBatchAtClock:
+          type: boolean
+          readOnly: true
+        applyAutoBreak:
+          type: boolean
+          readOnly: true
+        break1Duration:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          readOnly: true
+        break1Time:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        break2Duration:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          readOnly: true
+        break2Time:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        break3Duration:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          readOnly: true
+        break3Time:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        break4Duration:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          readOnly: true
+        break4Time:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        city:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        companyShipToLocation:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        country:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        defaultPayrollRate:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          readOnly: true
+        departmentNumber:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        employeeCode:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          readOnly: true
+        employeeCodeImageFile:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        employeeName:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        employeeShortName:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        geoFenceRadius:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        hireDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        imageRepositoryID:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          readOnly: true
+        isDataCollectionUser:
+          type:
+          - boolean
+          - 'null'
+          readOnly: true
+        isGeoFenceEnabled:
+          type:
+          - boolean
+          - 'null'
+          readOnly: true
+        isSSIDFenceEnabled:
+          type:
+          - boolean
+          - 'null'
+          readOnly: true
+        lastModDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        lastModUser:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        lastReview:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        nextReview:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        notes:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        overtimeFactor:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        overtimeMethod:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        overtimeThreshold:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          readOnly: true
+        phone:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        rate1:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        rate10:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        rate2:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        rate3:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        rate4:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        rate5:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        rate6:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        rate7:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        rate8:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        rate9:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        shiftBegin:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        shiftEnd:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        shiftID:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          readOnly: true
+        signatureImageFile:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        signatureRepositoryID:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          readOnly: true
+        SSID:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        state:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        terminationDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        uniqueID:
+          type: integer
+          format: int32
+          readOnly: true
+        user_Currency1:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        user_Currency2:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        user_Date1:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        user_Date2:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        user_Memo1:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        user_Number1:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        user_Number2:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        user_Number3:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        user_Number4:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        user_Text1:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        user_Text2:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        user_Text3:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        user_Text4:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        userID:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        workFriday:
+          type: boolean
+          readOnly: true
+        workMonday:
+          type: boolean
+          readOnly: true
+        workSaturday:
+          type: boolean
+          readOnly: true
+        workSunday:
+          type: boolean
+          readOnly: true
+        workThursday:
+          type: boolean
+          readOnly: true
+        workTuesday:
+          type: boolean
+          readOnly: true
+        workWednesday:
+          type: boolean
+          readOnly: true
+        zipCode:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+      additionalProperties: false
+    EmployeeListSuccessResponse:
+      type: object
+      properties:
+        Data:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Employee'
+      additionalProperties: false
+  securitySchemes:
+    Bearer:
+      type: oauth2
+      description: OAuth 2.0 Client Credentials Flow with API Users issued from Integration Engine Management Console
+      flows:
+        clientCredentials:
+          tokenUrl: https://api-user.integrations.ecimanufacturing.com/oauth2/api-user/token
+          scopes:
+            openid: openid

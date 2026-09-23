@@ -1,0 +1,303 @@
+openapi: 3.2.0
+info:
+  title: Lasso Project API
+  description: 'Overview
+
+
+    Use this API to manage Registrant, Project, and Inventory data within Lasso CRM.'
+  version: 1.0.39
+servers:
+- url: https://api.lassocrm.com/v1
+  description: Production endpoint
+tags:
+- name: Project
+paths:
+  /projects/settings:
+    get:
+      summary: Retrieve a project's settings
+      operationId: get_project_settings
+      tags:
+      - Project
+      security:
+      - JwtAuthorizer: []
+      responses:
+        200:
+          description: Settings for this project
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectSettings'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+components:
+  schemas:
+    ProjectSettings:
+      type: object
+      title: ProjectSettings
+      properties:
+        project:
+          $ref: '#/components/schemas/Project'
+        websiteTracking:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProjectWebsiteTracking'
+        rotations:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProjectRotation'
+        salesReps:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProjectSalesRep'
+        sourceTypes:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProjectSourceType'
+        secondarySourceTypes:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProjectSecondarySourceType'
+        ratings:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProjectRating'
+        followUpProcesses:
+          type: array
+          items:
+            $ref: '#/components/schemas/FollowUpProcess'
+        questions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Question'
+        autoReplyTemplates:
+          type: array
+          items:
+            $ref: '#/components/schemas/EmailTemplateMetadata'
+    ProjectSourceType:
+      type: object
+      title: Source Type
+      properties:
+        sourceTypeId:
+          type: string
+          example: 123
+        sourceType:
+          type: string
+          example: Online Registration
+    Question:
+      type: object
+      title: Question
+      description: 'Questions in Lasso are sorted into folders. You can use `path` to
+
+        specify which folder the question should be saved to.
+
+
+        Specifying the questionId will override name and path and the
+
+        question will be looked up by its ID. If no question is found the
+
+        question is *not* created and the request fails.
+
+
+        Any existing registrant answers to the question will be replaced by the
+
+        answers from this request. Existing answer options on the question will
+
+        not be removed.
+
+
+        If the question does not exist and no question ID is provided, a new
+
+        question will be created. If the path is empty, the question will be
+
+        created in a folder named after the API key vendor type - ie, `lassoLeadCapture`.
+
+
+        The possible answer options are created for each answer provided in the
+
+        `answer` key. Only question type `checkbox` supports multiple answers. All
+
+        of them will be marked as checked for the registrant.
+
+        '
+      properties:
+        questionId:
+          type: string
+          description: Specifies precisely which question
+          example: 123
+        type:
+          type: string
+          description: "If the question does not exist, this defines which type of question is\ngoing to be created. Defaults to type `Text`. Available types are:\n- Checkbox\n  Multiple possible answers, and multiple set answers\n- Text\n  Only one possible answer which is freeform text\n- Date\n  Only one possible answer, a date in the ISO 8601 UTC format\n- Single Select\n  Only one possible answer from a set of answers\n- Multi Select\n  Multiple possible answers from a set of answers\n"
+          enum:
+          - checkbox
+          - text
+          - single_select
+          - multi_select
+          - date
+          example: checkbox
+        name:
+          type: string
+          example: How did you hear about us?
+          maxLength: 100
+        path:
+          type: string
+          description: 'Specify which folder the question is in. Format: `/folder/subfolder`. If no path is given, the `integrations` folder will be used.'
+          example: /marketing/inbound
+          maxLength: 40
+        answers:
+          type: array
+          items:
+            $ref: '#/components/schemas/Answer'
+    StandardError:
+      type: object
+      title: Standard Error
+      description: A standard error response format.
+      properties:
+        errorCode:
+          type: integer
+          example: 4xx
+        error:
+          type: string
+          description: A summary of the error
+          example: A summary of the error
+        errorMessage:
+          type: string
+          description: Details of the error
+          example: Details of the error
+    Project:
+      title: Project
+      type: object
+      properties:
+        name:
+          type: string
+          example: Birch Towers
+        projectId:
+          type: string
+          example: 123
+    ProjectWebsiteTracking:
+      type: object
+      title: Website Tracking
+      properties:
+        domainAccountId:
+          type: string
+          example: LAS-123456-01
+        domain:
+          type: string
+          example: http://example.com/
+    ProjectRotation:
+      type: object
+      title: Rotation
+      properties:
+        rotationId:
+          type: string
+          example: 123
+        rotationName:
+          type: string
+          example: Newsletter
+    ProjectSecondarySourceType:
+      type: object
+      title: Secondary Source Type
+      properties:
+        secondarySourceTypeId:
+          type: string
+          example: 123
+        secondarySourceType:
+          type: string
+          example: Facebook
+    EmailTemplateMetadata:
+      type: object
+      title: Email Template Metadata
+      description: 'Size conservative metadata representation of Email Template i.e. no content body
+
+        '
+      properties:
+        templateId:
+          type: string
+          example: 123
+        folderId:
+          type: string
+          example: 123
+        name:
+          type: string
+          example: Welcoming email
+        subject:
+          type: string
+          example: You are offically welcomed
+    ProjectRating:
+      type: object
+      title: Rating
+      properties:
+        ratingId:
+          type: string
+          example: 123
+        rating:
+          type: string
+          example: A
+    Answer:
+      type: object
+      title: Question Answer
+      description: Represents an answer for a question for the registrant
+      properties:
+        answerId:
+          type: string
+          description: Specifies the answer by id. If present, `answer` will be ignored. If no answer matches `answerId` the answer will be looked-up by its answer string.
+          example: 123
+        answer:
+          type: string
+          description: If no `answerId` is given, the answer will be looked-up by its answer string. If no answer with the given answer string exists, the answer will be created.
+          example: Recommended by a friend
+    FollowUpProcess:
+      type: object
+      title: Follow-up Process
+      description: If `followUpProcessId` is provided, the system will attempt to lookup the process by id, and fail if not found. If `followUpProcessId` is not provided, but `followUpProcess` is instead provided, the system will then attempt to lookup the process by value. If the value doesn't exist, it will be created
+      properties:
+        followUpProcessId:
+          type: string
+          example: 1
+        followUpProcess:
+          type: string
+          minLength: 1
+          maxLength: 20
+          example: 30 day follow up
+    ProjectSalesRep:
+      type: object
+      title: Sales Rep
+      properties:
+        userId:
+          type: string
+          example: 123
+        firstName:
+          type: string
+          example: Lasso
+        lastName:
+          type: string
+          example: Autobot
+        email:
+          type: string
+          example: john.smith@example.com
+        phone:
+          type: string
+          example: 123-456-7890
+  responses:
+    Unauthorized:
+      description: The request has not been fulfilled because it lacks valid authentication credentials
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/StandardError'
+    InternalServerError:
+      description: Receiving a 5xx response indicates an error on Lasso's end. Please contact us to report the problem
+    Forbidden:
+      description: The provided authentication credentials does not have sufficient privileges to access this resource
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/StandardError'
+  securitySchemes:
+    JwtAuthorizer:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

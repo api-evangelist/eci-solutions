@@ -1,0 +1,2196 @@
+openapi: 3.2.0
+info:
+  title: M1 Public ERP/DOCUMENTS API
+  description: '## Developer Notes for the M1 Public API (ERP resource):
+
+
+    ### Hosted Environment
+
+
+    If you are using the public API for a hosted M1 customer, you must connect to the public API using the Integration Engine.'
+  contact:
+    name: ECI Software Solutions - M1
+    url: https://www.ecisolutions.com/manufacturers-and-job-shops/m1
+  version: v1
+servers:
+- url: https://api-m1.integrations.ecimanufacturing.com
+  description: API Host
+security:
+- oauth2: []
+tags:
+- name: ERP/DOCUMENTS
+paths:
+  /api/ERP/AttachmentMemos:
+    get:
+      tags:
+      - ERP/DOCUMENTS
+      summary: Returns all existing AttachmentMemos according to the filter, order by and…
+      description: 'When passing the filter parameter, the following operators are supported: [eq, ne, gt, lt]. Multiple filters can be specified as separate query parameters in the format M1Field[operator]value. eg. `impPartID[eq]CLIP`. An invalid filter will return a 400 Bad Request response.
+
+
+        When passing the orderBy parameter, the following operators are supported: [Asc, Desc]. The format must be M1Field[Asc],M1Field[Desc]. eg. `impPartID[Asc],impPartType[Desc]`. An invalid orderBy will return a 400 Bad Request response.
+
+
+        Custom fields are returned in the response as their full field name, they are also filterable and sortable. The format should be `M1CustomField[operator]value`. eg. `uimpCustomField1[eq]12`.'
+      operationId: ERPAttachmentMemos_GetAllAttachmentMemoAsync
+      parameters:
+      - name: pageSize
+        in: query
+        description: Specifies the number of items per page. Defaults to 1000 which is also the maximum.
+        style: form
+        explode: false
+        schema:
+          type: integer
+          format: int32
+      - name: pageNumber
+        in: query
+        description: Specifies the page number to retrieve. Defaults to 0, which corresponds to the first page.
+        style: form
+        explode: false
+        schema:
+          type: integer
+          format: int32
+      - name: filter
+        in: query
+        description: Applies a filter to the returned data. The format should be `M1Field[operator]value`.
+        style: form
+        explode: false
+        schema:
+          type: array
+          items:
+            type: string
+      - name: orderBy
+        in: query
+        description: Specifies the sorting criteria for the returned data. The format should be `M1Field[Asc],M1Field[Desc]`.
+        style: form
+        explode: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_IList_ERPAttachmentMemoDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_IList_ERPAttachmentMemoDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_IList_ERPAttachmentMemoDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_IList_ERPAttachmentMemoDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+    put:
+      tags:
+      - ERP/DOCUMENTS
+      summary: Creates or updates a single AttachmentMemo record
+      description: 'When a record does not exist, a new record will be created. When a record exists, the record will be updated.
+
+
+        When updating an existing record, all fields must be provided, even if they are not changing. Upon update, the UniqueID, Created By/Date and M1 Keys (eg. cmoOrganizationID) will not be updated.
+
+
+        Custom fields should be sent in the request as their full field name and should be prefixed with `u`. eg. `uimpCustomField1`.
+
+
+        To use this endpoint, you must have an API Key that supports writes.'
+      operationId: ERPAttachmentMemos_PutAttachmentMemoAsync
+      requestBody:
+        description: The fully populated {M1.API.DTOs.ERP.ERPAttachmentMemoDto} model.
+        content:
+          text/json:
+            schema:
+              $ref: '#/components/schemas/ERPAttachmentMemoDto'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ERPAttachmentMemoDto'
+        required: true
+        x-bodyName: attachmentMemo
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPAttachmentMemoDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPAttachmentMemoDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPAttachmentMemoDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPAttachmentMemoDto'
+        '201':
+          description: Created
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPAttachmentMemoDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPAttachmentMemoDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPAttachmentMemoDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPAttachmentMemoDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+  /api/ERP/AttachmentMemos/{key}:
+    get:
+      tags:
+      - ERP/DOCUMENTS
+      summary: Returns a single AttachmentMemo record for a given Unique Id
+      description: This endpoint retrieves a AttachmentMemo based on its identifier. If the record does not exist, a 404 Not Found response will be returned.
+      operationId: ERPAttachmentMemos_GetAttachmentMemoAsync
+      parameters:
+      - name: key
+        in: path
+        description: The Unique Id of the record to be retrieved
+        required: true
+        style: simple
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPAttachmentMemoDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPAttachmentMemoDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPAttachmentMemoDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPAttachmentMemoDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+    delete:
+      tags:
+      - ERP/DOCUMENTS
+      summary: Deletes a single AttachmentMemo record
+      description: 'If the record is not found, a 404 Not Found response will be returned.
+
+
+        If the record is successfully deleted, a 200 OK response will be returned.
+
+
+        If the record is being used anywhere in the M1 system, a 400 Bad Request response will be returned.
+
+
+        To use this endpoint, you must have an API Key that supports writes.'
+      operationId: ERPAttachmentMemos_DeleteAttachmentMemoAsync
+      parameters:
+      - name: key
+        in: path
+        description: The Unique Id of the record to be deleted
+        required: true
+        style: simple
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPAttachmentMemoDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPAttachmentMemoDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPAttachmentMemoDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPAttachmentMemoDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+  /api/ERP/Attachments:
+    get:
+      tags:
+      - ERP/DOCUMENTS
+      summary: Returns all existing Attachments according to the filter, order by and…
+      description: 'When passing the filter parameter, the following operators are supported: [eq, ne, gt, lt]. Multiple filters can be specified as separate query parameters in the format M1Field[operator]value. eg. `impPartID[eq]CLIP`. An invalid filter will return a 400 Bad Request response.
+
+
+        When passing the orderBy parameter, the following operators are supported: [Asc, Desc]. The format must be M1Field[Asc],M1Field[Desc]. eg. `impPartID[Asc],impPartType[Desc]`. An invalid orderBy will return a 400 Bad Request response.
+
+
+        Custom fields are returned in the response as their full field name, they are also filterable and sortable. The format should be `M1CustomField[operator]value`. eg. `uimpCustomField1[eq]12`.'
+      operationId: ERPAttachments_GetAllAttachmentAsync
+      parameters:
+      - name: pageSize
+        in: query
+        description: Specifies the number of items per page. Defaults to 1000 which is also the maximum.
+        style: form
+        explode: false
+        schema:
+          type: integer
+          format: int32
+      - name: pageNumber
+        in: query
+        description: Specifies the page number to retrieve. Defaults to 0, which corresponds to the first page.
+        style: form
+        explode: false
+        schema:
+          type: integer
+          format: int32
+      - name: filter
+        in: query
+        description: Applies a filter to the returned data. The format should be `M1Field[operator]value`.
+        style: form
+        explode: false
+        schema:
+          type: array
+          items:
+            type: string
+      - name: orderBy
+        in: query
+        description: Specifies the sorting criteria for the returned data. The format should be `M1Field[Asc],M1Field[Desc]`.
+        style: form
+        explode: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_IList_ERPAttachmentDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_IList_ERPAttachmentDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_IList_ERPAttachmentDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_IList_ERPAttachmentDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+    put:
+      tags:
+      - ERP/DOCUMENTS
+      summary: Creates or updates a single Attachment record
+      description: 'When a record does not exist, a new record will be created. When a record exists, the record will be updated.
+
+
+        When updating an existing record, all fields must be provided, even if they are not changing. Upon update, the UniqueID, Created By/Date and M1 Keys (eg. cmoOrganizationID) will not be updated.
+
+
+        Custom fields should be sent in the request as their full field name and should be prefixed with `u`. eg. `uimpCustomField1`.
+
+
+        To use this endpoint, you must have an API Key that supports writes.'
+      operationId: ERPAttachments_PutAttachmentAsync
+      requestBody:
+        description: The fully populated {M1.API.DTOs.ERP.ERPAttachmentDto} model.
+        content:
+          text/json:
+            schema:
+              $ref: '#/components/schemas/ERPAttachmentDto'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ERPAttachmentDto'
+        required: true
+        x-bodyName: attachment
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPAttachmentDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPAttachmentDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPAttachmentDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPAttachmentDto'
+        '201':
+          description: Created
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPAttachmentDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPAttachmentDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPAttachmentDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPAttachmentDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+  /api/ERP/Attachments/{key}:
+    get:
+      tags:
+      - ERP/DOCUMENTS
+      summary: Returns a single Attachment record for a given Unique Id
+      description: This endpoint retrieves a Attachment based on its identifier. If the record does not exist, a 404 Not Found response will be returned.
+      operationId: ERPAttachments_GetAttachmentAsync
+      parameters:
+      - name: key
+        in: path
+        description: The Unique Id of the record to be retrieved
+        required: true
+        style: simple
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPAttachmentDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPAttachmentDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPAttachmentDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPAttachmentDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+    delete:
+      tags:
+      - ERP/DOCUMENTS
+      summary: Deletes a single Attachment record
+      description: 'If the record is not found, a 404 Not Found response will be returned.
+
+
+        If the record is successfully deleted, a 200 OK response will be returned.
+
+
+        If the record is being used anywhere in the M1 system, a 400 Bad Request response will be returned.
+
+
+        To use this endpoint, you must have an API Key that supports writes.'
+      operationId: ERPAttachments_DeleteAttachmentAsync
+      parameters:
+      - name: key
+        in: path
+        description: The Unique Id of the record to be deleted
+        required: true
+        style: simple
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPAttachmentDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPAttachmentDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPAttachmentDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPAttachmentDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+  /api/ERP/AttachmentTypes:
+    get:
+      tags:
+      - ERP/DOCUMENTS
+      summary: Returns all existing AttachmentTypes according to the filter, order by and…
+      description: 'When passing the filter parameter, the following operators are supported: [eq, ne, gt, lt]. Multiple filters can be specified as separate query parameters in the format M1Field[operator]value. eg. `impPartID[eq]CLIP`. An invalid filter will return a 400 Bad Request response.
+
+
+        When passing the orderBy parameter, the following operators are supported: [Asc, Desc]. The format must be M1Field[Asc],M1Field[Desc]. eg. `impPartID[Asc],impPartType[Desc]`. An invalid orderBy will return a 400 Bad Request response.
+
+
+        Custom fields are returned in the response as their full field name, they are also filterable and sortable. The format should be `M1CustomField[operator]value`. eg. `uimpCustomField1[eq]12`.'
+      operationId: ERPAttachmentTypes_GetAllAttachmentTypeAsync
+      parameters:
+      - name: pageSize
+        in: query
+        description: Specifies the number of items per page. Defaults to 1000 which is also the maximum.
+        style: form
+        explode: false
+        schema:
+          type: integer
+          format: int32
+      - name: pageNumber
+        in: query
+        description: Specifies the page number to retrieve. Defaults to 0, which corresponds to the first page.
+        style: form
+        explode: false
+        schema:
+          type: integer
+          format: int32
+      - name: filter
+        in: query
+        description: Applies a filter to the returned data. The format should be `M1Field[operator]value`.
+        style: form
+        explode: false
+        schema:
+          type: array
+          items:
+            type: string
+      - name: orderBy
+        in: query
+        description: Specifies the sorting criteria for the returned data. The format should be `M1Field[Asc],M1Field[Desc]`.
+        style: form
+        explode: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_IList_ERPAttachmentTypeDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_IList_ERPAttachmentTypeDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_IList_ERPAttachmentTypeDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_IList_ERPAttachmentTypeDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+    put:
+      tags:
+      - ERP/DOCUMENTS
+      summary: Creates or updates a single AttachmentType record
+      description: 'When a record does not exist, a new record will be created. When a record exists, the record will be updated.
+
+
+        When updating an existing record, all fields must be provided, even if they are not changing. Upon update, the UniqueID, Created By/Date and M1 Keys (eg. cmoOrganizationID) will not be updated.
+
+
+        Custom fields should be sent in the request as their full field name and should be prefixed with `u`. eg. `uimpCustomField1`.
+
+
+        To use this endpoint, you must have an API Key that supports writes.'
+      operationId: ERPAttachmentTypes_PutAttachmentTypeAsync
+      requestBody:
+        description: The fully populated {M1.API.DTOs.ERP.ERPAttachmentTypeDto} model.
+        content:
+          text/json:
+            schema:
+              $ref: '#/components/schemas/ERPAttachmentTypeDto'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ERPAttachmentTypeDto'
+        required: true
+        x-bodyName: attachmentType
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPAttachmentTypeDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPAttachmentTypeDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPAttachmentTypeDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPAttachmentTypeDto'
+        '201':
+          description: Created
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPAttachmentTypeDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPAttachmentTypeDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPAttachmentTypeDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPAttachmentTypeDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+  /api/ERP/AttachmentTypes/{key}:
+    get:
+      tags:
+      - ERP/DOCUMENTS
+      summary: Returns a single AttachmentType record for a given Unique Id
+      description: This endpoint retrieves a AttachmentType based on its identifier. If the record does not exist, a 404 Not Found response will be returned.
+      operationId: ERPAttachmentTypes_GetAttachmentTypeAsync
+      parameters:
+      - name: key
+        in: path
+        description: The Unique Id of the record to be retrieved
+        required: true
+        style: simple
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPAttachmentTypeDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPAttachmentTypeDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPAttachmentTypeDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPAttachmentTypeDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+    delete:
+      tags:
+      - ERP/DOCUMENTS
+      summary: Deletes a single AttachmentType record
+      description: 'If the record is not found, a 404 Not Found response will be returned.
+
+
+        If the record is successfully deleted, a 200 OK response will be returned.
+
+
+        If the record is being used anywhere in the M1 system, a 400 Bad Request response will be returned.
+
+
+        To use this endpoint, you must have an API Key that supports writes.'
+      operationId: ERPAttachmentTypes_DeleteAttachmentTypeAsync
+      parameters:
+      - name: key
+        in: path
+        description: The Unique Id of the record to be deleted
+        required: true
+        style: simple
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPAttachmentTypeDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPAttachmentTypeDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPAttachmentTypeDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPAttachmentTypeDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+  /api/ERP/DocumentLinks:
+    get:
+      tags:
+      - ERP/DOCUMENTS
+      summary: Returns all existing DocumentLinks according to the filter, order by and…
+      description: 'When passing the filter parameter, the following operators are supported: [eq, ne, gt, lt]. Multiple filters can be specified as separate query parameters in the format M1Field[operator]value. eg. `impPartID[eq]CLIP`. An invalid filter will return a 400 Bad Request response.
+
+
+        When passing the orderBy parameter, the following operators are supported: [Asc, Desc]. The format must be M1Field[Asc],M1Field[Desc]. eg. `impPartID[Asc],impPartType[Desc]`. An invalid orderBy will return a 400 Bad Request response.
+
+
+        Custom fields are returned in the response as their full field name, they are also filterable and sortable. The format should be `M1CustomField[operator]value`. eg. `uimpCustomField1[eq]12`.'
+      operationId: ERPDocumentLinks_GetAllDocumentLinkAsync
+      parameters:
+      - name: pageSize
+        in: query
+        description: Specifies the number of items per page. Defaults to 1000 which is also the maximum.
+        style: form
+        explode: false
+        schema:
+          type: integer
+          format: int32
+      - name: pageNumber
+        in: query
+        description: Specifies the page number to retrieve. Defaults to 0, which corresponds to the first page.
+        style: form
+        explode: false
+        schema:
+          type: integer
+          format: int32
+      - name: filter
+        in: query
+        description: Applies a filter to the returned data. The format should be `M1Field[operator]value`.
+        style: form
+        explode: false
+        schema:
+          type: array
+          items:
+            type: string
+      - name: orderBy
+        in: query
+        description: Specifies the sorting criteria for the returned data. The format should be `M1Field[Asc],M1Field[Desc]`.
+        style: form
+        explode: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_IList_ERPDocumentLinkDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_IList_ERPDocumentLinkDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_IList_ERPDocumentLinkDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_IList_ERPDocumentLinkDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+    put:
+      tags:
+      - ERP/DOCUMENTS
+      summary: Creates or updates a single DocumentLink record
+      description: 'When a record does not exist, a new record will be created. When a record exists, the record will be updated.
+
+
+        When updating an existing record, all fields must be provided, even if they are not changing. Upon update, the UniqueID, Created By/Date and M1 Keys (eg. cmoOrganizationID) will not be updated.
+
+
+        Custom fields should be sent in the request as their full field name and should be prefixed with `u`. eg. `uimpCustomField1`.
+
+
+        To use this endpoint, you must have an API Key that supports writes.'
+      operationId: ERPDocumentLinks_PutDocumentLinkAsync
+      requestBody:
+        description: The fully populated {M1.API.DTOs.ERP.ERPDocumentLinkDto} model.
+        content:
+          text/json:
+            schema:
+              $ref: '#/components/schemas/ERPDocumentLinkDto'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ERPDocumentLinkDto'
+        required: true
+        x-bodyName: documentLink
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPDocumentLinkDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPDocumentLinkDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPDocumentLinkDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPDocumentLinkDto'
+        '201':
+          description: Created
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPDocumentLinkDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPDocumentLinkDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPDocumentLinkDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPDocumentLinkDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+  /api/ERP/DocumentLinks/{key}:
+    get:
+      tags:
+      - ERP/DOCUMENTS
+      summary: Returns a single DocumentLink record for a given Unique Id
+      description: This endpoint retrieves a DocumentLink based on its identifier. If the record does not exist, a 404 Not Found response will be returned.
+      operationId: ERPDocumentLinks_GetDocumentLinkAsync
+      parameters:
+      - name: key
+        in: path
+        description: The Unique Id of the record to be retrieved
+        required: true
+        style: simple
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPDocumentLinkDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPDocumentLinkDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPDocumentLinkDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPDocumentLinkDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+    delete:
+      tags:
+      - ERP/DOCUMENTS
+      summary: Deletes a single DocumentLink record
+      description: 'If the record is not found, a 404 Not Found response will be returned.
+
+
+        If the record is successfully deleted, a 200 OK response will be returned.
+
+
+        If the record is being used anywhere in the M1 system, a 400 Bad Request response will be returned.
+
+
+        To use this endpoint, you must have an API Key that supports writes.'
+      operationId: ERPDocumentLinks_DeleteDocumentLinkAsync
+      parameters:
+      - name: key
+        in: path
+        description: The Unique Id of the record to be deleted
+        required: true
+        style: simple
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPDocumentLinkDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPDocumentLinkDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPDocumentLinkDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPDocumentLinkDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+components:
+  schemas:
+    ERPResponseMessageDto_IList_ERPDocumentLinkDto:
+      type: object
+      properties:
+        responseInfo:
+          $ref: '#/components/schemas/APIResponseMessageDto'
+        returnObject:
+          type: array
+          items:
+            $ref: '#/components/schemas/ERPDocumentLinkDto'
+        recordCount:
+          type: integer
+          format: int32
+    ERPResponseMessageDto_ERPAttachmentDto:
+      type: object
+      properties:
+        responseInfo:
+          $ref: '#/components/schemas/APIResponseMessageDto'
+        returnObject:
+          $ref: '#/components/schemas/ERPAttachmentDto'
+        recordCount:
+          type: integer
+          format: int32
+    ERPAttachmentTypeDto:
+      required:
+      - cmtAttachmentTypeID
+      - cmtDescription
+      type: object
+      properties:
+        cmtAttachmentTypeID:
+          type: string
+        cmtCreatedBy:
+          type: string
+        cmtCreatedDate:
+          type: string
+          format: date-time
+        cmtDescription:
+          type: string
+        cmtUniqueID:
+          type: string
+          format: uuid
+          example: 00000000-0000-0000-0000-000000000000
+        cmtRequiresLogin:
+          type: boolean
+        cmtRequiresServiceContract:
+          type: boolean
+        cmtRowVersion:
+          type: integer
+          format: int64
+    ERPResponseMessageDto_ERPAttachmentTypeDto:
+      type: object
+      properties:
+        responseInfo:
+          $ref: '#/components/schemas/APIResponseMessageDto'
+        returnObject:
+          $ref: '#/components/schemas/ERPAttachmentTypeDto'
+        recordCount:
+          type: integer
+          format: int32
+    ERPAttachmentDto:
+      required:
+      - cmaAttachmentID
+      - cmaDate
+      - cmaShortDescription
+      type: object
+      properties:
+        cmaApInvoiceID:
+          type: string
+        cmaArInvoiceID:
+          type: string
+        cmaAttachmentTypeID:
+          type: string
+        cmaCallID:
+          type: string
+        cmaChangeRequestID:
+          type: string
+        cmaAttachmentID:
+          type: string
+        cmaContactID:
+          type: string
+        cmaCreatedBy:
+          type: string
+        cmaCreatedDate:
+          type: string
+          format: date-time
+        cmaCustomerGroupID:
+          type: string
+        cmaDate:
+          type: string
+          format: date-time
+        cmaDmrClaimID:
+          type: string
+        cmaUniqueID:
+          type: string
+          format: uuid
+          example: 00000000-0000-0000-0000-000000000000
+        cmaFileLocation:
+          type: string
+        cmaFilename:
+          type: string
+        cmaInspectionID:
+          type: string
+        cmaInspectionLineID:
+          type: integer
+          format: int32
+        cmaDoNotAllowDownload:
+          type: boolean
+        cmaEmailDefault:
+          type: boolean
+        cmaPrintDefault:
+          type: boolean
+        cmaReviewed:
+          type: boolean
+        cmaJobID:
+          type: string
+        cmaKnowledgeBasePageID:
+          type: string
+        cmaLeadID:
+          type: string
+        cmaLocationID:
+          type: string
+        cmaLongDescriptionRtf:
+          type: string
+        cmaLongDescriptionText:
+          type: string
+        cmaNonConformanceID:
+          type: string
+        cmaOrganizationID:
+          type: string
+        cmaPartID:
+          type: string
+        cmaProjectAreaID:
+          type: string
+        cmaProjectID:
+          type: string
+        cmaPurchaseOrderID:
+          type: string
+        cmaQuoteID:
+          type: string
+        cmaReceiptID:
+          type: string
+        cmaRfqID:
+          type: string
+        cmaRmaClaimID:
+          type: string
+        cmaRowVersion:
+          type: integer
+          format: int64
+        cmaSalesOrderID:
+          type: string
+        cmaShipmentID:
+          type: string
+        cmaShortDescription:
+          type: string
+        cmaWorkFlowID:
+          type: string
+        cmaWorkFlowLineID:
+          type: integer
+          format: int32
+    APIResponseMessageDto:
+      type: object
+      properties:
+        description:
+          type: string
+        status:
+          type: string
+        payloadID:
+          type: string
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+          readOnly: true
+        warnings:
+          type: array
+          items:
+            $ref: '#/components/schemas/Warning'
+          readOnly: true
+    ERPResponseMessageDto_IList_ERPAttachmentDto:
+      type: object
+      properties:
+        responseInfo:
+          $ref: '#/components/schemas/APIResponseMessageDto'
+        returnObject:
+          type: array
+          items:
+            $ref: '#/components/schemas/ERPAttachmentDto'
+        recordCount:
+          type: integer
+          format: int32
+    ERPDocumentLinkDto:
+      required:
+      - xalAddedByUserID
+      - xalAddedDate
+      - xalDescription
+      - xalFileName
+      - xalDocumentLinkID
+      type: object
+      properties:
+        xalAddedByUserID:
+          type: string
+        xalAddedDate:
+          type: string
+          format: date-time
+        xalCloudFileId:
+          type: string
+        xalCreatedBy:
+          type: string
+        xalCreatedDate:
+          type: string
+          format: date-time
+        xalDescription:
+          type: string
+        xalUniqueID:
+          type: string
+          format: uuid
+          example: 00000000-0000-0000-0000-000000000000
+        xalFileLastModifiedDate:
+          type: string
+          format: date-time
+        xalFileName:
+          type: string
+        xalFileNameWhenUploaded:
+          type: string
+        xalEmailDefault:
+          type: boolean
+        xalPrintDefault:
+          type: boolean
+        xalReference:
+          type: string
+        xalRowVersion:
+          type: integer
+          format: int64
+        xalDocumentLinkID:
+          maximum: 999999999
+          minimum: 0
+          type: integer
+          format: int32
+        xalType:
+          type: string
+    ERPResponseMessageDto_IList_ERPAttachmentMemoDto:
+      type: object
+      properties:
+        responseInfo:
+          $ref: '#/components/schemas/APIResponseMessageDto'
+        returnObject:
+          type: array
+          items:
+            $ref: '#/components/schemas/ERPAttachmentMemoDto'
+        recordCount:
+          type: integer
+          format: int32
+    ERPAttachmentMemoDto:
+      required:
+      - cmqAttachmentID
+      - cmqMemoDate
+      - cmqAttachmentMemoID
+      - cmqShortDescription
+      type: object
+      properties:
+        cmqAttachmentID:
+          type: string
+        cmqCreatedBy:
+          type: string
+        cmqCreatedDate:
+          type: string
+          format: date-time
+        cmqUniqueID:
+          type: string
+          format: uuid
+          example: 00000000-0000-0000-0000-000000000000
+        cmqLongDescriptionRtf:
+          type: string
+        cmqLongDescriptionText:
+          type: string
+        cmqMemoDate:
+          type: string
+          format: date-time
+        cmqRowVersion:
+          type: integer
+          format: int64
+        cmqAttachmentMemoID:
+          type: integer
+          format: int32
+        cmqShortDescription:
+          type: string
+    ERPResponseMessageDto_ERPDocumentLinkDto:
+      type: object
+      properties:
+        responseInfo:
+          $ref: '#/components/schemas/APIResponseMessageDto'
+        returnObject:
+          $ref: '#/components/schemas/ERPDocumentLinkDto'
+        recordCount:
+          type: integer
+          format: int32
+    ERPResponseMessageDto_ERPAttachmentMemoDto:
+      type: object
+      properties:
+        responseInfo:
+          $ref: '#/components/schemas/APIResponseMessageDto'
+        returnObject:
+          $ref: '#/components/schemas/ERPAttachmentMemoDto'
+        recordCount:
+          type: integer
+          format: int32
+    Error:
+      type: object
+      properties:
+        innerText:
+          type: string
+    Warning:
+      type: object
+      properties:
+        innerText:
+          type: string
+    ERPResponseMessageDto_IList_ERPAttachmentTypeDto:
+      type: object
+      properties:
+        responseInfo:
+          $ref: '#/components/schemas/APIResponseMessageDto'
+        returnObject:
+          type: array
+          items:
+            $ref: '#/components/schemas/ERPAttachmentTypeDto'
+        recordCount:
+          type: integer
+          format: int32
+  securitySchemes:
+    oauth2:
+      type: oauth2
+      description: OAuth 2.0 Client Credentials Flow with API Users issued from Integration Engine Management Console
+      flows:
+        clientCredentials:
+          tokenUrl: https://api-user.integrations.ecimanufacturing.com/oauth2/api-user/token
+          scopes:
+            openid: openid

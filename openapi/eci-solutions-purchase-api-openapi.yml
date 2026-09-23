@@ -1,0 +1,3381 @@
+openapi: 3.2.0
+info:
+  title: Financial Integration Purchase API
+  description: 'v2 of the Common Financial Package API supporting ECI Financials.
+
+
+    ## Authentication
+
+    Pass an access token in the HTTP Authorization header of each request. For example:
+
+
+    ```Authorization: Bearer [token]```
+
+
+    Access tokens are obtained from the Authentication API. See the Authentication API token endpoint for more information.'
+  contact:
+    name: ECI Integration Team
+    url: https://www.ecisolutions.com/support/
+  version: v2
+security:
+- Bearer: []
+tags:
+- name: Purchase
+paths:
+  /api/v2/bills:
+    post:
+      tags:
+      - Purchase
+      summary: Create (or update) a bill
+      description: 'Create (or update) a bill.
+
+
+        **TripleTex** The upsert parameter is not supported. A new bill is always created
+
+        **Sage 50 UK** The upsert parameter is not supported. A new bill is always created'
+      parameters:
+      - name: upsert
+        in: query
+        description: When an unique **Id is provided**, the record is **looked up by Id**.<br> When the **record is found** by the Id, it is **updated**.<br> When the **record is not found** and **upsert is not set**, an **error** is returned.<br> When the **record is found** and **upsert is set**, it **continues** as described below.<br><br> When an unique **Id is not provided** and **upsert is not set**, a new record is **inserted**.<br> When an unique **Id is not provided** and **upsert is set**, a record is **looked up by natural key**.<br> When the **record is found** by natural key, it is **updated**.<br> When the **record is not found** by natural key, a new record is **inserted**.
+        schema:
+          type: boolean
+      requestBody:
+        content:
+          application/json-patch+json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/Bill'
+              description: Represents a supplier Bill to be saved to the financial system.
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/Bill'
+              description: Represents a supplier Bill to be saved to the financial system.
+          text/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/Bill'
+              description: Represents a supplier Bill to be saved to the financial system.
+          application/*+json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/Bill'
+              description: Represents a supplier Bill to be saved to the financial system.
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Bill'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Bill'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/Bill'
+        '202':
+          description: Accepted
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/AsyncAcceptedResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AsyncAcceptedResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/AsyncAcceptedResponse'
+        '400':
+          description: Bad Request
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Problem'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '409':
+          description: Conflict
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Problem'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '429':
+          description: Too Many Requests
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Problem'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '500':
+          description: Server Error
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Problem'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '501':
+          description: Server Error
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Problem'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+      operationId: postApiV2Bills
+      x-operation-id-source: derived
+  /api/v2/bills/{billId}/attachments:
+    post:
+      tags:
+      - Purchase
+      summary: Upload a single file and attach to a bill
+      description: Upload a single file and attach to a bill.
+      parameters:
+      - name: billId
+        in: path
+        description: The id of the bill to add attachment to.
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+            encoding:
+              file:
+                style: form
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Attachment'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Attachment'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/Attachment'
+        '202':
+          description: Accepted
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/AsyncAcceptedResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AsyncAcceptedResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/AsyncAcceptedResponse'
+        '400':
+          description: Bad Request
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Problem'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '404':
+          description: Not Found
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Problem'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '429':
+          description: Too Many Requests
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Problem'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '500':
+          description: Server Error
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Problem'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '501':
+          description: Server Error
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Problem'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+      operationId: postApiV2BillsByBillIdAttachments
+      x-operation-id-source: derived
+  /api/v2/paymentblockstatus:
+    post:
+      tags:
+      - Purchase
+      summary: Update the payment block status of a bill
+      description: Update the payment block status of a bill.
+      requestBody:
+        content:
+          application/json-patch+json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/PaymentBlockStatus'
+              description: '<h2>The payable state.</h2>
+
+                At least docNumber or billId should be filled, to be able to lookup the bill.'
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/PaymentBlockStatus'
+              description: '<h2>The payable state.</h2>
+
+                At least docNumber or billId should be filled, to be able to lookup the bill.'
+          text/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/PaymentBlockStatus'
+              description: '<h2>The payable state.</h2>
+
+                At least docNumber or billId should be filled, to be able to lookup the bill.'
+          application/*+json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/PaymentBlockStatus'
+              description: '<h2>The payable state.</h2>
+
+                At least docNumber or billId should be filled, to be able to lookup the bill.'
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/PaymentBlockStatus'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentBlockStatus'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/PaymentBlockStatus'
+        '202':
+          description: Accepted
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/AsyncAcceptedResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AsyncAcceptedResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/AsyncAcceptedResponse'
+        '400':
+          description: Bad Request
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Problem'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '404':
+          description: Not Found
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Problem'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '429':
+          description: Too Many Requests
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Problem'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '500':
+          description: Server Error
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Problem'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '501':
+          description: Server Error
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Problem'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+      operationId: postApiV2Paymentblockstatus
+      x-operation-id-source: derived
+  /api/v2/purchase-journal-entries:
+    post:
+      tags:
+      - Purchase
+      summary: Create (or update) a purchase journal entry
+      description: 'Create (or update) a purchase journal entry.
+
+
+        **TripleTex** The upsert parameter is not supported. A new purchase journal entry is always created
+
+        **AfasSB** The upsert parameter is not supported. A new purchase journal entry is always created
+
+        **Sage 50 UK** The upsert parameter is not supported. A new purchase journal entry is always created'
+      parameters:
+      - name: upsert
+        in: query
+        description: When an unique **Id is provided**, the record is **looked up by Id**.<br> When the **record is found** by the Id, it is **updated**.<br> When the **record is not found** and **upsert is not set**, an **error** is returned.<br> When the **record is found** and **upsert is set**, it **continues** as described below.<br><br> When an unique **Id is not provided** and **upsert is not set**, a new record is **inserted**.<br> When an unique **Id is not provided** and **upsert is set**, a record is **looked up by natural key**.<br> When the **record is found** by natural key, it is **updated**.<br> When the **record is not found** by natural key, a new record is **inserted**.
+        schema:
+          type: boolean
+      requestBody:
+        content:
+          application/json-patch+json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/PurchaseJournalEntry'
+              description: "Represents a GL Journal to be saved to or existing in the financial system.\n- Id: Unique id of the journal. Provide when updating the record. \n    * ECI Financials: n/a\n    * Xero: n/a\n    * TripleTex: n/a\n    * AccountView: n/a\n    * PowerOfficeGo: n/a\n    * AfasSB: n/a\n    * Sage50Uk: n/a\n    * Adsolut: n/a"
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/PurchaseJournalEntry'
+              description: "Represents a GL Journal to be saved to or existing in the financial system.\n- Id: Unique id of the journal. Provide when updating the record. \n    * ECI Financials: n/a\n    * Xero: n/a\n    * TripleTex: n/a\n    * AccountView: n/a\n    * PowerOfficeGo: n/a\n    * AfasSB: n/a\n    * Sage50Uk: n/a\n    * Adsolut: n/a"
+          text/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/PurchaseJournalEntry'
+              description: "Represents a GL Journal to be saved to or existing in the financial system.\n- Id: Unique id of the journal. Provide when updating the record. \n    * ECI Financials: n/a\n    * Xero: n/a\n    * TripleTex: n/a\n    * AccountView: n/a\n    * PowerOfficeGo: n/a\n    * AfasSB: n/a\n    * Sage50Uk: n/a\n    * Adsolut: n/a"
+          application/*+json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/PurchaseJournalEntry'
+              description: "Represents a GL Journal to be saved to or existing in the financial system.\n- Id: Unique id of the journal. Provide when updating the record. \n    * ECI Financials: n/a\n    * Xero: n/a\n    * TripleTex: n/a\n    * AccountView: n/a\n    * PowerOfficeGo: n/a\n    * AfasSB: n/a\n    * Sage50Uk: n/a\n    * Adsolut: n/a"
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/PurchaseJournalEntry'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PurchaseJournalEntry'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/PurchaseJournalEntry'
+        '202':
+          description: Accepted
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/AsyncAcceptedResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AsyncAcceptedResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/AsyncAcceptedResponse'
+        '400':
+          description: Bad Request
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Problem'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '409':
+          description: Conflict
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Problem'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '429':
+          description: Too Many Requests
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Problem'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '500':
+          description: Server Error
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Problem'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '501':
+          description: Server Error
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Problem'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+      operationId: postApiV2PurchaseJournalEntries
+      x-operation-id-source: derived
+  /api/v2/purchase-outstanding-items:
+    get:
+      tags:
+      - Purchase
+      summary: Get a list of outstanding items for purchases
+      description: 'Get a list of outstanding items for purchases.
+
+
+        **TripleTex** The take and skip parameter is not reliable and results may vary with usage.
+
+        **Sage 50 UK** The take and skip parameter is not supported. All items are allways retrieved'
+      parameters:
+      - name: take
+        in: query
+        description: The maximum number of records to retrieve. If not provided, retrieve the number of records allowable by the backend financial system, which is not guaranteed to be the entire set of records.
+        schema:
+          type: integer
+          format: int32
+      - name: skip
+        in: query
+        description: The number of records to skip past when retrieving the list. Recommended to be a multiple of the Take value, if provided.
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/PurchaseOutstandingItemList'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PurchaseOutstandingItemList'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/PurchaseOutstandingItemList'
+        '202':
+          description: Accepted
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/AsyncAcceptedResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AsyncAcceptedResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/AsyncAcceptedResponse'
+        '429':
+          description: Too Many Requests
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Problem'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '500':
+          description: Server Error
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Problem'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '501':
+          description: Server Error
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Problem'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+      operationId: getApiV2PurchaseOutstandingItems
+      x-operation-id-source: derived
+  /api/v2/purchase-paymentinfo/{docNumber}:
+    get:
+      tags:
+      - Purchase
+      summary: Get payment information for a purchase invoice
+      description: Get payment information for a purchase invoice.
+      parameters:
+      - name: docNumber
+        in: path
+        description: "Journal entry number\n            * ECI Financials: AccountsPayable.ExternalId\n            * AccountView: AccountsPayable.ExternalId"
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/PaymentInfo'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentInfo'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/PaymentInfo'
+        '202':
+          description: Accepted
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/AsyncAcceptedResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AsyncAcceptedResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/AsyncAcceptedResponse'
+        '400':
+          description: Bad Request
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Problem'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '404':
+          description: Not Found
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Problem'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '429':
+          description: Too Many Requests
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Problem'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '500':
+          description: Server Error
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Problem'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '501':
+          description: Server Error
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Problem'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+      operationId: getApiV2PurchasePaymentinfoByDocNumber
+      x-operation-id-source: derived
+  /api/v2/suppliers:
+    post:
+      tags:
+      - Purchase
+      summary: Create a new supplier
+      description: Create a new supplier.
+      parameters:
+      - name: upsert
+        in: query
+        description: When an unique **Id is provided**, the record is **looked up by Id**.<br> When the **record is found** by the Id, it is **updated**.<br> When the **record is not found** and **upsert is not set**, an **error** is returned.<br> When the **record is found** and **upsert is set**, it **continues** as described below.<br><br> When an unique **Id is not provided** and **upsert is not set**, a new record is **inserted**.<br> When an unique **Id is not provided** and **upsert is set**, a record is **looked up by natural key**.<br> When the **record is found** by natural key, it is **updated**.<br> When the **record is not found** by natural key, a new record is **inserted**.
+        schema:
+          type: boolean
+      requestBody:
+        content:
+          application/json-patch+json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/Supplier'
+              description: "<h2>Model for supplier data, also known as vendor or creditor.</h2>\n\n* Code: \n    + ECI Financials: Company.OldCreditorCode\n    + Xero: Contact.AccountNumber\n    + PowerOfficeGo: n/a\n    + TripleTex: Supplier.SupplierNumber\n    + AccountView: Company.OldCreditorCode\n    + AfasSB: Organisation.Name\n    + Sage50Uk: Supplier.AccountRef\n    + Adsolut: Supplier.Code"
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/Supplier'
+              description: "<h2>Model for supplier data, also known as vendor or creditor.</h2>\n\n* Code: \n    + ECI Financials: Company.OldCreditorCode\n    + Xero: Contact.AccountNumber\n    + PowerOfficeGo: n/a\n    + TripleTex: Supplier.SupplierNumber\n    + AccountView: Company.OldCreditorCode\n    + AfasSB: Organisation.Name\n    + Sage50Uk: Supplier.AccountRef\n    + Adsolut: Supplier.Code"
+          text/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/Supplier'
+              description: "<h2>Model for supplier data, also known as vendor or creditor.</h2>\n\n* Code: \n    + ECI Financials: Company.OldCreditorCode\n    + Xero: Contact.AccountNumber\n    + PowerOfficeGo: n/a\n    + TripleTex: Supplier.SupplierNumber\n    + AccountView: Company.OldCreditorCode\n    + AfasSB: Organisation.Name\n    + Sage50Uk: Supplier.AccountRef\n    + Adsolut: Supplier.Code"
+          application/*+json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/Supplier'
+              description: "<h2>Model for supplier data, also known as vendor or creditor.</h2>\n\n* Code: \n    + ECI Financials: Company.OldCreditorCode\n    + Xero: Contact.AccountNumber\n    + PowerOfficeGo: n/a\n    + TripleTex: Supplier.SupplierNumber\n    + AccountView: Company.OldCreditorCode\n    + AfasSB: Organisation.Name\n    + Sage50Uk: Supplier.AccountRef\n    + Adsolut: Supplier.Code"
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Supplier'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Supplier'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/Supplier'
+        '202':
+          description: Accepted
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/AsyncAcceptedResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AsyncAcceptedResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/AsyncAcceptedResponse'
+        '400':
+          description: Bad Request
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Problem'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '409':
+          description: Conflict
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Problem'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '429':
+          description: Too Many Requests
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Problem'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '500':
+          description: Server Error
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Problem'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '501':
+          description: Server Error
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Problem'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+      operationId: postApiV2Suppliers
+      x-operation-id-source: derived
+components:
+  schemas:
+    Entity:
+      type: object
+      properties:
+        code:
+          type:
+          - string
+          - 'null'
+          description: The natural key of this entity.
+        id:
+          type:
+          - string
+          - 'null'
+          description: The unique Id of this entity.
+      additionalProperties: false
+    PurchaseOutstandingItemList:
+      required:
+      - data
+      - listContext
+      type: object
+      properties:
+        listContext:
+          allOf:
+          - $ref: '#/components/schemas/ListContext'
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/PurchaseOutstandingItem'
+      additionalProperties: false
+    PurchaseOutstandingItem:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: 'Unique id of the outstanding item.
+
+            * ECI Financials: AccountsPayable.Id
+
+            * Xero: Invoice.InvoiceID
+
+            * TripleTex: n/a
+
+            * AccountView: AccountsPayable.Id
+
+            * PowerOfficeGo: IncomingInvoiceListItem.Id
+
+            * AfasSB: n/a
+
+            * Sage50Uk: n/a
+
+            * Adsolut: n/a'
+        syncToken:
+          type:
+          - string
+          - 'null'
+          description: 'SyncToken to ensure updating the latest version of the record.
+
+            * ECI Financials: n/a
+
+            * Xero: n/a
+
+            * TripleTex: n/a
+
+            * AccountView: n/a
+
+            * PowerOfficeGo: n/a
+
+            * AfasSB: n/a
+
+            * Sage50Uk: n/a
+
+            * Adsolut: n/a'
+        docNumber:
+          type: string
+          description: 'Journal entry number
+
+            * ECI Financials: AccountsPayable.ExternalId or AccountsPayable.YourInvoiceNr or AccountsPayable.InvoiceNr or AccountsPayable.Id
+
+            * Xero: Invoice.InvoiceNumber
+
+            * TripleTex: Posting.InvoiceNumber
+
+            * AccountView: AccountsPayable.ExternalId or AccountsPayable.YourInvoiceNr or AccountsPayable.InvoiceNr or AccountsPayable.Id
+
+            * PowerOfficeGo: IncomingInvoiceListItem.PurchaseOrderReference
+
+            * AfasSB: Creditorinvoicebalance.InternalInvoiceNumber
+
+            * Sage50Uk: PurchaseInvoice.InvRef
+
+            * Adsolut: OpenTransaction.DocumentNumber'
+        supplier:
+          allOf:
+          - $ref: '#/components/schemas/Entity'
+          description: "The vendor/supplier to whom this debt is owed\n* ECI Financials: n/a\n* Xero: n/a\n* TripleTex: \n    - Id = Posting.Supplier.Id\n    - Code = Posting.Supplier.SupplierNumber\n* AccountView: n/a\n* AfasSB:\n    - Id = n/a\n    - Code = Creditorinvoicebalance.RelationName\n* Sage50Uk:\n    - Id = n/a\n    - Code = PurchaseInvoice.AccountRef\n* Adsolut:\n    - Id = n/a\n    - Code = OpenTransaction.Supplier.Number"
+        company:
+          allOf:
+          - $ref: '#/components/schemas/Entity'
+          description: "Can be the same for creditor and debtor.\n* ECI Financials: AccountsPayable.Company.Code\n* Xero:\n    - Id = Invoice.Contact.ContactID\n    - Code = Invoice.Contact.ContactNumber\n* TripleTex: n/a\n* TripleTex: n/a\n* AccountView: AccountsPayable.Company.Code\n* TripleTex:\n    - Id = Posting.Customer.Id\n    - Code = Posting.Customer.CustomerNumber\n* PowerOfficeGo:\n    - Id = n/a\n    - Code = IncomingInvoiceListItem.Supplier.ExternalCode\n* AfasSB: n/a\n* Sage50Uk: n/a\n* Adsolut: n/a"
+        paymentReference:
+          type:
+          - string
+          - 'null'
+          description: 'Reference to the bill
+
+            * ECI Financials: AccountsPayable.YourInvoiceNr
+
+            * Xero: Invoice.Reference
+
+            * TripleTex: Posting.ExternalRef
+
+            * AccountView: AccountsPayable.YourInvoiceNr
+
+            * PowerOfficeGo: IncomingInvoiceListItem.PurchaseOrderReference
+
+            * AfasSB: Creditorinvoicebalance.CustomerReference / Creditorinvoicebalance.InvoiceNumber
+
+            * Sage50Uk: n/a
+
+            * Adsolut: n/a'
+        billDate:
+          type: string
+          description: 'The transaction date.
+
+            * ECI Financials: AccountsPayable.InvoiceDate
+
+            * Xero: Invoice.Date
+
+            * TripleTex: Posting.Date
+
+            * AccountView: AccountsPayable.InvoiceDate
+
+            * PowerOfficeGo: IncomingInvoiceListItem.VoucherDate
+
+            * AfasSB: Creditorinvoicebalance.InvoiceDate
+
+            * Sage50UK: PurchaseInvoice.DueDate
+
+            * Adsolut: OpenTransaction.DocumentDate'
+          format: date-time
+        dueDate:
+          type:
+          - string
+          - 'null'
+          description: 'The invoice expiration date.
+
+            * ECI Financials: AccountsPayable.ExpiryDate
+
+            * Xero: Invoice.DueDate
+
+            * TripleTex: Posting.TermOfPayment
+
+            * AccountView: AccountsPayable.ExpiryDate
+
+            * PowerOfficeGo: IncomingInvoiceListItem.DueDate
+
+            * AfasSB: Creditorinvoicebalance.DueDate
+
+            * Sage50Uk: PurchaseInvoice.DueDate
+
+            * Adsolut: OpenTransaction.DueDate'
+          format: date-time
+        paymentDate:
+          type:
+          - string
+          - 'null'
+          description: 'The actual invoice payment date.
+
+            * ECI Financials: n/a
+
+            * Xero: Invoice.ExpectedPaymentDate
+
+            * TripleTex: Posting.Date
+
+            * AccountView: n/a
+
+            * PowerOfficeGo: n/a
+
+            * AfasSB: n/a
+
+            * Sage50Uk: n/a
+
+            * Adsolut: n/a'
+          format: date-time
+        blockPayment:
+          type:
+          - boolean
+          - 'null'
+          description: 'False if bill can be paid, true if it must not be paid
+
+            * ECI Financials: AccountsPayable.Blocked
+
+            * Xero: n/a
+
+            * TripleTex: n/a
+
+            * AccountView: AccountsPayable.Blocked
+
+            * PowerOfficeGo: n/a
+
+            * AfasSB: n/a
+
+            * Sage50Uk: n/a
+
+            * Adsolut: n/a'
+        baseBalance:
+          type: number
+          description: 'The outstanding liability in home currency
+
+            * ECI Financials: AccountsPayable.Balance
+
+            * Xero: Invoice.AmountDue
+
+            * TripleTex: Posting.AmountGross
+
+            * AccountView: AccountsPayable.Balance
+
+            * PowerOfficeGo: IncomingInvoiceListItem.Balance / IncomingInvoiceListItem.CurrencyExchangeRate
+
+            * AfasSB: Creditorinvoicebalance.OutstandingAmount
+
+            * Sage50Uk: PurchaseInvoice.Outstanding
+
+            * Adsolut: OpenTransaction.TotalAmount - OpenTransaction.PaidAmount'
+          format: double
+        foreignBalance:
+          type:
+          - number
+          - 'null'
+          description: 'The outstanding liability in foreign currency
+
+            * ECI Financials: AccountsPayable.BalanceCur
+
+            * Xero: n/a
+
+            * TripleTex: Posting.AmountGrossCurrency
+
+            * AccountView: AccountsPayable.BalanceCur
+
+            * PowerOfficeGo: IncomingInvoiceListItem.Balance
+
+            * AfasSB: n/a
+
+            * Sage50Uk: n/a
+
+            * Adsolut: OpenTransaction.CurrencyTotalAmount - OpenTransaction.CurrencyPaidAmount'
+          format: double
+        currencyCode:
+          type:
+          - string
+          - 'null'
+          description: 'The (ISO 4217) currency code for the foreign balance.
+
+            For V1 API, max chars: 36.
+
+            * ECI Financials: AccountsPayable.Currency
+
+            * Xero: Invoice.CurrencyCode
+
+            * TripleTex: Posting.Currency.Code
+
+            * AccountView: AccountsPayable.Currency
+
+            * PowerOfficeGo: IncomingInvoiceListItem.CurrencyCode
+
+            * AfasSB: n/a
+
+            * Sage50Uk: PurchaseInvoice.Currency
+
+            * Adsolut: OpenTransaction.Currency.Code.Id'
+        isFromFrozenAccount:
+          type:
+          - boolean
+          - 'null'
+          description: 'True if the outstanding amount is from a frozen account, otherwise false.
+
+            * ECI Financials: AccountsPayable.PayrollTaxPart
+
+            * Xero: n/a
+
+            * TripleTex: n/a
+
+            * AccountView: AccountsPayable.PayrollTaxPart
+
+            * PowerOfficeGo: n/a
+
+            * AfasSB: n/a
+
+            * Sage50Uk: n/a
+
+            * Adsolut: n/a'
+        billAmount:
+          type: number
+          description: 'The total amount of the bill in the home currency
+
+            * ECI Financials: AccountsPayable.Amount
+
+            * Xero: Invoice.Total
+
+            * TripleTex: Posting.AmountGross
+
+            * AccountView: AccountsPayable.Amount
+
+            * PowerOfficeGo: IncomingInvoiceListItem.TotalAmount
+
+            * AfasSB: Creditorinvoicebalance.TotalAmount
+
+            * Sage50Uk: PurchaseInvoice.GrossAmount
+
+            * Adsolut: OpenTransaction.TotalAmount'
+          format: double
+        foreignBillAmount:
+          type:
+          - number
+          - 'null'
+          description: 'The total amount of the bill in the foreign currency
+
+            * ECI Financials: AccountsPayable.AmountCur
+
+            * Xero: n/a
+
+            * TripleTex: Posting.AmountGrossCurrency
+
+            * AccountView: AccountsPayable.AmountCur
+
+            * PowerOfficeGo: incomingInvoiceListItem.TotalAmount * incomingInvoiceListItem.CurrencyExchangeRate
+
+            * AfasSB: n/a
+
+            * Sage50Uk: n/a
+
+            * Adsolut: OpenTransaction.CurrencyTotalAmount'
+          format: double
+      additionalProperties: false
+      description: Outstanding expenses for vendors. These are the bills that still have to be paid by you. In the V1 API, this is called VendorCreditModel.
+    Attachment:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: 'The unique id of the attachment.
+
+            * ECI Financials: Document.Id
+
+            * Xero: Attachment.AttachmentID
+
+            * TripleTex: n/a
+
+            * AccountView: Document.Id
+
+            * PowerOfficeGo: n/a
+
+            * Sage50Uk: n/a
+
+            * Adsolut: n/a'
+        name:
+          type: string
+          description: 'The filename (without extension) of the attachment.
+
+            * ECI Financials: Document.Name
+
+            * Xero: Attachment.FileName
+
+            * TripleTex: FileParameter.FileName
+
+            * AccountView: Document.Name
+
+            * PowerOfficeGo: FileParameter.FileName
+
+            * Sage50Uk: n/a
+
+            * Adsolut: n/a'
+        date:
+          type:
+          - string
+          - 'null'
+          description: 'The date the attachment was added or updated.
+
+            * ECI Financials: Document.Date
+
+            * Xero: n/a
+
+            * TripleTex: (Today''s date is always used)
+
+            * AccountView: Document.Date
+
+            * PowerOfficeGo: (Today''s date is always used)
+
+            * Sage50Uk: n/a
+
+            * Adsolut: n/a'
+          format: date-time
+        type:
+          type: string
+          description: 'The attachment type (filename extension including period).
+
+            * ECI Financials: Document.Type
+
+            * Xero: Attachment.MimeType
+
+            * TripleTex: FileParameter.Filename (extension)
+
+            * AccountView: Document.Type
+
+            * PowerOfficeGo: FileParameter.Filename (extension)
+
+            * Sage50Uk: n/a
+
+            * Adsolut: n/a'
+        size:
+          type:
+          - integer
+          - 'null'
+          description: 'The size of the  attachment in bytes
+
+            * ECI Financials: Document.Size
+
+            * Xero: Attachment.ContentLength
+
+            * TripleTex: FileParameter.Data.Length
+
+            * AccountView: Document.Size
+
+            * PowerOfficeGo: FileParameter.Data.Length
+
+            * Sage50Uk: n/a
+
+            * Adsolut: n/a'
+          format: int64
+        syncToken:
+          type:
+          - string
+          - 'null'
+          description: 'The date/time stamp of the attachment. This value is
+
+            required when sending a PUT request and its value must
+
+            match the timestamp of the attachment in the database.
+
+            If the value is different it means the  attachmenthas
+
+            been modified by another user.
+
+            * ECI Financials: Document.Stamp
+
+            * Xero: n/a
+
+            * TripleTex: n/a
+
+            * AccountView: Document.Stamp
+
+            * PowerOfficeGo: n/a
+
+            * Sage50Uk: n/a
+
+            * Adsolut: n/a'
+      additionalProperties: false
+      description: <h2>A attachment info object.</h2>
+    AsyncAcceptedResponse:
+      type: object
+      properties:
+        requestId:
+          type: string
+          description: 'A unique identifier for the asynchronous request.
+
+            This ID can be used in a follow-up request (via the async-request-id header) to retrieve the result of the original operation once processing is complete.'
+          format: uuid
+      additionalProperties: false
+      description: Represents the response returned when an asynchronous request is accepted for processing.
+    Address:
+      type: object
+      properties:
+        street:
+          type:
+          - string
+          - 'null'
+          description: 'The street name.
+
+            * ECI Financials: BusinessAddress/PostalAddress/BillingAddress.Address
+
+            * Xero: n/a
+
+            * TripleTex: n/a
+
+            * AccountView: BusinessAddress/PostalAddress/BillingAddress.Address
+
+            * PowerOfficeGo: n/a
+
+            * AfasSB: Address.StreetName
+
+            * Sage50Uk: n/a
+
+            * Adsolut: Address.StreetName'
+        houseNumber:
+          type:
+          - string
+          - 'null'
+          description: 'The house number.
+
+            * ECI Financials: BusinessAddress/PostalAddress/BillingAddress.HouseNr
+
+            * Xero: n/a
+
+            * TripleTex: n/a
+
+            * AccountView: BusinessAddress/PostalAddress/BillingAddress.HouseNr
+
+            * PowerOfficeGo: n/a
+
+            * AfasSB: Address.HouseNumber
+
+            * Sage50Uk: n/a
+
+            * Adsolut: Address.StreetName (is part of street name field)'
+        houseNumberExtension:
+          type:
+          - string
+          - 'null'
+          description: 'The house number extension. For example the ''-B'' part of
+
+            ''221-B''
+
+            * ECI Financials: BusinessAddress/PostalAddress/BillingAddress.HouseNrExt
+
+            * Xero: n/a
+
+            * TripleTex: n/a
+
+            * AccountView: BusinessAddress/PostalAddress/BillingAddress.HouseNrExt
+
+            * PowerOfficeGo: n/a
+
+            * AfasSB: Address.HouseNumberAddition
+
+            * Sage50Uk: n/a
+
+            * Adsolut: Address.StreetName (is part of street name field)'
+        postalCode:
+          type:
+          - string
+          - 'null'
+          description: 'The postal code or zip code.
+
+            * ECI Financials: BusinessAddress/PostalAddress/BillingAddress.PostalCode
+
+            * Xero: PostalCode
+
+            * TripleTex: PostalCode
+
+            * AccountView: BusinessAddress/PostalAddress/BillingAddress.PostalCode
+
+            * PowerOfficeGo: ZipCode
+
+            * AfasSB: Address.PostalZone
+
+            * Sage50Uk: Address.Address5
+
+            * Adsolut: Address.PostalCode'
+        city:
+          type:
+          - string
+          - 'null'
+          description: 'The city, town or village.
+
+            * ECI Financials: BusinessAddress/PostalAddress/BillingAddress.City
+
+            * Xero: City
+
+            * TripleTex: City
+
+            * AccountView: BusinessAddress/PostalAddress/BillingAddress.City
+
+            * PowerOfficeGo: City
+
+            * AfasSB: Address.CityName
+
+            * Sage50Uk: n/a
+
+            * Adsolut: Address.City'
+        stateProv:
+          type:
+          - string
+          - 'null'
+          description: 'State or province.
+
+            * ECI Financials: n/a
+
+            * Xero: Region
+
+            * TripleTex: n/a
+
+            * AccountView: n/a
+
+            * PowerOfficeGo: n/a
+
+            * AfasSB: Address.State
+
+            * Sage50Uk: Address.Address4
+
+            * Adsolut: n/a'
+        country:
+          type:
+          - string
+          - 'null'
+          description: 'The country code (ISO3166_1_ALPHA_2).
+
+            * ECI Financials: BusinessAddress/PostalAddress/BillingAddress.Country
+
+            * Xero: Country
+
+            * TripleTex: Country.IsoAlpha2Code
+
+            * AccountView: BusinessAddress/PostalAddress/BillingAddress.Country
+
+            * PowerOfficeGo: CountryCode
+
+            * AfasSB: Address.CountryCode
+
+            * Sage50Uk: Address.Country
+
+            * Adsolut: Address.Country'
+        addressLine1:
+          type:
+          - string
+          - 'null'
+          description: 'First line of address.
+
+            * ECI Financials: n/a
+
+            * Xero: AddressLine1
+
+            * TripleTex: AddressLine1
+
+            * AccountView: n/a
+
+            * PowerOfficeGo: Address1
+
+            * AfasSB: n/a
+
+            * Sage50Uk: Address.Address1
+
+            * Adsolut: n/a'
+        addressLine2:
+          type:
+          - string
+          - 'null'
+          description: 'Second line of address.
+
+            * ECI Financials: n/a
+
+            * Xero: AddressLine2
+
+            * TripleTex: AddressLine2
+
+            * AccountView: n/a
+
+            * PowerOfficeGo: Address2
+
+            * AfasSB: n/a
+
+            * Sage50Uk: Address.Address2
+
+            * Adsolut: n/a'
+        addressLine3:
+          type:
+          - string
+          - 'null'
+          description: 'Third line of address.
+
+            * ECI Financials: n/a
+
+            * Xero: AddressLine3
+
+            * TripleTex: n/a
+
+            * AccountView: n/a
+
+            * PowerOfficeGo: n/a
+
+            * AfasSB: n/a
+
+            * Sage50Uk: Address.Address3
+
+            * Adsolut: n/a'
+      additionalProperties: false
+      description: Represents an address
+    Bill:
+      type: object
+      properties:
+        syncToken:
+          type:
+          - string
+          - 'null'
+          description: 'SyncToken to ensure updating the latest version of the
+
+            record.
+
+            * ECI Financials: n/a
+
+            * Xero: n/a
+
+            * TripleTex: n/a
+
+            * AccountView: n/a
+
+            * PowerOfficeGo: n/a
+
+            * Sage50Uk: n/a
+
+            * Adsolut: n/a'
+        supplier:
+          allOf:
+          - $ref: '#/components/schemas/Entity'
+          description: "Reference to the supplier for this transaction\n* ECI Financials: n/a\n* Xero: n/a\n* TripleTex:\n    - Id = Posting.Supplier.Id\n    - Code = Posting.Supplier.SupplierNumber\n* AccountView: n/a\n* PowerOfficeGo: JournalEntryVoucher.SupplierCode\n* Sage50Uk:\n    - Id = n/a\n    - Code = Transaction.AccountRef\n* Adsolut: n/a"
+        company:
+          allOf:
+          - $ref: '#/components/schemas/Entity'
+          description: "To be used when creditor and debtor are the same record in the financial package\n* ECI Financials: PurchasesInvoice.Supplier\n* Xero:\n    - Id = Contact.ContactID\n    - Code = Contact.ContactNumber\n* TripleTex: n/a\n* TripleTex: n/a\n* AccountView: PurchasesInvoice.Supplier\n* TripleTex:\n    - Id = Posting.Supplier.Id\n    - Code = Posting.Supplier.SupplierNumber\n* PowerOfficeGo:\n    - Id = n/a\n    - Code = JournalEntryVoucher.SupplierCode\n* Sage50Uk: n/a\n* Adsolut: n/a"
+        currencyCode:
+          type:
+          - string
+          - 'null'
+          description: 'ISO 4217 Code for the currency in which all amounts on the associated transaction are expressed.
+
+            * ECI Financials: PurchasesInvoice.Currency
+
+            * Xero: Invoice.CurrencyCode / CreditNote.CurrencyCode
+
+            * TripleTex: Posting.CurrencyCode.Code
+
+            * AccountView: PurchasesInvoice.Currency
+
+            * PowerOfficeGo: JournalEntryVoucher.CurrencyCode
+
+            * Sage50Uk: (Used in childe lines) TransactionLine.CurrencyCode
+
+            * Adsolut: n/a'
+        baseCurrency:
+          type:
+          - string
+          - 'null'
+          description: 'Determines whether the bill is expressed in the home currency or foreign currency.
+
+            * ECI Financials: n/a
+
+            * Xero: n/a
+
+            * TripleTex: n/a
+
+            * AccountView: n/a
+
+            * PowerOfficeGo: n/a
+
+            * Sage50Uk: n/a
+
+            * Adsolut: n/a'
+        billDate:
+          type:
+          - string
+          - 'null'
+          description: 'The date of the bill. Defaults to current date if not provided.
+
+            * ECI Financials: PurchasesInvoice.Date
+
+            * Xero: Invoice.Date / CreditNote.Date
+
+            * TripleTex: Voucher.Date
+
+            * AccountView: PurchasesInvoice.Date
+
+            * PowerOfficeGo: JournalEntryVoucher.VoucherDate
+
+            * Sage50Uk: Transaction.Date
+
+            * Adsolut: n/a'
+          format: date-time
+        dueDate:
+          type:
+          - string
+          - 'null'
+          description: 'Date when the payment of the transaction is due.
+
+            * ECI Financials: PurchasesInvoice.ExpiryDate
+
+            * Xero: Invoice.DueDate / CreditNote.DueDate
+
+            * TripleTex: n/a
+
+            * AccountView: PurchasesInvoice.ExpiryDate
+
+            * PowerOfficeGo: JournalEntryVoucher.DueDate
+
+            * Sage50Uk: Transaction.DueDate
+
+            * Adsolut: n/a'
+          format: date-time
+        docNumber:
+          type:
+          - string
+          - 'null'
+          description: 'Reference number for the transaction.
+
+            * ECI Financials: PurchasesInvoice.ExternalId
+
+            * Xero: Invoice.InvoiceNumber / CreditNote.CreditNoteNumber
+
+            * TripleTex: Invoice.ExternalVoucherNumber
+
+            * AccountView: PurchasesInvoice.ExternalId
+
+            * PowerOfficeGo: JournalEntryVoucher.InvoiceNo
+
+            * Sage50Uk: Transaction.Details
+
+            * Adsolut: n/a'
+        paymentTerm:
+          allOf:
+          - $ref: '#/components/schemas/Entity'
+          description: 'The payment term associated with the transaction.
+
+            * ECI Financials: PurchasesInvoice.PaymentTerms
+
+            * Xero: n/a
+
+            * TripleTex: n/a
+
+            * AccountView: PurchasesInvoice.PaymentTerms
+
+            * PowerOfficeGo: n/a
+
+            * Sage50Uk: n/a
+
+            * Adsolut: n/a'
+        lines:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/BillLine'
+          description: 'Individual line items for the bill.
+
+            * ECI Financials: PurchasesInvoice.Lines
+
+            * Xero: Invoice.LineItems / CreditNote.LineItems
+
+            * TripleTex: Voucher.Postings
+
+            * AccountView: PurchasesInvoice.Lines
+
+            * PowerOfficeGo: JournalEntryVoucher.VoucherLines
+
+            * Sage50Uk: Transaction.Items
+
+            * Adsolut: n/a'
+        frozenAccountAmount:
+          type: number
+          description: 'A G-account is a frozen bank account that is used to pay payroll taxes or VAT payments to the Dutch Tax and Customs Administration.
+
+            It is a blocked bank account that is managed jointly by the employment agency and the Tax and Customs Administration.
+
+            * ECI Financials: PurchasesInvoice.PayrollTaxPart
+
+            * Xero: n/a
+
+            * TripleTex: n/a
+
+            * AccountView: PurchasesInvoice.PayrollTaxPart
+
+            * PowerOfficeGo: n/a
+
+            * Sage50Uk: n/a* Adsolut: n/a'
+          format: double
+        journal:
+          type:
+          - string
+          - 'null'
+          description: 'Journal code
+
+            * ECI Financials: PurchasesInvoice.Journal
+
+            * Xero: n/a
+
+            * TripleTex: n/a
+
+            * AccountView: PurchasesInvoice.Journal
+
+            * PowerOfficeGo: n/a
+
+            * Sage50Uk: n/a
+
+            * Adsolut: n/a'
+        paymentReference:
+          type:
+          - string
+          - 'null'
+          description: 'Payment Reference number for the bill, e.g., supplier invoice number
+
+            * ECI Financials: PurchasesInvoice.Reference
+
+            * Xero: Invoice.Reference / CreditNote.Reference
+
+            * TripleTex: n/a
+
+            * AccountView: PurchasesInvoice.Reference
+
+            * PowerOfficeGo: JournalEntryVoucher.CID
+
+            * Sage50Uk: n/a
+
+            * Adsolut: n/a'
+        description:
+          type:
+          - string
+          - 'null'
+          description: '* ECI Financials: PurchasesInvoice.Title
+
+            * Xero: n/a
+
+            * TripleTex: Voucher.Description
+
+            * AccountView: PurchasesInvoice.Title
+
+            * PowerOfficeGo: JournalEntryVoucher.Description
+
+            * Sage50Uk: n/a
+
+            * Adsolut: n/a'
+        id:
+          type:
+          - string
+          - 'null'
+          description: The unique Id of this entity.
+      additionalProperties: false
+      description: Represents a supplier Bill to be saved to the financial system.
+    PurchaseJournalEntry:
+      type: object
+      properties:
+        syncToken:
+          type:
+          - string
+          - 'null'
+          description: 'SyncToken to ensure updating the latest version of the record.
+
+            * ECI Financials: n/a
+
+            * Xero: n/a
+
+            * TripleTex: n/a
+
+            * AccountView: n/a
+
+            * PowerOfficeGo: n/a
+
+            * AfasSB: n/a
+
+            * Sage50Uk: n/a
+
+            * Adsolut: n/a'
+        docNumber:
+          type:
+          - string
+          - 'null'
+          description: 'The journal entry number
+
+            * ECI Financials: n/a
+
+            * Xero: n/a
+
+            * TripleTex: n/a
+
+            * AccountView: n/a
+
+            * PowerOfficeGo: n/a
+
+            * AfasSB: Purchasejournalentry.InvoiceNumber
+
+            * Sage50Uk: n/a
+
+            * Adsolut: PurchaseJournalEntry.InvoiceNumber'
+        description:
+          type:
+          - string
+          - 'null'
+          description: '* ECI Financials: n/a
+
+            * Xero: n/a
+
+            * TripleTex: n/a
+
+            * AccountView: n/a
+
+            * PowerOfficeGo: n/a
+
+            * AfasSB: n/a
+
+            * Sage50Uk: n/a
+
+            * Adsolut: PurchaseJournalEntry.Description'
+        date:
+          type:
+          - string
+          - 'null'
+          description: '* ECI Financials: n/a
+
+            * Xero: n/a
+
+            * TripleTex: n/a
+
+            * AccountView: n/a
+
+            * PowerOfficeGo: n/a
+
+            * AfasSB: Purchasejournalentry.InvoiceDate
+
+            * Sage50Uk: n/a
+
+            * Adsolut: PurchaseJournalEntry.DocumentDate'
+          format: date-time
+        dueDate:
+          type:
+          - string
+          - 'null'
+          description: 'Date when the payment of the transaction is due.
+
+            * ECI Financials: n/a
+
+            * Xero: n/a
+
+            * TripleTex: n/a
+
+            * AccountView: n/a
+
+            * PowerOfficeGo: n/a
+
+            * AfasSB: Purchasejournalentry.DueDate
+
+            * Sage50Uk: n/a
+
+            * Adsolut: PurchaseJournalEntry.DueDate'
+          format: date-time
+        period:
+          type:
+          - string
+          - 'null'
+          description: 'Financial period
+
+            * ECI Financials: n/a
+
+            * Xero: n/a
+
+            * TripleTex: n/a
+
+            * AccountView: n/a
+
+            * PowerOfficeGo: n/a
+
+            * AfasSB: n/a
+
+            * Sage50Uk: n/a
+
+            * Adsolut: PurchaseJournalEntry.AccountingPeriod.Number'
+        year:
+          type:
+          - integer
+          - 'null'
+          description: 'Financial year
+
+            * ECI Financials: n/a
+
+            * Xero: n/a
+
+            * TripleTex: n/a
+
+            * AccountView: n/a
+
+            * PowerOfficeGo: n/a
+
+            * AfasSB: n/a
+
+            * Sage50Uk: n/a
+
+            * Adsolut: PurchaseJournalEntry.Year'
+          format: int32
+        journal:
+          type:
+          - string
+          - 'null'
+          description: 'Journal code
+
+            * ECI Financials: n/a
+
+            * Xero: n/a
+
+            * TripleTex: n/a
+
+            * AccountView: n/a
+
+            * PowerOfficeGo: n/a
+
+            * AfasSB: n/a
+
+            * Sage50Uk: n/a
+
+            * Adsolut: PurchaseJournalEntry.JournalCode (2 letter code)'
+        exchangeRate:
+          type:
+          - number
+          - 'null'
+          description: 'The exchange rate
+
+            * ECI Financials: n/a
+
+            * Xero: n/a
+
+            * TripleTex: n/a
+
+            * AccountView: n/a
+
+            * PowerOfficeGo: n/a
+
+            * AfasSB: n/a
+
+            * Sage50Uk: n/a
+
+            * Adsolut: n/a'
+          format: double
+        paymentTerm:
+          allOf:
+          - $ref: '#/components/schemas/Entity'
+          description: 'The payment term associated with the transaction.
+
+            * ECI Financials: n/a
+
+            * Xero: n/a
+
+            * TripleTex: n/a
+
+            * AccountView: n/a
+
+            * PowerOfficeGo: n/a
+
+            * AfasSB: n/a
+
+            * Sage50Uk: n/a
+
+            * Adsolut: n/a'
+        paymentReference:
+          type:
+          - string
+          - 'null'
+          description: 'External payment reference.
+
+            * ECI Financials: n/a
+
+            * Xero: n/a
+
+            * TripleTex: n/a
+
+            * AccountView: n/a
+
+            * PowerOfficeGo: n/a
+
+            * AfasSB: Purchasejournalentry.Reference
+
+            * Sage50Uk: n/a
+
+            * Adsolut: PurchaseJournalEntry.SupplierInvoiceNumber'
+        supplier:
+          allOf:
+          - $ref: '#/components/schemas/Entity'
+          description: 'Reference to the supplier for this transaction
+
+            * ECI Financials: n/a
+
+            * Xero: n/a
+
+            * TripleTex: n/a
+
+            * AccountView: n/a
+
+            * PowerOfficeGo: n/a
+
+            * AfasSB: Purchasejournalentry.RelationId
+
+            * Sage50Uk: n/a
+
+            * Adsolut: PurchaseJournalEntry.Supplier.Number'
+        lines:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/JournalEntryLine'
+          description: 'A collection of line information for the journal.
+
+            * ECI Financials: n/a
+
+            * Xero: n/a
+
+            * TripleTex: n/a
+
+            * AccountView: n/a
+
+            * PowerOfficeGo: n/a
+
+            * AfasSB: Purchasejournalentry.InvoiceLine
+
+            * Sage50Uk: n/a
+
+            * Adsolut: PurchaseJournalEntry.Lines'
+        currencyCode:
+          type:
+          - string
+          - 'null'
+          description: 'The (ISO 4217) currency code for the sales journal entry.
+
+            * ECI Financials: n/a
+
+            * Xero: n/a
+
+            * TripleTex: n/a
+
+            * AccountView: n/a
+
+            * PowerOfficeGo: n/a
+
+            * AfasSB: n/a
+
+            * Sage50Uk: n/a'
+        id:
+          type:
+          - string
+          - 'null'
+          description: The unique Id of this entity.
+      additionalProperties: false
+      description: "Represents a GL Journal to be saved to or existing in the financial system.\n- Id: Unique id of the journal. Provide when updating the record. \n    * ECI Financials: n/a\n    * Xero: n/a\n    * TripleTex: n/a\n    * AccountView: n/a\n    * PowerOfficeGo: n/a\n    * AfasSB: n/a\n    * Sage50Uk: n/a\n    * Adsolut: n/a"
+    BillLine:
+      type: object
+      properties:
+        amountExcludingTax:
+          type:
+          - number
+          - 'null'
+          description: 'Total amount of the line excluding tax/VAT.
+
+            * ECI Financials: InvoiceLine.AmountExcl
+
+            * Xero: LineItem.LineAmount
+
+            * TripleTex: Posting.Amount
+
+            * AccountView: InvoiceLine.AmountExcl
+
+            * PowerOfficeGo: JournalEntryVoucherLine.Amount
+
+            * Sage50Uk: TransactionLine.ForeignAmount
+
+            * Adsolut: n/a'
+          format: double
+        description:
+          type:
+          - string
+          - 'null'
+          description: 'Description text for the purchase line.
+
+            * ECI Financials: InvoiceLine.Title
+
+            * Xero: LineItem.Description
+
+            * TripleTex: Posting.Description
+
+            * AccountView: InvoiceLine.Title
+
+            * PowerOfficeGo: JournalEntryVoucherLine.Description
+
+            * Sage50Uk: TransactionLine.Details
+
+            * Adsolut: n/a'
+        account:
+          allOf:
+          - $ref: '#/components/schemas/Entity'
+          description: "The general ledger account for the line.\n* ECI Financials: InvoiceLine.Account\n* Xero:\n    - Code = LineItem.AccountCode\n    - Id = LineItem.AccountId\n* TripleTex: Posting.Account\n    - Code = Account.Number\n    - Id = Account.Id\n* AccountView: InvoiceLine.Account\n* PowerOfficeGo: JournalEntryVoucherLine.DebitAccountCode\n* Sage50Uk: TransactionLine.Account\n    - Code = Account.NominalCode\n    - Id = n/a\n* Adsolut: n/a"
+        taxCode:
+          allOf:
+          - $ref: '#/components/schemas/Entity'
+          description: "Tax code reference. This is the tax or VAT code that is\nexpected by the AFM.\n* ECI Financials: InvoiceLine.VatRate\n* Xero:\n    - Id = n/a\n    - Code = LineItem.TaxType\n* TripleTex: \n    - Code = VatType.Number\n    - Id = VatType.Id\n* AccountView: InvoiceLine.VatRate\n* PowerOfficeGo: JournalEntryVoucherLine.DebitVatCode\n* Sage50Uk: TransactionLine.VatCode\n    - Code = TaxCode\n    - Id = n/a\n* Adsolut: n/a"
+        taxAmount:
+          type:
+          - number
+          - 'null'
+          description: 'VAT amount
+
+            * ECI Financials: InvoiceLine.VatAmount
+
+            * Xero: LineItem.TaxAmount
+
+            * TripleTex: n/a
+
+            * AccountView: InvoiceLine.VatAmount
+
+            * PowerOfficeGo: n/a
+
+            * Sage50Uk: TransactionLine.ForeignTaxAmount
+
+            * Adsolut: n/a'
+          format: double
+        costCarrier:
+          allOf:
+          - $ref: '#/components/schemas/Entity'
+          description: 'Cost carrier
+
+            * ECI Financials: PurchasesInvoiceLine.CostCarrier
+
+            * Xero: n/a
+
+            * TripleTex: n/a
+
+            * AccountView: PurchasesInvoiceLine.CostCarrier
+
+            * PowerOfficeGo: n/a
+
+            * Sage50Uk: TransactionLine.CostCode
+
+            * Adsolut: n/a'
+        costUnit:
+          allOf:
+          - $ref: '#/components/schemas/Entity'
+          description: 'Cost unit
+
+            * ECI Financials: PurchasesInvoiceLine.CostUnit
+
+            * Xero: n/a
+
+            * TripleTex: n/a
+
+            * AccountView: PurchasesInvoiceLine.CostUnit
+
+            * PowerOfficeGo: n/a
+
+            * Sage50Uk: n/a
+
+            * Adsolut: n/a'
+        order:
+          allOf:
+          - $ref: '#/components/schemas/Entity'
+          description: 'Order
+
+            * ECI Financials: PurchasesInvoiceLine.Project
+
+            * Xero: n/a
+
+            * TripleTex: n/a
+
+            * AccountView: PurchasesInvoiceLine.Project
+
+            * PowerOfficeGo: n/a
+
+            * Sage50Uk: n/a
+
+            * Adsolut: n/a'
+      additionalProperties: false
+      description: Represents a supplier Bill line to be saved to the financial system.
+    JournalEntryLine:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: '* ECI Financials: n/a
+
+            * Xero: n/a
+
+            * TripleTex: n/a
+
+            * AccountView: n/a
+
+            * PowerOfficeGo: n/a
+
+            * AfasSB: n/a
+
+            * Sage50Uk: n/a
+
+            * Adsolut: n/a'
+        amount:
+          type: number
+          description: 'Amount excluding VAT amount
+
+            * ECI Financials: Lines.Amount / Lines.Debet / Lines.Credit
+
+            * Xero: ManualJournalLine.LineAmount
+
+            * TripleTex: Posting.AmountGross
+
+            * AccountView: Lines.Amount / Lines.Debet / Lines.Credit
+
+            * PowerOfficeGo: JournalEntryVoucherLine.Amount
+
+            * AfasSB: InvoiceLine.AmountExcludingVat / InvoiceLine2.AmountIncludingVat / EntryLine.AmountCredit / EntryLine.AmountDebit
+
+            * Sage50Uk: JournalEntryLine.NetAmount
+
+            * Adsolut: JournalEntryLine.NetAmount'
+          format: double
+        account:
+          allOf:
+          - $ref: '#/components/schemas/Entity'
+          description: "* ECI Financials: Lines.Account\n* Xero:\n    * Code = ManualJournalLine.AccountCode\n    * Id = ManualJournalLine.AccountId\n* TripleTex:\n    * Id = Posting.Account.Id\n    * Code = Posting.Account.Number\n* AccountView: Lines.Account\n* PowerOfficeGo:\n    * Id = n/a\n    * Code = JournalEntryVoucherLine.DebitAccountCode / JournalEntryVoucherLine.CreditAccountCode\n* AfasSB: InvoiceLine.LedgerAccountId / InvoiceLine2.LedgerAccountId / EntryLine.LedgerAccountId\n* Sage50Uk: JournalEntryLine.Account\n    - Code = Account.NominalCode\n    - Id = n/a\n* Adsolut: JournalEntryLine.Account\n    - Code = GeneralLedger.Code\n    - Id = n/a"
+        taxAmount:
+          type: number
+          description: 'VAT amount
+
+            * ECI Financials: n/a
+
+            * Xero: ManualJournalLine.TaxAmount
+
+            * TripleTex: n/a
+
+            * AccountView: n/a
+
+            * PowerOfficeGo: n/a
+
+            * AfasSB: InvoiceLine.AmountVat / InvoiceLine2.AmountVat
+
+            * Sage50Uk: JournalEntryLine.TaxAmount
+
+            * Adsolut: JournalEntryLine.VatAmount'
+          format: double
+        type:
+          enum:
+          - 0
+          - 1
+          type:
+          - integer
+          - 'null'
+          description: 'The balance side.
+
+            * ECI Financials: Based on type either Lines.Debet or Lines.Credit is set
+
+            * Xero: Calculated (based on ManualJournalLine.LineAmount)
+
+            * TripleTex: n/a
+
+            * AccountView: Based on type either Lines.Debet or Lines.Credit is set
+
+            * PowerOfficeGo: JournalEntryVoucherLine.Type
+
+            * AfasSB: n/a
+
+            * Sage50Uk: JournalEntryLine.Type
+
+            * Adsolut: Based on  JournalEntryLineType either Credit or Debit'
+          format: int32
+        taxCode:
+          allOf:
+          - $ref: '#/components/schemas/Entity'
+          description: "* ECI Financials: n/a\n* Xero:\n    * Code = ManualJournalLine.TaxType\n    * Id = n/a\n* TripleTex:\n    * Code = Posting.VatType.Number\n    * Id = Posting.VatType.Id\n* Acountview: n/a\n* PowerOfficeGo:\n    * Code = JournalEntryVoucherLine.DebitVatCode / JournalEntryVoucherLine.CreditVatCode\n    * Id = n/a\n* AfasSB: \n    * Id = n/a\n    * Code = InvoiceLine.VatType / InvoiceLine2.VatType / EntryLine.VatType\n* Sage50Uk:\n    * Code = JournalEntryLine.TaxCode\n    * Id = n/a\n* Adsolut:\n    * Code = JournalEntryLine.VatPercentage.Id\n    * Id = n/a"
+        description:
+          type:
+          - string
+          - 'null'
+          description: '* ECI Financials: Lines.Title
+
+            * Xero: ManualJournalLine.Description
+
+            * TripleTex: Posting.Description
+
+            * AccountView: Lines.Title
+
+            * PowerOfficeGo: JournalEntryVoucherLine.Description
+
+            * AfasSB: InvoiceLine.Description / InvoiceLine2.Description / EntryLine.Description
+
+            * Sage50Uk: JournalEntryLine.Details
+
+            * Adsolut: JournalEntryLine.Description'
+        taxShifted:
+          type:
+          - boolean
+          - 'null'
+          description: 'Indicates whether the VAT is shifted (reverse charge).
+
+            * ECI Financials: n/a
+
+            * Xero: n/a
+
+            * TripleTex: n/a
+
+            * AccountView: n/a
+
+            * PowerOfficeGo: n/a
+
+            * AfasSB: InvoiceLine.VatShifted / InvoiceLine2.VatShifted
+
+            * Sage50Uk: n/a
+
+            * Adsolut: n/a'
+        amountForeignCurrency:
+          type:
+          - number
+          - 'null'
+          description: 'Amount excluding VAT amount in foreign currency
+
+            * ECI Financials: n/a
+
+            * Xero: n/a
+
+            * TripleTex: n/a
+
+            * AccountView: n/a
+
+            * PowerOfficeGo: n/a
+
+            * AfasSB: n/a
+
+            * Sage50Uk: n/a'
+          format: double
+        taxAmountForeignCurrency:
+          type:
+          - number
+          - 'null'
+          description: 'Tax (Vat) Amount in foreign currency
+
+            * ECI Financials: n/a
+
+            * Xero: n/a
+
+            * TripleTex: n/a
+
+            * AccountView: n/a
+
+            * PowerOfficeGo: n/a
+
+            * AfasSB: n/a
+
+            * Sage50Uk: n/a'
+          format: double
+      additionalProperties: false
+      description: Represents an individual line of a GL Journal to be saved to or existing in the financial system.
+    Links:
+      type: object
+      properties:
+        self:
+          type: string
+        next:
+          type: string
+        prev:
+          type: string
+      additionalProperties: false
+    PaymentCondition:
+      type: object
+      properties:
+        paymentTerm:
+          type:
+          - integer
+          - 'null'
+          description: 'The number of days in which payment is due.
+
+            * ECI Financials: n/a
+
+            * Xero: PaymentTerm.Sales.Days
+
+            * TripleTex: Customer.InvoucesDueIn
+
+            * AccountView: n/a
+
+            * PowerOfficeGo: n/a
+
+            * Sage50Uk: n/a'
+          format: int32
+        code:
+          type:
+          - string
+          - 'null'
+          description: The natural key of this entity.
+        id:
+          type:
+          - string
+          - 'null'
+          description: The unique Id of this entity.
+      additionalProperties: {}
+      description: "<h2>Model for payment conditions</h2>\n* code \n    + ECI Financials: Customer.PaymentTerms / Supplier.PaymentTerms\n    + Xero: n/a\n    + TripleTex: n/a\n    + AccountView: Customer.PaymentTerms / Supplier.PaymentTerms"
+    BankAccount:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: 'The unique id of the bank account
+
+            * ECI Financials: n/a
+
+            * Xero: n/a
+
+            * TripleTex: n/a
+
+            * AccountView: n/a
+
+            * PowerOfficeGo: BankAccount.Id
+
+            * AfasSB: n/a
+
+            * Sage50Uk: n/a
+
+            * Adsolut: n/a'
+        bankName:
+          type:
+          - string
+          - 'null'
+          description: 'The name of the bank.
+
+            * ECI Financials: n/a
+
+            * Xero: BatchPayments.BankAccountName
+
+            * TripleTex: n/a
+
+            * AccountView: n/a
+
+            * PowerOfficeGo: n/a
+
+            * AfasSB: BankAccount.BankId
+
+            * Sage50Uk: n/a
+
+            * Adsolut: n/a'
+        iban:
+          type:
+          - string
+          - 'null'
+          description: 'The International Bank Account Number.
+
+            * ECI Financials: Company.Iban / Company.GAccountIBAN
+
+            * Xero: n/a
+
+            * TripleTex: BankAccountPresentation.Iban
+
+            * AccountView: Company.Iban / Company.GAccountIBAN
+
+            * PowerOfficeGo: BankAccount.Code
+
+            * AfasSB: BankAccount.AccountNumber
+
+            * Sage50Uk: Customer.Iban
+
+            * Adsolut: BankAccount.Iban'
+        bic:
+          type:
+          - string
+          - 'null'
+          description: 'The Bank Identification Code.
+
+            * ECI Financials: Company.Bic / Company.GAccountBIC
+
+            * Xero: n/a
+
+            * TripleTex: BankAccountPresentation.Bic
+
+            * AccountView: Company.Bic / Company.GAccountBIC
+
+            * PowerOfficeGo: BankAccount.BicSwift
+
+            * AfasSB: BankAccount.Bic
+
+            * Sage50Uk: Customer.BicSwift
+
+            * Adsolut: BankAccount.BicCode'
+        number:
+          type:
+          - string
+          - 'null'
+          description: 'The bank account number.
+
+            * ECI Financials: n/a
+
+            * Xero: BatchPayments.BankAccountNumber / BankAccountDetails
+
+            * TripleTex: n/a
+
+            * AccountView: n/a
+
+            * PowerOfficeGo: BankAccount.Code
+
+            * AfasSB: n/a
+
+            * Sage50Uk: Customer.BankAccountNumber
+
+            * Adsolut: n/a'
+        country:
+          type:
+          - string
+          - 'null'
+          description: 'Bank account country code (ISO3166_1_ALPHA_2)
+
+            * ECI Financials: n/a
+
+            * Xero: n/a
+
+            * TripleTex: BankAccountPresentation.Country.IsoAlpha2Code
+
+            * AccountView: n/a
+
+            * PowerOfficeGo: BankAccount.CountryCode
+
+            * AfasSB: BankAccount.CountryCode
+
+            * Sage50Uk: n/a
+
+            * Adsolut: n/a'
+        currencyCode:
+          type:
+          - string
+          - 'null'
+          description: 'ISO 4217 code for the currency.
+
+            * ECI Financials: Company.BankCurrency / Company.GBankCurrency
+
+            * Xero: n/a
+
+            * TripleTex: n/a
+
+            * AccountView: Company.BankCurrency / Company.GBankCurrency
+
+            * PowerOfficeGo: n/a
+
+            * AfasSB: n/a
+
+            * Sage50Uk: Customer.CurrencyCode
+
+            * Adsolut: n/a'
+        domesticBankCode:
+          type:
+          - string
+          - 'null'
+          description: The domestic bank code, such as the UK sort code or US ABA routing number.
+        bankAccountName:
+          type:
+          - string
+          - 'null'
+          description: The name of the bank account.
+      additionalProperties: false
+      description: Represents a bank account of a supplier or customer.
+    ListContext:
+      required:
+      - links
+      type: object
+      properties:
+        links:
+          allOf:
+          - $ref: '#/components/schemas/Links'
+      additionalProperties: false
+    Supplier:
+      required:
+      - name
+      type: object
+      properties:
+        syncToken:
+          type:
+          - string
+          - 'null'
+          description: 'SyncToken to ensure updating the latest version of the
+
+            record.
+
+            * ECI Financials: n/a
+
+            * Xero: n/a
+
+            * TripleTex: n/a
+
+            * AccountView: n/a
+
+            * PowerOfficeGo: n/a
+
+            * AfasSB: n/a
+
+            * Sage50Uk: n/a
+
+            * Adsolut: n/a'
+        company:
+          allOf:
+          - $ref: '#/components/schemas/Entity'
+          description: "To be used when creditor and debtor are the same record in the financial package\n* ECI Financials: Company.Code\n* Xero:\n    - id = Contact.Id\n    - code = Contact.ContactNumber\n* TripleTex: n/a\n* TripleTex: n/a\n* AccountView: Company.Code\n* TripleTex:\n    - id = Supplier.Id\n    - code = Supplier.SupplierNumber\n* PowerOfficeGo:\n    - id = Supplier.Id\n    - code = Supplier.ExternalCode\n* AfasSB: n/a\n* Sage50Uk: n/a\n* Adsolut: n/a"
+        searchCode:
+          type:
+          - string
+          - 'null'
+          description: 'Optional field in ERP. If mandatory in AFM, copy the company code for the max number of characters of the AFM.
+
+            * ECI Financials: n/a
+
+            * Xero: n/a
+
+            * TripleTex: n/a
+
+            * AccountView: n/a
+
+            * PowerOfficeGo: n/a
+
+            * AfasSB: n/a
+
+            * Sage50Uk: n/a
+
+            * Adsolut: n/a'
+        name:
+          type: string
+          description: 'The name of the supplier. Usually this is the company or
+
+            organization name.
+
+            * ECI Financials: Company.Name
+
+            * Xero: Contact.Name
+
+            * TripleTex: Supplier.Name
+
+            * AccountView: Company.Name
+
+            * PowerOfficeGo: Supplier.Name
+
+            * AfasSB: Organisation.Tradename
+
+            * Sage50Uk: n/a
+
+            * Adsolut: Supplier.Name'
+        currencyCode:
+          type:
+          - string
+          - 'null'
+          description: 'The (ISO 4217) currency code for billing.
+
+            * ECI Financials: Company.Currency
+
+            * Xero: Contact.DefaultCurrency
+
+            * TripleTex: Supplier.Currency.Code
+
+            * AccountView: Company.Currency
+
+            * PowerOfficeGo: Supplier.Currency.Code
+
+            * AfasSB: n/a
+
+            * Sage50Uk: Supplier.CurrencyCode
+
+            * Adsolut: n/a'
+        taxIdentifier:
+          type:
+          - string
+          - 'null'
+          description: 'The `VAT number` or `Tax identifier` of the company.
+
+            * ECI Financials: Company.VatNumber
+
+            * Xero: Contact.TaxNumber
+
+            * TripleTex: n/a
+
+            * AccountView: Company.VatNumber
+
+            * PowerOfficeGo: Supplier.VatNumber
+
+            * AfasSB: Organisation.VatNumber
+
+            * Sage50Uk: Supplier.VATNumber
+
+            * Adsolut: Supplier.VatNumber'
+        taxCode:
+          allOf:
+          - $ref: '#/components/schemas/Entity'
+          description: 'VAT Code.
+
+            * ECI Financials: n/a
+
+            * Xero: Customer.AccountsReceivableTaxType
+
+            * TripleTex: n/a
+
+            * AccountView: n/a
+
+            * PowerOfficeGo: n/a
+
+            * AfasSB: n/a
+
+            * Sage50Uk: Supplier.DefTaxCode
+
+            * Adsolut: Supplier.VatPercentageId'
+        chamberOfCommerceNumber:
+          type:
+          - string
+          - 'null'
+          description: 'The chamber of commerce number of the company.
+
+            * ECI Financials: Company.ChamberOfCommerceNr
+
+            * Xero: Contact.CompanyNumber
+
+            * TripleTex: Supplier.OrganizationNumber
+
+            * AccountView: Company.ChamberOfCommerceNr
+
+            * PowerOfficeGo: n/a
+
+            * AfasSB: Organisation.CocNumber
+
+            * Sage50Uk: Supplier.EoriNumber
+
+            * Adsolut: n/a'
+        language:
+          type:
+          - string
+          - 'null'
+          description: 'The language code of the supplier. Should be filled with `ISO code 639 - 2T`.
+
+            Any conversion should be performed by ERP or AFM.
+
+            * ECI Financials: Company.Language
+
+            * Xero: n/a
+
+            * TripleTex: n/a
+
+            * AccountView: Company.Language
+
+            * PowerOfficeGo: Supplier.Language
+
+            * AfasSB: n/a
+
+            * Sage50Uk: n/a
+
+            * Adsolut: Supplier.Language'
+        email:
+          type:
+          - string
+          - 'null'
+          description: 'The main email address of the supplier.
+
+            * ECI Financials: Company.Email
+
+            * Xero: n/a
+
+            * TripleTex: Supplier.Email
+
+            * AccountView: Company.Email
+
+            * PowerOfficeGo: Supplier.EmailAddress
+
+            * AfasSB: Organisation.EmailAddress
+
+            * Sage50Uk: n/a
+
+            * Adsolut: Supplier.Email'
+        fax:
+          type:
+          - string
+          - 'null'
+          description: 'The fax number of the supplier. You never know when you
+
+            might need it.
+
+            * ECI Financials: n/a
+
+            * Xero: n/a
+
+            * TripleTex: n/a
+
+            * AccountView: n/a
+
+            * PowerOfficeGo: n/a
+
+            * AfasSB: n/a
+
+            * Sage50Uk: n/a
+
+            * Adsolut: Supplier.Fax'
+        phonePrimary:
+          type:
+          - string
+          - 'null'
+          description: 'The primary phone number of the company.
+
+            * ECI Financials: Company.Phone
+
+            * Xero: n/a
+
+            * TripleTex: Supplier.PhoneNumber
+
+            * AccountView: Company.Phone
+
+            * PowerOfficeGo: Supplier.PhoneNumber
+
+            * AfasSB: Organisation.PhoneNumber
+
+            * Sage50Uk: Supplier.Telephone2
+
+            * Adsolut: Supplier.Phone'
+        webAddress:
+          type:
+          - string
+          - 'null'
+          description: 'The website address of the company.
+
+            * ECI Financials: n/a
+
+            * Xero: n/a
+
+            * TripleTex: Supplier.Website
+
+            * AccountView: n/a
+
+            * PowerOfficeGo: Supplier.WebsiteUrl
+
+            * AfasSB: Website
+
+            * Sage50Uk: n/a
+
+            * Adsolut: n/a'
+        creditLimit:
+          type: number
+          description: 'The credit limit of us at the supplier.
+
+            * ECI Financials: n/a
+
+            * Xero: n/a
+
+            * TripleTex: n/a
+
+            * AccountView: n/a
+
+            * PowerOfficeGo: n/a
+
+            * AfasSB: n/a
+
+            * Sage50Uk: n/a
+
+            * Adsolut: n/a'
+          format: double
+        purchaseDiscount:
+          type: number
+          description: 'The default discount when purchasing from this supplier.
+
+            * ECI Financials: n/a
+
+            * Xero: n/a
+
+            * TripleTex: n/a
+
+            * AccountView: n/a
+
+            * PowerOfficeGo: n/a
+
+            * AfasSB: n/a
+
+            * Sage50Uk: Supplier.DiscountRate
+
+            * Adsolut: Supplier.FinancialDiscountPercentage'
+          format: double
+        paymentCondition:
+          allOf:
+          - $ref: '#/components/schemas/PaymentCondition'
+          description: The payment term/condition details for this supplier.
+        blocked:
+          type:
+          - boolean
+          - 'null'
+          description: 'Supplier is blocked, e.g. you cannot buy from this supplier.
+
+            * ECI Financials: Company.Status
+
+            * Xero: n/a
+
+            * TripleTex: n/a
+
+            * AccountView: Company.Status
+
+            * PowerOfficeGo: n/a
+
+            * AfasSB: n/a
+
+            * Sage50Uk: n/a
+
+            * Adsolut: n/a'
+        postalAddress:
+          allOf:
+          - $ref: '#/components/schemas/Address'
+          description: "The address where all mail should be sent.\n* ECI Financials: Company.BillingAddress & Company.PostalAddress\n* Xero: AddressTypeEnum.POBOX\n* TripleTex: Supplier.PostalAddress\n* AccountView: Company.BillingAddress & Company.PostalAddress\n* PowerOfficeGo: Supplier.MailAddress\n* AfasSB: \n    - City = Address.CityName\n    - Country = Address.CountryCode\n    - HouseNumber = Address.HouseNumber\n    - HouseNumberExtension = Address.HouseNumberAddition\n    - PostalCode = Address.PostalZone\n    - StateProv = Address.State\n    - Street = Address.StreetName\n    - true = Address.PreferredBillingAddress\n* Sage50Uk: Supplier.DefaultAddress\n* Adsolut: Supplier.PostalAddress"
+        visitingAddress:
+          allOf:
+          - $ref: '#/components/schemas/Address'
+          description: "The address of the physical site or residence of the\ncompany or organization.\n* ECI Financials: Company.BusinessAddress\n* Xero: AddressTypeEnum.Street\n* TripleTex: Supplier.PhysicalAddress\n* AccountView: Company.BusinessAddress\n* PowerOfficeGo: Supplier.StreetAddress\n* AfasSB: \n    - City = Address.CityName\n    - Country = Address.CountryCode\n    - HouseNumber = Address.HouseNumber\n    - HouseNumberExtension = Address.HouseNumberAddition\n    - PostalCode = Address.PostalZone\n    - StateProv = Address.State\n    - Street = Address.StreetName\n    - true = Address.PreferredSupplierAddress\n* Sage50Uk: n/a\n* Adsolut: n/a"
+        mainContact:
+          allOf:
+          - $ref: '#/components/schemas/Contact'
+          description: "The main contact of this customer.\n* ECI Financials: Contacts collection\n* Xero:\n    - FirstName = Supplier.FirstName\n    - LastName = Supplier.LastName\n    - PrimairyPhone = Supplier.PhoneTypeEnum.Default\n    - Fax = Supplier.PhoneTypeEnum.Fax\n    - MobilePhone = Supplier.PhoneTypeEnum.Mobile\n    - Email = Supplier.EmailAddress\n* TripleTex: \n    - Id = Contact.Id\n    - FirstName LastName = Contact.DisplayName\n    - PhoneMobile = Contact.PhoneNumberMobile\n    - PhonePrimairy = Contact.PhoneNumberWork\n* AccountView: Contacts collection\n* PowerOfficeGo:\n    - Id = Contact.Id\n    - code = Contact.ExternalCode\n    - FirstName = Contact.FirstName\n    - LastName = Contact.LastName\n    - PhonePrimary = Contact.PhoneNumber\n    - Email = Contact.EmailAddress\n    - Dob = Contact.DataOfBirth\n* AfasSB: \n    - Id = Contact.Id\n    - Code = Contact.ExternalId\n    - Email = Contact.EmailAddress\n    - FirstName = Contact.FirstName\n    - LastName = Contact.LastName\n    - PhonePrimary = Contact.PhoneNumber\n    - Initials = Contact.Initials\n    - LastNamePrefix = Contact.Prefix\n* Sage50Uk: \n    - Id = Contact.ContactId\n    - FirstName = Contact.Name\n    - LastNamePrefix = Contact.Name\n    - LastName = Contact.Name\n    - PhonePrimary = Contact.Telephone\n* Adsolut:\n    - Id = Contact.Id\n    - FirstName = Contact.FirstName\n    - LastName = Contact.LastName\n    - PhonePrimary = Contact.PhonePrimary\n    - PhoneMobile = Contact.ModiblePhone\n    - Fax = Contact.Fax\n    - Email = Contact.EmailAddress\n    - Dob = Contact.DateOfBirth"
+        bankAccount:
+          allOf:
+          - $ref: '#/components/schemas/BankAccount'
+          description: "The bank account of this customer. \n* ECI Financials: Company properties\n* Xero: \n    - BankAccountDetails = BankAccount.AccountNumber\n    - BatchPayments.BankAccountNumber = BankAccount.Number;\n    - BankAccountDetails = BankAccount.Number; \n    - BatchPayments.BankAccountName = BankAccount.BankName;\n* TripleTex:\n    - BankAccount.Bic = BankAccountPresentation.Bic\n    - BankAccount.Iban = BankAccountPresentation.Iban \n    - BankAccount.Country BankAccountPresentation.Country.IsoAlpha2Code\n* AccountView: Company properties\n* PowerOfficeGo:\n    - BankAccount.Id = BankAccount.Id\n    - BankAccount.Bic = BankAccount.BicSwift\n    - BankAccount.Number = BankAccount.Code\n    - BankAccount.Iban = BankAccount.Code\n    - BankAccount.Country = BankAccount.CountryCode\n* AfasSB:\n    - BankAccount.Iban = BankAccount.AccountNumber\n    - BankAccount.BankName = BankAccount.BankId\n    - BankAccount.Bic = BankAccount.Bic\n    - BankAccount.Country = BankAccount.CountryCode\n    - true = BankAccount.PreferredIncomingPayments\n    - true = BankAccount.PreferredOutgoingPayments\n* Sage50Uk:\n    - BankAccount.Number = Customer.BankAccountNumber\n    - BankAccount.Bic = Customer.BicSwift\n    - BankAccount.Iban = Customer.Iban\n* Adsolut:\n    - BankAccount.Bic = BankAccount.BicCode\n    - BankAccount.Iban = BankAccount.Iban"
+        frozenBankAccount:
+          allOf:
+          - $ref: '#/components/schemas/BankAccount'
+          description: "The frozen bank account of this customer. \n* ECI Financials: Company properties\n* Xero: n/a\n* TripleTex: n/a\n* AccountView: Company properties\n* PowerOfficeGo: n/a\n* AfasSB: n/a\n* Sage50Uk: n/a\n* Adsolut: n/a"
+        group:
+          type:
+          - string
+          - 'null'
+          description: 'The group the customer belongs to
+
+            * ECI Financials: Company.Group
+
+            * Xero: n/a
+
+            * TripleTex: n/a
+
+            * AccountView: Company.Group
+
+            * PowerOfficeGo: Supplier.ContactGroup
+
+            * AfasSB: n/a
+
+            * Sage50Uk: n/a
+
+            * Adsolut: n/a'
+        code:
+          type:
+          - string
+          - 'null'
+          description: The natural key of this entity.
+        id:
+          type:
+          - string
+          - 'null'
+          description: The unique Id of this entity.
+      additionalProperties: false
+      description: "<h2>Model for supplier data, also known as vendor or creditor.</h2>\n\n* Code: \n    + ECI Financials: Company.OldCreditorCode\n    + Xero: Contact.AccountNumber\n    + PowerOfficeGo: n/a\n    + TripleTex: Supplier.SupplierNumber\n    + AccountView: Company.OldCreditorCode\n    + AfasSB: Organisation.Name\n    + Sage50Uk: Supplier.AccountRef\n    + Adsolut: Supplier.Code"
+    PaymentInfo:
+      type: object
+      properties:
+        docNumber:
+          type: string
+          description: 'Journal entry number
+
+            * ECI Financials: AccountsReceivable.ExternalId or AccountsPayable.ExternalId
+
+            * Xero: n/a
+
+            * TripleTex: n/a
+
+            * AccountView: AccountsReceivable.ExternalId or AccountsPayable.ExternalId
+
+            * PowerOfficeGo: n/a
+
+            * Sage50Uk: n/a'
+        datePaid:
+          type:
+          - string
+          - 'null'
+          description: 'The date when the invoice was paid.
+
+            * ECI Financials: n/a
+
+            * Xero: n/a
+
+            * TripleTex: n/a
+
+            * AccountView: n/a
+
+            * PowerOfficeGo: n/a
+
+            * Sage50Uk: n/a'
+          format: date-time
+      additionalProperties: false
+      description: <h2>Information about payment of an invoice</h2>
+    Contact:
+      type: object
+      properties:
+        salutation:
+          type:
+          - string
+          - 'null'
+          description: 'The personal title of the contact
+
+            * ECI Financials: Contact.Salutation
+
+            * Xero: n/a
+
+            * TripleTex: n/a
+
+            * AccountView: Contact.Salutation
+
+            * PowerOfficeGo: n/a
+
+            * AfasSB: n/a
+
+            * Sage50Uk: n/a
+
+            * Adsolut: n/a'
+        title:
+          type:
+          - string
+          - 'null'
+          description: 'The position or function title of the contact
+
+            * ECI Financials: Contact.Title
+
+            * Xero: n/a
+
+            * TripleTex: n/a
+
+            * AccountView: Contact.Title
+
+            * PowerOfficeGo: n/a
+
+            * AfasSB: n/a
+
+            * Sage50Uk: n/a
+
+            * Adsolut: n/a'
+        initials:
+          type:
+          - string
+          - 'null'
+          description: 'The initials of the contact
+
+            * ECI Financials: Contact.Initials
+
+            * Xero: n/a
+
+            * TripleTex: n/a
+
+            * AccountView: Contact.Initials
+
+            * PowerOfficeGo: n/a
+
+            * AfasSB: Contact.Initials
+
+            * Sage50Uk: n/a
+
+            * Adsolut: n/a'
+        firstName:
+          type:
+          - string
+          - 'null'
+          description: 'The first name of the contact
+
+            * ECI Financials: Contact.FirstName
+
+            * Xero: Contact.FirstName
+
+            * TripleTex: Contact.DisplayName
+
+            * AccountView: Contact.FirstName
+
+            * PowerOfficeGo: Contact.FirstName
+
+            * AfasSB: Contact.FirstName
+
+            * Sage50Uk: Contact.Name
+
+            * Adsolut: Contact.FirstName'
+        lastNamePrefix:
+          type:
+          - string
+          - 'null'
+          description: 'The prefix of the last name of the contact
+
+            * ECI Financials: Contact.MiddleName
+
+            * Xero: n/a
+
+            * TripleTex: n/a
+
+            * AccountView: Contact.MiddleName
+
+            * PowerOfficeGo: n/a
+
+            * AfasSB: Contact.Prefix
+
+            * Sage50Uk: Contact.Name
+
+            * Adsolut: Contact.LastName (part of lastname)'
+        lastName:
+          type: string
+          description: 'The last name of the contact
+
+            * ECI Financials: Contact.LastName
+
+            * Xero: Contact.LastName
+
+            * TripleTex: Contact.DisplayName
+
+            * AccountView: Contact.LastName
+
+            * PowerOfficeGo: Contact.LastName
+
+            * AfasSB: Contact.LastName
+
+            * Sage50Uk: Contact.Name
+
+            * Adsolut: Contact.LastName'
+        dob:
+          type:
+          - string
+          - 'null'
+          description: 'Birthdate
+
+            * ECI Financials: n/a
+
+            * Xero: n/a
+
+            * TripleTex: n/a
+
+            * AccountView: n/a
+
+            * PowerOfficeGo: Contact.DateOfBirth
+
+            * AfasSB: n/a
+
+            * Sage50Uk: n/a
+
+            * Adsolut: Contact.DateOfBirth'
+          format: date-time
+        email:
+          type:
+          - string
+          - 'null'
+          description: 'The email address of the contact
+
+            * ECI Financials: Contact.Email
+
+            * Xero: Contact.Email
+
+            * TripleTex: n/a
+
+            * AccountView: Contact.Email
+
+            * PowerOfficeGo: Contact.EmailAddress
+
+            * AfasSB: Contact.EmailAddress
+
+            * Sage50Uk: n/a
+
+            * Adsolut: Contact.Email'
+        phonePrimary:
+          type:
+          - string
+          - 'null'
+          description: 'The primary phone number of the contact
+
+            * ECI Financials: Contact.PhoneNr
+
+            * Xero: Contact.PhoneTypeEnum.Default
+
+            * TripleTex: Contact.PhoneNumberWork
+
+            * AccountView: Contact.PhoneNr
+
+            * PowerOfficeGo: Contact.PhoneNumber
+
+            * AfasSB: Contact.PhoneNumber
+
+            * Sage50Uk: Customer.Telephone/ Supplier.Telephone
+
+            * Adsolut: Contact.Phone'
+        phoneMobile:
+          type:
+          - string
+          - 'null'
+          description: 'The mobile phone number of the contact
+
+            * ECI Financials: n/a
+
+            * Xero: Contact.PhoneTypeEnum.Mobile
+
+            * TripleTex: Contact.PhoneNumberMobile
+
+            * AccountView: n/a
+
+            * PowerOfficeGo: n/a
+
+            * AfasSB: n/a
+
+            * Sage50Uk: n/a
+
+            * Adsolut: Contact.MobilePhone'
+        fax:
+          type:
+          - string
+          - 'null'
+          description: 'The fax number of the contact
+
+            * ECI Financials: n/a
+
+            * Xero: PhoneTypeEnum.Fax
+
+            * TripleTex: n/a
+
+            * AccountView: n/a
+
+            * PowerOfficeGo: n/a
+
+            * AfasSB: n/a
+
+            * Sage50Uk: n/a
+
+            * Adsolut: Contact.Fax'
+        isMainContact:
+          type: boolean
+          description: 'Indicates wether this the default contact for this scope
+
+            * ECI Financials: Contact.Default
+
+            * Xero: n/a
+
+            * TripleTex: n/a
+
+            * AccountView: Contact.Default
+
+            * PowerOfficeGo: n/a
+
+            * AfasSB: n/a
+
+            * Sage50Uk: n/a
+
+            * Adsolut: n/a'
+        code:
+          type:
+          - string
+          - 'null'
+          description: The natural key of this entity.
+        id:
+          type:
+          - string
+          - 'null'
+          description: The unique Id of this entity.
+      additionalProperties: false
+      description: Represents the contact details of a supplier or customer
+    PaymentBlockStatus:
+      type: object
+      properties:
+        supplier:
+          allOf:
+          - $ref: '#/components/schemas/Entity'
+          description: 'The vendor/supplier to whom this debt is owed
+
+            * ECI Financials: n/a
+
+            * Xero: n/a
+
+            * TripleTex: n/a
+
+            * AccountView: n/a
+
+            * PowerOfficeGo: n/a
+
+            * Sage50Uk: n/a
+
+            * Adsolut: n/a'
+        docNumber:
+          type:
+          - string
+          - 'null'
+          description: 'Journal entry number
+
+            * ECI Financials: AccountsPayable.ExternalId
+
+            * Xero: n/a
+
+            * TripleTex: n/a
+
+            * AccountView: AccountsPayable.ExternalId
+
+            * PowerOfficeGo: n/a
+
+            * Sage50Uk: n/a
+
+            * Adsolut: n/a'
+        paymentReference:
+          type:
+          - string
+          - 'null'
+          description: 'Reference to the bill
+
+            * ECI Financials: yourInvoiceNr
+
+            * Xero: n/a
+
+            * TripleTex: n/a
+
+            * AccountView: yourInvoiceNr
+
+            * PowerOfficeGo: n/a
+
+            * Sage50Uk: n/a
+
+            * Adsolut: n/a'
+        block:
+          type:
+          - boolean
+          - 'null'
+          description: 'False if bill can be paid, true if it must not be paid
+
+            * ECI Financials: AccountsPayable.Blocked
+
+            * Xero: n/a
+
+            * TripleTex: n/a
+
+            * AccountView: AccountsPayable.Blocked
+
+            * PowerOfficeGo: n/a
+
+            * Sage50Uk: n/a
+
+            * Adsolut: n/a'
+      additionalProperties: false
+      description: '<h2>The payable state.</h2>
+
+        At least docNumber or billId should be filled, to be able to lookup the bill.'
+    Problem:
+      required:
+      - detail
+      - title
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+        title:
+          type: string
+        status:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        detail:
+          type: string
+        instance:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+      description: Definition of [RFC7807](https://tools.ietf.org/html/rfc7807) problem detail
+  securitySchemes:
+    Bearer:
+      type: oauth2
+      description: Use the Authentication API OAuth endpoints
+      flows:
+        clientCredentials:
+          tokenUrl: https://api-user.integrations.ecimanufacturing.com/oauth2/api-user/token
+          scopes:
+            openid: openid

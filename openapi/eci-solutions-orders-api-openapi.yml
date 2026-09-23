@@ -1,0 +1,1348 @@
+openapi: 3.2.0
+info:
+  title: JobBOSS² Public Orders API
+  description: Provides a common API surface for accessing ECI ERP JobBOSS².
+  version: v1
+servers:
+- url: https://api-jb2.integrations.ecimanufacturing.com:443
+  description: API Host
+security:
+- Bearer: []
+tags:
+- name: Orders
+paths:
+  /api/v1/orders:
+    get:
+      tags:
+      - Orders
+      summary: Gets a list of Orders
+      description: 'By default an order response will include only the fields: customerCode, customerDescription, dateEntered, lastModDate, orderNumber, orderTotal, orderTotalForeign, PONumber, salesID, status, termsCode, territory, uniqueID. You may specify the exact fields to return using the fields parameter.'
+      parameters:
+      - name: fields
+        in: query
+        description: A comma separated list of fields to include in the result.
+        schema:
+          type: string
+      - name: sort
+        in: query
+        description: A comma separated list of field to sort by. See the <a href='#sort-expressions'>Sort Expressions</a> section for more information.
+        schema:
+          type: string
+      - name: filters
+        in: query
+        description: Filters must be provided as query string parameters as defined in the <a href='#filter-expressions'>Filter Expressions</a> section.
+        schema:
+          type: object
+          additionalProperties:
+            type: string
+        examples:
+          No filters: {}
+          Filter by Customer:
+            value:
+              customerCode: ALPHA
+      - name: skip
+        in: query
+        description: The number of records at the start of the result set to skip over.
+        schema:
+          type: string
+      - name: take
+        in: query
+        description: The number of records to retrieve.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderListSuccessResponse'
+              example:
+                Data:
+                - ackPrinted: false
+                  addCustomerFromQuote: false
+                  allowExpiredQuoteItems: false
+                  country: string
+                  currencyCode: string
+                  customerCode: string
+                  customerDescription: string
+                  dateEntered: '2026-09-06T17:13:12.0000000+00:00'
+                  dateEnteredLabel: '2026-09-06T17:13:12.0000000+00:00'
+                  dueDate: '2026-09-06T17:13:12.0000000+00:00'
+                  enteredBy: string
+                  exchangeRate: 0
+                  fax: string
+                  GSTCode: string
+                  holdUntilAccountIsCurrent: false
+                  JTPrinted: false
+                  lastModDate: '2026-09-06T17:13:12.0000000+00:00'
+                  lastModUser: string
+                  location: string
+                  mainDueDate: '2026-09-06T17:13:12.0000000+00:00'
+                  mainPriority: 0
+                  markCustomerActive: false
+                  notesToCustomer: string
+                  orderNumber: string
+                  orderTotal: 0
+                  orderTotalForeign: 0
+                  phone: string
+                  PONumber: string
+                  purchasingContact: string
+                  quoteNumber: string
+                  salesID: string
+                  saveOnDuplicateCustomerPONumber: false
+                  shippingAddress1: string
+                  shippingAddress2: string
+                  shippingCity: string
+                  shippingCode: string
+                  shippingState: string
+                  shipToName: string
+                  shipVia: string
+                  shipZIP: string
+                  status: string
+                  taxCode: string
+                  termsCode: string
+                  territory: string
+                  uniqueID: 0
+                  user_Currency1: 0
+                  user_Currency2: 0
+                  user_Date1: '2026-09-06T17:13:12.0000000+00:00'
+                  user_Date2: '2026-09-06T17:13:12.0000000+00:00'
+                  user_Memo1: string
+                  user_Number1: 0
+                  user_Number2: 0
+                  user_Number3: 0
+                  user_Number4: 0
+                  user_Text1: string
+                  user_Text2: string
+                  user_Text3: string
+                  user_Text4: string
+                  WOPrinted: false
+      operationId: getApiV1Orders
+      x-operation-id-source: derived
+    post:
+      tags:
+      - Orders
+      summary: Creates an Order
+      description: 'Note: If auto-numbering for orders is not enabled in company maintenance settings, you must specify an order number in your request. If auto-numbering is enabled, you may leave this field off the request and an order number will be assigned automatically.'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrderCreate'
+            example:
+              addCustomerFromQuote: false
+              allowExpiredQuoteItems: false
+              country: string
+              currencyCode: string
+              customerCode: string
+              customerDescription: string
+              dateEntered: '2026-09-06T17:13:12.0000000+00:00'
+              exchangeRate: 0
+              fax: string
+              GSTCode: string
+              holdUntilAccountIsCurrent: false
+              location: string
+              mainDueDate: '2026-09-06T17:13:12.0000000+00:00'
+              mainPriority: 0
+              markCustomerActive: false
+              notesToCustomer: string
+              orderNumber: string
+              phone: string
+              PONumber: string
+              purchasingContact: string
+              quoteNumber: string
+              salesID: string
+              saveOnDuplicateCustomerPONumber: false
+              shippingAddress1: string
+              shippingCity: string
+              shippingCode: string
+              shippingState: string
+              shipToName: string
+              shipVia: string
+              shipZIP: string
+              taxCode: string
+              termsCode: string
+              territory: string
+              user_Currency1: 0
+              user_Currency2: 0
+              user_Date1: '2026-09-06T17:13:12.0000000+00:00'
+              user_Date2: '2026-09-06T17:13:12.0000000+00:00'
+              user_Memo1: string
+              user_Number1: 0
+              user_Number2: 0
+              user_Number3: 0
+              user_Number4: 0
+              user_Text1: string
+              user_Text2: string
+              user_Text3: string
+              user_Text4: string
+              orderLineItems:
+              - billingRate: 0
+                commissionPercent: 0
+                discountPercent: 0
+                dueDate: '2026-09-06T17:13:12.0000000+00:00'
+                estimatedEndDate: '2026-09-06T17:13:12.0000000+00:00'
+                estimatedStartDate: '2026-09-06T17:13:12.0000000+00:00'
+                FOB: string
+                isTaxable: false
+                jobNotes: string
+                miscCharges: 0
+                miscDescription: string
+                partDescription: string
+                partNumber: string
+                pricingUnit: string
+                priority: 0
+                productCode: string
+                quantityOrdered: 0
+                quoteItemNumber: 0
+                quoteNumber: string
+                revision: string
+                totalEstimatedHours: 0
+                unitPrice: 0
+                user_Currency1: 0
+                user_Currency2: 0
+                user_Date1: '2026-09-06T17:13:12.0000000+00:00'
+                user_Date2: '2026-09-06T17:13:12.0000000+00:00'
+                user_Memo1: string
+                user_Number1: 0
+                user_Number2: 0
+                user_Number3: 0
+                user_Number4: 0
+                user_Text1: string
+                user_Text2: string
+                user_Text3: string
+                user_Text4: string
+                workCode: string
+                releases:
+                - binLocation: string
+                  comments: string
+                  deliveryType: 0
+                  dueDate: '2026-09-06T17:13:12.0000000+00:00'
+                  EDISoftItemNumber: 0
+                  lastModDate: '2026-09-06T17:13:12.0000000+00:00'
+                  lastModUser: string
+                  lotNumber: string
+                  quantity: 0
+                orderRoutings:
+                - certificationRequired: false
+                  cyclePrice: 0
+                  cycleTime: 0
+                  cycleUnit: string
+                  departmentNumber: string
+                  description: string
+                  employeeCode: string
+                  estimatedEndDate: '2026-09-06T17:13:12.0000000+00:00'
+                  estimatedQuantity: 0
+                  estimatedStartDate: '2026-09-06T17:13:12.0000000+00:00'
+                  ignoreVendorMinimum: false
+                  operationCode: string
+                  overlapSteps: false
+                  setupPrice: 0
+                  setupTime: 0
+                  shift2DefaultEmployeeCode: string
+                  shift3DefaultEmployeeCode: string
+                  stepNumber: 0
+                  timeUnit: string
+                  total: 0
+                  vendorCode: string
+                  workCenter: string
+                  workCenterOrVendor: string
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+              example:
+                ackPrinted: false
+                addCustomerFromQuote: false
+                allowExpiredQuoteItems: false
+                country: string
+                currencyCode: string
+                customerCode: string
+                customerDescription: string
+                dateEntered: '2026-09-06T17:13:12.0000000+00:00'
+                dateEnteredLabel: '2026-09-06T17:13:12.0000000+00:00'
+                dueDate: '2026-09-06T17:13:12.0000000+00:00'
+                enteredBy: string
+                exchangeRate: 0
+                fax: string
+                GSTCode: string
+                holdUntilAccountIsCurrent: false
+                JTPrinted: false
+                lastModDate: '2026-09-06T17:13:12.0000000+00:00'
+                lastModUser: string
+                location: string
+                mainDueDate: '2026-09-06T17:13:12.0000000+00:00'
+                mainPriority: 0
+                markCustomerActive: false
+                notesToCustomer: string
+                orderNumber: string
+                orderTotal: 0
+                orderTotalForeign: 0
+                phone: string
+                PONumber: string
+                purchasingContact: string
+                quoteNumber: string
+                salesID: string
+                saveOnDuplicateCustomerPONumber: false
+                shippingAddress1: string
+                shippingAddress2: string
+                shippingCity: string
+                shippingCode: string
+                shippingState: string
+                shipToName: string
+                shipVia: string
+                shipZIP: string
+                status: string
+                taxCode: string
+                termsCode: string
+                territory: string
+                uniqueID: 0
+                user_Currency1: 0
+                user_Currency2: 0
+                user_Date1: '2026-09-06T17:13:12.0000000+00:00'
+                user_Date2: '2026-09-06T17:13:12.0000000+00:00'
+                user_Memo1: string
+                user_Number1: 0
+                user_Number2: 0
+                user_Number3: 0
+                user_Number4: 0
+                user_Text1: string
+                user_Text2: string
+                user_Text3: string
+                user_Text4: string
+                WOPrinted: false
+      operationId: postApiV1Orders
+      x-operation-id-source: derived
+  /api/v1/orders/{orderNumber}:
+    get:
+      tags:
+      - Orders
+      summary: Gets an Order by order number
+      description: 'By default an order response will include only the fields: customerCode, customerDescription, dateEntered, lastModDate, orderNumber, orderTotal, orderTotalForeign, PONumber, salesID, status, termsCode, territory, uniqueID. You may specify the exact fields to return using the fields parameter.'
+      parameters:
+      - name: orderNumber
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: fields
+        in: query
+        description: A comma separated list of fields to include in the result.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderSuccessResponse'
+              example:
+                Data:
+                  ackPrinted: false
+                  addCustomerFromQuote: false
+                  allowExpiredQuoteItems: false
+                  country: string
+                  currencyCode: string
+                  customerCode: string
+                  customerDescription: string
+                  dateEntered: '2026-09-06T17:13:12.0000000+00:00'
+                  dateEnteredLabel: '2026-09-06T17:13:12.0000000+00:00'
+                  dueDate: '2026-09-06T17:13:12.0000000+00:00'
+                  enteredBy: string
+                  exchangeRate: 0
+                  fax: string
+                  GSTCode: string
+                  holdUntilAccountIsCurrent: false
+                  JTPrinted: false
+                  lastModDate: '2026-09-06T17:13:12.0000000+00:00'
+                  lastModUser: string
+                  location: string
+                  mainDueDate: '2026-09-06T17:13:12.0000000+00:00'
+                  mainPriority: 0
+                  markCustomerActive: false
+                  notesToCustomer: string
+                  orderNumber: string
+                  orderTotal: 0
+                  orderTotalForeign: 0
+                  phone: string
+                  PONumber: string
+                  purchasingContact: string
+                  quoteNumber: string
+                  salesID: string
+                  saveOnDuplicateCustomerPONumber: false
+                  shippingAddress1: string
+                  shippingAddress2: string
+                  shippingCity: string
+                  shippingCode: string
+                  shippingState: string
+                  shipToName: string
+                  shipVia: string
+                  shipZIP: string
+                  status: string
+                  taxCode: string
+                  termsCode: string
+                  territory: string
+                  uniqueID: 0
+                  user_Currency1: 0
+                  user_Currency2: 0
+                  user_Date1: '2026-09-06T17:13:12.0000000+00:00'
+                  user_Date2: '2026-09-06T17:13:12.0000000+00:00'
+                  user_Memo1: string
+                  user_Number1: 0
+                  user_Number2: 0
+                  user_Number3: 0
+                  user_Number4: 0
+                  user_Text1: string
+                  user_Text2: string
+                  user_Text3: string
+                  user_Text4: string
+                  WOPrinted: false
+      operationId: getApiV1OrdersByOrderNumber
+      x-operation-id-source: derived
+    patch:
+      tags:
+      - Orders
+      summary: Updates an Order
+      parameters:
+      - name: orderNumber
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrderUpdate'
+            example:
+              user_Currency1: 0
+              user_Currency2: 0
+              user_Date1: '2026-09-06T17:13:12.0000000+00:00'
+              user_Date2: '2026-09-06T17:13:12.0000000+00:00'
+              user_Memo1: string
+              user_Number1: 0
+              user_Number2: 0
+              user_Number3: 0
+              user_Number4: 0
+              user_Text1: string
+              user_Text2: string
+              user_Text3: string
+              user_Text4: string
+      responses:
+        '204':
+          description: Success
+      operationId: patchApiV1OrdersByOrderNumber
+      x-operation-id-source: derived
+components:
+  schemas:
+    OrderLineItemCreate:
+      required:
+      - partNumber
+      type: object
+      properties:
+        billingRate:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        commissionPercent:
+          type:
+          - number
+          - 'null'
+          format: double
+        discountPercent:
+          type:
+          - number
+          - 'null'
+          format: double
+        dueDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        estimatedEndDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        estimatedStartDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        FOB:
+          type:
+          - string
+          - 'null'
+        isTaxable:
+          type: boolean
+        jobNotes:
+          type:
+          - string
+          - 'null'
+        miscCharges:
+          type:
+          - number
+          - 'null'
+          format: double
+        miscDescription:
+          type:
+          - string
+          - 'null'
+        partDescription:
+          type:
+          - string
+          - 'null'
+        partNumber:
+          type: string
+        pricingUnit:
+          type:
+          - string
+          - 'null'
+        priority:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        productCode:
+          type:
+          - string
+          - 'null'
+        quantityOrdered:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        quoteItemNumber:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        quoteNumber:
+          type:
+          - string
+          - 'null'
+        revision:
+          type:
+          - string
+          - 'null'
+        totalEstimatedHours:
+          type:
+          - number
+          - 'null'
+          format: double
+        unitPrice:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Currency1:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Currency2:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Date1:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        user_Date2:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        user_Memo1:
+          type:
+          - string
+          - 'null'
+        user_Number1:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Number2:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Number3:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Number4:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Text1:
+          type:
+          - string
+          - 'null'
+        user_Text2:
+          type:
+          - string
+          - 'null'
+        user_Text3:
+          type:
+          - string
+          - 'null'
+        user_Text4:
+          type:
+          - string
+          - 'null'
+        workCode:
+          type:
+          - string
+          - 'null'
+        releases:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ReleaseCreate'
+        orderRoutings:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/OrderRoutingCreate'
+      additionalProperties: false
+    ReleaseCreate:
+      required:
+      - quantity
+      type: object
+      properties:
+        binLocation:
+          type:
+          - string
+          - 'null'
+        comments:
+          type:
+          - string
+          - 'null'
+        deliveryType:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        dueDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        EDISoftItemNumber:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        lastModDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        lastModUser:
+          type:
+          - string
+          - 'null'
+        lotNumber:
+          type:
+          - string
+          - 'null'
+        quantity:
+          type: integer
+          format: int32
+      additionalProperties: false
+    OrderRoutingCreate:
+      required:
+      - workCenterOrVendor
+      type: object
+      properties:
+        certificationRequired:
+          type: boolean
+        cyclePrice:
+          type:
+          - number
+          - 'null'
+          format: double
+        cycleTime:
+          type:
+          - number
+          - 'null'
+          format: double
+        cycleUnit:
+          type:
+          - string
+          - 'null'
+        departmentNumber:
+          type:
+          - string
+          - 'null'
+        description:
+          type:
+          - string
+          - 'null'
+        employeeCode:
+          type:
+          - string
+          - 'null'
+        estimatedEndDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        estimatedQuantity:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        estimatedStartDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        ignoreVendorMinimum:
+          type: boolean
+        operationCode:
+          type:
+          - string
+          - 'null'
+        overlapSteps:
+          type: boolean
+        setupPrice:
+          type:
+          - number
+          - 'null'
+          format: double
+        setupTime:
+          type:
+          - number
+          - 'null'
+          format: double
+        shift2DefaultEmployeeCode:
+          type:
+          - string
+          - 'null'
+        shift3DefaultEmployeeCode:
+          type:
+          - string
+          - 'null'
+        stepNumber:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        timeUnit:
+          type:
+          - string
+          - 'null'
+        total:
+          type:
+          - number
+          - 'null'
+          format: double
+        vendorCode:
+          type:
+          - string
+          - 'null'
+        workCenter:
+          type:
+          - string
+          - 'null'
+        workCenterOrVendor:
+          type: string
+      additionalProperties: false
+    OrderUpdate:
+      type: object
+      properties:
+        user_Currency1:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Currency2:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Date1:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        user_Date2:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        user_Memo1:
+          type:
+          - string
+          - 'null'
+        user_Number1:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Number2:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Number3:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Number4:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Text1:
+          type:
+          - string
+          - 'null'
+        user_Text2:
+          type:
+          - string
+          - 'null'
+        user_Text3:
+          type:
+          - string
+          - 'null'
+        user_Text4:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    Order:
+      type: object
+      properties:
+        ackPrinted:
+          type: boolean
+          readOnly: true
+        addCustomerFromQuote:
+          type: boolean
+          readOnly: true
+        allowExpiredQuoteItems:
+          type: boolean
+          readOnly: true
+        country:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        currencyCode:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        customerCode:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        customerDescription:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        dateEntered:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        dateEnteredLabel:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        dueDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        enteredBy:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        exchangeRate:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        fax:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        GSTCode:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        holdUntilAccountIsCurrent:
+          type: boolean
+          readOnly: true
+        JTPrinted:
+          type: boolean
+          readOnly: true
+        lastModDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        lastModUser:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        location:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        mainDueDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        mainPriority:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          readOnly: true
+        markCustomerActive:
+          type: boolean
+          readOnly: true
+        notesToCustomer:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        orderNumber:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        orderTotal:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        orderTotalForeign:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        phone:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        PONumber:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        purchasingContact:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        quoteNumber:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        salesID:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        saveOnDuplicateCustomerPONumber:
+          type: boolean
+          readOnly: true
+        shippingAddress1:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        shippingAddress2:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        shippingCity:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        shippingCode:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        shippingState:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        shipToName:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        shipVia:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        shipZIP:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        status:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        taxCode:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        termsCode:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        territory:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        uniqueID:
+          type: integer
+          format: int32
+          readOnly: true
+        user_Currency1:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        user_Currency2:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        user_Date1:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        user_Date2:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        user_Memo1:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        user_Number1:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        user_Number2:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        user_Number3:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        user_Number4:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        user_Text1:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        user_Text2:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        user_Text3:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        user_Text4:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        WOPrinted:
+          type: boolean
+          readOnly: true
+      additionalProperties: false
+    OrderCreate:
+      required:
+      - customerCode
+      type: object
+      properties:
+        addCustomerFromQuote:
+          type: boolean
+        allowExpiredQuoteItems:
+          type: boolean
+        country:
+          type:
+          - string
+          - 'null'
+        currencyCode:
+          type:
+          - string
+          - 'null'
+        customerCode:
+          type: string
+        customerDescription:
+          type:
+          - string
+          - 'null'
+        dateEntered:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        exchangeRate:
+          type:
+          - number
+          - 'null'
+          format: double
+        fax:
+          type:
+          - string
+          - 'null'
+        GSTCode:
+          type:
+          - string
+          - 'null'
+        holdUntilAccountIsCurrent:
+          type: boolean
+        location:
+          type:
+          - string
+          - 'null'
+        mainDueDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        mainPriority:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        markCustomerActive:
+          type: boolean
+        notesToCustomer:
+          type:
+          - string
+          - 'null'
+        orderNumber:
+          type:
+          - string
+          - 'null'
+        phone:
+          type:
+          - string
+          - 'null'
+        PONumber:
+          type:
+          - string
+          - 'null'
+        purchasingContact:
+          type:
+          - string
+          - 'null'
+        quoteNumber:
+          type:
+          - string
+          - 'null'
+        salesID:
+          type:
+          - string
+          - 'null'
+        saveOnDuplicateCustomerPONumber:
+          type: boolean
+        shippingAddress1:
+          type:
+          - string
+          - 'null'
+        shippingCity:
+          type:
+          - string
+          - 'null'
+        shippingCode:
+          type:
+          - string
+          - 'null'
+        shippingState:
+          type:
+          - string
+          - 'null'
+        shipToName:
+          type:
+          - string
+          - 'null'
+        shipVia:
+          type:
+          - string
+          - 'null'
+        shipZIP:
+          type:
+          - string
+          - 'null'
+        taxCode:
+          type:
+          - string
+          - 'null'
+        termsCode:
+          type:
+          - string
+          - 'null'
+        territory:
+          type:
+          - string
+          - 'null'
+        user_Currency1:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Currency2:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Date1:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        user_Date2:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        user_Memo1:
+          type:
+          - string
+          - 'null'
+        user_Number1:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Number2:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Number3:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Number4:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Text1:
+          type:
+          - string
+          - 'null'
+        user_Text2:
+          type:
+          - string
+          - 'null'
+        user_Text3:
+          type:
+          - string
+          - 'null'
+        user_Text4:
+          type:
+          - string
+          - 'null'
+        orderLineItems:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/OrderLineItemCreate'
+      additionalProperties: false
+    OrderListSuccessResponse:
+      type: object
+      properties:
+        Data:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Order'
+      additionalProperties: false
+    OrderSuccessResponse:
+      type: object
+      properties:
+        Data:
+          $ref: '#/components/schemas/Order'
+      additionalProperties: false
+  securitySchemes:
+    Bearer:
+      type: oauth2
+      description: OAuth 2.0 Client Credentials Flow with API Users issued from Integration Engine Management Console
+      flows:
+        clientCredentials:
+          tokenUrl: https://api-user.integrations.ecimanufacturing.com/oauth2/api-user/token
+          scopes:
+            openid: openid

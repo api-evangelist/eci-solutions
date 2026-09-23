@@ -1,0 +1,57 @@
+openapi: 3.2.0
+info:
+  title: JobBOSS² Public Authentication API
+  description: Provides a common API surface for accessing ECI ERP JobBOSS².
+  version: v1
+servers:
+- url: https://api-jb2.integrations.ecimanufacturing.com:443
+  description: API Host
+security:
+- Bearer: []
+tags:
+- name: Authentication
+paths:
+  /api/v1/oauth2Exchange:
+    post:
+      tags:
+      - Authentication
+      parameters:
+      - name: state
+        in: query
+        schema:
+          type: string
+      - name: signalToken
+        in: query
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json-patch+json:
+            schema:
+              type: string
+          application/json:
+            schema:
+              type: string
+          text/json:
+            schema:
+              type: string
+          application/*+json:
+            schema:
+              type: string
+      responses:
+        '200':
+          description: Success
+      summary: Create api oauth2 exchange
+      x-summary-source: derived
+      operationId: postApiV1Oauth2Exchange
+      x-operation-id-source: derived
+components:
+  securitySchemes:
+    Bearer:
+      type: oauth2
+      description: OAuth 2.0 Client Credentials Flow with API Users issued from Integration Engine Management Console
+      flows:
+        clientCredentials:
+          tokenUrl: https://api-user.integrations.ecimanufacturing.com/oauth2/api-user/token
+          scopes:
+            openid: openid

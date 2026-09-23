@@ -1,0 +1,239 @@
+openapi: 3.2.0
+info:
+  title: ERP API v2.1 Organization Part API
+  description: Provides a common API surface for accessing ECI ERP products.
+  contact:
+    name: ECI Manufacturing Division Integration Team
+    url: https://www.ecisolutions.com/support/
+  version: 3.5.585+b1e45fd230
+servers:
+- url: https://api-erp.integrations.ecimanufacturing.com:443
+  description: Production
+security:
+- Bearer: []
+tags:
+- name: OrganizationPart
+paths:
+  /api/v2.1/organization-parts:
+    get:
+      tags:
+      - OrganizationPart
+      summary: Get a list of OrganizationParts from the ERP system that match the given filters
+      description: 'Gets a list of OrganizationPart.
+
+
+        ## Supported ERPs
+
+        - JobBOSS²
+
+        - M1
+
+        ## Resource Features
+
+        Feature |Supported |Notes
+
+        ------------|------------|------------
+
+        Filter Expressions|**Yes**|
+
+        Sort Expressions|**Yes**
+
+        Field Selection|**Yes**
+
+        Pagination|**Yes**
+
+        UniqueID|uniqueID|
+
+        ## Features by Field
+
+        Field |Filterable |Sortable |Supported ERPs
+
+        ------------|------------|------------|------------
+
+        partID|Yes|Yes|JobBOSS², M1
+
+        partRevisionID|Yes|Yes|JobBOSS², M1
+
+        organizationID|Yes|Yes|JobBOSS², M1
+
+        organizationTypes|Yes|Yes|JobBOSS²
+
+        organizationPartID|Yes|Yes|JobBOSS², M1
+
+        organizationShortDesc|No|Yes|JobBOSS², M1
+
+        uniqueID|Yes|Yes|JobBOSS², M1
+
+        rowVersion|Yes|Yes|JobBOSS², M1'
+      parameters:
+      - name: fields
+        in: query
+        description: A comma-separated list of fields to include in the result.
+        schema:
+          type: string
+      - name: sort
+        in: query
+        description: A comma-separated list of <a href='#sortexpr'>sort expressions</a>.
+        schema:
+          type: string
+      - name: take
+        in: query
+        description: Limit the number of results being returned
+        schema:
+          minimum: 0
+          type: integer
+      - name: skip
+        in: query
+        description: The number of results to skip. Combine with 'take' to fetch records in pages
+        schema:
+          minimum: 0
+          type: integer
+      - name: count
+        in: query
+        description: '<a href=''#countparam''>Data and count</a> response behavior '
+        schema:
+          maximum: 2
+          minimum: 0
+          type: integer
+      - name: filters
+        in: query
+        description: See <a href='#filterexpr'>Filter Expressions</a> for query string syntax. The Test UI and any generated code tool may expose filter parameters as a dictionary of name/value pairs, but if creating a raw HTTP request, they must be provided on the querystring as defined in the Filter Expression section.
+        style: form
+        schema:
+          type: object
+          additionalProperties:
+            type: string
+        examples:
+          Empty:
+            description: No filters applied
+          'Example #1':
+            description: A dictionary of name/value pairs that will be serialized as querystring parameters in the format ```name[operator]=value```
+            value:
+              partID[eq]: abc123
+              partRevisionID[eq]: abc123
+              organizationID[eq]: abc123
+              organizationTypes[gte]: 123
+              organizationPartID[eq]: abc123
+              uniqueID[eq]: cc90686b-399e-4094-b431-fa462f84b0a8
+              rowVersion[gte]: 123
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/OrganizationPartListResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrganizationPartListResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/OrganizationPartListResponse'
+      operationId: getApiV21OrganizationParts
+      x-operation-id-source: derived
+  /api/v2.1/organization-parts/{id}:
+    get:
+      tags:
+      - OrganizationPart
+      summary: Get an Organization Part from the ERP system that matches the given unique ID
+      description: 'Gets a OrganizationPart by unique ID.
+
+
+        ## Supported ERPs
+
+        - JobBOSS²
+
+        - M1
+
+        ## Features by Field
+
+        Field |Supported ERPs
+
+        ------------|------------
+
+        partID||JobBOSS², M1
+
+        partRevisionID||JobBOSS², M1
+
+        organizationID||JobBOSS², M1
+
+        organizationTypes||JobBOSS²
+
+        organizationPartID||JobBOSS², M1
+
+        organizationShortDesc||JobBOSS², M1
+
+        uniqueID||JobBOSS², M1
+
+        rowVersion||JobBOSS², M1'
+      parameters:
+      - name: id
+        in: path
+        description: The ID of the organization part
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/OrganizationPart'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrganizationPart'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/OrganizationPart'
+      operationId: getApiV21OrganizationPartsById
+      x-operation-id-source: derived
+components:
+  schemas:
+    OrganizationPartListResponse:
+      type: object
+      properties:
+        data:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/OrganizationPart'
+          readOnly: true
+        resultCount:
+          type: integer
+          format: int32
+      additionalProperties: false
+    OrganizationPart:
+      title: OrganizationPart
+      type: object
+      properties:
+        partID:
+          type: string
+        partRevisionID:
+          type: string
+        organizationID:
+          type: string
+        organizationTypes:
+          type: array
+          items:
+            type: integer
+            format: int32
+        organizationPartID:
+          type: string
+        organizationShortDesc:
+          type: string
+        uniqueID:
+          type: string
+        rowVersion:
+          type: integer
+          format: int64
+  securitySchemes:
+    Bearer:
+      type: oauth2
+      description: OAuth 2.0 Client Credentials Flow with API Users issued from Integration Engine Management Console
+      flows:
+        clientCredentials:
+          tokenUrl: https://api-user.integrations.ecimanufacturing.com/oauth2/api-user/token
+          scopes:
+            openid: openid

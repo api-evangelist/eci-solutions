@@ -1,0 +1,806 @@
+openapi: 3.2.0
+info:
+  title: APAR Commerce Integration Vendor API
+  description: '# Documentation
+
+
+    ## Authentication
+
+    Pass an access token in the HTTP Authorization header of each request.'
+  contact:
+    name: ECI Support
+    url: https://www.ecisolutions.com/support/
+  version: v1
+security:
+- Bearer: []
+tags:
+- name: Vendor
+paths:
+  /api/v1/vendors:
+    get:
+      tags:
+      - Vendor
+      summary: Get a list of vendors
+      operationId: GetVendors
+      parameters:
+      - name: top
+        in: query
+        description: 'Maximum number of records to return. Default: 100. Max: 100.'
+        schema:
+          maximum: 100
+          minimum: 1
+          type: integer
+          format: int32
+          default: 100
+      - name: skip
+        in: query
+        description: 'The value from which to start taking records. Default: 0.'
+        schema:
+          maximum: 2147483647
+          minimum: 0
+          type: integer
+          format: int32
+          default: 0
+      - name: externalVendorId
+        in: query
+        description: The External Vendor Id by which to search for the vendor.
+        schema:
+          type: string
+      - name: vendorName
+        in: query
+        description: The Vendor Name by which to search for the vendor.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/VendorResponseListResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VendorResponseListResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/VendorResponseListResponse'
+    post:
+      tags:
+      - Vendor
+      summary: Create a vendor
+      operationId: CreateVendor
+      requestBody:
+        description: The details of Vendor by which  we can create the vendor with all the validation applied.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VendorRequestModel'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/VendorRequestModel'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/VendorRequestModel'
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/VendorResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VendorResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/VendorResponse'
+  /api/v1/vendors/{id}:
+    get:
+      tags:
+      - Vendor
+      summary: Get a vendor record by vendor id
+      operationId: GetVendorById
+      parameters:
+      - name: id
+        in: path
+        description: The Vendor Id by which to search for the vendor.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/VendorResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VendorResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/VendorResponse'
+    patch:
+      tags:
+      - Vendor
+      summary: Update a vendor
+      operationId: UpdateVendor
+      parameters:
+      - name: id
+        in: path
+        description: The Vendor Id
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: The details of Vendor by which we can update the vendor.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateVendorRequestModel'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/UpdateVendorRequestModel'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/UpdateVendorRequestModel'
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/VendorResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VendorResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/VendorResponse'
+    delete:
+      tags:
+      - Vendor
+      summary: Delete a vendor by vendor id
+      operationId: DeleteVendor
+      parameters:
+      - name: id
+        in: path
+        description: The Vendor Id
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: No Content
+  /api/v1/vendors/{id}/invoices:
+    post:
+      tags:
+      - Vendor
+      summary: Create a vendor invoice
+      operationId: CreateVendorInvoice
+      parameters:
+      - name: id
+        in: path
+        description: The Vendor Id
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: The details of Vendor Invoice by which we can create the vendor invoice with all the validation applied.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateVendorInvoiceRequestModel'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/CreateVendorInvoiceRequestModel'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/CreateVendorInvoiceRequestModel'
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/VendorInvoiceResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VendorInvoiceResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/VendorInvoiceResponse'
+  /api/v1/vendors/{id}/invoices/{invoiceId}:
+    get:
+      tags:
+      - Vendor
+      summary: Get a Vendor Invoice record
+      operationId: GetVendorInvoiceById
+      parameters:
+      - name: id
+        in: path
+        description: The Vendor Id
+        required: true
+        schema:
+          type: string
+      - name: invoiceId
+        in: path
+        description: The Invoice Id
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/VendorInvoiceResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VendorInvoiceResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/VendorInvoiceResponse'
+    patch:
+      tags:
+      - Vendor
+      summary: Update a vendor invoice
+      operationId: UpdateVendorInvoice
+      parameters:
+      - name: id
+        in: path
+        description: The Vendor Id
+        required: true
+        schema:
+          type: string
+      - name: invoiceId
+        in: path
+        description: The Vendor Invoice Id
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: The details of Vendor Invoice by which we can update the vendor invoice.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateVendorInvoiceRequestModel'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/UpdateVendorInvoiceRequestModel'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/UpdateVendorInvoiceRequestModel'
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/VendorInvoiceResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VendorInvoiceResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/VendorInvoiceResponse'
+    delete:
+      tags:
+      - Vendor
+      summary: Delete a vendor invoice by invoice id
+      operationId: DeleteVendorInvoice
+      parameters:
+      - name: id
+        in: path
+        description: The Vendor Id
+        required: true
+        schema:
+          type: string
+      - name: invoiceId
+        in: path
+        description: The Vendor Invoice Id
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: No Content
+  /api/v1/vendors/{id}/payments:
+    post:
+      tags:
+      - Vendor
+      summary: Create vendor payments
+      operationId: CreatePayment
+      parameters:
+      - name: id
+        in: path
+        description: The Vendor Id
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: Model.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateVendorPaymentModel'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/CreateVendorPaymentModel'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/CreateVendorPaymentModel'
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/VendorPaymentResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VendorPaymentResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/VendorPaymentResponse'
+components:
+  schemas:
+    VendorInvoiceResponse:
+      type: object
+      properties:
+        invoiceNo:
+          type:
+          - string
+          - 'null'
+        date:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        dueDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        amount:
+          type:
+          - number
+          - 'null'
+          format: double
+        balance:
+          type:
+          - number
+          - 'null'
+          format: double
+        status:
+          type:
+          - string
+          - 'null'
+        discountAmount:
+          type:
+          - number
+          - 'null'
+          format: double
+        discountDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        billId:
+          type:
+          - string
+          - 'null'
+        vendorId:
+          type:
+          - string
+          - 'null'
+        comment:
+          type:
+          - string
+          - 'null'
+        purchaseOrderNumber:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    VendorPaymentInvoice:
+      type: object
+      properties:
+        invoiceId:
+          type:
+          - string
+          - 'null'
+        amount:
+          type:
+          - number
+          - 'null'
+          format: double
+      additionalProperties: false
+    CreateVendorPaymentModel:
+      required:
+      - invoices
+      - statusDate
+      - transactionNo
+      type: object
+      properties:
+        transactionNo:
+          maxLength: 10
+          minLength: 0
+          type: string
+          description: The transaction number for the payment.
+        paymentMethod:
+          type:
+          - string
+          - 'null'
+          description: 'The payment method used for the payment.
+
+            * Nuvei: ACH, CHECK'
+        statusDate:
+          type: string
+          description: The date the status of the payment was last updated.
+          format: date-time
+        payDate:
+          type:
+          - string
+          - 'null'
+          description: The date when the payment will be paid. If not provided, the <see cref="P:APARCommerceIntegration.Domain.RequestModels.CreateVendorPaymentModel.PaymentInitiatedDate">PaymentInitiatedDate</see> must be set.
+          format: date-time
+        paymentInitiatedDate:
+          type:
+          - string
+          - 'null'
+          description: The date when the payment process will be initiated or scheduled.
+          format: date-time
+        invoices:
+          type: array
+          items:
+            $ref: '#/components/schemas/InvoiceRequestModel'
+          description: The vendor invoices and amounts that will be paid with this payment.
+      additionalProperties: false
+    InvoiceRequestModel:
+      required:
+      - amount
+      - invoiceId
+      type: object
+      properties:
+        invoiceId:
+          minLength: 1
+          type: string
+        amount:
+          type: number
+          format: double
+      additionalProperties: false
+    VendorResponseListResponse:
+      type: object
+      properties:
+        count:
+          type: integer
+          format: int32
+        data:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/VendorResponse'
+      additionalProperties: false
+    VendorPaymentResponse:
+      required:
+      - invoices
+      type: object
+      properties:
+        paymentId:
+          type:
+          - string
+          - 'null'
+        vendorId:
+          type:
+          - string
+          - 'null'
+        transactionNo:
+          type:
+          - string
+          - 'null'
+        paymentMethod:
+          type:
+          - string
+          - 'null'
+        paymentReferenceNo:
+          type:
+          - string
+          - 'null'
+        statusDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        status:
+          type:
+          - string
+          - 'null'
+        paymentDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        paymentInitiatedDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        totalAmount:
+          type:
+          - number
+          - 'null'
+          format: double
+        createdDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        invoices:
+          type: array
+          items:
+            $ref: '#/components/schemas/VendorPaymentInvoice'
+      additionalProperties: false
+    UpdateVendorRequestModel:
+      type: object
+      properties:
+        externalVendorId:
+          maxLength: 50
+          minLength: 0
+          type:
+          - string
+          - 'null'
+        vendorName:
+          maxLength: 255
+          minLength: 0
+          type:
+          - string
+          - 'null'
+        address:
+          $ref: '#/components/schemas/Address'
+        contactGivenName:
+          maxLength: 50
+          minLength: 0
+          type:
+          - string
+          - 'null'
+        contactSurname:
+          maxLength: 50
+          minLength: 0
+          type:
+          - string
+          - 'null'
+        emailAddress:
+          type:
+          - string
+          - 'null'
+        comment:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    CreateVendorInvoiceRequestModel:
+      required:
+      - amount
+      - date
+      - dueDate
+      - invoiceNo
+      type: object
+      properties:
+        invoiceNo:
+          maxLength: 200
+          minLength: 0
+          type: string
+        date:
+          type: string
+          format: date
+        dueDate:
+          type: string
+          format: date
+        amount:
+          type: number
+          format: double
+        balance:
+          type:
+          - number
+          - 'null'
+          format: double
+        discountAmount:
+          type:
+          - number
+          - 'null'
+          format: double
+        discountDate:
+          type:
+          - string
+          - 'null'
+          format: date
+        comment:
+          maxLength: 200
+          minLength: 0
+          type:
+          - string
+          - 'null'
+        purchaseOrderNumber:
+          maxLength: 50
+          minLength: 0
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    VendorRequestModel:
+      required:
+      - address
+      - emailAddress
+      - vendorName
+      type: object
+      properties:
+        externalVendorId:
+          maxLength: 50
+          minLength: 0
+          type:
+          - string
+          - 'null'
+        vendorName:
+          maxLength: 255
+          minLength: 0
+          type: string
+        address:
+          $ref: '#/components/schemas/Address'
+        contactGivenName:
+          maxLength: 50
+          minLength: 0
+          type:
+          - string
+          - 'null'
+        contactSurname:
+          maxLength: 50
+          minLength: 0
+          type:
+          - string
+          - 'null'
+        emailAddress:
+          minLength: 1
+          type: string
+        comment:
+          type:
+          - string
+          - 'null'
+        defaultPaymentMethod:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    UpdateVendorInvoiceRequestModel:
+      type: object
+      properties:
+        invoiceNo:
+          maxLength: 200
+          minLength: 0
+          type:
+          - string
+          - 'null'
+        date:
+          type:
+          - string
+          - 'null'
+          format: date
+        dueDate:
+          type:
+          - string
+          - 'null'
+          format: date
+        amount:
+          type:
+          - number
+          - 'null'
+          format: double
+        balance:
+          type:
+          - number
+          - 'null'
+          format: double
+        comment:
+          maxLength: 200
+          minLength: 0
+          type:
+          - string
+          - 'null'
+        purchaseOrderNumber:
+          maxLength: 50
+          minLength: 0
+          type:
+          - string
+          - 'null'
+        discountAmount:
+          type:
+          - number
+          - 'null'
+          format: double
+        discountDate:
+          type:
+          - string
+          - 'null'
+          format: date
+      additionalProperties: false
+    Address:
+      type: object
+      properties:
+        addressLine1:
+          type:
+          - string
+          - 'null'
+        addressLine2:
+          type:
+          - string
+          - 'null'
+        city:
+          type:
+          - string
+          - 'null'
+        country:
+          maxLength: 2
+          minLength: 0
+          type:
+          - string
+          - 'null'
+        state:
+          maxLength: 2
+          minLength: 0
+          type:
+          - string
+          - 'null'
+        postalCode:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    VendorResponse:
+      type: object
+      properties:
+        vendorId:
+          type:
+          - string
+          - 'null'
+        externalVendorId:
+          type:
+          - string
+          - 'null'
+        vendorName:
+          type:
+          - string
+          - 'null'
+        address:
+          $ref: '#/components/schemas/Address'
+        contactGivenName:
+          type:
+          - string
+          - 'null'
+        contactSurname:
+          type:
+          - string
+          - 'null'
+        emailAddress:
+          type:
+          - string
+          - 'null'
+        comment:
+          type:
+          - string
+          - 'null'
+        defaultPaymentMethod:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+  securitySchemes:
+    Bearer:
+      type: oauth2
+      description: OAuth 2.0 Client Credentials Flow with API Users issued from Integration Engine Management Console
+      flows:
+        clientCredentials:
+          tokenUrl: https://api-user.integrations.ecimanufacturing.com/oauth2/api-user/token
+          scopes:
+            openid: openid

@@ -1,0 +1,681 @@
+openapi: 3.2.0
+info:
+  title: Lasso Registrant Contact Information API
+  description: 'Overview
+
+
+    Use this API to manage Registrant, Project, and Inventory data within Lasso CRM.'
+  version: 1.0.39
+servers:
+- url: https://api.lassocrm.com/v1
+  description: Production endpoint
+tags:
+- name: Registrant Contact Information
+paths:
+  /registrants/{registrantId}/person/contact-information:
+    parameters:
+    - in: path
+      name: registrantId
+      schema:
+        type: string
+      required: true
+    put:
+      summary: Convenience method to update all of a registrant's contact information in a…
+      operationId: get_registrants_contact_information
+      description: Update a registrant's contact information. This will overwrite all of the registrant's contact information with the entity provided in the request payload. To avoid accidentally deleting contact information, first perform a GET on the same resource, then modify the returned entity, and finally apply the entity through this PUT method.
+      tags:
+      - Registrant Contact Information
+      security:
+      - JwtAuthorizer: []
+      responses:
+        200:
+          description: Registrant's contact information successfully saved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContactInformation'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+      requestBody:
+        description: "Registrant's contact information for update.\nNotes:\n- emails, phones, addresses: for the collections that are non-empty, there must be exactly\n  one entity within the collection that is a designated primary, otherwise\na 400 error will be returned\n"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ContactInformation'
+    get:
+      summary: Retrieve all of a registrant's contact information
+      operationId: put_registrants_contact_information
+      description: Retrieves all of a registrant's contact information. Use this method in conjunction with the PUT method of the same resource to perform a safe update.
+      tags:
+      - Registrant Contact Information
+      security:
+      - JwtAuthorizer: []
+      responses:
+        200:
+          description: Registrant exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContactInformation'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+  /registrants/{registrantId}/emails:
+    parameters:
+    - in: path
+      name: registrantId
+      required: true
+      schema:
+        type: string
+    post:
+      tags:
+      - Registrant Contact Information
+      operationId: post_registrants_emails
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmailWrite'
+      security:
+      - JwtAuthorizer: []
+      responses:
+        201:
+          description: Email successfully created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmailRead'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+      summary: Post registrants emails
+      x-summary-source: derived
+  /registrants/{registrantId}/emails/{emailId}:
+    parameters:
+    - in: path
+      name: registrantId
+      required: true
+      schema:
+        type: string
+    - in: path
+      name: emailId
+      required: true
+      schema:
+        type: string
+    put:
+      tags:
+      - Registrant Contact Information
+      operationId: put_registrants_emails_by_id
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmailWrite'
+      security:
+      - JwtAuthorizer: []
+      responses:
+        200:
+          description: Email updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmailRead'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+      summary: Put registrants emails by id
+      x-summary-source: derived
+    delete:
+      tags:
+      - Registrant Contact Information
+      operationId: delete_registrants_emails_by_id
+      security:
+      - JwtAuthorizer: []
+      responses:
+        204:
+          description: Item deleted
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+      summary: Delete registrants emails by id
+      x-summary-source: derived
+  /registrants/{registrantId}/phones:
+    parameters:
+    - in: path
+      name: registrantId
+      required: true
+      schema:
+        type: string
+    post:
+      tags:
+      - Registrant Contact Information
+      operationId: post_registrants_phones
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PhoneWrite'
+      security:
+      - JwtAuthorizer: []
+      responses:
+        201:
+          description: Phone number successfully created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PhoneRead'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+      summary: Post registrants phones
+      x-summary-source: derived
+  /registrants/{registrantId}/phones/{phoneId}:
+    parameters:
+    - in: path
+      name: registrantId
+      required: true
+      schema:
+        type: string
+    - in: path
+      name: phoneId
+      required: true
+      schema:
+        type: string
+    put:
+      tags:
+      - Registrant Contact Information
+      operationId: put_registrants_phones_by_id
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PhoneWrite'
+      security:
+      - JwtAuthorizer: []
+      responses:
+        200:
+          description: Phone number updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PhoneRead'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+      summary: Put registrants phones by id
+      x-summary-source: derived
+    delete:
+      tags:
+      - Registrant Contact Information
+      operationId: delete_registrants_phones_by_id
+      security:
+      - JwtAuthorizer: []
+      responses:
+        204:
+          description: Item deleted
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+      summary: Delete registrants phones by id
+      x-summary-source: derived
+  /registrants/{registrantId}/addresses:
+    parameters:
+    - in: path
+      name: registrantId
+      required: true
+      schema:
+        type: string
+    post:
+      tags:
+      - Registrant Contact Information
+      operationId: post_registrants_addresses
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddressWrite'
+      security:
+      - JwtAuthorizer: []
+      responses:
+        201:
+          description: Address successfully created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AddressRead'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+      summary: Post registrants addresses
+      x-summary-source: derived
+  /registrants/{registrantId}/addresses/{addressId}:
+    parameters:
+    - in: path
+      name: registrantId
+      required: true
+      schema:
+        type: string
+    - in: path
+      name: addressId
+      required: true
+      schema:
+        type: string
+    put:
+      tags:
+      - Registrant Contact Information
+      operationId: put_registrants_addresses_by_id
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddressWrite'
+      security:
+      - JwtAuthorizer: []
+      responses:
+        200:
+          description: Address updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AddressRead'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+      summary: Put registrants addresses by id
+      x-summary-source: derived
+    delete:
+      tags:
+      - Registrant Contact Information
+      operationId: delete_registrants_addresses_by_id
+      security:
+      - JwtAuthorizer: []
+      responses:
+        204:
+          description: Item deleted
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+      summary: Delete registrants addresses by id
+      x-summary-source: derived
+components:
+  responses:
+    BadRequest:
+      description: 'The request could not be processed due to invalid input:
+
+        - Is the request payload malformed?
+
+        - Are all required fields present?
+
+        - Are field values of the expected type (ie, number format, date format)?
+
+        - Are field values within the expected constraints (ie, greater than max size of string)?
+
+        - Are query params of the expected format?
+
+
+        Check the body model for more documentation on field constraints and limits.
+
+        '
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/StandardError'
+    Unauthorized:
+      description: The request has not been fulfilled because it lacks valid authentication credentials
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/StandardError'
+    InternalServerError:
+      description: Receiving a 5xx response indicates an error on Lasso's end. Please contact us to report the problem
+    NotFound:
+      description: The specified resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/StandardError'
+    Forbidden:
+      description: The provided authentication credentials does not have sufficient privileges to access this resource
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/StandardError'
+  schemas:
+    EmailRead:
+      type: object
+      title: Email Read
+      properties:
+        emailId:
+          type: string
+          example: 123
+        email:
+          type: string
+          example: test_registrant@lassocrm.com
+        type:
+          type: string
+          example: Personal
+        primary:
+          type: boolean
+          example: true
+        optedStatus:
+          type: string
+          enum:
+          - opted_in
+          - opted_out
+          - non_opted
+          example: opted_in
+    PhoneRead:
+      type: object
+      title: Phone Read
+      properties:
+        phoneId:
+          type: string
+          example: 123
+        phone:
+          type: string
+          example: 123-456-7890
+        type:
+          type: string
+          example: Mobile
+        primary:
+          type: boolean
+          example: true
+    EmailWrite:
+      type: object
+      title: Email Write
+      properties:
+        email:
+          type: string
+          minLength: 1
+          maxLength: 50
+          example: test_registrant@lassocrm.com
+        type:
+          type: string
+          minLength: 0
+          maxLength: 25
+          example: Personal
+        primary:
+          type: boolean
+          example: true
+    PhoneWrite:
+      type: object
+      title: Phone Write
+      properties:
+        phone:
+          type: string
+          minLength: 1
+          maxLength: 20
+          example: 123-456-7890
+        type:
+          type: string
+          minLength: 0
+          maxLength: 25
+          example: Mobile
+        primary:
+          type: boolean
+          example: true
+    ContactInformation:
+      type: object
+      title: Contact Information
+      required:
+      - firstName
+      - lastName
+      properties:
+        personalId:
+          type: string
+          example: 1234
+        nameTitle:
+          type: string
+          example: Mrs
+        firstName:
+          type: string
+          example: Jane
+        lastName:
+          type: string
+          example: Doe
+        company:
+          type: string
+          example: First Contracting
+        contactPreference:
+          type: string
+          description: How the registrant would like to be contacted
+          enum:
+          - noPreference
+          - any
+          - email
+          - mail
+          - phone
+          - text
+          - noEmail
+          - noContact
+          example: any
+        gender:
+          type: string
+          enum:
+          - unspecified
+          - male
+          - female
+          example: female
+        nickname:
+          type: string
+          example: Jane
+        birthday:
+          type: string
+          description: Contains only the month and day.
+          example: 08/14
+        emails:
+          type: array
+          items:
+            $ref: '#/components/schemas/Email'
+        phones:
+          type: array
+          items:
+            $ref: '#/components/schemas/Phone'
+        addresses:
+          type: array
+          items:
+            $ref: '#/components/schemas/Address'
+    StandardError:
+      type: object
+      title: Standard Error
+      description: A standard error response format.
+      properties:
+        errorCode:
+          type: integer
+          example: 4xx
+        error:
+          type: string
+          description: A summary of the error
+          example: A summary of the error
+        errorMessage:
+          type: string
+          description: Details of the error
+          example: Details of the error
+    AddressRead:
+      type: object
+      title: Address Read
+      properties:
+        addressId:
+          type: string
+          example: 123
+        address:
+          type: string
+          example: 350 Fifth Avenue
+        city:
+          type: string
+          example: New York
+        country:
+          type: string
+          example: USA
+        state:
+          type: string
+          example: NY
+        zipCode:
+          type: string
+          example: '10118'
+        type:
+          type: string
+          example: Mobile
+        primary:
+          type: boolean
+          example: true
+    AddressWrite:
+      type: object
+      title: Address Write
+      properties:
+        address:
+          type: string
+          example: 350 Fifth Avenue
+        city:
+          type: string
+          example: New York
+        country:
+          type: string
+          example: USA
+        state:
+          type: string
+          example: NY
+        zipCode:
+          minLength: 0
+          maxLength: 15
+          type: string
+          example: '10118'
+        type:
+          type: string
+          example: Mobile
+        primary:
+          type: boolean
+          example: true
+    Email:
+      type: object
+      title: Email
+      properties:
+        email:
+          type: string
+          minLength: 1
+          maxLength: 50
+          example: test_registrant@lassocrm.com
+        type:
+          type: string
+          minLength: 0
+          maxLength: 25
+          example: Personal
+        primary:
+          type: boolean
+          description: there can be only one primary email in a non-empty collection of emails
+          example: true
+    Address:
+      type: object
+      title: Address
+      properties:
+        address:
+          type: string
+          example: 350 Fifth Avenue
+        city:
+          type: string
+          example: New York
+        country:
+          type: string
+          example: USA
+        state:
+          type: string
+          example: NY
+        zipCode:
+          type: string
+          example: '10118'
+        type:
+          type: string
+          example: Mobile
+        primary:
+          type: boolean
+          description: there can be only one primary address in a non-empty collection of addresses
+          example: true
+    Phone:
+      type: object
+      title: Phone
+      properties:
+        phone:
+          type: string
+          minLength: 1
+          maxLength: 20
+          example: 123-456-7890
+        type:
+          type: string
+          minLength: 0
+          maxLength: 25
+          example: Mobile
+        primary:
+          type: boolean
+          description: there can be only one primary phone in a non-empty collection of phones
+          example: true
+  securitySchemes:
+    JwtAuthorizer:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

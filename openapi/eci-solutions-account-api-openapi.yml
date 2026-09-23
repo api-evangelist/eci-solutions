@@ -1,0 +1,670 @@
+openapi: 3.2.0
+info:
+  title: Eci Solutions Account API
+  version: '1.0'
+  description: 'Operations tagged Account across 5 of this provider''s published API definitions: eci-solutions-erp-v1-openapi.json, eci-solutions-erp-v2-1-openapi.json, eci-solutions-erp-v2-openapi.json, eci-solutions-financial-v1-openapi.json, eci-solutions-payment-openapi.json. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api-erp.integrations.ecimanufacturing.com:443
+  description: Production
+security:
+- Bearer: []
+tags:
+- name: Account
+paths:
+  /api/v1/Account/authenticate:
+    post:
+      tags:
+      - Account
+      summary: Authenticate API User
+      description: '## Supported ERPs'
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthenticateUser'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/AuthenticateUser'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/AuthenticateUser'
+      responses:
+        '200':
+          description: Success
+      deprecated: true
+      operationId: postApiV1AccountAuthenticate
+      x-operation-id-source: derived
+    servers:
+    - url: https://api-erp.integrations.ecimanufacturing.com:443
+      description: Production
+  /api/v2.1/user-info:
+    get:
+      tags:
+      - Account
+      summary: Gets information about the current user accessing the API
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/UserInfoResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserInfoResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/UserInfoResponse'
+      operationId: getApiV21UserInfo
+      x-operation-id-source: derived
+    servers:
+    - url: https://api-erp.integrations.ecimanufacturing.com:443
+      description: Production
+  /api/v2/user-info:
+    get:
+      tags:
+      - Account
+      summary: Gets information about the current user accessing the API
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/UserInfoResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserInfoResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/UserInfoResponse'
+      operationId: getApiV2UserInfo
+      x-operation-id-source: derived
+    servers:
+    - url: https://api-erp.integrations.ecimanufacturing.com:443
+      description: Production
+  /api/account/authenticate:
+    post:
+      tags:
+      - Account
+      summary: Authenticate API User
+      description: Use the Authentication API OAuth 2.0 client credentials endpoint instead.
+      requestBody:
+        description: ''
+        content:
+          application/json-patch+json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/AuthenticateUser'
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/AuthenticateUser'
+          text/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/AuthenticateUser'
+          application/*+json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/AuthenticateUser'
+      responses:
+        '200':
+          description: Success
+      deprecated: true
+      operationId: postApiAccountAuthenticate
+      x-operation-id-source: derived
+  /api/account/register:
+    post:
+      tags:
+      - Account
+      summary: Creates a new Payment API user account and possibly company
+      description: 'This API registers the user, and creates a company also. After successful registration, user will receive a verification mail which has to be confirmed before proceeding further.
+
+
+        **application_type** - Valid values are: Deacom, JobBOSS, JobBOSS2, M1, Macola, and Max
+
+
+        **company_name and customer_id** - Currently, Company name and customer id are not required, if one is being provided then other one will be required.
+
+        User can provide existing company name and customer id for creating company, otherwise this request will use [last_name, first_name, user_name] as company name and user_name as customer id for creating a company.
+
+
+        If the customer_id of an existing Company with the same matching application_type (Product) is provided, the API user will be added
+
+        to the existing Company. Otherwise, a new Company will be created.
+
+
+        **enable_password_reset** - Allows user to reset password in future.
+
+
+        **allowed_origin_domains** - Optional. Space‑separated list of domains allowed to call the API, e.g. *.example.com.
+
+
+        For existing company: If not provided, the Company''s existing value is used. If provided, the new domains are added to the existing list.
+
+        Supplying the same domain multiple times has no effect on the final list.
+
+
+        **merchant_country** - Optional. Valid values: [United States, Canada].
+
+        If the Company does not already support the specified country, the Company properties are updated to include it,
+
+        and the user is associated with the provided country.
+
+
+        **Note**: allowed_origin_domains and merchant_country properties has update effect for existing companies. A domain or country will never be removed from company,
+
+        as these values could be associated to other users; only additions are made.'
+      requestBody:
+        description: This is an object which contains all required and optional fields to register user
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegistrationModel'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/RegistrationModel'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/RegistrationModel'
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/StringAPIResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StringAPIResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/StringAPIResponse'
+      operationId: postApiAccountRegister
+      x-operation-id-source: derived
+  /api/account/verifypayamerchantaccount:
+    post:
+      tags:
+      - Account
+      summary: Verify paya merchant account
+      description: This Api allows to verify the merchant account.
+      requestBody:
+        description: This is an object which contains developer id and location id of merchant
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MerchantAccountModel'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/MerchantAccountModel'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/MerchantAccountModel'
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/StringAPIResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StringAPIResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/StringAPIResponse'
+      operationId: postApiAccountVerifypayamerchantaccount
+      x-operation-id-source: derived
+  /api/account/resendconfirmationemail:
+    post:
+      tags:
+      - Account
+      summary: Resend confirmation mail
+      description: This Api resends the mail to confirm or verify the registration.
+      requestBody:
+        description: This is an object which contains username
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResendConfirmEmailModel'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/ResendConfirmEmailModel'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/ResendConfirmEmailModel'
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/StringAPIResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StringAPIResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/StringAPIResponse'
+      operationId: postApiAccountResendconfirmationemail
+      x-operation-id-source: derived
+  /api/account/verifymerchantaccountandauthenticateuser:
+    post:
+      tags:
+      - Account
+      summary: Verify paya merchant account with user credentials
+      description: 'This Api allows to verify the merchant account.
+
+        Additionally, it validates the user credentials.'
+      requestBody:
+        description: This is an object which contains developer id and location id of merchant and user credential details
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MerchantUserModel'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/MerchantUserModel'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/MerchantUserModel'
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/StringAPIResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StringAPIResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/StringAPIResponse'
+      operationId: postApiAccountVerifymerchantaccountandauthenticateuser
+      x-operation-id-source: derived
+  /api/account/me:
+    get:
+      tags:
+      - Account
+      summary: Get details about the current user
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ApiUserSettingsAPIResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiUserSettingsAPIResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ApiUserSettingsAPIResponse'
+      operationId: getApiAccountMe
+      x-operation-id-source: derived
+components:
+  schemas:
+    AuthenticateUser:
+      required:
+      - password
+      - userName
+      type: object
+      properties:
+        userName:
+          minLength: 1
+          type: string
+        password:
+          minLength: 1
+          type: string
+      additionalProperties: false
+    UserInfoResponse:
+      type: object
+      properties:
+        userId:
+          type:
+          - string
+          - 'null'
+          description: Gets the User ID of the authenticated user.
+        username:
+          type:
+          - string
+          - 'null'
+          description: Gets the User name of the authenticated user.
+        expires:
+          type:
+          - string
+          - 'null'
+          description: Gets the expiration date of the current user's access token.
+          format: date-time
+        companyId:
+          type: integer
+          description: "Gets a unique identifier for the company being accessed. \n*Note* that this does *NOT* uniquely identify the database being accessed. \nA single company may have more than one database accessible via the ERP API."
+          format: int32
+        companyName:
+          type:
+          - string
+          - 'null'
+          description: Gets the assigned company name. The format of this value varies by Product.
+        companyCustomerId:
+          type:
+          - string
+          - 'null'
+          description: Gets the assigned customer ID value. The format of this value varies by Product.
+        companyTimeZone:
+          type:
+          - string
+          - 'null'
+          description: Gets a value that indicates the time zone of the company being accessed.
+        productId:
+          type: integer
+          description: The unique product identifier.
+          format: int32
+        productName:
+          type:
+          - string
+          - 'null'
+          description: The product name.
+        integrationName:
+          type:
+          - string
+          - 'null'
+          description: The name of the integration that the authenticated user is able to use.
+        systemName:
+          type:
+          - string
+          - 'null'
+          description: The name of the integration system that the authenticated user is able to use.
+      additionalProperties: false
+    AuthenticateUserResponseAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          $ref: '#/components/schemas/ApiError'
+        result:
+          $ref: '#/components/schemas/AuthenticateUserResponse'
+      additionalProperties: false
+    ApiError:
+      type: object
+      properties:
+        isError:
+          type: boolean
+        exceptionMessage:
+          type:
+          - string
+          - 'null'
+        details:
+          type:
+          - string
+          - 'null'
+        referenceErrorCode:
+          type:
+          - string
+          - 'null'
+        referenceDocumentLink:
+          type:
+          - string
+          - 'null'
+        validationErrors:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ValidationError'
+      additionalProperties: false
+    ApiUserSettingsAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          $ref: '#/components/schemas/ApiError'
+        result:
+          $ref: '#/components/schemas/ApiUserSettings'
+      additionalProperties: false
+    RegistrationModel:
+      required:
+      - application_type
+      - confirmPassword
+      - first_name
+      - password
+      - user_name
+      type: object
+      properties:
+        user_name:
+          maxLength: 50
+          minLength: 1
+          pattern: ^[\w-_@&+.,]*$
+          type: string
+        email:
+          pattern: .+@.+
+          type:
+          - string
+          - 'null'
+        password:
+          maxLength: 64
+          minLength: 16
+          pattern: ^(?=.*?[A-Z])(?=.*?[a-z]).{16,}$
+          type: string
+          description: Password should have at least 16 characters and must contain uppercase lowercase characters and should not be same as or contain company name, username, email.
+        confirmPassword:
+          maxLength: 64
+          minLength: 16
+          type: string
+        first_name:
+          maxLength: 32
+          minLength: 1
+          type: string
+        last_name:
+          type:
+          - string
+          - 'null'
+        application_type:
+          minLength: 1
+          type: string
+          description: 'Valid application type values are: M1, Macola, Max, JobBOSS or JobBOSS2'
+        company_name:
+          maxLength: 50
+          minLength: 2
+          type:
+          - string
+          - 'null'
+          description: A unique display name for the company/tenant for which this user account will be used.
+        customer_id:
+          maxLength: 50
+          minLength: 2
+          type:
+          - string
+          - 'null'
+          description: 'A unique identifier for the company/tenant for which this user account will be used.
+
+            This field is required, if company_name is being provided.'
+        enable_password_reset:
+          type: boolean
+          description: Allows user reset password in future.
+          default: false
+        allowed_origin_domains:
+          type:
+          - string
+          - 'null'
+          description: "A space separated list of domain names that will be allowed as origins \nfor communication between the Payment UI and the hosting application using postMessage.\nThe wildcard character * is supported, so, if you want to support example.com and any subdomain,\nyou can specify a value of 'example.com *.example.com'. NOTE: This value can only be specified when specifying a CustomerId that does NOT already exist."
+        merchant_country:
+          type:
+          - string
+          - 'null'
+          description: 'Optional property for the country of the merchant.
+
+            The value should match with the information retrieved from the integration if exists.'
+          default: null
+      additionalProperties: false
+    AuthenticateUserResponse:
+      required:
+      - password
+      - user_name
+      type: object
+      properties:
+        user_name:
+          maxLength: 50
+          minLength: 1
+          type: string
+        password:
+          maxLength: 64
+          minLength: 6
+          type: string
+        token:
+          type:
+          - string
+          - 'null'
+        refreshToken:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    ResendConfirmEmailModel:
+      required:
+      - userName
+      type: object
+      properties:
+        userName:
+          minLength: 1
+          type: string
+      additionalProperties: false
+    StringAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          $ref: '#/components/schemas/ApiError'
+        result:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    ValidationError:
+      type: object
+      properties:
+        field:
+          type:
+          - string
+          - 'null'
+        message:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    ApiUserSettings:
+      type: object
+      properties:
+        companyId:
+          type: integer
+          format: int32
+        productName:
+          type:
+          - string
+          - 'null'
+        integrationId:
+          type: integer
+          format: int32
+        integrationName:
+          type:
+          - string
+          - 'null'
+        systemId:
+          type: integer
+          format: int32
+        systemName:
+          type:
+          - string
+          - 'null'
+        allowedDomains:
+          type:
+          - string
+          - 'null'
+        merchantCountry:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    MerchantUserModel:
+      type: object
+      properties:
+        merchant:
+          $ref: '#/components/schemas/MerchantAccountModel'
+        user:
+          $ref: '#/components/schemas/AuthenticateUser_2'
+      additionalProperties: false
+    MerchantAccountModel:
+      required:
+      - developer_id
+      - location_id
+      type: object
+      properties:
+        location_id:
+          minLength: 1
+          type: string
+        developer_id:
+          minLength: 1
+          type: string
+      additionalProperties: false
+    AuthenticateUser_2:
+      required:
+      - password
+      - user_name
+      type: object
+      properties:
+        user_name:
+          maxLength: 50
+          minLength: 1
+          type: string
+        password:
+          maxLength: 64
+          minLength: 6
+          type: string
+      additionalProperties: false
+  securitySchemes:
+    Bearer:
+      type: oauth2
+      description: OAuth 2.0 Client Credentials Flow with API Users issued from Integration Engine Management Console
+      flows:
+        clientCredentials:
+          tokenUrl: https://api-user.integrations.ecimanufacturing.com/oauth2/api-user/token
+          scopes:
+            openid: openid
+x-refined-from:
+- eci-solutions-erp-v1-openapi.json
+- eci-solutions-erp-v2-1-openapi.json
+- eci-solutions-erp-v2-openapi.json
+- eci-solutions-financial-v1-openapi.json
+- eci-solutions-payment-openapi.json

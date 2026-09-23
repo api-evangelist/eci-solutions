@@ -1,0 +1,363 @@
+openapi: 3.2.0
+info:
+  title: ERP API v2.1 Job Assembly API
+  description: Provides a common API surface for accessing ECI ERP products.
+  contact:
+    name: ECI Manufacturing Division Integration Team
+    url: https://www.ecisolutions.com/support/
+  version: 3.5.585+b1e45fd230
+servers:
+- url: https://api-erp.integrations.ecimanufacturing.com:443
+  description: Production
+security:
+- Bearer: []
+tags:
+- name: JobAssembly
+paths:
+  /api/v2.1/job-assemblies:
+    get:
+      tags:
+      - JobAssembly
+      summary: Get a list of Job Assemblies from the ERP system that match the given filters
+      description: 'Gets a list of JobAssembly.
+
+
+        ## Supported ERPs
+
+        - M1
+
+        - Deacom
+
+        ## Resource Features
+
+        Feature |Supported |Notes
+
+        ------------|------------|------------
+
+        Filter Expressions|**Yes**|
+
+        Sort Expressions|**Yes**
+
+        Field Selection|**Yes**
+
+        Pagination|**Yes**
+
+        UniqueID|uniqueID|
+
+        ## Features by Field
+
+        Field |Filterable |Sortable |Supported ERPs
+
+        ------------|------------|------------|------------
+
+        jobID|Yes|Yes|M1, Deacom
+
+        jobAssemblyID|Yes|Yes|M1, Deacom
+
+        level|No|Yes|M1, Deacom
+
+        parentAssemblyID|No|Yes|M1, Deacom
+
+        sourceMethodID|No|Yes|M1, Deacom
+
+        sourceRevisionID|No|Yes|M1, Deacom
+
+        partID|Yes|Yes|M1, Deacom
+
+        partRevisionID|Yes|Yes|M1, Deacom
+
+        partShortDesc|No|Yes|M1, Deacom
+
+        quantityPerParent|No|Yes|M1, Deacom
+
+        orderQty|No|Yes|M1, Deacom
+
+        inventoryQty|No|Yes|M1, Deacom
+
+        scrapQty|No|Yes|M1, Deacom
+
+        quantityToInspect|No|Yes|M1, Deacom
+
+        quantityRcvdToInv|No|Yes|M1, Deacom
+
+        productionQty|No|Yes|M1, Deacom
+
+        quantityToMake|No|Yes|M1, Deacom
+
+        quantityToPull|No|Yes|M1, Deacom
+
+        quantityIssued|No|Yes|M1, Deacom
+
+        quantityCompleted|No|Yes|M1, Deacom
+
+        isProductionComplete|No|Yes|M1, Deacom
+
+        completedDate|No|Yes|M1, Deacom
+
+        uniqueID|Yes|Yes|M1, Deacom
+
+        rowVersion|Yes|Yes|M1, Deacom
+
+        jobIsClosed|Yes|Yes|M1, Deacom
+
+        jobClosedDate|Yes|Yes|M1, Deacom'
+      parameters:
+      - name: fields
+        in: query
+        description: A comma-separated list of fields to include in the result.
+        schema:
+          type: string
+      - name: sort
+        in: query
+        description: A comma-separated list of <a href='#sortexpr'>sort expressions</a>.
+        schema:
+          type: string
+      - name: take
+        in: query
+        description: Limit the number of results being returned
+        schema:
+          minimum: 0
+          type: integer
+      - name: skip
+        in: query
+        description: The number of results to skip. Combine with 'take' to fetch records in pages
+        schema:
+          minimum: 0
+          type: integer
+      - name: count
+        in: query
+        description: '<a href=''#countparam''>Data and count</a> response behavior '
+        schema:
+          maximum: 2
+          minimum: 0
+          type: integer
+      - name: filters
+        in: query
+        description: See <a href='#filterexpr'>Filter Expressions</a> for query string syntax. The Test UI and any generated code tool may expose filter parameters as a dictionary of name/value pairs, but if creating a raw HTTP request, they must be provided on the querystring as defined in the Filter Expression section.
+        style: form
+        schema:
+          type: object
+          additionalProperties:
+            type: string
+        examples:
+          Empty:
+            description: No filters applied
+          'Example #1':
+            description: A dictionary of name/value pairs that will be serialized as querystring parameters in the format ```name[operator]=value```
+            value:
+              jobID[eq]: abc123
+              jobAssemblyID[eq]: abc123
+              partID[eq]: abc123
+              partRevisionID[eq]: abc123
+              uniqueID[eq]: cc90686b-399e-4094-b431-fa462f84b0a8
+              rowVersion[gte]: 123
+              jobIsClosed[eq]: true
+              jobClosedDate[gte]: '2020-09-25T04:03:00.0000000'
+      - name: convertToUTC
+        in: query
+        description: Convert suppported date/time values to UTC before returning the data.
+        schema:
+          type: boolean
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/JobAssemblyListResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JobAssemblyListResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/JobAssemblyListResponse'
+      operationId: getApiV21JobAssemblies
+      x-operation-id-source: derived
+  /api/v2.1/job-assemblies/{id}:
+    get:
+      tags:
+      - JobAssembly
+      summary: Get a Job Assembly from the ERP system that matches the given unique ID
+      description: 'Gets a JobAssembly by unique ID.
+
+
+        ## Supported ERPs
+
+        - M1
+
+        - Deacom
+
+        ## Features by Field
+
+        Field |Supported ERPs
+
+        ------------|------------
+
+        jobID||M1, Deacom
+
+        jobAssemblyID||M1, Deacom
+
+        level||M1, Deacom
+
+        parentAssemblyID||M1, Deacom
+
+        sourceMethodID||M1, Deacom
+
+        sourceRevisionID||M1, Deacom
+
+        partID||M1, Deacom
+
+        partRevisionID||M1, Deacom
+
+        partShortDesc||M1, Deacom
+
+        quantityPerParent||M1, Deacom
+
+        orderQty||M1, Deacom
+
+        inventoryQty||M1, Deacom
+
+        scrapQty||M1, Deacom
+
+        quantityToInspect||M1, Deacom
+
+        quantityRcvdToInv||M1, Deacom
+
+        productionQty||M1, Deacom
+
+        quantityToMake||M1, Deacom
+
+        quantityToPull||M1, Deacom
+
+        quantityIssued||M1, Deacom
+
+        quantityCompleted||M1, Deacom
+
+        isProductionComplete||M1, Deacom
+
+        completedDate||M1, Deacom
+
+        uniqueID||M1, Deacom
+
+        rowVersion||M1, Deacom
+
+        jobIsClosed||M1, Deacom
+
+        jobClosedDate||M1, Deacom'
+      parameters:
+      - name: id
+        in: path
+        description: The ID of the Job Assembly
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/JobAssembly'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JobAssembly'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/JobAssembly'
+      operationId: getApiV21JobAssembliesById
+      x-operation-id-source: derived
+components:
+  schemas:
+    JobAssembly:
+      title: JobAssembly
+      type: object
+      properties:
+        jobID:
+          type: string
+        jobAssemblyID:
+          type: string
+        level:
+          type: integer
+        parentAssemblyID:
+          type: string
+        sourceMethodID:
+          type: string
+        sourceRevisionID:
+          type: string
+        partID:
+          type: string
+        partRevisionID:
+          type: string
+        partShortDesc:
+          type: string
+        quantityPerParent:
+          type: number
+          format: double
+        orderQty:
+          type: number
+          format: double
+        inventoryQty:
+          type: number
+          format: double
+        scrapQty:
+          type: number
+          format: double
+        quantityToInspect:
+          type: number
+          format: double
+        quantityRcvdToInv:
+          type: number
+          format: double
+        productionQty:
+          type: number
+          format: double
+        quantityToMake:
+          type: number
+          format: double
+        quantityToPull:
+          type: number
+          format: double
+        quantityIssued:
+          type: number
+          format: double
+        quantityCompleted:
+          type: number
+          format: double
+        isProductionComplete:
+          type: boolean
+        completedDate:
+          type: string
+          format: date-time
+        uniqueID:
+          type: string
+        rowVersion:
+          type: integer
+          format: int64
+        jobIsClosed:
+          type: boolean
+        jobClosedDate:
+          type: string
+          format: date-time
+    JobAssemblyListResponse:
+      type: object
+      properties:
+        data:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/JobAssembly'
+          readOnly: true
+        resultCount:
+          type: integer
+          format: int32
+      additionalProperties: false
+  securitySchemes:
+    Bearer:
+      type: oauth2
+      description: OAuth 2.0 Client Credentials Flow with API Users issued from Integration Engine Management Console
+      flows:
+        clientCredentials:
+          tokenUrl: https://api-user.integrations.ecimanufacturing.com/oauth2/api-user/token
+          scopes:
+            openid: openid

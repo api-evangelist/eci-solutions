@@ -1,0 +1,182 @@
+openapi: 3.2.0
+info:
+  title: Lasso Registrant Assigned Sales Reps API
+  description: 'Overview
+
+
+    Use this API to manage Registrant, Project, and Inventory data within Lasso CRM.'
+  version: 1.0.39
+servers:
+- url: https://api.lassocrm.com/v1
+  description: Production endpoint
+tags:
+- name: Registrant Assigned Sales Reps
+paths:
+  /registrants/{registrantId}/assigned-sales-reps:
+    parameters:
+    - in: path
+      name: registrantId
+      required: true
+      schema:
+        type: string
+    get:
+      tags:
+      - Registrant Assigned Sales Reps
+      operationId: get_registrants_assigned_sales_reps
+      description: Gets a list of sales reps that this registrant is assigned to.
+      responses:
+        200:
+          description: A list of sales reps that this registrant is assigned to.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SalesRepRead'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+      summary: Get registrants assigned sales reps
+      x-summary-source: derived
+    put:
+      tags:
+      - Registrant Assigned Sales Reps
+      operationId: put_registrants_assigned_sales_reps
+      description: 'Update a registrant''s assigned sales reps. This list will overwrite the assigned sales reps for the registrant.
+
+        Only one sales rep can be set to primary. If more than one has isPrimary set to true, an error will be thrown.'
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/SalesRepWrite'
+      security:
+      - JwtAuthorizer: []
+      responses:
+        200:
+          description: Sales reps successfully assigned.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SalesRepRead'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+      summary: Put registrants assigned sales reps
+      x-summary-source: derived
+components:
+  responses:
+    BadRequest:
+      description: 'The request could not be processed due to invalid input:
+
+        - Is the request payload malformed?
+
+        - Are all required fields present?
+
+        - Are field values of the expected type (ie, number format, date format)?
+
+        - Are field values within the expected constraints (ie, greater than max size of string)?
+
+        - Are query params of the expected format?
+
+
+        Check the body model for more documentation on field constraints and limits.
+
+        '
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/StandardError'
+    Unauthorized:
+      description: The request has not been fulfilled because it lacks valid authentication credentials
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/StandardError'
+    InternalServerError:
+      description: Receiving a 5xx response indicates an error on Lasso's end. Please contact us to report the problem
+    NotFound:
+      description: The specified resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/StandardError'
+    Forbidden:
+      description: The provided authentication credentials does not have sufficient privileges to access this resource
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/StandardError'
+  schemas:
+    SalesRepWrite:
+      type: object
+      title: SalesRep Write Model
+      description: "When inputting a salesRep, you can provide a userId and the system\nwill try to look up the salesRep by the ID.\n\nIf no userId is provided but a first and last name are, then\nthe system will lookup the salesRep by name and assign it to this registrant.\n\nOtherwise, no salesRep will be assigned.\n\nNotes:\n- if multiple salesReps are being assigned, take care to only\n  choose one to be primary. If multiple are designated as primary, an error will\n  be returned\n- on registrant create, if both rotationId and assignedSalesReps are specified,\n  assignedSalesReps will override rotationId in salesRep selection.\n"
+      properties:
+        userId:
+          type: string
+          example: 123
+        firstName:
+          type: string
+          example: Lasso
+        lastName:
+          type: string
+          example: Autobot
+        isPrimary:
+          type: boolean
+          example: true
+    SalesRepRead:
+      type: object
+      title: SalesRep Read Model
+      description: Describes a sales rep, typically assigned to a set of registrants.
+      properties:
+        userId:
+          type: string
+          example: 123
+        firstName:
+          type: string
+          example: Lasso
+        lastName:
+          type: string
+          example: Autobot
+        isPrimary:
+          type: boolean
+          example: true
+    StandardError:
+      type: object
+      title: Standard Error
+      description: A standard error response format.
+      properties:
+        errorCode:
+          type: integer
+          example: 4xx
+        error:
+          type: string
+          description: A summary of the error
+          example: A summary of the error
+        errorMessage:
+          type: string
+          description: Details of the error
+          example: Details of the error
+  securitySchemes:
+    JwtAuthorizer:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

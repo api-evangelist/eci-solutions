@@ -1,0 +1,2000 @@
+openapi: 3.2.0
+info:
+  title: Eci Solutions Customer API
+  version: '1.0'
+  description: 'Operations tagged Customer across 2 of this provider''s published API definitions: eci-solutions-apar-commerce-openapi.json, eci-solutions-ecommerce-openapi.json. Each path carries the servers of the definition it was published in.'
+security:
+- Bearer: []
+tags:
+- name: Customer
+paths:
+  /api/v1/customers:
+    get:
+      tags:
+      - Customer
+      summary: Get a list of customers
+      operationId: GetCustomers
+      parameters:
+      - name: top
+        in: query
+        description: 'Maximum number of records to return. Default: 100. Max: 100.'
+        schema:
+          maximum: 100
+          minimum: 1
+          type: integer
+          format: int32
+          default: 100
+      - name: skip
+        in: query
+        description: 'The value from which to start taking records. Default: 0.'
+        schema:
+          maximum: 2147483647
+          minimum: 0
+          type: integer
+          format: int32
+          default: 0
+      - name: externalCustomerId
+        in: query
+        description: The External Customer Id by which to search for the customer.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/CustomerResponseListResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerResponseListResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/CustomerResponseListResponse'
+    post:
+      tags:
+      - Customer
+      summary: Create a customer
+      operationId: CreateCustomer
+      requestBody:
+        description: The details of Customer by which  we can create the customer with all the validation applied.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomerRequestModel'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/CustomerRequestModel'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/CustomerRequestModel'
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/CustomerResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/CustomerResponse'
+  /api/v1/customers/{id}:
+    get:
+      tags:
+      - Customer
+      summary: Get a Customer record by customer id
+      operationId: GetCustomerById
+      parameters:
+      - name: id
+        in: path
+        description: The Customer Id by which to search for the customer.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/CustomerResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/CustomerResponse'
+    patch:
+      tags:
+      - Customer
+      summary: Update a customer
+      operationId: UpdateCustomer
+      parameters:
+      - name: id
+        in: path
+        description: The Customer Id
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: The details of Customer by which  we can update the customer with all the validation applied.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateCustomerRequestModel'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/UpdateCustomerRequestModel'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/UpdateCustomerRequestModel'
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/CustomerResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/CustomerResponse'
+    delete:
+      tags:
+      - Customer
+      summary: Delete a customer by customer id
+      operationId: DeleteCustomer
+      parameters:
+      - name: id
+        in: path
+        description: The Customer Id
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: No Content
+  /api/v1/customers/{id}/invoices:
+    post:
+      tags:
+      - Customer
+      summary: Create a customer invoice
+      operationId: CreateCustomerInvoice
+      parameters:
+      - name: id
+        in: path
+        description: The Customer Id
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: The details of Customer Invoice by which we can create the customer invoice with all the validation applied.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCustomerInvoiceRequestModel'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/CreateCustomerInvoiceRequestModel'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/CreateCustomerInvoiceRequestModel'
+      responses:
+        '201':
+          description: Created
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/CustomerInvoiceResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerInvoiceResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/CustomerInvoiceResponse'
+  /api/v1/customers/{id}/invoices/{invoiceId}:
+    get:
+      tags:
+      - Customer
+      summary: Get a Customer Invoice record
+      operationId: GetCustomerInvoiceById
+      parameters:
+      - name: id
+        in: path
+        description: The Customer Id
+        required: true
+        schema:
+          type: string
+      - name: invoiceId
+        in: path
+        description: The Invoice Id
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/CustomerInvoiceResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerInvoiceResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/CustomerInvoiceResponse'
+    patch:
+      tags:
+      - Customer
+      summary: Update a customer invoice
+      operationId: UpdateCustomerInvoice
+      parameters:
+      - name: id
+        in: path
+        description: The Customer Id
+        required: true
+        schema:
+          type: string
+      - name: invoiceId
+        in: path
+        description: The Customer Invoice Id
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: The details of Customer Invoice by which we can update the customer invoice.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateCustomerInvoiceRequestModel'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/UpdateCustomerInvoiceRequestModel'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/UpdateCustomerInvoiceRequestModel'
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/CustomerInvoiceResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerInvoiceResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/CustomerInvoiceResponse'
+    delete:
+      tags:
+      - Customer
+      summary: Delete a customer invoice by invoice id
+      operationId: DeleteCustomerInvoice
+      parameters:
+      - name: id
+        in: path
+        description: The Customer Id
+        required: true
+        schema:
+          type: string
+      - name: invoiceId
+        in: path
+        description: The Customer Invoice Id
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: No Content
+  /api/v1/customers/{id}/invoices/{invoiceId}/upload-file:
+    post:
+      tags:
+      - Customer
+      summary: Upload an invoice file
+      description: For Nuvei the file must be a PDF.
+      operationId: UploadFileToCustomerInvoice
+      parameters:
+      - name: id
+        in: path
+        description: The Customer Id
+        required: true
+        schema:
+          type: string
+      - name: invoiceId
+        in: path
+        description: The Customer Invoice Id
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              required:
+              - File
+              type: object
+              properties:
+                File:
+                  type: string
+                  description: The data file (e.g., a PDF) to be uploaded.
+                  format: binary
+            encoding:
+              File:
+                style: form
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/CustomerInvoiceResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerInvoiceResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/CustomerInvoiceResponse'
+  /api/v1/customers/{id}/sales-orders:
+    post:
+      tags:
+      - Customer
+      summary: Create a customer sales order
+      operationId: CreateCustomerSalesOrder
+      parameters:
+      - name: id
+        in: path
+        description: The Customer Id
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: The details of Customer Sales Order by which we can create the customer sales order with all the validation applied.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCustomerSalesOrderRequestModel'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/CreateCustomerSalesOrderRequestModel'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/CreateCustomerSalesOrderRequestModel'
+      responses:
+        '201':
+          description: Created
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/CustomerSalesOrderResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerSalesOrderResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/CustomerSalesOrderResponse'
+  /api/v1/customers/{id}/sales-orders/{salesOrderId}:
+    get:
+      tags:
+      - Customer
+      summary: Get a Customer Sales Order record
+      operationId: GetCustomerSalesOrderById
+      parameters:
+      - name: id
+        in: path
+        description: The Customer Id
+        required: true
+        schema:
+          type: string
+      - name: salesOrderId
+        in: path
+        description: The Sales Order Id
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/CustomerSalesOrderResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerSalesOrderResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/CustomerSalesOrderResponse'
+    patch:
+      tags:
+      - Customer
+      summary: Update a customer sales order
+      operationId: UpdateCustomerSalesOrder
+      parameters:
+      - name: id
+        in: path
+        description: The Customer Id
+        required: true
+        schema:
+          type: string
+      - name: salesOrderId
+        in: path
+        description: The Customer Sales Order Id
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: The details of Customer Sales Order by which we can update the customer sales order.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateCustomerSalesOrderRequestModel'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/UpdateCustomerSalesOrderRequestModel'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/UpdateCustomerSalesOrderRequestModel'
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/CustomerSalesOrderResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerSalesOrderResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/CustomerSalesOrderResponse'
+    delete:
+      tags:
+      - Customer
+      summary: Delete a customer sales order by sales order id
+      operationId: DeleteCustomerSalesOrder
+      parameters:
+      - name: id
+        in: path
+        description: The Customer Id
+        required: true
+        schema:
+          type: string
+      - name: salesOrderId
+        in: path
+        description: The Customer Sales Order Id
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: No Content
+  /api/v1/customers/{id}/sales-orders/{salesOrderId}/upload-file:
+    post:
+      tags:
+      - Customer
+      summary: Upload a sales order file
+      description: For Nuvei the file must be a PDF.
+      operationId: UploadFileToSalesOrders
+      parameters:
+      - name: id
+        in: path
+        description: The Customer Id
+        required: true
+        schema:
+          type: string
+      - name: salesOrderId
+        in: path
+        description: The Customer Sales Order Id
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              required:
+              - File
+              type: object
+              properties:
+                File:
+                  type: string
+                  description: The data file (e.g., a PDF) to be uploaded.
+                  format: binary
+            encoding:
+              File:
+                style: form
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/CustomerSalesOrderResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerSalesOrderResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/CustomerSalesOrderResponse'
+  /api/v1/customers/{customerId}:
+    get:
+      tags:
+      - Customer
+      summary: Get a single customer by Id
+      operationId: GetCustomer
+      parameters:
+      - name: customerId
+        in: path
+        description: The unique value by which to search for the customer.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/EcommerceCustomerResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EcommerceCustomerResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/EcommerceCustomerResponse'
+        '404':
+          description: Not Found
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+    patch:
+      tags:
+      - Customer
+      summary: Update a single customer by Id
+      operationId: UpdateCustomer
+      parameters:
+      - name: customerId
+        in: path
+        description: The unique value by which to find the customer to update.
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: The values with which to update the customer.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EcommerceCustomerUpdateRequest'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/EcommerceCustomerUpdateRequest'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/EcommerceCustomerUpdateRequest'
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/EcommerceCustomerResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EcommerceCustomerResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/EcommerceCustomerResponse'
+  /api/v1/customers/{customerId}/addresses:
+    get:
+      tags:
+      - Customer
+      summary: Get a list of customer addresses
+      operationId: GetAddresses
+      parameters:
+      - name: customerId
+        in: path
+        description: The unique value by which to search for the customer.
+        required: true
+        schema:
+          type: string
+      - name: take
+        in: query
+        description: 'Maximum number of records to return. Default: 100. Max: 100.'
+        schema:
+          maximum: 100
+          minimum: 1
+          type: integer
+          format: int32
+          default: 100
+      - name: from
+        in: query
+        description: 'The value from which to start taking records. Default: 0.'
+        schema:
+          maximum: 2147483647
+          minimum: 0
+          type: integer
+          format: int32
+          default: 0
+      - name: addressIds
+        in: query
+        description: Comma-separated list of one or more Address Ids from the Ecommerce system.
+        schema:
+          type: string
+      - name: type
+        in: query
+        description: 'Valid values are AllPurpose = 0, Billing = 1, Shipping = 2.
+
+          If no types are specified, all addresses will be returned.'
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/EcommerceCustomerAddressResponseListResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EcommerceCustomerAddressResponseListResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/EcommerceCustomerAddressResponseListResponse'
+    post:
+      tags:
+      - Customer
+      summary: Create an address for a customer by Id
+      operationId: CreateAddress
+      parameters:
+      - name: customerId
+        in: path
+        description: The unique value by which to find the customer to create an address.
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: EcommerceAddress
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EcommerceAddress'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/EcommerceAddress'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/EcommerceAddress'
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/EcommerceAddressResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EcommerceAddressResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/EcommerceAddressResponse'
+  /api/v1/customers/{customerId}/addresses/{addressId}:
+    patch:
+      tags:
+      - Customer
+      summary: Update an address for a customer
+      operationId: UpdateAddress
+      parameters:
+      - name: customerId
+        in: path
+        description: The unique value by which to find the customer to update an address.
+        required: true
+        schema:
+          type: string
+      - name: addressId
+        in: path
+        description: The unique value by which to find the customer address to update.
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: EcommerceUpdateAddressRequest
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EcommerceUpdateAddressRequest'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/EcommerceUpdateAddressRequest'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/EcommerceUpdateAddressRequest'
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/EcommerceAddressResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EcommerceAddressResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/EcommerceAddressResponse'
+  /api/v1/customers/{customerId}/contract-pricing:
+    put:
+      tags:
+      - Customer
+      summary: Create or update the customer contract pricing
+      operationId: AddUpdateCustomerContractPricing
+      parameters:
+      - name: customerId
+        in: path
+        description: The unique value by which to find the customer to add or update contract pricing.
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: EcommerceCustomerContractPricingRequest
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EcommerceCustomerContractPricingRequest'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/EcommerceCustomerContractPricingRequest'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/EcommerceCustomerContractPricingRequest'
+      responses:
+        '404':
+          description: Not Found
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '204':
+          description: No Content
+  /api/v1/customers/{customerId}/product-aliases:
+    get:
+      tags:
+      - Customer
+      summary: Get a list of customer product aliases by Id
+      operationId: GetCustomerProductAliasesByCustomerId
+      parameters:
+      - name: customerId
+        in: path
+        description: The unique value by which to search for the customer.
+        required: true
+        schema:
+          type: string
+      - name: take
+        in: query
+        description: 'Maximum number of records to return. Default: 100. Max: 100.'
+        schema:
+          maximum: 100
+          minimum: 1
+          type: integer
+          format: int32
+          default: 100
+      - name: from
+        in: query
+        description: The product alias value from which to start taking records.
+        schema:
+          type: string
+      - name: sku
+        in: query
+        description: ''
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/EcommerceCustomerProductAliasesResponseProductAliasesListResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EcommerceCustomerProductAliasesResponseProductAliasesListResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/EcommerceCustomerProductAliasesResponseProductAliasesListResponse'
+    post:
+      tags:
+      - Customer
+      summary: Create a customer product alias by Id
+      operationId: CreateCustomerProductAlias
+      parameters:
+      - name: customerId
+        in: path
+        description: The unique value by which to find the customer to create a product alias.
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: EcommerceCustomerProductAliasRequest
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EcommerceCustomerProductAliasRequest'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/EcommerceCustomerProductAliasRequest'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/EcommerceCustomerProductAliasRequest'
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/EcommerceCustomerProductAliasResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EcommerceCustomerProductAliasResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/EcommerceCustomerProductAliasResponse'
+        '409':
+          description: Conflict
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+    put:
+      tags:
+      - Customer
+      summary: Update a customer product alias by Id
+      operationId: UpdateCustomerProductAlias
+      parameters:
+      - name: customerId
+        in: path
+        description: The unique value by which to find the customer to update a product alias.
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: EcommerceUpdateCustomerProductAliasRequest
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EcommerceUpdateCustomerProductAliasRequest'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/EcommerceUpdateCustomerProductAliasRequest'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/EcommerceUpdateCustomerProductAliasRequest'
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/EcommerceCustomerProductAliasResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EcommerceCustomerProductAliasResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/EcommerceCustomerProductAliasResponse'
+        '404':
+          description: Not Found
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+    delete:
+      tags:
+      - Customer
+      summary: Delete a single customer product aliases by customer Id
+      operationId: DeleteCustomerProductAliases
+      parameters:
+      - name: customerId
+        in: path
+        description: The unique value by which to find the customer product aliases to delete.
+        required: true
+        schema:
+          type: string
+      - name: alias
+        in: query
+        description: ''
+        schema:
+          type: string
+      - name: sku
+        in: query
+        description: ''
+        schema:
+          type: string
+      responses:
+        '204':
+          description: No Content
+components:
+  schemas:
+    Address:
+      type: object
+      properties:
+        addressLine1:
+          type:
+          - string
+          - 'null'
+        addressLine2:
+          type:
+          - string
+          - 'null'
+        city:
+          type:
+          - string
+          - 'null'
+        country:
+          maxLength: 2
+          minLength: 0
+          type:
+          - string
+          - 'null'
+        state:
+          maxLength: 2
+          minLength: 0
+          type:
+          - string
+          - 'null'
+        postalCode:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    UpdateCustomerSalesOrderRequestModel:
+      type: object
+      properties:
+        salesOrderNo:
+          maxLength: 200
+          minLength: 0
+          type:
+          - string
+          - 'null'
+        date:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        dueDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        amount:
+          type:
+          - number
+          - 'null'
+          format: double
+        balance:
+          type:
+          - number
+          - 'null'
+          format: double
+        taxAmount:
+          type:
+          - number
+          - 'null'
+          format: double
+        discountAmount:
+          type:
+          - number
+          - 'null'
+          format: double
+        discountDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        preAuth:
+          type:
+          - boolean
+          - 'null'
+      additionalProperties: false
+    CustomerResponseListResponse:
+      type: object
+      properties:
+        count:
+          type: integer
+          format: int32
+        data:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/CustomerResponse'
+      additionalProperties: false
+    CustomerInvoiceResponse:
+      type: object
+      properties:
+        invoiceNo:
+          type:
+          - string
+          - 'null'
+        date:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        dueDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        amount:
+          type:
+          - number
+          - 'null'
+          format: double
+        balance:
+          type:
+          - number
+          - 'null'
+          format: double
+        status:
+          type:
+          - string
+          - 'null'
+        discountAmount:
+          type:
+          - number
+          - 'null'
+          format: double
+        discountDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        invoiceId:
+          type:
+          - string
+          - 'null'
+        customerId:
+          type:
+          - string
+          - 'null'
+        externalCustomerId:
+          type:
+          - string
+          - 'null'
+        taxAmount:
+          type:
+          - number
+          - 'null'
+          format: double
+        preAuth:
+          type:
+          - boolean
+          - 'null'
+        paymentLinkUri:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    CreateCustomerSalesOrderRequestModel:
+      required:
+      - amount
+      - date
+      - dueDate
+      - salesOrderNo
+      type: object
+      properties:
+        salesOrderNo:
+          maxLength: 200
+          minLength: 0
+          type: string
+        date:
+          type: string
+          format: date-time
+        dueDate:
+          type: string
+          format: date-time
+        amount:
+          type: number
+          format: double
+        balance:
+          type:
+          - number
+          - 'null'
+          format: double
+        taxAmount:
+          type:
+          - number
+          - 'null'
+          format: double
+        discountAmount:
+          type:
+          - number
+          - 'null'
+          format: double
+        discountDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        preAuth:
+          type:
+          - boolean
+          - 'null'
+      additionalProperties: false
+    UpdateCustomerRequestModel:
+      type: object
+      properties:
+        externalCustomerId:
+          type:
+          - string
+          - 'null'
+        contactGivenName:
+          maxLength: 50
+          minLength: 0
+          type:
+          - string
+          - 'null'
+        contactSurname:
+          maxLength: 50
+          minLength: 0
+          type:
+          - string
+          - 'null'
+        emailAddress:
+          maxLength: 320
+          minLength: 0
+          type:
+          - string
+          - 'null'
+        address:
+          $ref: '#/components/schemas/Address'
+        restrictPayment:
+          $ref: '#/components/schemas/RestrictPayment'
+        disableFeeRecovery:
+          type:
+          - boolean
+          - 'null'
+        selfServiceAccount:
+          type:
+          - boolean
+          - 'null'
+      additionalProperties: false
+    CustomerResponse:
+      type: object
+      properties:
+        customerId:
+          type:
+          - string
+          - 'null'
+        externalCustomerId:
+          type:
+          - string
+          - 'null'
+        address:
+          $ref: '#/components/schemas/Address'
+        contactGivenName:
+          type:
+          - string
+          - 'null'
+        contactSurname:
+          type:
+          - string
+          - 'null'
+        emailAddress:
+          type:
+          - string
+          - 'null'
+        restrictPayment:
+          type:
+          - string
+          - 'null'
+        disableFeeRecovery:
+          type:
+          - boolean
+          - 'null'
+        selfServiceAccount:
+          type:
+          - boolean
+          - 'null'
+      additionalProperties: false
+    CustomerRequestModel:
+      required:
+      - address
+      - contactGivenName
+      - contactSurname
+      type: object
+      properties:
+        externalCustomerId:
+          maxLength: 50
+          minLength: 0
+          type:
+          - string
+          - 'null'
+        contactGivenName:
+          maxLength: 50
+          minLength: 0
+          type: string
+        contactSurname:
+          maxLength: 50
+          minLength: 0
+          type: string
+        emailAddress:
+          maxLength: 320
+          minLength: 0
+          type:
+          - string
+          - 'null'
+        address:
+          $ref: '#/components/schemas/Address'
+        restrictPayment:
+          $ref: '#/components/schemas/RestrictPayment'
+        disableFeeRecovery:
+          type:
+          - boolean
+          - 'null'
+        selfServiceAccount:
+          type:
+          - boolean
+          - 'null'
+      additionalProperties: false
+    RestrictPayment:
+      enum:
+      - CreditCard
+      - ACH
+      - Both
+      type: string
+    UpdateCustomerInvoiceRequestModel:
+      type: object
+      properties:
+        invoiceNo:
+          maxLength: 200
+          minLength: 0
+          type:
+          - string
+          - 'null'
+        date:
+          type:
+          - string
+          - 'null'
+          format: date
+        dueDate:
+          type:
+          - string
+          - 'null'
+          format: date
+        amount:
+          type:
+          - number
+          - 'null'
+          format: double
+        balance:
+          type:
+          - number
+          - 'null'
+          format: double
+        taxAmount:
+          type:
+          - number
+          - 'null'
+          format: double
+        discountAmount:
+          type:
+          - number
+          - 'null'
+          format: double
+        discountDate:
+          type:
+          - string
+          - 'null'
+          format: date
+        preAuth:
+          type:
+          - boolean
+          - 'null'
+      additionalProperties: false
+    CustomerSalesOrderResponse:
+      type: object
+      properties:
+        salesOrderId:
+          type:
+          - string
+          - 'null'
+        customerId:
+          type:
+          - string
+          - 'null'
+        externalCustomerId:
+          type:
+          - string
+          - 'null'
+        salesOrderNo:
+          type:
+          - string
+          - 'null'
+        date:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        dueDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        amount:
+          type:
+          - number
+          - 'null'
+          format: double
+        balance:
+          type:
+          - number
+          - 'null'
+          format: double
+        status:
+          type:
+          - string
+          - 'null'
+        taxAmount:
+          type:
+          - number
+          - 'null'
+          format: double
+        discountAmount:
+          type:
+          - number
+          - 'null'
+          format: double
+        discountDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        preAuth:
+          type:
+          - boolean
+          - 'null'
+        paymentLinkUri:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    CreateCustomerInvoiceRequestModel:
+      required:
+      - amount
+      - date
+      - dueDate
+      - invoiceNo
+      - taxAmount
+      type: object
+      properties:
+        invoiceNo:
+          maxLength: 200
+          minLength: 0
+          type: string
+        date:
+          type: string
+          format: date
+        dueDate:
+          type: string
+          format: date
+        amount:
+          type: number
+          format: double
+        balance:
+          type:
+          - number
+          - 'null'
+          format: double
+        discountAmount:
+          type:
+          - number
+          - 'null'
+          format: double
+        discountDate:
+          type:
+          - string
+          - 'null'
+          format: date
+        taxAmount:
+          type: number
+          format: double
+        preAuth:
+          type:
+          - boolean
+          - 'null'
+      additionalProperties: false
+    EcommerceCustomerProductAliasRequest:
+      required:
+      - alias
+      - sku
+      type: object
+      properties:
+        sku:
+          minLength: 1
+          type: string
+        alias:
+          maxLength: 1008
+          minLength: 0
+          type: string
+      additionalProperties: false
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+        title:
+          type:
+          - string
+          - 'null'
+        status:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        detail:
+          type:
+          - string
+          - 'null'
+        instance:
+          type:
+          - string
+          - 'null'
+      additionalProperties: {}
+    EcommerceCustomerContractPricingRequest:
+      required:
+      - endDate
+      - name
+      - productPricing
+      - startDate
+      type: object
+      properties:
+        name:
+          minLength: 1
+          type: string
+        startDate:
+          type: string
+          format: date-time
+        endDate:
+          type: string
+          format: date-time
+        productPricing:
+          minItems: 1
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductPricing'
+      additionalProperties: false
+    EcommerceCustomerResponseListResponse:
+      type: object
+      properties:
+        count:
+          type: integer
+          format: int32
+        nextFrom:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        data:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/EcommerceCustomerResponse'
+      additionalProperties: false
+    AliasOldNewValue:
+      required:
+      - newValue
+      - oldValue
+      type: object
+      properties:
+        oldValue:
+          maxLength: 1008
+          minLength: 0
+          type: string
+        newValue:
+          maxLength: 1008
+          minLength: 0
+          type: string
+      additionalProperties: false
+    ProductPricing:
+      required:
+      - price
+      - quantity
+      - sku
+      type: object
+      properties:
+        sku:
+          minLength: 1
+          type: string
+        quantity:
+          minimum: 0
+          type: number
+          format: double
+        price:
+          minimum: 0.01
+          type: number
+          format: double
+      additionalProperties: false
+    EcommerceCustomerProductAliasResponse:
+      type: object
+      properties:
+        customerId:
+          type:
+          - string
+          - 'null'
+        sku:
+          type:
+          - string
+          - 'null'
+        alias:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    EcommerceAddress:
+      required:
+      - country
+      type: object
+      properties:
+        type:
+          $ref: '#/components/schemas/EcommerceAddressType'
+        title:
+          type:
+          - string
+          - 'null'
+        line1:
+          type:
+          - string
+          - 'null'
+        line2:
+          type:
+          - string
+          - 'null'
+        line3:
+          type:
+          - string
+          - 'null'
+        city:
+          type:
+          - string
+          - 'null'
+        state:
+          type:
+          - string
+          - 'null'
+        postalCode:
+          type:
+          - string
+          - 'null'
+        country:
+          maxLength: 2
+          minLength: 0
+          type: string
+        referenceCode:
+          type:
+          - string
+          - 'null'
+        isEnabled:
+          type:
+          - boolean
+          - 'null'
+      additionalProperties: false
+    EcommerceCustomerResponse:
+      type: object
+      properties:
+        customerId:
+          type:
+          - string
+          - 'null'
+        accountNumber:
+          type:
+          - string
+          - 'null'
+        parentCustomerId:
+          type:
+          - string
+          - 'null'
+        companyName:
+          type:
+          - string
+          - 'null'
+        isEnabled:
+          type:
+          - boolean
+          - 'null'
+        referenceCode:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    EcommerceCustomerAddress:
+      type: object
+      properties:
+        addressId:
+          type:
+          - string
+          - 'null'
+        title:
+          type:
+          - string
+          - 'null'
+        type:
+          type:
+          - string
+          - 'null'
+        referenceCode:
+          type:
+          - string
+          - 'null'
+        isEnabled:
+          type:
+          - boolean
+          - 'null'
+      additionalProperties: false
+    EcommerceCustomerAddressResponseListResponse:
+      type: object
+      properties:
+        count:
+          type: integer
+          format: int32
+        nextFrom:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        data:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/EcommerceCustomerAddressResponse'
+      additionalProperties: false
+    EcommerceCustomerRewardsStatus:
+      enum:
+      - 0
+      - 1
+      type: integer
+      format: int32
+    EcommerceCustomerUpdateRequest:
+      required:
+      - companyName
+      type: object
+      properties:
+        companyName:
+          minLength: 1
+          type: string
+        accountNumber:
+          type:
+          - string
+          - 'null'
+        parentCustomerId:
+          type:
+          - string
+          - 'null'
+        referenceCode:
+          type:
+          - string
+          - 'null'
+        isEnabled:
+          type:
+          - boolean
+          - 'null'
+        rewardsStatus:
+          $ref: '#/components/schemas/EcommerceCustomerRewardsStatus'
+        isPoNumberRequired:
+          type:
+          - boolean
+          - 'null'
+        poNumberMask:
+          type:
+          - string
+          - 'null'
+        locationReferenceCode:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    EcommerceCustomerProductAliasesResponseProductAliasesListResponse:
+      type: object
+      properties:
+        count:
+          type: integer
+          format: int32
+        nextFrom:
+          type:
+          - string
+          - 'null'
+        data:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/EcommerceCustomerProductAliasesResponse'
+      additionalProperties: false
+    EcommerceUpdateAddressRequest:
+      type: object
+      properties:
+        type:
+          $ref: '#/components/schemas/EcommerceAddressType'
+        title:
+          type:
+          - string
+          - 'null'
+        line1:
+          type:
+          - string
+          - 'null'
+        line2:
+          type:
+          - string
+          - 'null'
+        line3:
+          type:
+          - string
+          - 'null'
+        city:
+          type:
+          - string
+          - 'null'
+        state:
+          type:
+          - string
+          - 'null'
+        postalCode:
+          type:
+          - string
+          - 'null'
+        country:
+          maxLength: 2
+          minLength: 0
+          type:
+          - string
+          - 'null'
+        referenceCode:
+          type:
+          - string
+          - 'null'
+        isEnabled:
+          type:
+          - boolean
+          - 'null'
+      additionalProperties: false
+    SkuOldNewValue:
+      required:
+      - newValue
+      - oldValue
+      type: object
+      properties:
+        oldValue:
+          minLength: 1
+          type: string
+        newValue:
+          minLength: 1
+          type: string
+      additionalProperties: false
+    EcommerceCustomerWithAddressResponse:
+      type: object
+      properties:
+        accountNumber:
+          type:
+          - string
+          - 'null'
+        companyName:
+          type:
+          - string
+          - 'null'
+        customerId:
+          type:
+          - string
+          - 'null'
+        parentCustomerId:
+          type:
+          - string
+          - 'null'
+        isEnabled:
+          type:
+          - boolean
+          - 'null'
+        referenceCode:
+          type:
+          - string
+          - 'null'
+        addresses:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/EcommerceCustomerAddress'
+      additionalProperties: false
+    EcommerceCustomerProductAliasesResponse:
+      type: object
+      properties:
+        sku:
+          type:
+          - string
+          - 'null'
+        alias:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    EcommerceAddressType:
+      enum:
+      - 0
+      - 1
+      - 2
+      type: integer
+      format: int32
+    EcommerceCustomerAddressResponse:
+      type: object
+      properties:
+        addressId:
+          type:
+          - string
+          - 'null'
+        type:
+          $ref: '#/components/schemas/EcommerceAddressType'
+        title:
+          type:
+          - string
+          - 'null'
+        line1:
+          type:
+          - string
+          - 'null'
+        line2:
+          type:
+          - string
+          - 'null'
+        line3:
+          type:
+          - string
+          - 'null'
+        city:
+          type:
+          - string
+          - 'null'
+        state:
+          type:
+          - string
+          - 'null'
+        postalCode:
+          type:
+          - string
+          - 'null'
+        country:
+          type:
+          - string
+          - 'null'
+        referenceCode:
+          type:
+          - string
+          - 'null'
+        isEnabled:
+          type:
+          - boolean
+          - 'null'
+      additionalProperties: false
+    EcommerceAddressResponse:
+      type: object
+      properties:
+        addressId:
+          type:
+          - string
+          - 'null'
+        type:
+          $ref: '#/components/schemas/EcommerceAddressType'
+        title:
+          type:
+          - string
+          - 'null'
+        referenceCode:
+          type:
+          - string
+          - 'null'
+        isEnabled:
+          type:
+          - boolean
+          - 'null'
+      additionalProperties: false
+    EcommerceCustomerRequest:
+      required:
+      - companyName
+      type: object
+      properties:
+        companyName:
+          minLength: 1
+          type: string
+        accountNumber:
+          type:
+          - string
+          - 'null'
+        parentCustomerId:
+          type:
+          - string
+          - 'null'
+        referenceCode:
+          type:
+          - string
+          - 'null'
+        addresses:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/EcommerceAddress'
+        isEnabled:
+          type: boolean
+        rewardsStatus:
+          $ref: '#/components/schemas/EcommerceCustomerRewardsStatus'
+        isPoNumberRequired:
+          type:
+          - boolean
+          - 'null'
+        poNumberMask:
+          type:
+          - string
+          - 'null'
+        locationReferenceCode:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    EcommerceUpdateCustomerProductAliasRequest:
+      required:
+      - alias
+      - sku
+      type: object
+      properties:
+        sku:
+          $ref: '#/components/schemas/SkuOldNewValue'
+        alias:
+          $ref: '#/components/schemas/AliasOldNewValue'
+      additionalProperties: false
+  securitySchemes:
+    Bearer:
+      type: oauth2
+      description: OAuth 2.0 Client Credentials Flow with API Users issued from Integration Engine Management Console
+      flows:
+        clientCredentials:
+          tokenUrl: https://api-user.integrations.ecimanufacturing.com/oauth2/api-user/token
+          scopes:
+            openid: openid
+x-refined-from:
+- eci-solutions-apar-commerce-openapi.json
+- eci-solutions-ecommerce-openapi.json

@@ -1,0 +1,899 @@
+openapi: 3.2.0
+info:
+  title: M1 Public ERP/SCHEMA API
+  description: '## Developer Notes for the M1 Public API (ERP resource):
+
+
+    ### Hosted Environment
+
+
+    If you are using the public API for a hosted M1 customer, you must connect to the public API using the Integration Engine.'
+  contact:
+    name: ECI Software Solutions - M1
+    url: https://www.ecisolutions.com/manufacturers-and-job-shops/m1
+  version: v1
+servers:
+- url: https://api-m1.integrations.ecimanufacturing.com
+  description: API Host
+security:
+- oauth2: []
+tags:
+- name: ERP/SCHEMA
+paths:
+  /api/ERP/DDFields:
+    get:
+      tags:
+      - ERP/SCHEMA
+      summary: Returns all existing DDFields according to the filter, order by and pagination…
+      description: 'When passing the filter parameter, the following operators are supported: [eq, ne, gt, lt]. Multiple filters can be specified as separate query parameters in the format M1Field[operator]value. eg. `impPartID[eq]CLIP`. An invalid filter will return a 400 Bad Request response.
+
+
+        When passing the orderBy parameter, the following operators are supported: [Asc, Desc]. The format must be M1Field[Asc],M1Field[Desc]. eg. `impPartID[Asc],impPartType[Desc]`. An invalid orderBy will return a 400 Bad Request response.
+
+
+        Custom fields are returned in the response as their full field name, they are also filterable and sortable. The format should be `M1CustomField[operator]value`. eg. `uimpCustomField1[eq]12`.'
+      operationId: ERPDDFields_GetAllDDFieldAsync
+      parameters:
+      - name: pageSize
+        in: query
+        description: Specifies the number of items per page. Defaults to 1000 which is also the maximum.
+        style: form
+        explode: false
+        schema:
+          type: integer
+          format: int32
+      - name: pageNumber
+        in: query
+        description: Specifies the page number to retrieve. Defaults to 0, which corresponds to the first page.
+        style: form
+        explode: false
+        schema:
+          type: integer
+          format: int32
+      - name: filter
+        in: query
+        description: Applies a filter to the returned data. The format should be `M1Field[operator]value`.
+        style: form
+        explode: false
+        schema:
+          type: array
+          items:
+            type: string
+      - name: orderBy
+        in: query
+        description: Specifies the sorting criteria for the returned data. The format should be `M1Field[Asc],M1Field[Desc]`.
+        style: form
+        explode: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_IList_ERPDDFieldDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_IList_ERPDDFieldDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_IList_ERPDDFieldDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_IList_ERPDDFieldDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+  /api/ERP/DDFields/{key}:
+    get:
+      tags:
+      - ERP/SCHEMA
+      summary: Returns a single DDField record for a given Unique Id
+      description: This endpoint retrieves a DDField based on its identifier. If the record does not exist, a 404 Not Found response will be returned.
+      operationId: ERPDDFields_GetDDFieldAsync
+      parameters:
+      - name: key
+        in: path
+        description: The Unique Id of the record to be retrieved
+        required: true
+        style: simple
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPDDFieldDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPDDFieldDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPDDFieldDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPDDFieldDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+  /api/ERP/DDTables:
+    get:
+      tags:
+      - ERP/SCHEMA
+      summary: Returns all existing DDTables according to the filter, order by and pagination…
+      description: 'When passing the filter parameter, the following operators are supported: [eq, ne, gt, lt]. Multiple filters can be specified as separate query parameters in the format M1Field[operator]value. eg. `impPartID[eq]CLIP`. An invalid filter will return a 400 Bad Request response.
+
+
+        When passing the orderBy parameter, the following operators are supported: [Asc, Desc]. The format must be M1Field[Asc],M1Field[Desc]. eg. `impPartID[Asc],impPartType[Desc]`. An invalid orderBy will return a 400 Bad Request response.
+
+
+        Custom fields are returned in the response as their full field name, they are also filterable and sortable. The format should be `M1CustomField[operator]value`. eg. `uimpCustomField1[eq]12`.'
+      operationId: ERPDDTables_GetAllDDTableAsync
+      parameters:
+      - name: pageSize
+        in: query
+        description: Specifies the number of items per page. Defaults to 1000 which is also the maximum.
+        style: form
+        explode: false
+        schema:
+          type: integer
+          format: int32
+      - name: pageNumber
+        in: query
+        description: Specifies the page number to retrieve. Defaults to 0, which corresponds to the first page.
+        style: form
+        explode: false
+        schema:
+          type: integer
+          format: int32
+      - name: filter
+        in: query
+        description: Applies a filter to the returned data. The format should be `M1Field[operator]value`.
+        style: form
+        explode: false
+        schema:
+          type: array
+          items:
+            type: string
+      - name: orderBy
+        in: query
+        description: Specifies the sorting criteria for the returned data. The format should be `M1Field[Asc],M1Field[Desc]`.
+        style: form
+        explode: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_IList_ERPDDTableDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_IList_ERPDDTableDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_IList_ERPDDTableDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_IList_ERPDDTableDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+  /api/ERP/DDTables/{key}:
+    get:
+      tags:
+      - ERP/SCHEMA
+      summary: Returns a single DDTable record for a given Unique Id
+      description: This endpoint retrieves a DDTable based on its identifier. If the record does not exist, a 404 Not Found response will be returned.
+      operationId: ERPDDTables_GetDDTableAsync
+      parameters:
+      - name: key
+        in: path
+        description: The Unique Id of the record to be retrieved
+        required: true
+        style: simple
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPDDTableDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPDDTableDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPDDTableDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPDDTableDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+components:
+  schemas:
+    ERPResponseMessageDto_ERPDDFieldDto:
+      type: object
+      properties:
+        responseInfo:
+          $ref: '#/components/schemas/APIResponseMessageDto'
+        returnObject:
+          $ref: '#/components/schemas/ERPDDFieldDto'
+        recordCount:
+          type: integer
+          format: int32
+    ERPResponseMessageDto_IList_ERPDDTableDto:
+      type: object
+      properties:
+        responseInfo:
+          $ref: '#/components/schemas/APIResponseMessageDto'
+        returnObject:
+          type: array
+          items:
+            $ref: '#/components/schemas/ERPDDTableDto'
+        recordCount:
+          type: integer
+          format: int32
+    ERPDDTableDto:
+      type: object
+      properties:
+        dtV3Tb:
+          type: string
+        dtTable:
+          type: string
+        dtUAddFld1:
+          type: string
+        dtUAddFld2:
+          type: string
+        dtUAddFld3:
+          type: string
+        dtCaption:
+          type: string
+        dtParentTable:
+          type: string
+        dtAddFld1:
+          type: string
+        dtAddFld2:
+          type: string
+        dtAddFld3:
+          type: string
+        dtReadonlyExpression:
+          type: string
+        dtReadonlyExpressionUser:
+          type: string
+        dtWebSeq:
+          type: integer
+          format: int32
+        dtDefaultObjectId:
+          type: string
+        dtMemoDescription:
+          type: string
+        dtMemoDescriptionUser:
+          type: string
+        dtKeyFields:
+          type: string
+        dtKeyGroup:
+          type: string
+        dtKeysAtThisLevel:
+          type: integer
+          format: int32
+        dtChangeDetailIdsFilter:
+          type: string
+        dtFieldToCheckOnUpdate:
+          type: string
+        dtViewDef:
+          type: string
+        dtViewSeq:
+          type: integer
+          format: int32
+        dtDisableAddNewExpression:
+          type: string
+        dtDisableAddNewExpressionUser:
+          type: string
+        dtDisableChangeIDExpression:
+          type: string
+        dtDisableChangeIDExpressionUser:
+          type: string
+        dtDisableDeleteExpression:
+          type: string
+        dtDisableDeleteExpressionUser:
+          type: string
+        dtMailMerge:
+          type: boolean
+        dtMap:
+          type: boolean
+        dtHasDeleteCode:
+          type: boolean
+        dtLastKeyCanBeEmpty:
+          type: boolean
+        dtSaveAs:
+          type: boolean
+        dtChangeID:
+          type: boolean
+        dtShowMemos:
+          type: boolean
+        dtShowMemosUser:
+          type: boolean
+        dtImport:
+          type: boolean
+        dtEmptyKeyCanBeEdited:
+          type: boolean
+        dtDisplayName:
+          type: string
+        dtSQLView:
+          type: boolean
+        dtGridEdit:
+          type: boolean
+        dtCustom:
+          type: boolean
+        dtAutoIncrement:
+          type: boolean
+        dtClosedCutoffDateField:
+          type: string
+        dtClosedDateField:
+          type: string
+        dtClosedExtraSetExpression:
+          type: string
+        dtClosedField:
+          type: string
+        dtClosedHelpLink:
+          type: string
+        dtClosedIncludeOptionSqlExpr:
+          type: string
+        dtClosedIncludeOptionText:
+          type: string
+        dtClosedRoleCheck:
+          type: string
+        dtClosedValue:
+          type: string
+        dtIncrementAmount:
+          type: integer
+          format: int32
+        dtIncrementAmountUser:
+          type: integer
+          format: int32
+        dtUniqueField:
+          type: string
+        dtUniqueID:
+          type: string
+          format: uuid
+          example: 00000000-0000-0000-0000-000000000000
+        dtInitialValue:
+          type: string
+        dtEnterInSequenceField:
+          type: string
+        dtDocumentDateField:
+          type: string
+        dtDocumentPlantIdField:
+          type: string
+        dtModule:
+          type: string
+        dtColorExpression:
+          type: string
+        dtColorExpressionUser:
+          type: string
+        dtContactField:
+          type: string
+        dtForeignKeyDeleteFilter:
+          type: string
+        dtAppExtensionID:
+          type: string
+        dtPrefix:
+          type: string
+        dtPrefixUser:
+          type: string
+        dtVRel:
+          type: string
+        dtGridID:
+          type: string
+        dtPromptOnAddField:
+          type: string
+        dtVTbl:
+          type: string
+        dtUTbl:
+          type: string
+        dtQuickSearchFields:
+          type: string
+        dtQuickSearchFieldsUser:
+          type: string
+        dtQuickSearchOption:
+          type: integer
+          format: int32
+        dtNumericOnly:
+          type: integer
+          format: int32
+        dtPurgeCutoffDateField:
+          type: string
+        dtPurgeHelpLink:
+          type: string
+        dtCurrencyCustomRateField:
+          type: string
+        dtCurrencyExchangeRateField:
+          type: string
+        dtCurrencyModeLocationField:
+          type: string
+        dtCurrencyRateIdField:
+          type: string
+        dtCurrencyUpdateType:
+          type: integer
+          format: int32
+        dtAutoIncrementUser:
+          type: integer
+          format: int32
+        dtOverrideDelete:
+          type: string
+        dtOverrideDeleteEnabledExpression:
+          type: string
+    APIResponseMessageDto:
+      type: object
+      properties:
+        description:
+          type: string
+        status:
+          type: string
+        payloadID:
+          type: string
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+          readOnly: true
+        warnings:
+          type: array
+          items:
+            $ref: '#/components/schemas/Warning'
+          readOnly: true
+    ERPResponseMessageDto_IList_ERPDDFieldDto:
+      type: object
+      properties:
+        responseInfo:
+          $ref: '#/components/schemas/APIResponseMessageDto'
+        returnObject:
+          type: array
+          items:
+            $ref: '#/components/schemas/ERPDDFieldDto'
+        recordCount:
+          type: integer
+          format: int32
+    ERPResponseMessageDto_ERPDDTableDto:
+      type: object
+      properties:
+        responseInfo:
+          $ref: '#/components/schemas/APIResponseMessageDto'
+        returnObject:
+          $ref: '#/components/schemas/ERPDDTableDto'
+        recordCount:
+          type: integer
+          format: int32
+    ERPDDFieldDto:
+      type: object
+      properties:
+        dfv3fd:
+          type: string
+        dfTable:
+          type: string
+        dfCalculationExpression:
+          type: string
+        dfValueList:
+          type: string
+        dfCaption:
+          type: string
+        dfCaptionExpression:
+          type: string
+        dfCaptionExpressionUser:
+          type: string
+        dfSaveAsExpression:
+          type: string
+        dfSaveAsExpressionUser:
+          type: string
+        dfDBType:
+          type: string
+        dfUDPr:
+          type: integer
+          format: int32
+        dfReadonlyExpression:
+          type: string
+        dfReadonlyExpressionUser:
+          type: string
+        dfDecimals:
+          type: integer
+          format: int32
+        dfDefaultExpression:
+          type: string
+        dfDefaultExpressionUser:
+          type: string
+        dfRelatedFields:
+          type: string
+        dfRelatedTable:
+          type: string
+        dfRelatedTableDescriptionField:
+          type: string
+        dfRelatedTableFilter:
+          type: string
+        dfRelatedTableOrderByField:
+          type: string
+        dfRelatedTableReturnField:
+          type: string
+        dfRelatedTableSearchGridId:
+          type: string
+        dfRelationType:
+          type: integer
+          format: int32
+        dfHelp:
+          type: string
+        dfLength:
+          type: integer
+          format: int32
+        dfSequence:
+          type: integer
+          format: int32
+        dfSequenceUser:
+          type: integer
+          format: int32
+        dfRequiredExpression:
+          type: string
+        dfRequiredExpressionUser:
+          type: string
+        dfFFil:
+          type: string
+        dfVFld:
+          type: string
+        dfField:
+          type: string
+        dfHasChangeCode:
+          type: boolean
+        dfRequiredForeignRelation:
+          type: boolean
+        dfShowAsDropdown:
+          type: boolean
+        dfShowAsDropdownUser:
+          type: boolean
+        dfVisibleExpression:
+          type: string
+        dfVisibleExpressionUser:
+          type: string
+        dfHide:
+          type: boolean
+        dfAllowNulls:
+          type: boolean
+        dfIndexed:
+          type: boolean
+        dfLower:
+          type: boolean
+        dfDisplayName:
+          type: string
+        dfDPrv:
+          type: boolean
+        dfCurrencyUpdateRelatedField:
+          type: boolean
+        dfCustom:
+          type: boolean
+        dfCustomCaption:
+          type: boolean
+        dfOLRelFld:
+          type: string
+        dfOLType:
+          type: string
+        dfUniqueID:
+          type: string
+          format: uuid
+          example: 00000000-0000-0000-0000-000000000000
+        dfModule:
+          type: string
+        dfComments:
+          type: string
+        dfConv:
+          type: string
+        dfForeignKeyRequiredExpression:
+          type: string
+        dfForeignKeyRequiredExpressionUser:
+          type: string
+        dfFormat:
+          type: string
+        dfBoundParentField:
+          type: string
+        dfBoundParentFieldExpression:
+          type: string
+        dfBoundParentFieldProxy:
+          type: string
+        dfBoundParentFieldType:
+          type: integer
+          format: int32
+        dfAppExtensionID:
+          type: string
+        dfGroup:
+          type: string
+        dfGroupParameters:
+          type: string
+        dfStatus:
+          type: string
+        dfCurrencyRelatedField:
+          type: string
+        dfCurrencyType:
+          type: integer
+          format: int32
+    Error:
+      type: object
+      properties:
+        innerText:
+          type: string
+    Warning:
+      type: object
+      properties:
+        innerText:
+          type: string
+  securitySchemes:
+    oauth2:
+      type: oauth2
+      description: OAuth 2.0 Client Credentials Flow with API Users issued from Integration Engine Management Console
+      flows:
+        clientCredentials:
+          tokenUrl: https://api-user.integrations.ecimanufacturing.com/oauth2/api-user/token
+          scopes:
+            openid: openid

@@ -1,0 +1,2535 @@
+openapi: 3.2.0
+info:
+  title: M1 Public ERP/DATACOLLECTION API
+  description: '## Developer Notes for the M1 Public API (ERP resource):
+
+
+    ### Hosted Environment
+
+
+    If you are using the public API for a hosted M1 customer, you must connect to the public API using the Integration Engine.'
+  contact:
+    name: ECI Software Solutions - M1
+    url: https://www.ecisolutions.com/manufacturers-and-job-shops/m1
+  version: v1
+servers:
+- url: https://api-m1.integrations.ecimanufacturing.com
+  description: API Host
+security:
+- oauth2: []
+tags:
+- name: ERP/DATACOLLECTION
+paths:
+  /api/ERP/Expenses:
+    get:
+      tags:
+      - ERP/DATACOLLECTION
+      summary: Returns all existing Expenses according to the filter, order by and pagination…
+      description: 'When passing the filter parameter, the following operators are supported: [eq, ne, gt, lt]. Multiple filters can be specified as separate query parameters in the format M1Field[operator]value. eg. `impPartID[eq]CLIP`. An invalid filter will return a 400 Bad Request response.
+
+
+        When passing the orderBy parameter, the following operators are supported: [Asc, Desc]. The format must be M1Field[Asc],M1Field[Desc]. eg. `impPartID[Asc],impPartType[Desc]`. An invalid orderBy will return a 400 Bad Request response.
+
+
+        Custom fields are returned in the response as their full field name, they are also filterable and sortable. The format should be `M1CustomField[operator]value`. eg. `uimpCustomField1[eq]12`.'
+      operationId: ERPExpenses_GetAllExpenseAsync
+      parameters:
+      - name: pageSize
+        in: query
+        description: Specifies the number of items per page. Defaults to 1000 which is also the maximum.
+        style: form
+        explode: false
+        schema:
+          type: integer
+          format: int32
+      - name: pageNumber
+        in: query
+        description: Specifies the page number to retrieve. Defaults to 0, which corresponds to the first page.
+        style: form
+        explode: false
+        schema:
+          type: integer
+          format: int32
+      - name: filter
+        in: query
+        description: Applies a filter to the returned data. The format should be `M1Field[operator]value`.
+        style: form
+        explode: false
+        schema:
+          type: array
+          items:
+            type: string
+      - name: orderBy
+        in: query
+        description: Specifies the sorting criteria for the returned data. The format should be `M1Field[Asc],M1Field[Desc]`.
+        style: form
+        explode: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_IList_ERPExpenseDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_IList_ERPExpenseDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_IList_ERPExpenseDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_IList_ERPExpenseDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+    put:
+      tags:
+      - ERP/DATACOLLECTION
+      summary: Creates or updates a single Expense record
+      description: 'When a record does not exist, a new record will be created. When a record exists, the record will be updated.
+
+
+        When updating an existing record, all fields must be provided, even if they are not changing. Upon update, the UniqueID, Created By/Date and M1 Keys (eg. cmoOrganizationID) will not be updated.
+
+
+        Custom fields should be sent in the request as their full field name and should be prefixed with `u`. eg. `uimpCustomField1`.
+
+
+        To use this endpoint, you must have an API Key that supports writes.'
+      operationId: ERPExpenses_PutExpenseAsync
+      requestBody:
+        description: The fully populated {M1.API.DTOs.ERP.ERPExpenseDto} model.
+        content:
+          text/json:
+            schema:
+              $ref: '#/components/schemas/ERPExpenseDto'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ERPExpenseDto'
+        required: true
+        x-bodyName: expense
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPExpenseDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPExpenseDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPExpenseDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPExpenseDto'
+        '201':
+          description: Created
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPExpenseDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPExpenseDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPExpenseDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPExpenseDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+  /api/ERP/Expenses/{key}:
+    get:
+      tags:
+      - ERP/DATACOLLECTION
+      summary: Returns a single Expense record for a given Unique Id
+      description: This endpoint retrieves a Expense based on its identifier. If the record does not exist, a 404 Not Found response will be returned.
+      operationId: ERPExpenses_GetExpenseAsync
+      parameters:
+      - name: key
+        in: path
+        description: The Unique Id of the record to be retrieved
+        required: true
+        style: simple
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPExpenseDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPExpenseDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPExpenseDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPExpenseDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+    delete:
+      tags:
+      - ERP/DATACOLLECTION
+      summary: Deletes a single Expense record
+      description: 'If the record is not found, a 404 Not Found response will be returned.
+
+
+        If the record is successfully deleted, a 200 OK response will be returned.
+
+
+        If the record is being used anywhere in the M1 system, a 400 Bad Request response will be returned.
+
+
+        To use this endpoint, you must have an API Key that supports writes.'
+      operationId: ERPExpenses_DeleteExpenseAsync
+      parameters:
+      - name: key
+        in: path
+        description: The Unique Id of the record to be deleted
+        required: true
+        style: simple
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPExpenseDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPExpenseDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPExpenseDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPExpenseDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+  /api/ERP/IndirectLaborCodes:
+    get:
+      tags:
+      - ERP/DATACOLLECTION
+      summary: Returns all existing IndirectLaborCodes according to the filter, order by and…
+      description: 'When passing the filter parameter, the following operators are supported: [eq, ne, gt, lt]. Multiple filters can be specified as separate query parameters in the format M1Field[operator]value. eg. `impPartID[eq]CLIP`. An invalid filter will return a 400 Bad Request response.
+
+
+        When passing the orderBy parameter, the following operators are supported: [Asc, Desc]. The format must be M1Field[Asc],M1Field[Desc]. eg. `impPartID[Asc],impPartType[Desc]`. An invalid orderBy will return a 400 Bad Request response.
+
+
+        Custom fields are returned in the response as their full field name, they are also filterable and sortable. The format should be `M1CustomField[operator]value`. eg. `uimpCustomField1[eq]12`.'
+      operationId: ERPIndirectLaborCodes_GetAllIndirectLaborCodeAsync
+      parameters:
+      - name: pageSize
+        in: query
+        description: Specifies the number of items per page. Defaults to 1000 which is also the maximum.
+        style: form
+        explode: false
+        schema:
+          type: integer
+          format: int32
+      - name: pageNumber
+        in: query
+        description: Specifies the page number to retrieve. Defaults to 0, which corresponds to the first page.
+        style: form
+        explode: false
+        schema:
+          type: integer
+          format: int32
+      - name: filter
+        in: query
+        description: Applies a filter to the returned data. The format should be `M1Field[operator]value`.
+        style: form
+        explode: false
+        schema:
+          type: array
+          items:
+            type: string
+      - name: orderBy
+        in: query
+        description: Specifies the sorting criteria for the returned data. The format should be `M1Field[Asc],M1Field[Desc]`.
+        style: form
+        explode: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_IList_ERPIndirectLaborCodeDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_IList_ERPIndirectLaborCodeDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_IList_ERPIndirectLaborCodeDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_IList_ERPIndirectLaborCodeDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+    put:
+      tags:
+      - ERP/DATACOLLECTION
+      summary: Creates or updates a single IndirectLaborCode record
+      description: 'When a record does not exist, a new record will be created. When a record exists, the record will be updated.
+
+
+        When updating an existing record, all fields must be provided, even if they are not changing. Upon update, the UniqueID, Created By/Date and M1 Keys (eg. cmoOrganizationID) will not be updated.
+
+
+        Custom fields should be sent in the request as their full field name and should be prefixed with `u`. eg. `uimpCustomField1`.
+
+
+        To use this endpoint, you must have an API Key that supports writes.'
+      operationId: ERPIndirectLaborCodes_PutIndirectLaborCodeAsync
+      requestBody:
+        description: The fully populated {M1.API.DTOs.ERP.ERPIndirectLaborCodeDto} model.
+        content:
+          text/json:
+            schema:
+              $ref: '#/components/schemas/ERPIndirectLaborCodeDto'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ERPIndirectLaborCodeDto'
+        required: true
+        x-bodyName: indirectLaborCode
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPIndirectLaborCodeDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPIndirectLaborCodeDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPIndirectLaborCodeDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPIndirectLaborCodeDto'
+        '201':
+          description: Created
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPIndirectLaborCodeDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPIndirectLaborCodeDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPIndirectLaborCodeDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPIndirectLaborCodeDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+  /api/ERP/IndirectLaborCodes/{key}:
+    get:
+      tags:
+      - ERP/DATACOLLECTION
+      summary: Returns a single IndirectLaborCode record for a given Unique Id
+      description: This endpoint retrieves a IndirectLaborCode based on its identifier. If the record does not exist, a 404 Not Found response will be returned.
+      operationId: ERPIndirectLaborCodes_GetIndirectLaborCodeAsync
+      parameters:
+      - name: key
+        in: path
+        description: The Unique Id of the record to be retrieved
+        required: true
+        style: simple
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPIndirectLaborCodeDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPIndirectLaborCodeDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPIndirectLaborCodeDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPIndirectLaborCodeDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+    delete:
+      tags:
+      - ERP/DATACOLLECTION
+      summary: Deletes a single IndirectLaborCode record
+      description: 'If the record is not found, a 404 Not Found response will be returned.
+
+
+        If the record is successfully deleted, a 200 OK response will be returned.
+
+
+        If the record is being used anywhere in the M1 system, a 400 Bad Request response will be returned.
+
+
+        To use this endpoint, you must have an API Key that supports writes.'
+      operationId: ERPIndirectLaborCodes_DeleteIndirectLaborCodeAsync
+      parameters:
+      - name: key
+        in: path
+        description: The Unique Id of the record to be deleted
+        required: true
+        style: simple
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPIndirectLaborCodeDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPIndirectLaborCodeDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPIndirectLaborCodeDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPIndirectLaborCodeDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+  /api/ERP/TimecardLines:
+    get:
+      tags:
+      - ERP/DATACOLLECTION
+      summary: Returns all existing TimecardLines according to the filter, order by and…
+      description: 'When passing the filter parameter, the following operators are supported: [eq, ne, gt, lt]. Multiple filters can be specified as separate query parameters in the format M1Field[operator]value. eg. `impPartID[eq]CLIP`. An invalid filter will return a 400 Bad Request response.
+
+
+        When passing the orderBy parameter, the following operators are supported: [Asc, Desc]. The format must be M1Field[Asc],M1Field[Desc]. eg. `impPartID[Asc],impPartType[Desc]`. An invalid orderBy will return a 400 Bad Request response.
+
+
+        Custom fields are returned in the response as their full field name, they are also filterable and sortable. The format should be `M1CustomField[operator]value`. eg. `uimpCustomField1[eq]12`.'
+      operationId: ERPTimecardLines_GetAllTimecardLineAsync
+      parameters:
+      - name: pageSize
+        in: query
+        description: Specifies the number of items per page. Defaults to 1000 which is also the maximum.
+        style: form
+        explode: false
+        schema:
+          type: integer
+          format: int32
+      - name: pageNumber
+        in: query
+        description: Specifies the page number to retrieve. Defaults to 0, which corresponds to the first page.
+        style: form
+        explode: false
+        schema:
+          type: integer
+          format: int32
+      - name: filter
+        in: query
+        description: Applies a filter to the returned data. The format should be `M1Field[operator]value`.
+        style: form
+        explode: false
+        schema:
+          type: array
+          items:
+            type: string
+      - name: orderBy
+        in: query
+        description: Specifies the sorting criteria for the returned data. The format should be `M1Field[Asc],M1Field[Desc]`.
+        style: form
+        explode: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_IList_ERPTimecardLineDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_IList_ERPTimecardLineDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_IList_ERPTimecardLineDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_IList_ERPTimecardLineDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+    put:
+      tags:
+      - ERP/DATACOLLECTION
+      summary: Creates or updates a single TimecardLine record
+      description: 'When a record does not exist, a new record will be created. When a record exists, the record will be updated.
+
+
+        When updating an existing record, all fields must be provided, even if they are not changing. Upon update, the UniqueID, Created By/Date and M1 Keys (eg. cmoOrganizationID) will not be updated.
+
+
+        Custom fields should be sent in the request as their full field name and should be prefixed with `u`. eg. `uimpCustomField1`.
+
+
+        To use this endpoint, you must have an API Key that supports writes.'
+      operationId: ERPTimecardLines_PutTimecardLineAsync
+      requestBody:
+        description: The fully populated {M1.API.DTOs.ERP.ERPTimecardLineDto} model.
+        content:
+          text/json:
+            schema:
+              $ref: '#/components/schemas/ERPTimecardLineDto'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ERPTimecardLineDto'
+        required: true
+        x-bodyName: timecardLine
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPTimecardLineDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPTimecardLineDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPTimecardLineDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPTimecardLineDto'
+        '201':
+          description: Created
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPTimecardLineDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPTimecardLineDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPTimecardLineDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPTimecardLineDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+  /api/ERP/TimecardLines/{key}:
+    get:
+      tags:
+      - ERP/DATACOLLECTION
+      summary: Returns a single TimecardLine record for a given Unique Id
+      description: This endpoint retrieves a TimecardLine based on its identifier. If the record does not exist, a 404 Not Found response will be returned.
+      operationId: ERPTimecardLines_GetTimecardLineAsync
+      parameters:
+      - name: key
+        in: path
+        description: The Unique Id of the record to be retrieved
+        required: true
+        style: simple
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPTimecardLineDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPTimecardLineDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPTimecardLineDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPTimecardLineDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+    delete:
+      tags:
+      - ERP/DATACOLLECTION
+      summary: Deletes a single TimecardLine record
+      description: 'If the record is not found, a 404 Not Found response will be returned.
+
+
+        If the record is successfully deleted, a 200 OK response will be returned.
+
+
+        If the record is being used anywhere in the M1 system, a 400 Bad Request response will be returned.
+
+
+        To use this endpoint, you must have an API Key that supports writes.'
+      operationId: ERPTimecardLines_DeleteTimecardLineAsync
+      parameters:
+      - name: key
+        in: path
+        description: The Unique Id of the record to be deleted
+        required: true
+        style: simple
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPTimecardLineDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPTimecardLineDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPTimecardLineDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPTimecardLineDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+  /api/ERP/Timecards:
+    get:
+      tags:
+      - ERP/DATACOLLECTION
+      summary: Returns all existing Timecards according to the filter, order by and pagination…
+      description: 'When passing the filter parameter, the following operators are supported: [eq, ne, gt, lt]. Multiple filters can be specified as separate query parameters in the format M1Field[operator]value. eg. `impPartID[eq]CLIP`. An invalid filter will return a 400 Bad Request response.
+
+
+        When passing the orderBy parameter, the following operators are supported: [Asc, Desc]. The format must be M1Field[Asc],M1Field[Desc]. eg. `impPartID[Asc],impPartType[Desc]`. An invalid orderBy will return a 400 Bad Request response.
+
+
+        Custom fields are returned in the response as their full field name, they are also filterable and sortable. The format should be `M1CustomField[operator]value`. eg. `uimpCustomField1[eq]12`.'
+      operationId: ERPTimecards_GetAllTimecardAsync
+      parameters:
+      - name: pageSize
+        in: query
+        description: Specifies the number of items per page. Defaults to 1000 which is also the maximum.
+        style: form
+        explode: false
+        schema:
+          type: integer
+          format: int32
+      - name: pageNumber
+        in: query
+        description: Specifies the page number to retrieve. Defaults to 0, which corresponds to the first page.
+        style: form
+        explode: false
+        schema:
+          type: integer
+          format: int32
+      - name: filter
+        in: query
+        description: Applies a filter to the returned data. The format should be `M1Field[operator]value`.
+        style: form
+        explode: false
+        schema:
+          type: array
+          items:
+            type: string
+      - name: orderBy
+        in: query
+        description: Specifies the sorting criteria for the returned data. The format should be `M1Field[Asc],M1Field[Desc]`.
+        style: form
+        explode: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_IList_ERPTimecardDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_IList_ERPTimecardDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_IList_ERPTimecardDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_IList_ERPTimecardDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+    put:
+      tags:
+      - ERP/DATACOLLECTION
+      summary: Creates or updates a single Timecard record
+      description: 'When a record does not exist, a new record will be created. When a record exists, the record will be updated.
+
+
+        When updating an existing record, all fields must be provided, even if they are not changing. Upon update, the UniqueID, Created By/Date and M1 Keys (eg. cmoOrganizationID) will not be updated.
+
+
+        Custom fields should be sent in the request as their full field name and should be prefixed with `u`. eg. `uimpCustomField1`.
+
+
+        To use this endpoint, you must have an API Key that supports writes.'
+      operationId: ERPTimecards_PutTimecardAsync
+      requestBody:
+        description: The fully populated {M1.API.DTOs.ERP.ERPTimecardDto} model.
+        content:
+          text/json:
+            schema:
+              $ref: '#/components/schemas/ERPTimecardDto'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ERPTimecardDto'
+        required: true
+        x-bodyName: timecard
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPTimecardDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPTimecardDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPTimecardDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPTimecardDto'
+        '201':
+          description: Created
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPTimecardDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPTimecardDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPTimecardDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPTimecardDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+  /api/ERP/Timecards/{key}:
+    get:
+      tags:
+      - ERP/DATACOLLECTION
+      summary: Returns a single Timecard record for a given Unique Id
+      description: This endpoint retrieves a Timecard based on its identifier. If the record does not exist, a 404 Not Found response will be returned.
+      operationId: ERPTimecards_GetTimecardAsync
+      parameters:
+      - name: key
+        in: path
+        description: The Unique Id of the record to be retrieved
+        required: true
+        style: simple
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPTimecardDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPTimecardDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPTimecardDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPTimecardDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+    delete:
+      tags:
+      - ERP/DATACOLLECTION
+      summary: Deletes a single Timecard record
+      description: 'If the record is not found, a 404 Not Found response will be returned.
+
+
+        If the record is successfully deleted, a 200 OK response will be returned.
+
+
+        If the record is being used anywhere in the M1 system, a 400 Bad Request response will be returned.
+
+
+        To use this endpoint, you must have an API Key that supports writes.'
+      operationId: ERPTimecards_DeleteTimecardAsync
+      parameters:
+      - name: key
+        in: path
+        description: The Unique Id of the record to be deleted
+        required: true
+        style: simple
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPTimecardDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPTimecardDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPTimecardDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPTimecardDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+  /api/ERP/Timecards/Batch:
+    post:
+      tags:
+      - ERP/DATACOLLECTION
+      summary: Submits a timecard record in batch mode for processing by the ERP system
+      description: 'This endpoint receives timecard information and enqueues it into the `InternetTransactionQueue` (ITQ) table.
+
+
+        After being saved, a background worker will later pick up the ITQ record and process it asynchronously,
+
+        applying additional business logic and persisting the data in the ERP system.
+
+
+        The payload must include a valid employee ID, timecard date, shift ID, and a list of one or more timecard lines.
+
+        Each line should describe job-related information including process and work center details.
+
+
+        ### Authorization:
+
+        A valid API key with write access is required to use this endpoint.'
+      operationId: ERPTimecards_BatchTimecardAsync
+      requestBody:
+        description: The timecard data submitted from the Integration Engine.
+        content:
+          text/json:
+            schema:
+              $ref: '#/components/schemas/MesTimecardDto'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MesTimecardDto'
+        required: true
+        x-bodyName: timecard
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                type: object
+            application/json:
+              schema:
+                type: object
+            application/xml:
+              schema:
+                type: object
+            text/xml:
+              schema:
+                type: object
+        '201':
+          description: Created
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_MesIntegrationTransactionQueueInformationDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_MesIntegrationTransactionQueueInformationDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_MesIntegrationTransactionQueueInformationDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_MesIntegrationTransactionQueueInformationDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+components:
+  schemas:
+    MesIntegrationTransactionQueueInformationDto:
+      type: object
+      properties:
+        itqApIAction:
+          type: string
+        itqCreatedBy:
+          type: string
+        itqCreatedDate:
+          type: string
+          format: date-time
+        itqEntityType:
+          type: string
+        itqUniqueID:
+          type: string
+          format: uuid
+          example: 00000000-0000-0000-0000-000000000000
+        itqErrorCode:
+          type: string
+        itqErrorMessage:
+          type: string
+        itqIntegrationType:
+          type: string
+        itqNextRetryTime:
+          type: string
+          format: date-time
+        itqParentUniqueID:
+          type: string
+          format: uuid
+          example: 00000000-0000-0000-0000-000000000000
+        itqRequest:
+          type: string
+        itqResponse:
+          type: string
+        itqRetryCount:
+          type: integer
+          format: int32
+        itqSourceTableName:
+          type: string
+        itqSourceTableUniqueID:
+          type: string
+          format: uuid
+          example: 00000000-0000-0000-0000-000000000000
+        itqStatus:
+          type: string
+        itqStatusUpdatedDate:
+          type: string
+          format: date-time
+        itqTransactionType:
+          type: string
+        customFields:
+          type: object
+          additionalProperties:
+            type: object
+    ERPResponseMessageDto_IList_ERPExpenseDto:
+      type: object
+      properties:
+        responseInfo:
+          $ref: '#/components/schemas/APIResponseMessageDto'
+        returnObject:
+          type: array
+          items:
+            $ref: '#/components/schemas/ERPExpenseDto'
+        recordCount:
+          type: integer
+          format: int32
+    ERPTimecardLineDto:
+      required:
+      - lmlEmployeeID
+      - lmlExpenseID
+      - lmlTimecardLineID
+      - lmlSource
+      - lmlTimecardID
+      - lmlTimecardType
+      - lmlWorkCenterID
+      type: object
+      properties:
+        lmlActualEndTime:
+          type: string
+          format: date-time
+        lmlActualStartTime:
+          type: string
+          format: date-time
+        lmlCompletionType:
+          type: integer
+          format: int32
+        lmlCreatedBy:
+          type: string
+        lmlCreatedDate:
+          type: string
+          format: date-time
+        lmlEmployeeID:
+          type: string
+        lmlUniqueID:
+          type: string
+          format: uuid
+          example: 00000000-0000-0000-0000-000000000000
+        lmlExpenseID:
+          type: string
+        lmlGoodQuantity:
+          minimum: 0
+          type: number
+          format: double
+        lmlIndirectLaborID:
+          type: string
+        lmlActive:
+          type: boolean
+        lmlCreatedFromPayrollSession:
+          type: boolean
+        lmlLaborHoursCalculated:
+          type: boolean
+        lmlMachineHoursCalculated:
+          type: boolean
+        lmlPostedToWip:
+          type: boolean
+        lmlSuspended:
+          type: boolean
+        lmlTransferredToPayroll:
+          type: boolean
+        lmlJobAssemblyID:
+          type: integer
+          format: int32
+        lmlJobID:
+          type: string
+        lmlJobOperationID:
+          type: integer
+          format: int32
+        lmlLaborCost:
+          minimum: 0
+          type: number
+          format: double
+        lmlLaborDescriptionRtf:
+          type: string
+        lmlLaborDescriptionText:
+          type: string
+        lmlLaborHours:
+          minimum: 0
+          type: number
+          format: double
+        lmlMachineHours:
+          minimum: 0
+          type: number
+          format: double
+        lmlOverheadCost:
+          minimum: 0
+          type: number
+          format: double
+        lmlProcessID:
+          type: string
+        lmlProjectAreaID:
+          type: string
+        lmlProjectID:
+          type: string
+        lmlReworkQuantity:
+          minimum: 0
+          type: number
+          format: double
+        lmlReworkReasonID:
+          type: string
+        lmlRoundedEndTime:
+          type: string
+          format: date-time
+        lmlRoundedStartTime:
+          type: string
+          format: date-time
+        lmlRowVersion:
+          type: integer
+          format: int64
+        lmlScrapQuantity:
+          minimum: 0
+          type: number
+          format: double
+        lmlScrapReasonID:
+          type: string
+        lmlTimecardLineID:
+          type: integer
+          format: int32
+        lmlSetupPercentCompleted:
+          type: integer
+          format: int32
+        lmlShiftID:
+          type: integer
+          format: int32
+        lmlSource:
+          type: integer
+          format: int32
+        lmlTimecardID:
+          type: integer
+          format: int32
+        lmlTimecardType:
+          type: integer
+          format: int32
+        lmlWorkCenterID:
+          type: string
+        lmlWorkType:
+          type: integer
+          format: int32
+    ERPResponseMessageDto_ERPTimecardLineDto:
+      type: object
+      properties:
+        responseInfo:
+          $ref: '#/components/schemas/APIResponseMessageDto'
+        returnObject:
+          $ref: '#/components/schemas/ERPTimecardLineDto'
+        recordCount:
+          type: integer
+          format: int32
+    MesTimecardDto:
+      type: object
+      properties:
+        employeeId:
+          type: string
+        timecardDate:
+          type: string
+          format: date-time
+        shiftID:
+          type: integer
+          format: int32
+        timecardLines:
+          type: array
+          items:
+            $ref: '#/components/schemas/MesTimecardLineDto'
+    ERPResponseMessageDto_IList_ERPTimecardDto:
+      type: object
+      properties:
+        responseInfo:
+          $ref: '#/components/schemas/APIResponseMessageDto'
+        returnObject:
+          type: array
+          items:
+            $ref: '#/components/schemas/ERPTimecardDto'
+        recordCount:
+          type: integer
+          format: int32
+    ERPResponseMessageDto_ERPIndirectLaborCodeDto:
+      type: object
+      properties:
+        responseInfo:
+          $ref: '#/components/schemas/APIResponseMessageDto'
+        returnObject:
+          $ref: '#/components/schemas/ERPIndirectLaborCodeDto'
+        recordCount:
+          type: integer
+          format: int32
+    Warning:
+      type: object
+      properties:
+        innerText:
+          type: string
+    MesTimecardLineDto:
+      type: object
+      properties:
+        jobID:
+          type: string
+        erpJobOperationId:
+          type: string
+          format: uuid
+          example: 00000000-0000-0000-0000-000000000000
+        elapsedTime:
+          type: number
+          format: double
+        setupTime:
+          type: number
+          format: double
+        machineHours:
+          type: number
+          format: double
+        laborHours:
+          type: number
+          format: double
+        processID:
+          type: string
+        workCenterID:
+          type: string
+        goodQty:
+          type: number
+          format: double
+        scrapQty:
+          type: number
+          format: double
+        comments:
+          type: string
+    ERPResponseMessageDto_IList_ERPTimecardLineDto:
+      type: object
+      properties:
+        responseInfo:
+          $ref: '#/components/schemas/APIResponseMessageDto'
+        returnObject:
+          type: array
+          items:
+            $ref: '#/components/schemas/ERPTimecardLineDto'
+        recordCount:
+          type: integer
+          format: int32
+    ERPIndirectLaborCodeDto:
+      required:
+      - lmiDescription
+      - lmiIndirectLaborID
+      type: object
+      properties:
+        lmiCreatedBy:
+          type: string
+        lmiCreatedDate:
+          type: string
+          format: date-time
+        lmiDescription:
+          type: string
+        lmiUniqueID:
+          type: string
+          format: uuid
+          example: 00000000-0000-0000-0000-000000000000
+        lmiInactiveDate:
+          type: string
+          format: date-time
+        lmiIndirectLaborID:
+          type: string
+        lmiIndirectLaborType:
+          type: integer
+          format: int32
+        lmiInactive:
+          type: boolean
+        lmiRowVersion:
+          type: integer
+          format: int64
+    ERPExpenseDto:
+      required:
+      - lmxExpenseID
+      - lmxDescription
+      type: object
+      properties:
+        lmxExpenseID:
+          type: string
+        lmxCreatedBy:
+          type: string
+        lmxCreatedDate:
+          type: string
+          format: date-time
+        lmxDescription:
+          type: string
+        lmxUniqueID:
+          type: string
+          format: uuid
+          example: 00000000-0000-0000-0000-000000000000
+        lmxRowVersion:
+          type: integer
+          format: int64
+    ERPResponseMessageDto_MesIntegrationTransactionQueueInformationDto:
+      type: object
+      properties:
+        responseInfo:
+          $ref: '#/components/schemas/APIResponseMessageDto'
+        returnObject:
+          $ref: '#/components/schemas/MesIntegrationTransactionQueueInformationDto'
+        recordCount:
+          type: integer
+          format: int32
+    ERPResponseMessageDto_IList_ERPIndirectLaborCodeDto:
+      type: object
+      properties:
+        responseInfo:
+          $ref: '#/components/schemas/APIResponseMessageDto'
+        returnObject:
+          type: array
+          items:
+            $ref: '#/components/schemas/ERPIndirectLaborCodeDto'
+        recordCount:
+          type: integer
+          format: int32
+    APIResponseMessageDto:
+      type: object
+      properties:
+        description:
+          type: string
+        status:
+          type: string
+        payloadID:
+          type: string
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+          readOnly: true
+        warnings:
+          type: array
+          items:
+            $ref: '#/components/schemas/Warning'
+          readOnly: true
+    ERPTimecardDto:
+      required:
+      - lmpEmployeeID
+      - lmpTimecardID
+      - lmpShiftID
+      - lmpSource
+      - lmpTimecardDate
+      type: object
+      properties:
+        lmpActualEndTime:
+          type: string
+          format: date-time
+        lmpActualStartTime:
+          type: string
+          format: date-time
+        lmpCreatedBy:
+          type: string
+        lmpCreatedDate:
+          type: string
+          format: date-time
+        lmpEmployeeID:
+          type: string
+        lmpUniqueID:
+          type: string
+          format: uuid
+          example: 00000000-0000-0000-0000-000000000000
+        lmpExchangeID:
+          type: string
+        lmpActive:
+          type: boolean
+        lmpAutoClockedOut:
+          type: boolean
+        lmpCreatedFromPayrollSession:
+          type: boolean
+        lmpPostedToWip:
+          type: boolean
+        lmpTransferredToPayroll:
+          type: boolean
+        lmpLastEndTime:
+          type: string
+          format: date-time
+        lmpLeaveAccrualID:
+          type: string
+        lmpMachineHours:
+          minimum: 0
+          type: number
+          format: double
+        lmpNoteRtf:
+          type: string
+        lmpNoteText:
+          type: string
+        lmpOtherHours:
+          minimum: 0
+          type: number
+          format: double
+        lmpOtherPayrollRateID:
+          type: string
+        lmpOTPeriod1Hours:
+          minimum: 0
+          type: number
+          format: double
+        lmpOTPeriod1PayrollRateID:
+          type: string
+        lmpOTPeriod2Hours:
+          minimum: 0
+          type: number
+          format: double
+        lmpOTPeriod2PayrollRateID:
+          type: string
+        lmpOTPeriod3Hours:
+          minimum: 0
+          type: number
+          format: double
+        lmpOTPeriod3PayrollRateID:
+          type: string
+        lmpOTPeriod4Hours:
+          minimum: 0
+          type: number
+          format: double
+        lmpOTPeriod4PayrollRateID:
+          type: string
+        lmpPaidDate:
+          type: string
+          format: date-time
+        lmpPayrollHours:
+          minimum: 0
+          type: number
+          format: double
+        lmpPlantDepartmentID:
+          type: string
+        lmpPlantID:
+          type: string
+        lmpPostedDate:
+          type: string
+          format: date-time
+        lmpProjectID:
+          type: string
+        lmpRoundedEndTime:
+          type: string
+          format: date-time
+        lmpRoundedStartTime:
+          type: string
+          format: date-time
+        lmpRowVersion:
+          type: integer
+          format: int64
+        lmpTimecardID:
+          maximum: 999999999
+          minimum: 0
+          type: integer
+          format: int32
+        lmpShiftBreakID:
+          type: integer
+          format: int32
+        lmpShiftID:
+          type: integer
+          format: int32
+        lmpSource:
+          type: integer
+          format: int32
+        lmpStandardHours:
+          minimum: 0
+          type: number
+          format: double
+        lmpStandardPayrollRateID:
+          type: string
+        lmpTimecardDate:
+          type: string
+          format: date-time
+        lmpTotalPayrollHours:
+          minimum: 0
+          type: number
+          format: double
+        lmpTransferredDate:
+          type: string
+          format: date-time
+        lmpUtcOffset:
+          type: integer
+          format: int32
+    ERPResponseMessageDto_ERPTimecardDto:
+      type: object
+      properties:
+        responseInfo:
+          $ref: '#/components/schemas/APIResponseMessageDto'
+        returnObject:
+          $ref: '#/components/schemas/ERPTimecardDto'
+        recordCount:
+          type: integer
+          format: int32
+    Error:
+      type: object
+      properties:
+        innerText:
+          type: string
+    ERPResponseMessageDto_ERPExpenseDto:
+      type: object
+      properties:
+        responseInfo:
+          $ref: '#/components/schemas/APIResponseMessageDto'
+        returnObject:
+          $ref: '#/components/schemas/ERPExpenseDto'
+        recordCount:
+          type: integer
+          format: int32
+  securitySchemes:
+    oauth2:
+      type: oauth2
+      description: OAuth 2.0 Client Credentials Flow with API Users issued from Integration Engine Management Console
+      flows:
+        clientCredentials:
+          tokenUrl: https://api-user.integrations.ecimanufacturing.com/oauth2/api-user/token
+          scopes:
+            openid: openid

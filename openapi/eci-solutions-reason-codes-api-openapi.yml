@@ -1,0 +1,175 @@
+openapi: 3.2.0
+info:
+  title: JobBOSS² Public Reason Codes API
+  description: Provides a common API surface for accessing ECI ERP JobBOSS².
+  version: v1
+servers:
+- url: https://api-jb2.integrations.ecimanufacturing.com:443
+  description: API Host
+security:
+- Bearer: []
+tags:
+- name: Reason Codes
+paths:
+  /api/v1/reason-codes:
+    get:
+      tags:
+      - Reason Codes
+      summary: Gets a list of Reason Codes
+      description: 'By default a reason code response will include only the fields: active, createRMA, description, lastModDate, lastModUser, reasonCode, reasonCodeID, uniqueID. You may specify the exact fields to return using the fields parameter.'
+      parameters:
+      - name: fields
+        in: query
+        description: A comma separated list of fields to include in the result.
+        schema:
+          type: string
+      - name: sort
+        in: query
+        description: A comma separated list of field to sort by. See the <a href='#sort-expressions'>Sort Expressions</a> section for more information.
+        schema:
+          type: string
+      - name: filters
+        in: query
+        description: Filters must be provided as query string parameters as defined in the <a href='#filter-expressions'>Filter Expressions</a> section.
+        schema:
+          type: object
+          additionalProperties:
+            type: string
+        examples:
+          No filters: {}
+          Filter by Active Reason Code:
+            value:
+              active: 'true'
+      - name: skip
+        in: query
+        description: The number of records at the start of the result set to skip over.
+        schema:
+          type: string
+      - name: take
+        in: query
+        description: The number of records to retrieve.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReasonCodeListSuccessResponse'
+              example:
+                Data:
+                - active: false
+                  createRMA: false
+                  description: string
+                  lastModDate: '2026-09-06T17:13:12.0000000+00:00'
+                  lastModUser: string
+                  reasonCode: string
+                  reasonCodeID: 0
+                  uniqueID: 0
+      operationId: getApiV1ReasonCodes
+      x-operation-id-source: derived
+  /api/v1/reason-codes/{uniqueID}:
+    get:
+      tags:
+      - Reason Codes
+      summary: Gets an reason code by uniqueID
+      description: 'By default a reason code response will include only the fields: active, createRMA, description, lastModDate, lastModUser, reasonCode, reasonCodeID, uniqueID. You may specify the exact fields to return using the fields parameter.'
+      parameters:
+      - name: uniqueID
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: fields
+        in: query
+        description: A comma separated list of fields to include in the result.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReasonCodeSuccessResponse'
+              example:
+                Data:
+                  active: false
+                  createRMA: false
+                  description: string
+                  lastModDate: '2026-09-06T17:13:12.0000000+00:00'
+                  lastModUser: string
+                  reasonCode: string
+                  reasonCodeID: 0
+                  uniqueID: 0
+      operationId: getApiV1ReasonCodesByUniqueID
+      x-operation-id-source: derived
+components:
+  schemas:
+    ReasonCodeSuccessResponse:
+      type: object
+      properties:
+        Data:
+          $ref: '#/components/schemas/ReasonCode'
+      additionalProperties: false
+    ReasonCode:
+      type: object
+      properties:
+        active:
+          type: boolean
+          readOnly: true
+        createRMA:
+          type: boolean
+          readOnly: true
+        description:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        lastModDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        lastModUser:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        reasonCode:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        reasonCodeID:
+          type: integer
+          format: int32
+          readOnly: true
+        uniqueID:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          readOnly: true
+      additionalProperties: false
+    ReasonCodeListSuccessResponse:
+      type: object
+      properties:
+        Data:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ReasonCode'
+      additionalProperties: false
+  securitySchemes:
+    Bearer:
+      type: oauth2
+      description: OAuth 2.0 Client Credentials Flow with API Users issued from Integration Engine Management Console
+      flows:
+        clientCredentials:
+          tokenUrl: https://api-user.integrations.ecimanufacturing.com/oauth2/api-user/token
+          scopes:
+            openid: openid

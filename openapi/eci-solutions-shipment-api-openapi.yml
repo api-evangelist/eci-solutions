@@ -1,0 +1,577 @@
+openapi: 3.2.0
+info:
+  title: Shipping Shipment API
+  description: Shipping Service API which provides integration with shipping services for shipping rates, purchasing labels, and tracking shipments.
+  version: 1.3.6+a49f73049e
+security:
+- Bearer: []
+tags:
+- name: Shipment
+paths:
+  /api/v1/shipments:
+    post:
+      tags:
+      - Shipment
+      summary: Create Shipment
+      description: 'This API creates a shipment and returns rate options according to the parameters provided.
+
+
+        You can also perform a "one-call" buy by specifying a single value in `carrier_acccount_ids` and providing a value for `service`. In this case the response
+
+        will contain the rate and label information being purchased.'
+      operationId: CreateShipment
+      requestBody:
+        description: The values with which to create the shipment.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateShipmentRequest'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/CreateShipmentRequest'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/CreateShipmentRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/CreateShipmentResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateShipmentResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/CreateShipmentResponse'
+  /api/v1/shipments/{id}/buy:
+    post:
+      tags:
+      - Shipment
+      summary: Buy Shipment
+      description: 'Purchase a shipment label for a shipment that was previously created by specifying a rate from
+
+        the list of rate options returned when creating the shipment.'
+      operationId: BuyShipmentLabel
+      parameters:
+      - name: id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: The rate id values with which to buy the shipment.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BuyShipmentRequest'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/BuyShipmentRequest'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/BuyShipmentRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/BuyShipmentResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BuyShipmentResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/BuyShipmentResponse'
+  /api/v1/shipments/{id}/refund:
+    post:
+      tags:
+      - Shipment
+      summary: Refund Shipment
+      description: Refunds a shipment by its ID. The shipment can only be refunded within 30 days of purchase.
+      operationId: RefundShipment
+      parameters:
+      - name: id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: No Content
+components:
+  schemas:
+    SavedAddressModel:
+      required:
+      - postalCode
+      type: object
+      properties:
+        carrierFacility:
+          type:
+          - string
+          - 'null'
+          description: The specific designation for the address (only relevant if the address is a carrier facility).
+        city:
+          type:
+          - string
+          - 'null'
+          description: The city the address is located in.
+        company:
+          type:
+          - string
+          - 'null'
+          description: The name of the company.
+        country:
+          type:
+          - string
+          - 'null'
+          description: The ISO 3166 code of the country the address is located in.
+        email:
+          type:
+          - string
+          - 'null'
+          description: The email address of the person or organization.
+        federalTaxId:
+          type:
+          - string
+          - 'null'
+          description: The federal tax ID of the person or organization.
+        name:
+          type:
+          - string
+          - 'null'
+          description: The name of the person or organization.
+        phone:
+          type:
+          - string
+          - 'null'
+          description: The phone number of the person or organization.
+        residential:
+          type:
+          - boolean
+          - 'null'
+          description: Whether the address is a residential address.
+        state:
+          type:
+          - string
+          - 'null'
+          description: The state the address is located in.
+        stateTaxId:
+          type:
+          - string
+          - 'null'
+          description: The state tax ID of the person or organization.
+        street1:
+          type:
+          - string
+          - 'null'
+          description: The first line of the street address.
+        street2:
+          type:
+          - string
+          - 'null'
+          description: The second line of the street address.
+        postalCode:
+          minLength: 1
+          type: string
+          description: The postal code the address is located in.
+        verify:
+          type:
+          - boolean
+          - 'null'
+          description: Indicates if the address should be requested to be verified or not.
+        id:
+          type:
+          - string
+          - 'null'
+          description: Address unique ID
+        verifications:
+          $ref: '#/components/schemas/AddressVerificationResult'
+      additionalProperties: false
+      description: Represents an address that has been created and optionally verified
+    BuyShipmentResponse:
+      type: object
+      properties:
+        shipmentId:
+          type:
+          - string
+          - 'null'
+        labelId:
+          type:
+          - string
+          - 'null'
+        rateId:
+          type:
+          - string
+          - 'null'
+        labelUrl:
+          type:
+          - string
+          - 'null'
+        labelFileType:
+          type:
+          - string
+          - 'null'
+        labelType:
+          type:
+          - string
+          - 'null'
+        labelSize:
+          type:
+          - string
+          - 'null'
+        rate:
+          type: number
+          format: double
+        currency:
+          type:
+          - string
+          - 'null'
+        trackingNo:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    BuyShipmentRequest:
+      required:
+      - rateId
+      type: object
+      properties:
+        rateId:
+          minLength: 1
+          type: string
+          description: The id of the rate for which to buy the shipping label
+      additionalProperties: false
+    AddressVerificationResult:
+      type: object
+      properties:
+        verifiedPostalCode:
+          type:
+          - boolean
+          - 'null'
+          description: Indicates whether the postal code has been verified
+        verifiedAddress:
+          type:
+          - boolean
+          - 'null'
+          description: Indicates whether the street/city/country has been verified
+        postalCodeErrors:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: Provides verification errors
+        addressErrors:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: Provides verification errors
+        latitude:
+          type:
+          - number
+          - 'null'
+          description: The latitude of the address
+          format: float
+        longitude:
+          type:
+          - number
+          - 'null'
+          description: The longitude of the address
+          format: float
+        timeZone:
+          type:
+          - string
+          - 'null'
+          description: The time zone of the address
+      additionalProperties: false
+      description: Represents address verification results
+    CreateShipmentRequest:
+      required:
+      - parcel
+      type: object
+      properties:
+        fromAddress:
+          $ref: '#/components/schemas/AddressModel'
+        fromAddressId:
+          type:
+          - string
+          - 'null'
+          description: The address ID of a previously created address to use as the source. If this is specified, you cannot provide fromAddress.
+        toAddress:
+          $ref: '#/components/schemas/AddressModel'
+        toAddressId:
+          type:
+          - string
+          - 'null'
+          description: The address ID of a previously created address to use as the destination. If this is specified, you cannot specify a toAddress.
+        parcel:
+          $ref: '#/components/schemas/ParcelModel'
+        carrier_account_ids:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: 'Zero or more carrier IDs to restrict the results to. If not provided, all carriers will be considered.
+
+            When ''service'' is provided, exactly one carrier ID must be specified.'
+        service:
+          type:
+          - string
+          - 'null'
+          description: 'The shipping service to use for one-call buy. When specified, a shipment will be created and purchased in one step.
+
+            One and only one carrier ID must be provided in the CarrierIds property when this is specified.'
+      additionalProperties: false
+    AddressModel:
+      required:
+      - postalCode
+      type: object
+      properties:
+        carrierFacility:
+          type:
+          - string
+          - 'null'
+          description: The specific designation for the address (only relevant if the address is a carrier facility).
+        city:
+          type:
+          - string
+          - 'null'
+          description: The city the address is located in.
+        company:
+          type:
+          - string
+          - 'null'
+          description: The name of the company.
+        country:
+          type:
+          - string
+          - 'null'
+          description: The ISO 3166 code of the country the address is located in.
+        email:
+          type:
+          - string
+          - 'null'
+          description: The email address of the person or organization.
+        federalTaxId:
+          type:
+          - string
+          - 'null'
+          description: The federal tax ID of the person or organization.
+        name:
+          type:
+          - string
+          - 'null'
+          description: The name of the person or organization.
+        phone:
+          type:
+          - string
+          - 'null'
+          description: The phone number of the person or organization.
+        residential:
+          type:
+          - boolean
+          - 'null'
+          description: Whether the address is a residential address.
+        state:
+          type:
+          - string
+          - 'null'
+          description: The state the address is located in.
+        stateTaxId:
+          type:
+          - string
+          - 'null'
+          description: The state tax ID of the person or organization.
+        street1:
+          type:
+          - string
+          - 'null'
+          description: The first line of the street address.
+        street2:
+          type:
+          - string
+          - 'null'
+          description: The second line of the street address.
+        postalCode:
+          minLength: 1
+          type: string
+          description: The postal code the address is located in.
+        verify:
+          type:
+          - boolean
+          - 'null'
+          description: Indicates if the address should be requested to be verified or not.
+      additionalProperties: false
+    ParcelResponse:
+      required:
+      - weight
+      - weight_uom
+      type: object
+      properties:
+        length:
+          minimum: 0.01
+          type:
+          - number
+          - 'null'
+          description: 'Length of the parcel (default: inches)'
+          format: double
+        width:
+          minimum: 0.01
+          type:
+          - number
+          - 'null'
+          description: 'Width of the parcel (default: inches)'
+          format: double
+        height:
+          minimum: 0.01
+          type:
+          - number
+          - 'null'
+          description: 'Height of the parcel (default: inches)'
+          format: double
+        weight:
+          minimum: 0.01
+          type: number
+          description: 'Weight of the parcel (default: ounces)'
+          format: double
+        weight_uom:
+          minLength: 1
+          type: string
+          description: The unit of measure for the shipping weight. See the list of supported units. The default value is 'lbs'
+        dimensions_uom:
+          type:
+          - string
+          - 'null'
+          description: The unit of measure for the shipping dimensions. See the list of supported units. The default value is 'in'
+        id:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    RateResponse:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+        service:
+          type:
+          - string
+          - 'null'
+        carrier:
+          type:
+          - string
+          - 'null'
+        rate:
+          type:
+          - string
+          - 'null'
+        currency:
+          type:
+          - string
+          - 'null'
+        billingType:
+          type:
+          - string
+          - 'null'
+        carrierAccountId:
+          type:
+          - string
+          - 'null'
+        deliveryDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        deliveryDateGuaranteed:
+          type:
+          - boolean
+          - 'null'
+      additionalProperties: false
+    CreateShipmentResponse:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+        fromAddress:
+          $ref: '#/components/schemas/SavedAddressModel'
+        toAddress:
+          $ref: '#/components/schemas/SavedAddressModel'
+        parcel:
+          $ref: '#/components/schemas/ParcelResponse'
+        rates:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/RateResponse'
+        status:
+          type:
+          - string
+          - 'null'
+        buyResult:
+          $ref: '#/components/schemas/BuyShipmentResponse'
+      additionalProperties: false
+    ParcelModel:
+      required:
+      - weight
+      - weight_uom
+      type: object
+      properties:
+        length:
+          minimum: 0.01
+          type:
+          - number
+          - 'null'
+          description: 'Length of the parcel (default: inches)'
+          format: double
+        width:
+          minimum: 0.01
+          type:
+          - number
+          - 'null'
+          description: 'Width of the parcel (default: inches)'
+          format: double
+        height:
+          minimum: 0.01
+          type:
+          - number
+          - 'null'
+          description: 'Height of the parcel (default: inches)'
+          format: double
+        weight:
+          minimum: 0.01
+          type: number
+          description: 'Weight of the parcel (default: ounces)'
+          format: double
+        weight_uom:
+          minLength: 1
+          type: string
+          description: The unit of measure for the shipping weight. See the list of supported units. The default value is 'lbs'
+        dimensions_uom:
+          type:
+          - string
+          - 'null'
+          description: The unit of measure for the shipping dimensions. See the list of supported units. The default value is 'in'
+      additionalProperties: false
+      description: Model representing a parcel's dimensions and weight
+  securitySchemes:
+    Bearer:
+      type: oauth2
+      description: OAuth 2.0 Client Credentials Flow with API Users issued from Integration Engine Management Console
+      flows:
+        clientCredentials:
+          tokenUrl: https://api-user.integrations.ecimanufacturing.com/oauth2/api-user/token
+          scopes:
+            openid: openid

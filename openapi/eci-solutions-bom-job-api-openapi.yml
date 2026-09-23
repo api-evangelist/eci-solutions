@@ -1,0 +1,3451 @@
+openapi: 3.2.0
+info:
+  title: M1 Public BOM/JOB API
+  description: '## Developer Notes for the M1 Public API (ERP resource):
+
+
+    ### Hosted Environment
+
+
+    If you are using the public API for a hosted M1 customer, you must connect to the public API using the Integration Engine.'
+  contact:
+    name: ECI Software Solutions - M1
+    url: https://www.ecisolutions.com/manufacturers-and-job-shops/m1
+  version: v1
+servers:
+- url: https://api-m1.integrations.ecimanufacturing.com
+  description: API Host
+security:
+- oauth2: []
+tags:
+- name: BOM/JOB
+paths:
+  /api/BOM/Job/GetJobGUIDs/{jobId}/{partId}:
+    get:
+      tags:
+      - BOM/JOB
+      summary: Returns GUIDs for a given jobid and/or partid.
+      operationId: BOMJob_GetJobGUIDsAsync
+      parameters:
+      - name: jobId
+        in: path
+        description: The jobId or section of jobid as string
+        required: true
+        style: simple
+        schema:
+          type: string
+      - name: partId
+        in: path
+        description: The partId or section of partid as string (optional)
+        required: true
+        style: simple
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/BOMJobGuidsDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BOMJobGuidsDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/BOMJobGuidsDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/BOMJobGuidsDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+  /api/BOM/Job/GetJobMethod/{jobId}:
+    get:
+      tags:
+      - BOM/JOB
+      summary: Returns job details for a given M1 job id or GUID.
+      operationId: BOMJob_GetJobMethodAsync
+      parameters:
+      - name: jobId
+        in: path
+        description: The M1 job Id or GUID of the job as a string
+        required: true
+        style: simple
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/CTMBOMJobMethodDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CTMBOMJobMethodDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/CTMBOMJobMethodDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/CTMBOMJobMethodDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+  /api/BOM/Job/GetAllJobs/{pageSize}/{pageNumber}:
+    get:
+      tags:
+      - BOM/JOB
+      summary: Returns a list of all BOM jobs with pagination
+      operationId: BOMJob_GetAllJobAsync
+      parameters:
+      - name: pageSize
+        in: path
+        description: The number of items to include in each page. Default is 1000.
+        required: true
+        style: simple
+        schema:
+          type: integer
+          format: int32
+      - name: pageNumber
+        in: path
+        description: The page number to retrieve. Default is 0.
+        required: true
+        style: simple
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMJobDto'
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMJobDto'
+            application/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMJobDto'
+            text/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMJobDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+  /api/BOM/Job/GetJob/{jobId}:
+    get:
+      tags:
+      - BOM/JOB
+      summary: Returns a specific BOM job based on the provided job ID
+      operationId: BOMJob_GetJobAsync
+      parameters:
+      - name: jobId
+        in: path
+        description: The unique identifier of the job to retrieve.
+        required: true
+        style: simple
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/BOMJobDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BOMJobDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/BOMJobDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/BOMJobDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+  /api/BOM/Job/PostJob:
+    post:
+      tags:
+      - BOM/JOB
+      summary: Posts a new BOM job
+      operationId: BOMJob_PostJobAsync
+      requestBody:
+        description: The BOM job data to be posted.
+        content:
+          text/xml:
+            schema:
+              $ref: '#/components/schemas/CTMJobDto'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/CTMJobDto'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/CTMJobDto'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CTMJobDto'
+        required: true
+        x-bodyName: job
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+  /api/BOM/Job/UpdateSchedulingDetails/{jobId}:
+    post:
+      tags:
+      - BOM/JOB
+      summary: Updates the scheduling details for a specific job
+      operationId: BOMJob_UpdateSchedulingDetailsAsync
+      parameters:
+      - name: jobId
+        in: path
+        description: The ID of the job to be patched.
+        required: true
+        style: simple
+        schema:
+          type: string
+      requestBody:
+        description: The job data transfer object containing the details of the job to be patched.
+        content:
+          text/xml:
+            schema:
+              $ref: '#/components/schemas/APSJobDto'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/APSJobDto'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/APSJobDto'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/APSJobDto'
+        required: true
+        x-bodyName: job
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APSResponseMessageDto_CTMAPSJobDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APSResponseMessageDto_CTMAPSJobDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APSResponseMessageDto_CTMAPSJobDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APSResponseMessageDto_CTMAPSJobDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+  /api/BOM/Job/GetJobAssembly/{jobId}/{jobAssemblyId}:
+    get:
+      tags:
+      - BOM/JOB
+      summary: Returns job assembly details for a given job and assembly id
+      operationId: BOMJobAssemblies_GetJobAssemblyAsync
+      parameters:
+      - name: jobId
+        in: path
+        description: The job id as string
+        required: true
+        style: simple
+        schema:
+          type: string
+      - name: jobAssemblyId
+        in: path
+        description: The job assembly id as integer
+        required: true
+        style: simple
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/BOMJobAssemblyDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BOMJobAssemblyDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/BOMJobAssemblyDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/BOMJobAssemblyDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+  /api/BOM/Job/GetJobAssemblies/{jobId}:
+    get:
+      tags:
+      - BOM/JOB
+      summary: Returns JobAssembly for a given JobAssembly id
+      description: This endpoint retrieves a JobAssembly based on its identifier.
+      operationId: BOMJobAssemblies_GetJobAssemblyAsync
+      parameters:
+      - name: jobId
+        in: path
+        description: The Job id as a string
+        required: true
+        style: simple
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/BOMJobAssemblyDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BOMJobAssemblyDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/BOMJobAssemblyDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/BOMJobAssemblyDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+  /api/BOM/Job/GetAllJobAssemblies/{pageSize}/{pageNumber}:
+    get:
+      tags:
+      - BOM/JOB
+      summary: Returns all existing JobAssemblies with pagination
+      operationId: BOMJobAssemblies_GetAllJobAssemblyAsync
+      parameters:
+      - name: pageSize
+        in: path
+        description: The required size of the pagination. By default 1000.
+        required: true
+        style: simple
+        schema:
+          type: integer
+          format: int32
+      - name: pageNumber
+        in: path
+        description: The required number of page from pagination. By default 0, which is the first page.
+        required: true
+        style: simple
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMJobAssemblyDto'
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMJobAssemblyDto'
+            application/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMJobAssemblyDto'
+            text/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMJobAssemblyDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+  /api/BOM/Job/PostJobAssembly:
+    post:
+      tags:
+      - BOM/JOB
+      summary: Creates a job assembly based on input parameter
+      operationId: BOMJobAssemblies_PostJobAssemblyAsync
+      requestBody:
+        description: The jobassembly as BOMJobAssemblyDto
+        content:
+          text/xml:
+            schema:
+              $ref: '#/components/schemas/BOMJobAssemblyDto'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/BOMJobAssemblyDto'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/BOMJobAssemblyDto'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BOMJobAssemblyDto'
+        required: true
+        x-bodyName: jobAssembly
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+  /api/BOM/Job/DeleteJobAssembly/{jobId}/{jobAssemblyId}:
+    delete:
+      tags:
+      - BOM/JOB
+      summary: Deletes a job assembly based on input parameters
+      operationId: BOMJobAssemblies_DeleteJobAssemblyAsync
+      parameters:
+      - name: jobId
+        in: path
+        description: The job id as string
+        required: true
+        style: simple
+        schema:
+          type: string
+      - name: jobAssemblyId
+        in: path
+        description: The job assembly id as integer
+        required: true
+        style: simple
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+  /api/BOM/Job/GetJobMaterial/{jobId}/{jobAssemblyId}/{jobMaterialId}:
+    get:
+      tags:
+      - BOM/JOB
+      summary: Returns job material details for a given job,assembly and material id
+      operationId: BOMJobMaterials_GetJobMaterialAsync
+      parameters:
+      - name: jobId
+        in: path
+        description: The job id as string
+        required: true
+        style: simple
+        schema:
+          type: string
+      - name: jobAssemblyId
+        in: path
+        description: The job assembly id as integer
+        required: true
+        style: simple
+        schema:
+          type: integer
+          format: int32
+      - name: jobMaterialId
+        in: path
+        description: The job material id as integer
+        required: true
+        style: simple
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/BOMJobMaterialDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BOMJobMaterialDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/BOMJobMaterialDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/BOMJobMaterialDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+  /api/BOM/Job/GetAllJobMaterials/{pageSize}/{pageNumber}:
+    get:
+      tags:
+      - BOM/JOB
+      summary: Returns all existing JobMaterials with pagination
+      operationId: BOMJobMaterials_GetAllJobMaterialAsync
+      parameters:
+      - name: pageSize
+        in: path
+        description: The required size of the pagination. By default 1000.
+        required: true
+        style: simple
+        schema:
+          type: integer
+          format: int32
+      - name: pageNumber
+        in: path
+        description: The required number of page from pagination. By default 0, which is the first page.
+        required: true
+        style: simple
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMJobMaterialDto'
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMJobMaterialDto'
+            application/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMJobMaterialDto'
+            text/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMJobMaterialDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+  /api/BOM/Job/PostJobMaterial:
+    post:
+      tags:
+      - BOM/JOB
+      summary: Posts a new JobMaterial
+      operationId: BOMJobMaterials_PostJobMaterialAsync
+      requestBody:
+        description: The JobMaterial data to be posted.
+        content:
+          text/xml:
+            schema:
+              $ref: '#/components/schemas/BOMJobMaterialDto'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/BOMJobMaterialDto'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/BOMJobMaterialDto'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BOMJobMaterialDto'
+        required: true
+        x-bodyName: jobMaterial
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+  /api/BOM/Job/DeleteJobMaterial/{jobId}/{jobAssemblyId}/{jobMaterialId}:
+    delete:
+      tags:
+      - BOM/JOB
+      summary: Deletes a job material based on input parameters
+      operationId: BOMJobMaterials_DeleteJobMaterialAsync
+      parameters:
+      - name: jobId
+        in: path
+        description: The job id as string
+        required: true
+        style: simple
+        schema:
+          type: string
+      - name: jobAssemblyId
+        in: path
+        description: The job assembly id as integer
+        required: true
+        style: simple
+        schema:
+          type: integer
+          format: int32
+      - name: jobMaterialId
+        in: path
+        description: The job material id as integer
+        required: true
+        style: simple
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/BOMJobMaterialDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BOMJobMaterialDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/BOMJobMaterialDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/BOMJobMaterialDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+  /api/BOM/Job/GetJobOperation/{jobId}/{jobAssemblyId}/{jobOperationId}:
+    get:
+      tags:
+      - BOM/JOB
+      summary: Returns job operation details for a given job,assembly and operation id
+      operationId: BOMJobOperations_GetJobOperationAsync
+      parameters:
+      - name: jobId
+        in: path
+        description: The job id as string
+        required: true
+        style: simple
+        schema:
+          type: string
+      - name: jobAssemblyId
+        in: path
+        description: The job assembly id as integer
+        required: true
+        style: simple
+        schema:
+          type: integer
+          format: int32
+      - name: jobOperationId
+        in: path
+        description: The job operation id as integer
+        required: true
+        style: simple
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/BOMJobOperationDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BOMJobOperationDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/BOMJobOperationDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/BOMJobOperationDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+  /api/BOM/Job/GetAllJobOperations/{pageSize}/{pageNumber}:
+    get:
+      tags:
+      - BOM/JOB
+      summary: Returns all existing JobOperations with pagination
+      operationId: BOMJobOperations_GetAllJobOperationAsync
+      parameters:
+      - name: pageSize
+        in: path
+        description: The required size of the pagination. By default 1000.
+        required: true
+        style: simple
+        schema:
+          type: integer
+          format: int32
+      - name: pageNumber
+        in: path
+        description: The required number of page from pagination. By default 0, which is the first page.
+        required: true
+        style: simple
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMJobOperationDto'
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMJobOperationDto'
+            application/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMJobOperationDto'
+            text/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMJobOperationDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+  /api/BOM/Job/PostJobOperation:
+    post:
+      tags:
+      - BOM/JOB
+      summary: Posts a new JobOperation
+      operationId: BOMJobOperations_PostJobOperationAsync
+      requestBody:
+        description: The JobOperation data to be posted.
+        content:
+          text/xml:
+            schema:
+              $ref: '#/components/schemas/BOMJobOperationDto'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/BOMJobOperationDto'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/BOMJobOperationDto'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BOMJobOperationDto'
+        required: true
+        x-bodyName: jobOperation
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+  /api/BOM/Job/DeleteJobOperation/{jobId}/{jobAssemblyId}/{jobOperationId}:
+    delete:
+      tags:
+      - BOM/JOB
+      summary: Deletes a job operation based on input parameters
+      operationId: BOMJobOperations_DeleteJobOperationAsync
+      parameters:
+      - name: jobId
+        in: path
+        description: The job id as string
+        required: true
+        style: simple
+        schema:
+          type: string
+      - name: jobAssemblyId
+        in: path
+        description: The job assembly id as integer
+        required: true
+        style: simple
+        schema:
+          type: integer
+          format: int32
+      - name: jobOperationId
+        in: path
+        description: The job operation id as integer
+        required: true
+        style: simple
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/BOMJobOperationDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BOMJobOperationDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/BOMJobOperationDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/BOMJobOperationDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+  /api/BOM/Job/GetAllTimecardLines/{pageSize}/{pageNumber}:
+    get:
+      tags:
+      - BOM/JOB
+      summary: Returns all existing TimecardLines with pagination
+      operationId: BOMTimecardLines_GetAllTimecardLineAsync
+      parameters:
+      - name: pageSize
+        in: path
+        description: The required size of the pagination. By default 1000.
+        required: true
+        style: simple
+        schema:
+          type: integer
+          format: int32
+      - name: pageNumber
+        in: path
+        description: The required number of page from pagination. By default 0, which is the first page.
+        required: true
+        style: simple
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMTimecardLineDto'
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMTimecardLineDto'
+            application/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMTimecardLineDto'
+            text/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMTimecardLineDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+  /api/BOM/Job/GetTimecardLine/{timecardId}/{timecardLineId}:
+    get:
+      tags:
+      - BOM/JOB
+      summary: Returns TimecardLine for a given Timecard id containing TimecardLine id
+      description: This endpoint retrieves a TimecardLine based on its identifier.
+      operationId: BOMTimecardLines_GetTimecardLineAsync
+      parameters:
+      - name: timecardId
+        in: path
+        description: The Timecard id as a string
+        required: true
+        style: simple
+        schema:
+          type: string
+      - name: timecardLineId
+        in: path
+        description: The TimecardLine id as a string
+        required: true
+        style: simple
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/BOMTimecardLineDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BOMTimecardLineDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/BOMTimecardLineDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/BOMTimecardLineDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+  /api/BOM/Job/GetAllTimecards/{pageSize}/{pageNumber}:
+    get:
+      tags:
+      - BOM/JOB
+      summary: Returns all existing Timecards with pagination
+      operationId: BOMTimecards_GetAllTimecardAsync
+      parameters:
+      - name: pageSize
+        in: path
+        description: The required size of the pagination. By default 1000.
+        required: true
+        style: simple
+        schema:
+          type: integer
+          format: int32
+      - name: pageNumber
+        in: path
+        description: The required number of page from pagination. By default 0, which is the first page.
+        required: true
+        style: simple
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMTimecardDto'
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMTimecardDto'
+            application/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMTimecardDto'
+            text/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMTimecardDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+  /api/BOM/Job/GetTimecard/{timecardId}:
+    get:
+      tags:
+      - BOM/JOB
+      summary: Returns Timecard for a given Timecard id
+      description: This endpoint retrieves a Timecard based on its identifier.
+      operationId: BOMTimecards_GetTimecardAsync
+      parameters:
+      - name: timecardId
+        in: path
+        description: The Timecard id as a string
+        required: true
+        style: simple
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/BOMTimecardDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BOMTimecardDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/BOMTimecardDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/BOMTimecardDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+  /api/BOM/Job/GetTimecard/{timecardId}/{employeeId}:
+    get:
+      tags:
+      - BOM/JOB
+      summary: Returns Timecard for a given Timecard id and Employee id
+      description: This endpoint retrieves a Timecard based on timecard and employee identifier.
+      operationId: BOMTimecards_GetTimecardByEmployeeIdAsync
+      parameters:
+      - name: timecardId
+        in: path
+        description: The Timecard id as a string
+        required: true
+        style: simple
+        schema:
+          type: string
+      - name: employeeId
+        in: path
+        description: The Employee id as a string
+        required: true
+        style: simple
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/BOMTimecardDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BOMTimecardDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/BOMTimecardDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/BOMTimecardDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+components:
+  schemas:
+    APSResponseMessageDto_CTMAPSJobDto:
+      type: object
+      properties:
+        responseInfo:
+          $ref: '#/components/schemas/APIResponseMessageDto'
+        returnObject:
+          $ref: '#/components/schemas/CTMAPSJobDto'
+        recordCount:
+          type: integer
+          format: int32
+    CTMBOMJobMethodDto:
+      type: object
+      properties:
+        job:
+          $ref: '#/components/schemas/BOMJobDto'
+        jobmethodassemblies:
+          type: array
+          items:
+            $ref: '#/components/schemas/CTMBOMJobMethodAssemblyDto'
+    BOMTimecardLineDto:
+      required:
+      - timecardID
+      - timecardLineID
+      - employeeID
+      - workCenterID
+      - timecardType
+      type: object
+      properties:
+        timecardID:
+          type: integer
+          format: int32
+        timecardLineID:
+          type: integer
+          format: int32
+        employeeID:
+          type: string
+        jobID:
+          type: string
+        jobAssemblyID:
+          type: integer
+          format: int32
+        jobOperationID:
+          type: integer
+          format: int32
+        workCenterID:
+          type: string
+        processID:
+          type: string
+        completionType:
+          type: integer
+          format: int32
+        workType:
+          type: integer
+          format: int32
+        timecardType:
+          type: integer
+          format: int32
+        goodQuantity:
+          type: number
+          format: double
+        scrapQuantity:
+          type: number
+          format: double
+        reworkQuantity:
+          type: number
+          format: double
+        actualStartTime:
+          type: string
+          format: date-time
+        actualEndTime:
+          type: string
+          format: date-time
+        machineHours:
+          type: number
+          format: double
+        laborHours:
+          type: number
+          format: double
+        uniqueID:
+          type: string
+          format: uuid
+          example: 00000000-0000-0000-0000-000000000000
+        rowVersion:
+          type: string
+          format: byte
+    CTMJobDto:
+      required:
+      - jobID
+      - jobAssemblyID
+      - jobAssemblyLevel
+      - parentAssemblyID
+      - partID
+      - partRevisionID
+      type: object
+      properties:
+        jobID:
+          type: string
+        jobAssemblyID:
+          type: integer
+          format: int32
+        jobAssemblyLevel:
+          type: integer
+          format: int32
+        parentAssemblyID:
+          type: integer
+          format: int32
+        customerOrganizationID:
+          type: string
+        partID:
+          type: string
+        partRevisionID:
+          type: string
+        partWareHouseLocationID:
+          type: string
+        partBinID:
+          type: string
+        orderQuantity:
+          type: number
+          format: double
+        inventoryQuantity:
+          type: number
+          format: double
+        scrapQuantity:
+          type: number
+          format: double
+        reworkQuantity:
+          type: number
+          format: double
+        productionDueDate:
+          type: string
+          format: date-time
+        nestlinkProcessed:
+          type: boolean
+    APSJobDto:
+      type: object
+      properties:
+        schedStartDate:
+          type: string
+          format: date-time
+        schedEndDate:
+          type: string
+          format: date-time
+        jobOperations:
+          type: array
+          items:
+            $ref: '#/components/schemas/APSJobOperationDto'
+    APSJobOperationDto:
+      required:
+      - workCenterID
+      - schedStartDate
+      type: object
+      properties:
+        uniqueID:
+          type: string
+          format: uuid
+          example: 00000000-0000-0000-0000-000000000000
+        workCenterID:
+          type: string
+        schedStartDate:
+          type: string
+          format: date-time
+        schedEndDate:
+          type: string
+          format: date-time
+    CTMAPSJobOperationDto:
+      required:
+      - jobID
+      - jobAssemblyID
+      - jobOperationID
+      - operationType
+      - workCenterID
+      - processID
+      - processShortDescription
+      - standardFactor
+      - machineType
+      - quantityPerAssembly
+      - operationQuantity
+      type: object
+      properties:
+        jobID:
+          type: string
+        jobAssemblyID:
+          type: integer
+          format: int32
+        jobOperationID:
+          type: integer
+          format: int32
+        operationType:
+          type: integer
+          format: int32
+        workCenterID:
+          type: string
+        processID:
+          type: string
+        processShortDescription:
+          type: string
+        productionStandard:
+          type: number
+          format: double
+        standardFactor:
+          type: string
+        machinesToSchedule:
+          type: integer
+          format: int32
+        machineType:
+          type: integer
+          format: int32
+        quantityPerAssembly:
+          type: number
+          format: double
+        quantityComplete:
+          type: number
+          format: double
+        operationQuantity:
+          type: number
+          format: double
+        setupRate:
+          type: number
+          format: double
+        productionRate:
+          type: number
+          format: double
+        overheadRate:
+          type: number
+          format: double
+        partID:
+          type: string
+        partRevisionID:
+          type: string
+        partWarehouseLocationID:
+          type: string
+        partBinID:
+          type: string
+        unitOfMeasure:
+          type: string
+        plantID:
+          type: string
+        closed:
+          type: boolean
+        dueDate:
+          type: string
+          format: date-time
+        setupHours:
+          type: number
+          format: double
+        actualSetupHours:
+          type: number
+          format: double
+        actualproductionhours:
+          type: number
+          format: double
+        startDate:
+          type: string
+          format: date-time
+        rowVersion:
+          type: string
+          format: byte
+        uniqueID:
+          type: string
+          format: uuid
+          example: 00000000-0000-0000-0000-000000000000
+        setupcomplete:
+          type: boolean
+        purchaseorderID:
+          type: string
+        purchaselocationID:
+          type: string
+        supplierorganizationID:
+          type: string
+        rfqID:
+          type: string
+        processLongDescriptionText:
+          type: string
+        processLongDescriptionRTF:
+          type: string
+        estimatedProductionHours:
+          type: number
+          format: double
+        estimatedUnitCost:
+          type: number
+          format: double
+    BOMTimecardDto:
+      required:
+      - timecardID
+      - employeeID
+      - shiftID
+      - timecardDate
+      type: object
+      properties:
+        timecardID:
+          type: integer
+          format: int32
+        employeeID:
+          type: string
+        shiftID:
+          type: integer
+          format: int32
+        timecardDate:
+          type: string
+          format: date-time
+        actualStartTime:
+          type: string
+          format: date-time
+        actualEndTime:
+          type: string
+          format: date-time
+        lastEndTime:
+          type: string
+          format: date-time
+        plantID:
+          type: string
+        plantDepartmentID:
+          type: string
+        postedDate:
+          type: string
+          format: date-time
+        uniqueID:
+          type: string
+          format: uuid
+          example: 00000000-0000-0000-0000-000000000000
+        rowVersion:
+          type: string
+          format: byte
+    BOMJobAssemblyDto:
+      required:
+      - jobID
+      - jobAssemblyID
+      - level
+      - parentAssemblyID
+      - partID
+      - partShortDescription
+      - quantityPerParent
+      type: object
+      properties:
+        jobID:
+          type: string
+        jobAssemblyID:
+          type: integer
+          format: int32
+        level:
+          type: integer
+          format: int32
+        partWareHouseLocationID:
+          type: string
+        partBinID:
+          type: string
+        parentAssemblyID:
+          type: integer
+          format: int32
+        partID:
+          type: string
+        partRevisionID:
+          type: string
+        partShortDescription:
+          type: string
+        sourceMethodID:
+          type: string
+        sourceRevisionID:
+          type: string
+        quantityPerParent:
+          type: number
+          format: double
+        quantityToReturn:
+          type: number
+          format: double
+        unitOfMeasure:
+          type: string
+        orderQuantity:
+          type: number
+          format: double
+        productionQuantity:
+          type: number
+          format: double
+        quantityToMake:
+          type: number
+          format: double
+        quantityToPull:
+          type: number
+          format: double
+        scrapQuantity:
+          type: number
+          format: double
+        estimatedUnitCost:
+          type: number
+          format: double
+        overlapOperationID:
+          type: integer
+          format: int32
+        overlapType:
+          type: integer
+          format: int32
+        closed:
+          type: boolean
+        scheduledDueDate:
+          type: string
+          format: date-time
+    BOMJobMaterialDto:
+      required:
+      - jobID
+      - jobAssemblyID
+      - jobMaterialID
+      - partID
+      - partShortDescription
+      - quantityPerAssembly
+      - relatedJobOperationID
+      type: object
+      properties:
+        jobID:
+          type: string
+        jobAssemblyID:
+          type: integer
+          format: int32
+        jobMaterialID:
+          type: integer
+          format: int32
+        partID:
+          type: string
+        partRevisionID:
+          type: string
+        partWarehouseLocationID:
+          type: string
+        partBinID:
+          type: string
+        unitOfMeasure:
+          type: string
+        partShortDescription:
+          type: string
+        quantityPerAssembly:
+          type: number
+          format: double
+        scrapPercent:
+          type: number
+          format: double
+        scrapQuantity:
+          type: number
+          format: double
+        estimatedQuantity:
+          type: number
+          format: double
+        estimatedUnitCost:
+          type: number
+          format: double
+        calculatedUnitCost:
+          type: number
+          format: double
+        firm:
+          type: boolean
+        supplierOrganizationID:
+          type: string
+        purchaseLocationID:
+          type: string
+        purchaseOrderID:
+          type: string
+        leadTime:
+          type: integer
+          format: int32
+        minimumCharge:
+          type: number
+          format: double
+        dueInDate:
+          type: string
+          format: date-time
+        requiredDate:
+          type: string
+          format: date-time
+        quantityAllocated:
+          type: number
+          format: double
+        quantityReceived:
+          type: number
+          format: double
+        scrapQuantityReceived:
+          type: number
+          format: double
+        quantityToInspect:
+          type: number
+          format: double
+        quantityToReturn:
+          type: number
+          format: double
+        receivedComplete:
+          type: boolean
+        purchaseToJobQuantity:
+          type: number
+          format: double
+        pullAllFromStock:
+          type: boolean
+        pullFromStockQuantity:
+          type: number
+          format: double
+        closed:
+          type: boolean
+        uniqueID:
+          type: string
+          format: uuid
+          example: 00000000-0000-0000-0000-000000000000
+        rowVersion:
+          type: string
+          format: byte
+        relatedJobOperationID:
+          type: integer
+          format: int32
+    BOMJobOperationDto:
+      required:
+      - jobID
+      - jobAssemblyID
+      - jobOperationID
+      - operationType
+      - workCenterID
+      - processID
+      - processShortDescription
+      - standardFactor
+      - machineType
+      - quantityPerAssembly
+      - operationQuantity
+      type: object
+      properties:
+        jobID:
+          type: string
+        jobAssemblyID:
+          type: integer
+          format: int32
+        jobOperationID:
+          type: integer
+          format: int32
+        operationType:
+          type: integer
+          format: int32
+        workCenterID:
+          type: string
+        processID:
+          type: string
+        processShortDescription:
+          type: string
+        productionStandard:
+          type: number
+          format: double
+        standardFactor:
+          type: string
+        machinesToSchedule:
+          type: integer
+          format: int32
+        machineType:
+          type: integer
+          format: int32
+        quantityPerAssembly:
+          type: number
+          format: double
+        quantityComplete:
+          type: number
+          format: double
+        operationQuantity:
+          type: number
+          format: double
+        setupRate:
+          type: number
+          format: double
+        productionRate:
+          type: number
+          format: double
+        overheadRate:
+          type: number
+          format: double
+        partID:
+          type: string
+        partRevisionID:
+          type: string
+        partWarehouseLocationID:
+          type: string
+        partBinID:
+          type: string
+        unitOfMeasure:
+          type: string
+        plantID:
+          type: string
+        closed:
+          type: boolean
+        dueDate:
+          type: string
+          format: date-time
+    CTMAPSJobDto:
+      type: object
+      properties:
+        jobID:
+          type: string
+        plantID:
+          type: string
+        productionDueDate:
+          type: string
+          format: date-time
+        customerOrganizationID:
+          type: string
+        partID:
+          type: string
+        partRevisionID:
+          type: string
+        partWareHouseLocationID:
+          type: string
+        partBinID:
+          type: string
+        jobPriorityID:
+          type: integer
+          format: int32
+        unitOfMeasure:
+          type: string
+        orderQuantity:
+          type: number
+          format: double
+        inventoryQuantity:
+          type: number
+          format: double
+        scrapQuantity:
+          type: number
+          format: double
+        scrapQuantityCompleted:
+          type: number
+          format: double
+        reworkQuantity:
+          type: number
+          format: double
+        reworkDate:
+          type: string
+          format: date-time
+        productionQuantity:
+          type: number
+          format: double
+        planningComplete:
+          type: boolean
+        scheduleComplete:
+          type: boolean
+        productionComplete:
+          type: boolean
+        releasedToFloor:
+          type: boolean
+        closed:
+          type: boolean
+        projectAreaID:
+          type: string
+        projectID:
+          type: string
+        partForecastPeriodID:
+          type: integer
+          format: int32
+        partForecastYearID:
+          type: integer
+          format: int32
+        firm:
+          type: boolean
+        quantityShipped:
+          type: number
+          format: double
+        quantityReceivedToInventory:
+          type: number
+          format: double
+        nestlinkProcessed:
+          type: boolean
+        scheduledDueDate:
+          type: string
+          format: date-time
+        plannerEmployeeID:
+          type: string
+        quantityCompleted:
+          type: number
+          format: double
+        completedDate:
+          type: string
+          format: date-time
+        closedDate:
+          type: string
+          format: date-time
+        scheduledStartDate:
+          type: string
+          format: date-time
+        uniqueID:
+          type: string
+          format: uuid
+          example: 00000000-0000-0000-0000-000000000000
+        rowVersion:
+          type: string
+          format: byte
+        jobDate:
+          type: string
+          format: date-time
+        partShortDescription:
+          type: string
+        onhold:
+          type: boolean
+        joboperations:
+          type: array
+          items:
+            $ref: '#/components/schemas/CTMAPSJobOperationDto'
+    Warning:
+      type: object
+      properties:
+        innerText:
+          type: string
+    BOMJobGuidDto:
+      type: object
+      properties:
+        jobId:
+          type: string
+        jobGuid:
+          type: string
+        partId:
+          type: string
+        partGuid:
+          type: string
+    BOMJobDto:
+      type: object
+      properties:
+        jobID:
+          type: string
+        plantID:
+          type: string
+        productionDueDate:
+          type: string
+          format: date-time
+        customerOrganizationID:
+          type: string
+        partID:
+          type: string
+        partRevisionID:
+          type: string
+        partWareHouseLocationID:
+          type: string
+        partBinID:
+          type: string
+        jobPriorityID:
+          type: integer
+          format: int32
+        unitOfMeasure:
+          type: string
+        orderQuantity:
+          type: number
+          format: double
+        inventoryQuantity:
+          type: number
+          format: double
+        scrapQuantity:
+          type: number
+          format: double
+        scrapQuantityCompleted:
+          type: number
+          format: double
+        reworkQuantity:
+          type: number
+          format: double
+        reworkDate:
+          type: string
+          format: date-time
+        productionQuantity:
+          type: number
+          format: double
+        planningComplete:
+          type: boolean
+        scheduleComplete:
+          type: boolean
+        productionComplete:
+          type: boolean
+        releasedToFloor:
+          type: boolean
+        closed:
+          type: boolean
+        projectAreaID:
+          type: string
+        projectID:
+          type: string
+        partForecastPeriodID:
+          type: integer
+          format: int32
+        partForecastYearID:
+          type: integer
+          format: int32
+        firm:
+          type: boolean
+        quantityShipped:
+          type: number
+          format: double
+        quantityReceivedToInventory:
+          type: number
+          format: double
+        nestlinkProcessed:
+          type: boolean
+        scheduledDueDate:
+          type: string
+          format: date-time
+    BOMJobGuidsDto:
+      type: object
+      properties:
+        jobs:
+          type: array
+          items:
+            $ref: '#/components/schemas/BOMJobGuidDto'
+    APIResponseMessageDto:
+      type: object
+      properties:
+        description:
+          type: string
+        status:
+          type: string
+        payloadID:
+          type: string
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+          readOnly: true
+        warnings:
+          type: array
+          items:
+            $ref: '#/components/schemas/Warning'
+          readOnly: true
+    CTMBOMJobMethodAssemblyDto:
+      type: object
+      properties:
+        jobAssembly:
+          $ref: '#/components/schemas/BOMJobAssemblyDto'
+        jobOperations:
+          type: array
+          items:
+            $ref: '#/components/schemas/BOMJobOperationDto'
+        jobMaterials:
+          type: array
+          items:
+            $ref: '#/components/schemas/BOMJobMaterialDto'
+    Error:
+      type: object
+      properties:
+        innerText:
+          type: string
+  securitySchemes:
+    oauth2:
+      type: oauth2
+      description: OAuth 2.0 Client Credentials Flow with API Users issued from Integration Engine Management Console
+      flows:
+        clientCredentials:
+          tokenUrl: https://api-user.integrations.ecimanufacturing.com/oauth2/api-user/token
+          scopes:
+            openid: openid

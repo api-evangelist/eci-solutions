@@ -1,0 +1,267 @@
+openapi: 3.2.0
+info:
+  title: ERP API v2.1 Employee API
+  description: Provides a common API surface for accessing ECI ERP products.
+  contact:
+    name: ECI Manufacturing Division Integration Team
+    url: https://www.ecisolutions.com/support/
+  version: 3.5.585+b1e45fd230
+servers:
+- url: https://api-erp.integrations.ecimanufacturing.com:443
+  description: Production
+security:
+- Bearer: []
+tags:
+- name: Employee
+paths:
+  /api/v2.1/employees:
+    get:
+      tags:
+      - Employee
+      summary: Get a list of Employees from the ERP system that match the given filters
+      description: 'Gets a list of Employee.
+
+
+        ## Supported ERPs
+
+        - M1
+
+        - JobBOSS²
+
+        - Macola
+
+        - Deacom
+
+        ## Resource Features
+
+        Feature |Supported |Notes
+
+        ------------|------------|------------
+
+        Filter Expressions|**Yes**|
+
+        Sort Expressions|**Yes**
+
+        Field Selection|**Yes**
+
+        Pagination|**Yes**
+
+        UniqueID|uniqueID|
+
+        ## Features by Field
+
+        Field |Filterable |Sortable |Supported ERPs
+
+        ------------|------------|------------|------------
+
+        employeeID|Yes|Yes|M1, JobBOSS², Macola, Deacom
+
+        firstName|Yes|Yes|M1, JobBOSS², Macola, Deacom
+
+        lastName|Yes|Yes|M1, JobBOSS², Macola, Deacom
+
+        title|Yes|Yes|M1, JobBOSS², Macola, Deacom
+
+        supervisorEmployeeID|Yes|Yes|M1, JobBOSS², Macola, Deacom
+
+        payRate|Yes|Yes|M1, JobBOSS², Macola, Deacom
+
+        deptID|Yes|Yes|M1, JobBOSS², Macola, Deacom
+
+        shiftID|Yes|Yes|M1, JobBOSS², Macola, Deacom
+
+        isActive|Yes|Yes|JobBOSS², Deacom
+
+        uniqueID|Yes|Yes|M1, JobBOSS², Macola, Deacom
+
+        rowVersion|Yes|Yes|M1, JobBOSS², Macola, Deacom'
+      parameters:
+      - name: fields
+        in: query
+        description: A comma-separated list of fields to include in the result.
+        schema:
+          type: string
+      - name: sort
+        in: query
+        description: A comma-separated list of <a href='#sortexpr'>sort expressions</a>.
+        schema:
+          type: string
+      - name: take
+        in: query
+        description: Limit the number of results being returned
+        schema:
+          minimum: 0
+          type: integer
+      - name: skip
+        in: query
+        description: The number of results to skip. Combine with 'take' to fetch records in pages
+        schema:
+          minimum: 0
+          type: integer
+      - name: count
+        in: query
+        description: '<a href=''#countparam''>Data and count</a> response behavior '
+        schema:
+          maximum: 2
+          minimum: 0
+          type: integer
+      - name: filters
+        in: query
+        description: See <a href='#filterexpr'>Filter Expressions</a> for query string syntax. The Test UI and any generated code tool may expose filter parameters as a dictionary of name/value pairs, but if creating a raw HTTP request, they must be provided on the querystring as defined in the Filter Expression section.
+        style: form
+        schema:
+          type: object
+          additionalProperties:
+            type: string
+        examples:
+          Empty:
+            description: No filters applied
+          'Example #1':
+            description: A dictionary of name/value pairs that will be serialized as querystring parameters in the format ```name[operator]=value```
+            value:
+              employeeID[eq]: abc123
+              firstName[eq]: abc123
+              lastName[eq]: abc123
+              title[eq]: abc123
+              supervisorEmployeeID[eq]: abc123
+              payRate[gte]: 123
+              deptID[eq]: abc123
+              shiftID[eq]: abc123
+              isActive[eq]: true
+              uniqueID[eq]: cc90686b-399e-4094-b431-fa462f84b0a8
+              rowVersion[gte]: 123
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/EmployeeListResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmployeeListResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/EmployeeListResponse'
+      operationId: getApiV21Employees
+      x-operation-id-source: derived
+  /api/v2.1/employees/{id}:
+    get:
+      tags:
+      - Employee
+      summary: Get an Employee from the ERP system that matches the given unique ID
+      description: 'Gets a Employee by unique ID.
+
+
+        ## Supported ERPs
+
+        - M1
+
+        - JobBOSS²
+
+        - Macola
+
+        - Deacom
+
+        ## Features by Field
+
+        Field |Supported ERPs
+
+        ------------|------------
+
+        employeeID||M1, JobBOSS², Macola, Deacom
+
+        firstName||M1, JobBOSS², Macola, Deacom
+
+        lastName||M1, JobBOSS², Macola, Deacom
+
+        title||M1, JobBOSS², Macola, Deacom
+
+        supervisorEmployeeID||M1, JobBOSS², Macola, Deacom
+
+        payRate||M1, JobBOSS², Macola, Deacom
+
+        deptID||M1, JobBOSS², Macola, Deacom
+
+        shiftID||M1, JobBOSS², Macola, Deacom
+
+        isActive||JobBOSS², Deacom
+
+        uniqueID||M1, JobBOSS², Macola, Deacom
+
+        rowVersion||M1, JobBOSS², Macola, Deacom'
+      parameters:
+      - name: id
+        in: path
+        description: The ID of the Employee
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Employee'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Employee'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/Employee'
+      operationId: getApiV21EmployeesById
+      x-operation-id-source: derived
+components:
+  schemas:
+    EmployeeListResponse:
+      type: object
+      properties:
+        data:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Employee'
+          readOnly: true
+        resultCount:
+          type: integer
+          format: int32
+      additionalProperties: false
+    Employee:
+      title: Employee
+      type: object
+      properties:
+        employeeID:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        title:
+          type: string
+        supervisorEmployeeID:
+          type: string
+        payRate:
+          type: number
+          format: double
+        deptID:
+          type: string
+        shiftID:
+          type: string
+        isActive:
+          type: boolean
+        uniqueID:
+          type: string
+        rowVersion:
+          type: integer
+          format: int64
+  securitySchemes:
+    Bearer:
+      type: oauth2
+      description: OAuth 2.0 Client Credentials Flow with API Users issued from Integration Engine Management Console
+      flows:
+        clientCredentials:
+          tokenUrl: https://api-user.integrations.ecimanufacturing.com/oauth2/api-user/token
+          scopes:
+            openid: openid

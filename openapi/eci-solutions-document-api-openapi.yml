@@ -1,0 +1,2673 @@
+openapi: 3.2.0
+info:
+  title: Einvoice. Document API
+  version: '1.0'
+security:
+- Bearer: []
+tags:
+- name: Document
+paths:
+  /api/v1/documents:
+    get:
+      tags:
+      - Document
+      summary: Get a list of documents
+      operationId: GetDocuments
+      parameters:
+      - name: startDate
+        in: query
+        description: The start date to filter documents by processing date
+        schema:
+          type: string
+          format: date-time
+      - name: endDate
+        in: query
+        description: The end date to filter documents by processing date
+        schema:
+          type: string
+          format: date-time
+      - name: take
+        in: query
+        description: 'The maximum number of documents to return. Default: 500. Minimum: 1. Maximum: 500.'
+        schema:
+          maximum: 500
+          minimum: 1
+          type: integer
+          format: int32
+          default: 500
+      - name: skip
+        in: query
+        description: 'The number of documents to skip. Use for paging to retrieve further batches of documents. Default: 0. Minimum: 0.'
+        schema:
+          maximum: 2147483647
+          minimum: 0
+          type: integer
+          format: int32
+          default: 0
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/EinvoiceGetDocumentResponseListResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EinvoiceGetDocumentResponseListResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/EinvoiceGetDocumentResponseListResponse'
+    post:
+      tags:
+      - Document
+      summary: Submit data for an invoice
+      operationId: PostInvoiceDocument
+      parameters:
+      - name: mandateName
+        in: query
+        description: The mandate name for which this invoice document is being submitted
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: The invoice document to submit
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EinvoiceInvoiceDocumentRequest'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/EinvoiceInvoiceDocumentRequest'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/EinvoiceInvoiceDocumentRequest'
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/EinvoicePostDocumentResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EinvoicePostDocumentResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/EinvoicePostDocumentResponse'
+  /api/v1/documents/credit-note:
+    post:
+      tags:
+      - Document
+      summary: Submit data for a credit note
+      operationId: PostCreditNoteDocument
+      parameters:
+      - name: mandateName
+        in: query
+        description: The mandate name for which this credit note document is being submitted
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: The credit note document to submit
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EinvoiceCreditNoteDocumentRequest'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/EinvoiceCreditNoteDocumentRequest'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/EinvoiceCreditNoteDocumentRequest'
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/EinvoicePostDocumentResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EinvoicePostDocumentResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/EinvoicePostDocumentResponse'
+  /api/v1/documents/{documentId}:
+    get:
+      tags:
+      - Document
+      summary: Get a single document by Id
+      operationId: GetDocument
+      parameters:
+      - name: documentId
+        in: path
+        description: The unique Id of the document.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/EinvoiceGetDocumentResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EinvoiceGetDocumentResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/EinvoiceGetDocumentResponse'
+        '404':
+          description: Not Found
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+  /api/v1/documents/{documentId}/download:
+    get:
+      tags:
+      - Document
+      summary: Get a single document by Id and type
+      operationId: GetDocumentByIdWithDownloadType
+      parameters:
+      - name: documentId
+        in: path
+        description: The unique Id of the document.
+        required: true
+        schema:
+          type: string
+      - name: type
+        in: query
+        description: Document type.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/EinvoiceGetDownloadDocumentResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EinvoiceGetDownloadDocumentResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/EinvoiceGetDownloadDocumentResponse'
+        '404':
+          description: Not Found
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+components:
+  schemas:
+    UblInvoiceDespatchDocument:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: 'Despatch advice reference: An identifier of a referenced despatch advice. Maps to:
+
+            * Maps to: Invoice/cac:DespatchDocumentReference/cbc:ID'
+      additionalProperties: false
+    UblInvoicePartyTaxScheme:
+      type: object
+      properties:
+        companyID:
+          type:
+          - string
+          - 'null'
+          description: "Party VAT identifier or tax registration identifier: The party's VAT identifier (AKA VAT identification number)\nor the local identification of the party for tax purposes\n* Maps to:\n  * Invoice/cac:AccountingSupplierParty/cac:Party/cac:PartyTaxScheme/cbc:CompanyID\n  * Invoice/cac:AccountingCustomerParty/cac:Party/cac:PartyTaxScheme/cbc:CompanyID\n  * Invoice/cac:TaxRepresentativeParty/cac:PartyTaxScheme/cbc:CompanyID\n  * Invoice/cac:Delivery/cac:DeliveryParty/cac:PartyTaxScheme/cbc:CompanyID"
+        companyIDSchemeID:
+          type:
+          - string
+          - 'null'
+          description: "The identification scheme of the company identifier.\n* Maps to:\n  * Invoice/cac:AccountingCustomerParty/cac:Party/cac:PartyTaxScheme/cbc:CompanyID/@schemeID"
+        taxScheme:
+          $ref: '#/components/schemas/UblInvoiceTaxScheme'
+      additionalProperties: false
+    UblInvoiceLinePeriod:
+      type: object
+      properties:
+        startDate:
+          type:
+          - string
+          - 'null'
+          description: 'Document line period start date: The date when the Document period for this Document line starts.
+
+            * Maps to: Invoice/cac:InvoiceLine/cac:InvoicePeriod/cbc:StartDate'
+          format: date-time
+        endDate:
+          type:
+          - string
+          - 'null'
+          description: 'Document line period end date: The date when the Document period for this Document line ends.
+
+            * Maps to: Invoice/cac:InvoiceLine/cac:InvoicePeriod/cbc:EndDate'
+          format: date-time
+      additionalProperties: false
+    UblInvoiceTaxRepresentative:
+      type: object
+      properties:
+        partyName:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/UblInvoicePartyName'
+          description: 'Seller tax representative party name
+
+            * Maps to:Invoice/cac:TaxRepresentativeParty/cac:PartyName'
+        postalAddress:
+          $ref: '#/components/schemas/UblInvoicePostalAddress'
+        partyTaxScheme:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/UblInvoicePartyTaxScheme'
+          description: 'Seller tax representative tax scheme
+
+            * Maps to: Invoice/cac:TaxRepresentativeParty/cac:PartyTaxScheme'
+      additionalProperties: false
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+        title:
+          type:
+          - string
+          - 'null'
+        status:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        detail:
+          type:
+          - string
+          - 'null'
+        instance:
+          type:
+          - string
+          - 'null'
+      additionalProperties: {}
+    UblCreditNoteLine:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: 'Document line identifier: A unique identifier for the individual line within the Document.
+
+            * Maps to: CreditNote/cac:CreditNoteLine/cbc:ID'
+        note:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: 'Document line note: A textual note that gives unstructured information that is relevant to the Document line.
+
+            * Maps to: CreditNote/cac:CreditNoteLine/cbc:Note'
+        creditedQuantity:
+          type:
+          - number
+          - 'null'
+          description: 'Quantity: The quantity of items (goods or services) that is charged in the Document line.
+
+            * Maps to: CreditNote/cac:CreditNoteLine/cbc:CreditedQuantity'
+          format: double
+        creditedQuantityUnitCode:
+          type:
+          - string
+          - 'null'
+          description: 'Quantity unit of measure: The unit of measure that applies to the invoiced quantity. See: https://docs.peppol.eu/poacc/billing/3.0/codelist/UNECERec20/.
+
+            * Maps to: CreditNote/cac:CreditNoteLine/cbc:CreditedQuantity/@unitCode'
+        lineExtensionAmount:
+          type:
+          - number
+          - 'null'
+          description: 'Document line net amount: The total amount of the Document line. The amount is "net" without VAT. Provide value according to document currency code.
+
+            * Maps to: CreditNote/cac:CreditNoteLine/cbc:LineExtensionAmount'
+          format: double
+        accountingCost:
+          type:
+          - string
+          - 'null'
+          description: 'Document line Buyer accounting reference: A textual value that specifies where to book the relevant data into the Buyer''s financial accounts.
+
+            * Maps to: CreditNote/cac:CreditNoteLine/cbc:AccountingCost'
+        invoicePeriod:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/UblInvoiceLinePeriod'
+          description: 'Document line period information.
+
+            * Maps to: CreditNote/cac:CreditNoteLine/cac:InvoicePeriod'
+        orderLineReference:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/UblInvoiceLineOrderLineReference'
+          description: 'Referenced purchase order line information.
+
+            * Maps to: CreditNote/cac:CreditNoteLine/cac:OrderLineReference'
+        documentReference:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/UblInvoiceLineDocument'
+          description: 'Document line object information.
+
+            * Maps to: CreditNote/cac:CreditNoteLine/cac:DocumentReference'
+        allowanceCharge:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/UblInvoiceAllowanceCharge'
+          description: 'Allowance or charge information.
+
+            * Maps to: CreditNote/cac:CreditNoteLine/cac:AllowanceCharge'
+        taxTotal:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/UblInvoiceTaxTotal'
+          description: 'Tax total information.
+
+            * Maps to: CreditNote/cac:CreditNoteLine/cac:TaxTotal'
+        item:
+          $ref: '#/components/schemas/UblInvoiceLineItem'
+        price:
+          $ref: '#/components/schemas/UblInvoiceLinePrice'
+        itemPriceExtension:
+          $ref: '#/components/schemas/UblInvoiceLineItemPriceExtension'
+      additionalProperties: false
+    UblInvoiceLineItemIdentification:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: "Item identifier: An item identifier assigned by the Buyer/Seller or based on a registered scheme.\n* Maps to:\n  * Invoice/cac:InvoiceLine/cac:Item/cac:BuyersItemIdentification/cbc:ID\n  * Invoice/cac:InvoiceLine/cac:Item/cac:SellersItemIdentification/cbc:ID\n  * Invoice/cac:InvoiceLine/cac:Item/cac:StandardItemIdentification/cbc:ID"
+        idSchemeID:
+          type:
+          - string
+          - 'null'
+          description: 'Item standard identifier identification scheme identifier: The identification scheme identifier of the Item standard identifier.
+
+            * Maps to: Invoice/cac:InvoiceLine/cac:Item/cac:StandardItemIdentification/cbc:ID/@schemeID'
+      additionalProperties: false
+    UblInvoiceBillingInvoiceDocument:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: 'Preceding Invoice number: The identification of an Invoice that was previously sent by the Seller.
+
+            * Maps to: Invoice/cac:BillingReference/cac:InvoiceDocumentReference/cbc:ID'
+        uuid:
+          type:
+          - string
+          - 'null'
+        issueDate:
+          type:
+          - string
+          - 'null'
+          description: 'Preceding Invoice issue date: The date when the Preceding Invoice was issued. Maps to:
+
+            * Maps to: Invoice/cac:BillingReference/cac:InvoiceDocumentReference/cbc:IssueDate'
+          format: date-time
+      additionalProperties: false
+    UblInvoiceTaxSubtotal:
+      type: object
+      properties:
+        taxableAmount:
+          pattern: \d+(\.\d{1,2})?
+          type:
+          - number
+          - 'null'
+          description: 'VAT category taxable amount: Sum of all taxable amounts subject to a specific VAT category code and VAT category rate. Provide value according to document currency code.
+
+            * Maps to: Invoice/cac:TaxTotal/cac:TaxSubtotal/cbc:TaxableAmount'
+          format: double
+        taxAmount:
+          pattern: \d+(\.\d{1,2})?
+          type:
+          - number
+          - 'null'
+          description: 'VAT category tax amount: The total VAT amount for a given VAT category. Provide value according to document currency code.
+
+            * Maps to: Invoice/cac:TaxTotal/cac:TaxSubtotal/cbc:TaxAmount'
+          format: double
+        percent:
+          type:
+          - number
+          - 'null'
+          description: 'VAT rate: The VAT rate, represented as percentage that applies to the tax subtotal.
+
+            * Maps to: Invoice/cac:InvoiceLine/cac:TaxTotal/cac:TaxSubtotal/cbc:Percent'
+          format: double
+        baseUnitMeasure:
+          type:
+          - number
+          - 'null'
+          description: '* Maps to: Invoice/cac:InvoiceLine/cac:TaxTotal/cac:TaxSubtotal/cbc:BaseUnitMeasure'
+          format: double
+        baseUnitMeasureUnitCode:
+          type:
+          - string
+          - 'null'
+          description: '* Maps to: Invoice/cac:InvoiceLine/cac:TaxTotal/cac:TaxSubtotal/cbc:BaseUnitMeasure/@unitCode'
+        perUnitAmount:
+          type:
+          - number
+          - 'null'
+          description: 'Tax amount when tax is applied at a certain rate per unit. Provide value according to document currency code.
+
+            * Maps to: Invoice/cac:InvoiceLine/cac:TaxTotal/cac:TaxSubtotal/cbc:PerUnitAmount'
+          format: double
+        taxCategory:
+          $ref: '#/components/schemas/UblInvoiceTaxSubtotalTaxCategory'
+      additionalProperties: false
+    UblInvoiceBilling:
+      type: object
+      properties:
+        invoiceDocumentReference:
+          $ref: '#/components/schemas/UblInvoiceBillingInvoiceDocument'
+        additionalDocumentReference:
+          $ref: '#/components/schemas/UblInvoiceBillingAdditionalDocument'
+      additionalProperties: false
+    UblInvoiceLineOrderLineReference:
+      type: object
+      properties:
+        lineID:
+          type:
+          - string
+          - 'null'
+          description: 'Referenced purchase order line reference: An identifier for a referenced line within a purchase order, issued by the Buyer.
+
+            * Maps to: Invoice/cac:InvoiceLine/cac:OrderLineReference/cbc:LineID'
+      additionalProperties: false
+    UblInvoiceTaxScheme:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: "For Seller VAT identifier, use value \"VAT\", or for the seller tax registration identifier, use value not equal to \"VAT\".\nFor Buyer VAT identifier, use value \"VAT\".\nFor Tax Representative VAT identifier, use value \"VAT\".\nFor Invoice Line Item VAT identifier, use value \"VAT\".\nFor Allowance Charge VAT identifier, use value \"VAT\".\nFor Tax Subtotal VAT identifier, use value \"VAT\".\nFor Invoice Line Item VAT identifier, use value \"VAT\".\n* Default: \"VAT\"\n* Maps to:\n  * Invoice/cac:AccountingSupplierParty/cac:Party/cac:PartyTaxScheme/cac:TaxScheme/cbc:ID\n  * Invoice/cac:AccountingCustomerParty/cac:Party/cac:PartyTaxScheme/cac:TaxScheme/cbc:ID\n  * Invoice/cac:TaxRepresentativeParty/cac:PartyTaxScheme/cac:TaxScheme/cbc:ID\n  * Invoice/cac:InvoiceLine/cac:Item/cac:ClassifiedTaxCategory/cac:TaxScheme/cbc:ID\n  * Invoice/cac:AllowanceCharge/cac:TaxCategory/cac:TaxScheme/cbc:ID\n  * Invoice/cac:TaxTotal/cac:TaxSubtotal/cac:TaxCategory/cac:TaxScheme/cbc:ID\n  * Invoice/cac:InvoiceLine/cac:Item/cac:ClassifiedTaxCategory/cac:TaxScheme/cbc:ID\n  * Invoice/cac:InvoiceLine/cac:TaxTotal/cac:TaxSubtotal/cac:TaxCategory/cac:TaxScheme/cbc:ID"
+        idSchemeID:
+          type:
+          - string
+          - 'null'
+          description: "* Maps to:\n  * Invoice/cac:TaxTotal/cac:TaxSubtotal/cac:TaxCategory/cac:TaxScheme/cbc:ID/@schemeID\n  * Invoice/cac:InvoiceLine/cac:TaxTotal/cac:TaxSubtotal/cac:TaxCategory/cac:TaxScheme/cbc:ID/@schemeID"
+        idSchemeAgencyID:
+          type:
+          - string
+          - 'null'
+          description: "* Maps to:\n  * Invoice/cac:TaxTotal/cac:TaxSubtotal/cac:TaxCategory/cac:TaxScheme/cbc:ID/@schemeAgencyID\n  * Invoice/cac:InvoiceLine/cac:TaxTotal/cac:TaxSubtotal/cac:TaxCategory/cac:TaxScheme/cbc:ID/@schemeAgencyID"
+      additionalProperties: false
+    UblInvoicePostalAddressCountry:
+      type: object
+      properties:
+        identificationCode:
+          type:
+          - string
+          - 'null'
+          description: "Address country code: A code that identifies the country. See: https://docs.peppol.eu/poacc/billing/3.0/codelist/ISO3166/.\n* Maps to:\n  * Invoice/cac:AccountingSupplierParty/cac:Party/cac:PostalAddress/cac:Country/cbc:IdentificationCode\n  * Invoice/cac:AccountingCustomerParty/cac:Party/cac:PostalAddress/cac:Country/cbc:IdentificationCode\n  * Invoice/cac:TaxRepresentativeParty/cac:PostalAddress/cac:Country/cbc:IdentificationCode\n  * Invoice/cac:Delivery/cac:DeliveryLocation/cac:Address/cac:Country/cbc:IdentificationCode\n  * Invoice/cac:InvoiceLine/cac:Item/cac:OriginCountry/cbc:IdentificationCode\n  * Invoice/cac:Delivery/cac:DeliveryParty/cac:PostalAddress/cac:Country/cbc:IdentificationCode"
+        identificationCodeListID:
+          type:
+          - string
+          - 'null'
+          description: 'Address country code list
+
+            * Maps to: Invoice/cac:AccountingSupplierParty/cac:Party/cac:PostalAddress/cac:Country/cbc:IdentificationCode@listID'
+        identificationCodeListAgencyID:
+          type:
+          - string
+          - 'null'
+          description: 'Address country code list agency
+
+            * Maps to: Invoice/cac:AccountingSupplierParty/cac:Party/cac:PostalAddress/cac:Country/cbc:IdentificationCode@listAgencyID'
+      additionalProperties: false
+    UblInvoiceCustomer:
+      type: object
+      properties:
+        party:
+          $ref: '#/components/schemas/UblInvoiceCustomerParty'
+      additionalProperties: false
+    UblInvoiceLinePriceAllowanceCharge:
+      type: object
+      properties:
+        chargeIndicator:
+          type:
+          - boolean
+          - 'null'
+          description: 'Charge indicator: Whether this information describes a charge (true) or a discount allowance (false).
+
+            * Default: false
+
+            * Maps to: Invoice/cac:InvoiceLine/cac:Price/cac:AllowanceCharge/cbc:Amount'
+        amount:
+          type:
+          - number
+          - 'null'
+          description: 'Item price discount: The total discount subtracted from the Item gross price to calculate the Item net price. Provide value according to document currency code.
+
+            * Maps to: Invoice/cac:InvoiceLine/cac:Price/cac:AllowanceCharge/cbc:Amount'
+          format: double
+        baseAmount:
+          minimum: 0
+          type:
+          - number
+          - 'null'
+          description: 'Item gross price: The unit price, exclusive of VAT, before subtracting Item price discount. Must not be negative. Provide value according to document currency code.
+
+            * Maps to: Invoice/cac:InvoiceLine/cac:Price/cac:AllowanceCharge/cbc:BaseAmount'
+          format: double
+        taxCategory:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/UblInvoiceAllowanceChargeTaxCategory'
+          description: 'Document level allowance or charge VAT category information.
+
+            * Maps to: Invoice/cac:AllowanceCharge/cac:TaxCategory'
+      additionalProperties: false
+    UblInvoicePaymentCardAccount:
+      type: object
+      properties:
+        primaryAccountNumberID:
+          type:
+          - string
+          - 'null'
+          description: 'Payment card primary account number: The Primary Account Number (PAN) of the card used for payment. For security, an invoice should never include a full card primary account number.
+
+            * Maps to: Invoice/cac:PaymentMeans/cac:CardAccount/cbc:PrimaryAccountNumberID'
+        networkID:
+          type:
+          - string
+          - 'null'
+          description: 'Card Network identifier, such as VISA, American Express, Master Card.
+
+            * Maps to: Invoice/cac:PaymentMeans/cac:CardAccount/cbc:NetworkID'
+        holderName:
+          type:
+          - string
+          - 'null'
+          description: 'Payment card holder name: The name of the payment card holder.
+
+            * Maps to: Invoice/cac:PaymentMeans/cac:CardAccount/cbc:HolderName'
+      additionalProperties: false
+    UblInvoicePaymentTerms:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: 'Payment terms identifier.
+
+            * Maps to: Invoice/cac:PaymentTerms/cbc:ID'
+        note:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: 'Payment terms: A textual description of the payment terms that apply to the amount due.
+
+            * Maps to: Invoice/cac:PaymentTerms/cbc:Note'
+      additionalProperties: false
+    UblInvoiceLineDocument:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: 'Document line object identifier: An identifier for an object on which the document line is based, given by the Seller.
+
+            * Maps to: Invoice/cac:InvoiceLine/cac:DocumentReference/cbc:ID'
+        idSchemeID:
+          type:
+          - string
+          - 'null'
+          description: 'Scheme identifier: The identification scheme identifier of the Invoice line object identifier.
+
+            * Maps to: Invoice/cac:InvoiceLine/cac:DocumentReference/cbc:ID/@schemeID'
+        documentTypeCode:
+          type:
+          - string
+          - 'null'
+          description: 'Document type code: Code \"130\" MUST be used to indicate an invoice object reference. Not used for other additional documents.
+
+            * Maps to: Invoice/cac:InvoiceLine/cac:DocumentReference/cbc:DocumentTypeCode'
+      additionalProperties: false
+    UblInvoicePayee:
+      type: object
+      properties:
+        partyIdentification:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/UblInvoicePartyIdentification'
+          description: 'Payee Party identification.
+
+            * Maps to: Invoice/cac:PayeeParty/cac:Party/cac:PartyIdentification'
+        partyLegalEntity:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/UblInvoicePartyLegalEntity'
+          description: 'Payee legal entity information.
+
+            * Maps to: Invoice/cac:PayeeParty/cac:Party/cac:PartyLegalEntity'
+        partyName:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/UblInvoicePartyName'
+          description: 'Payee name information.
+
+            * Maps to:Invoice/cac:PayeeParty/cac:Party/cac:PartyName'
+      additionalProperties: false
+    Metadata:
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+        isBase64Encoded:
+          type:
+          - boolean
+          - 'null'
+      additionalProperties: false
+    UblInvoiceReceiptDocument:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: 'Receiving advice reference: An identifier of a referenced receiving advice. Maps to:
+
+            * Maps to: Invoice/cac:ReceiptDocumentReference/cbc:ID'
+      additionalProperties: false
+    UblInvoiceDeliveryParty:
+      type: object
+      properties:
+        partyIdentification:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/UblInvoicePartyIdentification'
+          description: 'Deliver to party identification.
+
+            * Maps to: Invoice/cac:Delivery/cac:DeliveryParty/cac:PartyIdentification'
+        partyName:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/UblInvoicePartyName'
+          description: 'Deliver to party name: The name of the party to which the goods and services are delivered.
+
+            * Maps to: Invoice/cac:Delivery/cac:DeliveryParty/cac:PartyName'
+        postalAddress:
+          $ref: '#/components/schemas/UblInvoicePostalAddress'
+        partyLegalEntity:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/UblInvoicePartyLegalEntity'
+          description: 'Deliver to party legal entity information.
+
+            * Maps to: Invoice/cac:Delivery/cac:DeliveryParty/cac:PartyLegalEntity'
+        partyTaxScheme:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/UblInvoicePartyTaxScheme'
+          description: '* Maps to: Invoice/cac:Delivery/cac:DeliveryParty/cac:PartyTaxScheme'
+      additionalProperties: false
+    UblInvoiceLinePrice:
+      type: object
+      properties:
+        priceAmount:
+          minimum: 0
+          type:
+          - number
+          - 'null'
+          description: 'Item net price: The price of an item, exclusive of VAT, after subtracting item price discount. Item price can not be negative. Provide value according to document currency code.
+
+            * Maps to: Invoice/cac:InvoiceLine/cac:Price/cbc:PriceAmount'
+          format: double
+        baseQuantity:
+          type:
+          - number
+          - 'null'
+          description: 'Item price base quantity: The number of item units to which the price applies.
+
+            * Maps to: Invoice/cac:InvoiceLine/cac:Price/cbc:BaseQuantity'
+          format: double
+        baseQuantityUnitCode:
+          type:
+          - string
+          - 'null'
+          description: 'Item price base quantity unit of measure code: The unit of measure that applies to the Item price base quantity, must be the same as the unit code of the Invoiced/credited quantity.
+
+            * Maps to: Invoice/cac:InvoiceLine/cac:Price/cbc:BaseQuantity/@unitCode'
+        allowanceCharge:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/UblInvoiceLinePriceAllowanceCharge'
+          description: 'Item price allowance and charge information.
+
+            * Maps to: Invoice/cac:InvoiceLine/cac:Price/cac:AllowanceCharge'
+      additionalProperties: false
+    UblInvoiceDeliveryShipment:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: '* Maps to: Invoice/cac:Delivery/cac:Shipment/cbc:ID'
+        consignment:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/UblInvoiceDeliveryShipmentConsignment'
+          description: '* Maps to: Invoice/cac:Delivery/cac:Shipment/cac:Consignment'
+        freightAllowanceCharge:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/UblInvoiceDeliveryShipmentFreightAllowanceCharge'
+          description: '* Maps to: Invoice/cac:Delivery/cac:Shipment/cac:FreightAllowanceCharge'
+      additionalProperties: false
+    UblInvoiceAdditionalDocument:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: 'Document object identifier, Supporting document reference: An identifier for an object on which the document is based or the identifier for the supporting document.
+
+            * Maps to: Invoice/cac:AdditionalDocumentReference/cbc:ID'
+        idSchemeID:
+          type:
+          - string
+          - 'null'
+          description: 'Scheme identifier: The identification scheme identifier of the Invoiced object identifier. See: https://docs.peppol.eu/poacc/billing/3.0/syntax/ubl-invoice/cac-AdditionalDocumentReference/cbc-ID/schemeID/.
+
+            * Maps to: Invoice/cac:AdditionalDocumentReference/cbc:ID/@schemeID'
+        documentTypeCode:
+          type:
+          - string
+          - 'null'
+          description: 'Document type code: Code \"130\" MUST be used to indicate an invoice object reference. Not used for other additional documents.
+
+            * Maps to: Invoice/cac:AdditionalDocumentReference/cbc:DocumentTypeCode'
+        documentDescription:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: 'Supporting document description: A description of the supporting document, such as timesheet, usage report, etc.
+
+            * Maps to: Invoice/cac:AdditionalDocumentReference/cbc:DocumentDescription'
+        attachment:
+          $ref: '#/components/schemas/UblInvoiceAdditionalDocumentAttachment'
+      additionalProperties: false
+    UblInvoicePaymentMandate:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: 'Mandate reference identifier: Unique identifier assigned by the Payee for referencing the direct debit mandate.
+
+            * Maps to: Invoice/cac:PaymentMeans/cac:PaymentMandate/cbc:ID'
+      additionalProperties: false
+    UblInvoiceLineItemPriceExtension:
+      type: object
+      properties:
+        amount:
+          minimum: 0
+          type:
+          - number
+          - 'null'
+          description: 'Item price extension: The amount of the price extension. Provide value according to document currency code.
+
+            * Maps to: Invoice/cac:InvoiceLine/cac:ItemPriceExtension/cbc:Amount'
+          format: double
+      additionalProperties: false
+    UblInvoiceLineItemAdditionalItemProperty:
+      type: object
+      properties:
+        name:
+          type:
+          - string
+          - 'null'
+          description: 'Item attribute name: The name of the attribute or property of the item.
+
+            * Maps to: Invoice/cac:InvoiceLine/cac:Item/cac:AdditionalItemProperty/cbc:Name'
+        value:
+          type:
+          - string
+          - 'null'
+          description: 'Item attribute value: The value of the attribute or property of the item.
+
+            * Maps to: Invoice/cac:InvoiceLine/cac:Item/cac:AdditionalItemProperty/cbc:Value'
+      additionalProperties: false
+    UblInvoiceOriginatorDocument:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: 'Tender or lot reference: The identification of the call for tender or lot the invoice relates to. Maps to:
+
+            * Maps to: Invoice/cac:OriginatorDocumentReference/cbc:ID'
+      additionalProperties: false
+    UblInvoicePartyName:
+      type: object
+      properties:
+        name:
+          type:
+          - string
+          - 'null'
+          description: "Party trading name: A name by which the party is known, other than party name (also known as Business name).\n* Maps to:\n  * Invoice/cac:AccountingSupplierParty/cac:Party/cac:PartyName/cbc:Name\n  * Invoice/cac:AccountingCustomerParty/cac:Party/cac:PartyName/cbc:Name\n  * Invoice/cac:PayeeParty/cac:Party/cac:PartyName/cbc:Name\n  * Invoice/cac:TaxRepresentativeParty/cac:PartyName/cbc:Name\n  * Invoice/cac:Delivery/cac:DeliveryParty/cac:PartyName/cbc:Name"
+      additionalProperties: false
+    UblInvoicePaymentFinancialAccount:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: 'Payment account identifier: A unique identifier of the financial payment account, at a payment service provider, to which payment should be made.
+
+            * Maps to: Invoice/cac:PaymentMeans/cac:PayeeFinancialAccount/cbc:ID'
+        name:
+          type:
+          - string
+          - 'null'
+          description: 'Payment account name: The name of the payment account, at a payment service provider, to which payment should be made.
+
+            * Maps to: Invoice/cac:PaymentMeans/cac:PayeeFinancialAccount/cbc:Name'
+        paymentNote:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: 'Payment Note.
+
+            * Maps to: Invoice/cac:PaymentMeans/cac:PayeeFinancialAccount/cbc:PaymentNote'
+        financialInstitutionBranch:
+          $ref: '#/components/schemas/UblInvoicePaymentFinancialInstitutionBranch'
+      additionalProperties: false
+    UblInvoiceLegalMonetaryTotal:
+      type: object
+      properties:
+        lineExtensionAmount:
+          pattern: \d+(\.\d{1,2})?
+          type:
+          - number
+          - 'null'
+          description: 'Sum of Invoice line net amount: Sum of all Invoice line net amounts in the Invoice. Provide value according to document currency code.
+
+            * Maps to: Invoice/cac:LegalMonetaryTotal/cbc:LineExtensionAmount'
+          format: double
+        taxExclusiveAmount:
+          pattern: \d+(\.\d{1,2})?
+          type:
+          - number
+          - 'null'
+          description: 'Invoice total amount without VAT: The total amount of the Invoice without VAT. Provide value according to document currency code.
+
+            * Maps to: Invoice/cac:LegalMonetaryTotal/cbc:TaxExclusiveAmount'
+          format: double
+        taxInclusiveAmount:
+          pattern: \d+(\.\d{1,2})?
+          type:
+          - number
+          - 'null'
+          description: 'Invoice total amount with VAT: The total amount of the Invoice with VAT. Provide value according to document currency code.
+
+            * Maps to: Invoice/cac:LegalMonetaryTotal/cbc:TaxInclusiveAmount'
+          format: double
+        allowanceTotalAmount:
+          pattern: \d+(\.\d{1,2})?
+          type:
+          - number
+          - 'null'
+          description: 'Sum of allowances on document level: Sum of all allowances on document level in the Invoice. Provide value according to document currency code.
+
+            * Maps to: Invoice/cac:LegalMonetaryTotal/cbc:AllowanceTotalAmount'
+          format: double
+        chargeTotalAmount:
+          pattern: \d+(\.\d{1,2})?
+          type:
+          - number
+          - 'null'
+          description: 'Sum of charges on document level: Sum of all charges on document level in the Invoice. Provide value according to document currency code.
+
+            * Maps to: Invoice/cac:LegalMonetaryTotal/cbc:ChargeTotalAmount'
+          format: double
+        prepaidAmount:
+          pattern: \d+(\.\d{1,2})?
+          type:
+          - number
+          - 'null'
+          description: 'Paid amount: The sum of amounts which have been paid in advance. Provide value according to document currency code.
+
+            * Maps to: Invoice/cac:LegalMonetaryTotal/cbc:PrepaidAmount'
+          format: double
+        payableRoundingAmount:
+          pattern: \d+(\.\d{1,2})?
+          type:
+          - number
+          - 'null'
+          description: 'Rounding amount: The amount to be added to the invoice total to round the amount to be paid. Provide value according to document currency code.
+
+            * Maps to: Invoice/cac:LegalMonetaryTotal/cbc:PayableRoundingAmount'
+          format: double
+        payableAmount:
+          pattern: \d+(\.\d{1,2})?
+          type:
+          - number
+          - 'null'
+          description: 'Amount due for payment: The outstanding amount that is requested to be paid. Provide value according to document currency code.
+
+            * Maps to: Invoice/cac:LegalMonetaryTotal/cbc:PayableAmount'
+          format: double
+      additionalProperties: false
+    UblInvoiceAdditionalDocumentAttachment:
+      type: object
+      properties:
+        embeddedDocumentBinaryObject:
+          type:
+          - string
+          - 'null'
+          description: 'Attached document: An attached document embedded as binary object (Base64) or sent together with the invoice.
+
+            * Maps to: Invoice/cac:AdditionalDocumentReference/cac:Attachment/cbc:EmbeddedDocumentBinaryObject'
+        embeddedDocumentBinaryObjectMimeCode:
+          type:
+          - string
+          - 'null'
+          description: 'Attached document Mime code
+
+            * Maps to: Invoice/cac:AdditionalDocumentReference/cac:Attachment/cbc:EmbeddedDocumentBinaryObject/@mimeCode'
+        embeddedDocumentBinaryObjectFilename:
+          type:
+          - string
+          - 'null'
+          description: 'Attached document Filename: The file name of the attached document.
+
+            * Maps to: Invoice/cac:AdditionalDocumentReference/cac:Attachment/cbc:EmbeddedDocumentBinaryObject/@filename'
+        externalReference:
+          $ref: '#/components/schemas/UblInvoiceAdditionalDocumentAttachmentExternalReference'
+      additionalProperties: false
+    UblInvoiceSupplierParty:
+      type: object
+      properties:
+        endpointID:
+          type:
+          - string
+          - 'null'
+          description: 'Seller electronic address: Identifies the Seller''s electronic address to which the application response to the invoice may be delivered
+
+            * Maps to: Invoice/cac:AccountingSupplierParty/cac:Party/cbc:EndpointID'
+        endpointIDSchemeID:
+          type:
+          - string
+          - 'null'
+          description: 'Electronic Address Scheme. See: https://docs.peppol.eu/poacc/billing/3.0/codelist/eas/
+
+            * Maps to: Invoice/cac:AccountingSupplierParty/cac:Party/cbc:EndpointID/@schemeID'
+        industryClassificationCode:
+          type:
+          - string
+          - 'null'
+          description: 'Seller Industry Classification code representing the business nature and activity.
+
+            * Maps to: Invoice/cac:AccountingSupplierParty/cac:Party/cbc:IndustryClassificationCode'
+        industryClassificationCodeName:
+          type:
+          - string
+          - 'null'
+          description: 'Seller Industry Classification name or description of the business nature and activity.
+
+            * Maps to: Invoice/cac:AccountingSupplierParty/cac:Party/cbc:IndustryClassificationCode/@name'
+        partyIdentification:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/UblInvoicePartyIdentification'
+          description: 'Seller Party identification.
+
+            * Maps to: Invoice/cac:AccountingSupplierParty/cac:Party/cac:PartyIdentification'
+        postalAddress:
+          $ref: '#/components/schemas/UblInvoicePostalAddress'
+        partyLegalEntity:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/UblInvoicePartyLegalEntity'
+          description: 'Seller legal entity information.
+
+            * Maps to: Invoice/cac:AccountingSupplierParty/cac:Party/cac:PartyLegalEntity'
+        partyName:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/UblInvoicePartyName'
+          description: 'Seller name information.
+
+            * Maps to: Invoice/cac:AccountingSupplierParty/cac:Party/cac:PartyName'
+        partyTaxScheme:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/UblInvoicePartyTaxScheme'
+          description: 'Seller tax scheme information.
+
+            * Maps to: Invoice/cac:AccountingSupplierParty/cac:Party/cac:PartyTaxScheme'
+        contact:
+          $ref: '#/components/schemas/UblInvoicePartyContact'
+      additionalProperties: false
+    UblInvoice:
+      type: object
+      properties:
+        customizationID:
+          type:
+          - string
+          - 'null'
+          description: '* Default: "urn:cen.eu:en16931:2017#compliant#urn:fdc:peppol.eu:2017:poacc:billing:3.0"'
+        profileID:
+          type:
+          - string
+          - 'null'
+          description: '* Default: "urn:fdc:peppol.eu:2017:poacc:billing:01:1.0"'
+        id:
+          type:
+          - string
+          - 'null'
+          description: 'Invoice number: A unique identification of the Invoice.
+
+            * Maps to: Invoice/cbc:ID'
+        uuid:
+          type:
+          - string
+          - 'null'
+          description: 'Unique identifier: A universally unique identifier for an instance of this document.
+
+            * Maps to: Invoice/cbc:UUID'
+        issueDate:
+          type:
+          - string
+          - 'null'
+          description: 'Invoice issue date: The date when the Invoice was issued.
+
+            * Maps to: Invoice/cbc:IssueDate'
+          format: date-time
+        issueTime:
+          pattern: ^\d{1,2}:\d{2}:\d{2}$
+          type:
+          - string
+          - 'null'
+          description: 'Invoice issue time: The time when the Invoice was issued.
+
+            * Default: "00:00:00"
+
+            * Maps to: Invoice/cbc:IssueTime'
+        dueDate:
+          type:
+          - string
+          - 'null'
+          description: 'Payment due date: The date when the payment is due.
+
+            * Maps to: Invoice/cbc:DueDate'
+          format: date-time
+        invoiceTypeCode:
+          type:
+          - string
+          - 'null'
+          description: 'Invoice type code: A code specifying the type of the Invoice. See: https://docs.peppol.eu/poacc/billing/3.0/codelist/UNCL1001-inv/.
+
+            * Maps to: Invoice/cbc:InvoiceTypeCode'
+        note:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: 'Document note: A textual note that gives unstructured information that is relevant to the Document. Maps to:
+
+            * Invoice/cbc:Note'
+        taxPointDate:
+          type:
+          - string
+          - 'null'
+          description: 'Value added tax point date: The date when the VAT becomes accountable for the Seller and for the Buyer if different from the issue date. Maps to:
+
+            * Invoice/cbc:TaxPointDate'
+          format: date-time
+        documentCurrencyCode:
+          type:
+          - string
+          - 'null'
+          description: 'Document currency code: The currency in which all document amounts are given, except for the Total VAT amount in accounting currency. Maps to:
+
+            * Invoice/cbc:DocumentCurrencyCode'
+        taxCurrencyCode:
+          type:
+          - string
+          - 'null'
+          description: 'VAT accounting currency code: The currency used for VAT accounting and reporting purposes. Maps to:
+
+            * Invoice/cbc:TaxCurrencyCode'
+        pricingCurrencyCode:
+          type:
+          - string
+          - 'null'
+          description: 'Pricing currency code: A code signifying the currency used for prices in the Invoice. Maps to:
+
+            * Invoice/cbc:PricingCurrencyCode'
+        paymentCurrencyCode:
+          type:
+          - string
+          - 'null'
+          description: 'Payment currency code: A code signifying the currency used for payment in the Invoice. Maps to:
+
+            * Invoice/cbc:PaymentCurrencyCode'
+        accountingCost:
+          type:
+          - string
+          - 'null'
+          description: 'Buyer accounting reference: A textual value that specifies where to book the relevant data into the Buyer''s financial accounts. Maps to:
+
+            * Invoice/cbc:AccountingCost'
+        buyerReference:
+          type:
+          - string
+          - 'null'
+          description: 'Buyer Reference: An identifier assigned by the Buyer used for internal routing purposes. Maps to:
+
+            * Invoice/cbc:BuyerReference'
+        invoicePeriod:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/UblInvoicePeriod'
+          description: 'Document period.
+
+            * Maps to: Invoice/cac:InvoicePeriod'
+        orderReference:
+          $ref: '#/components/schemas/UblInvoiceOrder'
+        billingReference:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/UblInvoiceBilling'
+          description: 'Previous billing information. Maps to:
+
+            * Invoice/cac:BillingReference'
+        despatchDocumentReference:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/UblInvoiceDespatchDocument'
+          description: 'Despatch advice document information. Maps to:
+
+            * Invoice/cac:DespatchDocumentReference'
+        receiptDocumentReference:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/UblInvoiceReceiptDocument'
+          description: 'Receiving advice document information. Maps to:
+
+            * Invoice/cac:ReceiptDocumentReference'
+        originatorDocumentReference:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/UblInvoiceOriginatorDocument'
+          description: 'Originator document information. Maps to:
+
+            * Invoice/cac:OriginatorDocumentReference'
+        contractDocumentReference:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/UblInvoiceContractDocument'
+          description: 'Contract document information. Maps to:
+
+            * Invoice/cac:ContractDocumentReference'
+        additionalDocumentReference:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/UblInvoiceAdditionalDocument'
+          description: 'Supporting document information. Maps to:
+
+            * Invoice/cac:AdditionalDocumentReference'
+        projectReference:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/UblInvoiceProject'
+          description: 'Project information.
+
+            * Maps to: Invoice/cac:ProjectReference'
+        accountingSupplierParty:
+          $ref: '#/components/schemas/UblInvoiceSupplier'
+        accountingCustomerParty:
+          $ref: '#/components/schemas/UblInvoiceCustomer'
+        payeeParty:
+          $ref: '#/components/schemas/UblInvoicePayee'
+        taxRepresentativeParty:
+          $ref: '#/components/schemas/UblInvoiceTaxRepresentative'
+        delivery:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/UblInvoiceDelivery'
+          description: 'Deliver to information.
+
+            * Maps to: Invoice/cac:Delivery'
+        paymentMeans:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/UblInvoicePaymentMeans'
+          description: 'Payment means information.
+
+            * Maps to: Invoice/cac:PaymentMeans'
+        paymentTerms:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/UblInvoicePaymentTerms'
+          description: 'Payment terms information.
+
+            * Maps to: Invoice/cac:PaymentTerms'
+        prepaidPayment:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/UblInvoicePrepaidPayment'
+          description: 'Prepaid payment information.
+
+            * Maps to: Invoice/cac:PrepaidPayment'
+        allowanceCharge:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/UblInvoiceAllowanceCharge'
+          description: 'Allowance or charge information.
+
+            * Maps to: Invoice/cac:AllowanceCharge'
+        taxExchangeRate:
+          $ref: '#/components/schemas/UblInvoiceTaxExchangeRate'
+        taxTotal:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/UblInvoiceTaxTotal'
+          description: 'Information about the total tax for the document.
+
+            * Maps to: Invoice/cac:TaxTotal'
+        legalMonetaryTotal:
+          $ref: '#/components/schemas/UblInvoiceLegalMonetaryTotal'
+        invoiceLine:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/UblInvoiceLine'
+          description: 'Invoice line information.
+
+            * Maps to: Invoice/cac:InvoiceLine'
+        ublExtensions:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/UblInvoiceExtension'
+          description: '[NOT YET IMPLEMENTED] Invoice UBL Extension information.
+
+            * Maps to: Invoice/cec:UBLExtensions'
+      additionalProperties: false
+    UblInvoicePrepaidPayment:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: 'Prepaid payment identifier.
+
+            * Maps to: Invoice/cac:PrepaidPayment/cbc:ID'
+        paidAmount:
+          type:
+          - number
+          - 'null'
+          description: 'Prepaid payment amount. Provide value according to document currency code.
+
+            * Maps to: Invoice/cac:PrepaidPayment/cbc:PaidAmount'
+          format: double
+        receivedDate:
+          type:
+          - string
+          - 'null'
+          description: 'Prepaid payment received date: The date when the prepayment was received.
+
+            * Maps to: Invoice/cac:PrepaidPayment/cbc:ReceivedDate'
+          format: date-time
+        paidDate:
+          type:
+          - string
+          - 'null'
+          description: 'Prepaid payment paid date: The date when the prepayment was paid.
+
+            * Maps to: Invoice/cac:PrepaidPayment/cbc:PaidDate'
+          format: date-time
+        paidTime:
+          pattern: ^\d{1,2}:\d{2}:\d{2}$
+          type:
+          - string
+          - 'null'
+          description: 'Prepaid payment paid time: The time when the prepayment was paid.
+
+            * Default: "00:00:00"
+
+            * Maps to: Invoice/cac:PrepaidPayment/cbc:PaidTime'
+      additionalProperties: false
+    UblInvoiceBillingAdditionalDocument:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: 'Billing additional reference: An identifier of an additional billing document.
+
+            * Maps to: Invoice/cac:BillingReference/cac:AdditionalDocumentReference/cbc:ID'
+      additionalProperties: false
+    UblInvoiceLineItemTaxCategory:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: 'Invoiced item VAT category code: The VAT category code for the invoiced item.
+
+            * Maps to: Invoice/cac:InvoiceLine/cac:Item/cac:ClassifiedTaxCategory/cbc:ID'
+        percent:
+          type:
+          - number
+          - 'null'
+          description: 'Invoiced item VAT rate: The VAT rate, represented as percentage that applies to the invoiced item.
+
+            * Maps to: Invoice/cac:InvoiceLine/cac:Item/cac:ClassifiedTaxCategory/cbc:Percent'
+          format: double
+        taxExemptionReason:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: '* Maps to: Invoice/cac:InvoiceLine/cac:Item/cac:ClassifiedTaxCategory/cbc:TaxExemptionReason'
+        taxScheme:
+          $ref: '#/components/schemas/UblInvoiceTaxScheme'
+      additionalProperties: false
+    UblInvoiceDeliveryShipmentDeliveryTerms:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: 'Shipment consignment delivery terms identifier.
+
+            * Maps to: Invoice/cac:Delivery/cac:Shipment/cac:Consignment/cac:DeliveryTerms/cbc:ID'
+      additionalProperties: false
+    UblInvoiceProject:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: 'Project reference: The identification of the project the invoice refers to.
+
+            * Maps to: Invoice/cac:ProjectReference/cbc:ID'
+      additionalProperties: false
+    UblInvoiceAdditionalDocumentAttachmentExternalReference:
+      type: object
+      properties:
+        uri:
+          type:
+          - string
+          - 'null'
+          description: 'External document location: The URL (Uniform Resource Locator) that identifies where the external document is located.
+
+            * Maps to: Invoice/cac:AdditionalDocumentReference/cac:Attachment/cac:ExternalReference/cbc:URI'
+      additionalProperties: false
+    UblInvoicePartyIdentification:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: "Party identifier or party bank assigned creditor identifier.\n* Maps to:\n  * Invoice/cac:AccountingSupplierParty/cac:Party/cac:PartyIdentification/cbc:ID\n  * Invoice/cac:AccountingCustomerParty/cac:Party/cac:PartyIdentification/cbc:ID\n  * Invoice/cac:PayeeParty/cac:Party/cac:PartyIdentification/cbc:ID"
+        idSchemeID:
+          type:
+          - string
+          - 'null'
+          description: "Party identifier or bank assigned creditor identifier scheme identifier: The identification scheme identifier\nof the party identifier. See: https://docs.peppol.eu/poacc/billing/3.0/syntax/ubl-invoice/cac-AccountingSupplierParty/cac-Party/cac-PartyIdentification/cbc-ID/schemeID/.\n* Maps to:\n  * Invoice/cac:AccountingSupplierParty/cac:Party/cac:PartyIdentification/cbc:ID/@schemeID\n  * Invoice/cac:AccountingCustomerParty/cac:Party/cac:PartyIdentification/cbc:ID/@schemeID\n  * Invoice/cac:PayeeParty/cac:Party/cac:PartyIdentification/cbc:ID/@schemeID"
+      additionalProperties: false
+    UblInvoiceTaxExchangeRate:
+      type: object
+      properties:
+        sourceCurrencyCode:
+          type:
+          - string
+          - 'null'
+          description: 'Tax exchange rate source currency code.
+
+            * Maps to: Invoice/cacTaxExchangeRate/cbc:SourceCurrencyCode'
+        targetCurrencyCode:
+          type:
+          - string
+          - 'null'
+          description: 'Tax exchange rate target currency code.
+
+            * Maps to: Invoice/cacTaxExchangeRate/cbc:TargetCurrencyCode'
+        calculationRate:
+          type:
+          - number
+          - 'null'
+          description: 'Tax exchange calculation rate.
+
+            * Maps to: Invoice/cacTaxExchangeRate/cbc:CalculationRate'
+          format: double
+      additionalProperties: false
+    UblInvoicePostalAddressLine:
+      type: object
+      properties:
+        line:
+          type:
+          - string
+          - 'null'
+          description: "Address line 3: An additional address line in an address to further supplement the main line.\n* Maps to:\n  * Invoice/cac:AccountingSupplierParty/cac:Party/cac:PostalAddress/cac:AddressLine/cbc:Line\n  * Invoice/cac:AccountingCustomerParty/cac:Party/cac:PostalAddress/cac:AddressLine/cbc:Line\n  * Invoice/cac:TaxRepresentativeParty/cac:PostalAddress/cac:AddressLine/cbc:Line\n  * Invoice/cac:Delivery/cac:DeliveryLocation/cac:Address/cac:AddressLine/cbc:Line\n  * Invoice/cac:Delivery/cac:DeliveryParty/cac:PostalAddress/cac:AddressLine/cbc:Line"
+      additionalProperties: false
+    UblInvoiceContractDocument:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: 'Contract reference: The identification of a contract. Maps to:
+
+            * Maps to: Invoice/cac:ContractDocumentReference/cbc:ID'
+      additionalProperties: false
+    UblInvoiceLineItem:
+      type: object
+      properties:
+        name:
+          type:
+          - string
+          - 'null'
+          description: 'Item name: A name for an item.
+
+            * Maps to: Invoice/cac:InvoiceLine/cac:Item/cbc:Name'
+        description:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: 'Item description: A description for an item.
+
+            * Maps to: Invoice/cac:InvoiceLine/cac:Item'
+        buyersItemIdentification:
+          $ref: '#/components/schemas/UblInvoiceLineItemIdentification'
+        sellersItemIdentification:
+          $ref: '#/components/schemas/UblInvoiceLineItemIdentification'
+        standardItemIdentification:
+          $ref: '#/components/schemas/UblInvoiceLineItemIdentification'
+        originCountry:
+          $ref: '#/components/schemas/UblInvoicePostalAddressCountry'
+        commodityClassification:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/UblInvoiceLineItemCommodityClassification'
+          description: 'Item classification information
+
+            * Maps to: Invoice/cac:InvoiceLine/cac:Item/cac:CommodityClassification'
+        classifiedTaxCategory:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/UblInvoiceLineItemTaxCategory'
+          description: 'VAT tax category information.
+
+            * Maps to: Invoice/cac:InvoiceLine/cac:Item/cac:ClassifiedTaxCategory'
+        additionalItemProperty:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/UblInvoiceLineItemAdditionalItemProperty'
+          description: 'Additional item attribute information.
+
+            * Maps to: Invoice/cac:InvoiceLine/cac:Item/cac:AdditionalItemProperty'
+      additionalProperties: false
+    EinvoiceCreditNoteDocumentRequest:
+      required:
+      - creditNote
+      type: object
+      properties:
+        creditNote:
+          $ref: '#/components/schemas/UblCreditNote'
+      additionalProperties: false
+    UblInvoiceLine:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: 'Document line identifier: A unique identifier for the individual line within the Document.
+
+            * Maps to: Invoice/cac:InvoiceLine/cbc:ID'
+        note:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: 'Document line note: A textual note that gives unstructured information that is relevant to the Document line.
+
+            * Maps to: Invoice/cac:InvoiceLine/cbc:Note'
+        invoicedQuantity:
+          type:
+          - number
+          - 'null'
+          description: 'Quantity: The quantity of items (goods or services) that is charged in the Document line.
+
+            * Maps to: Invoice/cac:InvoiceLine/cbc:InvoicedQuantity'
+          format: double
+        invoicedQuantityUnitCode:
+          type:
+          - string
+          - 'null'
+          description: 'Invoiced quantity unit of measure: The unit of measure that applies to the invoiced quantity. See: https://docs.peppol.eu/poacc/billing/3.0/codelist/UNECERec20/.
+
+            * Maps to: Invoice/cac:InvoiceLine/cbc:InvoicedQuantity/@unitCode'
+        lineExtensionAmount:
+          type:
+          - number
+          - 'null'
+          description: 'Document line net amount: The total amount of the Document line. The amount is "net" without VAT. Provide value according to document currency code.
+
+            * Maps to: Invoice/cac:InvoiceLine/cbc:LineExtensionAmount'
+          format: double
+        accountingCost:
+          type:
+          - string
+          - 'null'
+          description: 'Document line Buyer accounting reference: A textual value that specifies where to book the relevant data into the Buyer''s financial accounts.
+
+            * Maps to: Invoice/cac:InvoiceLine/cbc:AccountingCost'
+        invoicePeriod:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/UblInvoiceLinePeriod'
+          description: 'Document line period information.
+
+            * Maps to: Invoice/cac:InvoiceLine/cac:InvoicePeriod'
+        orderLineReference:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/UblInvoiceLineOrderLineReference'
+          description: 'Referenced purchase order line information.
+
+            * Maps to: Invoice/cac:InvoiceLine/cac:OrderLineReference'
+        documentReference:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/UblInvoiceLineDocument'
+          description: 'Document line object information.
+
+            * Maps to: Invoice/cac:InvoiceLine/cac:DocumentReference'
+        allowanceCharge:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/UblInvoiceAllowanceCharge'
+          description: 'Allowance or charge information.
+
+            * Maps to: Invoice/cac:InvoiceLine/cac:AllowanceCharge'
+        taxTotal:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/UblInvoiceTaxTotal'
+          description: 'Tax total information.
+
+            * Maps to: Invoice/cac:InvoiceLine/cac:TaxTotal'
+        item:
+          $ref: '#/components/schemas/UblInvoiceLineItem'
+        price:
+          $ref: '#/components/schemas/UblInvoiceLinePrice'
+        itemPriceExtension:
+          $ref: '#/components/schemas/UblInvoiceLineItemPriceExtension'
+      additionalProperties: false
+    EinvoiceGetDocumentResponseListResponse:
+      type: object
+      properties:
+        count:
+          type: integer
+          format: int32
+        data:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/EinvoiceGetDocumentResponse'
+      additionalProperties: false
+    EinvoiceGetDocumentResponse:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+        customerName:
+          type:
+          - string
+          - 'null'
+        supplierName:
+          type:
+          - string
+          - 'null'
+        documentNumber:
+          type:
+          - string
+          - 'null'
+        documentDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        processDateTime:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        status:
+          type:
+          - string
+          - 'null'
+        flowDirection:
+          type:
+          - string
+          - 'null'
+        countryCode:
+          type:
+          - string
+          - 'null'
+        mandateName:
+          type:
+          - string
+          - 'null'
+        events:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/EinvoiceGetDocumentEventResponse'
+      additionalProperties: false
+    UblInvoiceLineItemCommodityClassification:
+      type: object
+      properties:
+        itemClassificationCode:
+          type:
+          - string
+          - 'null'
+          description: 'Item classification identifier: A code for classifying the item by its type or nature.
+
+            * Maps to: Invoice/cac:InvoiceLine/cac:Item/cac:CommodityClassification/cbc:ItemClassificationCode'
+        itemClassificationCodeListID:
+          type:
+          - string
+          - 'null'
+          description: 'Item classification identifier identification scheme identifier: The identification scheme identifier of the Item classification identifier.
+
+            * Maps to: Invoice/cac:InvoiceLine/cac:Item/cac:CommodityClassification/cbc:ItemClassificationCode/@listID'
+        itemClassificationCodeListVersionID:
+          type:
+          - string
+          - 'null'
+          description: 'Item classification identifier version identification scheme identifier: The identification scheme version identifier of the Item classification identifier
+
+            * Maps to: Invoice/cac:InvoiceLine/cac:Item/cac:CommodityClassification/cbc:ItemClassificationCode/@listVersionID'
+      additionalProperties: false
+    UblInvoiceTaxTotal:
+      type: object
+      properties:
+        taxAmount:
+          pattern: \d+(\.\d{1,2})?
+          type:
+          - number
+          - 'null'
+          description: 'Total VAT amount in accounting currency. Provide value according to document currency code.
+
+            * Maps to: Invoice/cac:TaxTotal/cbc:TaxAmount'
+          format: double
+        taxSubtotal:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/UblInvoiceTaxSubtotal'
+          description: "VAT category subtotal amount information\n* Maps to:\n  * Invoice/cac:TaxTotal/cac:TaxSubtotal\n  * Invoice/cac:InvoiceLine/cac:TaxTotal/cac:TaxSubtotal"
+      additionalProperties: false
+    UblInvoiceCustomerParty:
+      type: object
+      properties:
+        endpointID:
+          type:
+          - string
+          - 'null'
+          description: 'Buyer electronic address: Identifies the Buyer''s electronic address to which the invoice is delivered
+
+            * Maps to: Invoice/cac:AccountingCustomerParty/cac:Party/cbc:EndpointID'
+        endpointIDSchemeID:
+          type:
+          - string
+          - 'null'
+          description: 'Electronic Address Scheme. See: https://docs.peppol.eu/poacc/billing/3.0/codelist/eas/
+
+            * Maps to: Invoice/cac:AccountingCustomerParty/cac:Party/cbc:EndpointID/@schemeID'
+        partyIdentification:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/UblInvoicePartyIdentification'
+          description: 'Buyer Party identification.
+
+            * Maps to: Invoice/cac:AccountingCustomerParty/cac:Party/cac:PartyIdentification'
+        postalAddress:
+          $ref: '#/components/schemas/UblInvoicePostalAddress'
+        partyLegalEntity:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/UblInvoicePartyLegalEntity'
+          description: Buyer legal entity information.
+        partyName:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/UblInvoicePartyName'
+          description: 'Buyer name information.
+
+            * Maps to: Invoice/cac:AccountingCustomerParty/cac:Party/cac:PartyName'
+        partyTaxScheme:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/UblInvoicePartyTaxScheme'
+          description: 'Buyer tax scheme information.
+
+            * Maps to: Invoice/cac:AccountingCustomerParty/cac:Party/cac:PartyTaxScheme'
+        contact:
+          $ref: '#/components/schemas/UblInvoicePartyContact'
+      additionalProperties: false
+    UblInvoicePartyContact:
+      type: object
+      properties:
+        name:
+          type:
+          - string
+          - 'null'
+          description: "Seller/Buyer contact point: A contact point for a legal entity or person.\n* Maps to:\n  * Invoice/cac:AccountingSupplierParty/cac:Party/cac:Contact/cbc:Name\n  * Invoice/cac:AccountingCustomerParty/cac:Party/cac:Contact/cbc:Name"
+        telephone:
+          type:
+          - string
+          - 'null'
+          description: "Seller/Buyer contact telephone number: A phone number for the contact point.\n* Maps to:\n  * Invoice/cac:AccountingSupplierParty/cac:Party/cac:Contact/cbc:Telephone\n  * Invoice/cac:AccountingCustomerParty/cac:Party/cac:Contact/cbc:Telephone"
+        electronicMail:
+          type:
+          - string
+          - 'null'
+          description: "Seller/Buyer contact email address: An e-mail address for the contact point.\n* Maps to:\n  * Invoice/cac:AccountingSupplierParty/cac:Party/cac:Contact/cbc:ElectronicMail\n  * Invoice/cac:AccountingCustomerParty/cac:Party/cac:Contact/cbc:ElectronicMail"
+      additionalProperties: false
+    UblInvoiceAllowanceCharge:
+      type: object
+      properties:
+        chargeIndicator:
+          type:
+          - boolean
+          - 'null'
+          description: "Charge indicator: Whether this information describes a charge (true) or a discount allowance (false).\n* Default: false\n* Maps to:\n  * Invoice/cac:AllowanceCharge/cbc:ChargeIndicator\n  * Invoice/cac:InvoiceLine/cac:AllowanceCharge/cbc:ChargeIndicator"
+        allowanceChargeReasonCode:
+          type:
+          - string
+          - 'null'
+          description: "Document/Line level allowance or charge reason code: The reason for the document/line level allowance or charge, expressed as a code.\n* Maps to:\n  * Invoice/cac:AllowanceCharge/cbc:AllowanceChargeReasonCode\n  * Invoice/cac:InvoiceLine/cac:AllowanceCharge/cbc:AllowanceChargeReasonCode"
+        allowanceChargeReason:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: "Document/Line level allowance or charge reason: The reason for the document/line level allowance or charge, expressed as text.\n* Maps to:\n  * Invoice/cac:AllowanceCharge/cbc:AllowanceChargeReason\n  * Invoice/cac:InvoiceLine/cac:AllowanceCharge/cbc:AllowanceChargeReason"
+        multiplierFactorNumeric:
+          type:
+          - number
+          - 'null'
+          description: "Document/Line level allowance or charge percentage: The percentage that may be used, in conjunction with the allowance base amount, to calculate the allowance or charge amount.\n* Maps to:\n  * Invoice/cac:AllowanceCharge/cbc:MultiplierFactorNumeric\n  * Invoice/cac:InvoiceLine/cac:AllowanceCharge/cbc:MultiplierFactorNumeric"
+          format: double
+        amount:
+          pattern: \d+(\.\d{1,2})?
+          type:
+          - number
+          - 'null'
+          description: "Document/Line level allowance or charge amount: The amount of an allowance or a charge, without VAT. Provide value according to document currency code.\n* Maps to:\n  * Invoice/cac:AllowanceCharge/cbc:Amount\n  * Invoice/cac:InvoiceLine/cac:AllowanceCharge/cbc:Amount"
+          format: double
+        baseAmount:
+          pattern: \d+(\.\d{1,2})?
+          type:
+          - number
+          - 'null'
+          description: "Document/Line level allowance or charge base amount: The base amount that may be used, in conjunction with the allowance or charge percentage,\nto calculate the document/line level allowance or charge amount. Provide value according to document currency code.\n* Maps to:\n  * Invoice/cac:AllowanceCharge/cbc:Amount\n  * Invoice/cac:InvoiceLine/cac:AllowanceCharge/cbc:BaseAmount"
+          format: double
+        taxCategory:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/UblInvoiceAllowanceChargeTaxCategory'
+          description: 'Document level allowance or charge VAT category information.
+
+            * Maps to: Invoice/cac:AllowanceCharge/cac:TaxCategory'
+      additionalProperties: false
+    UblInvoicePaymentFinancialInstitutionBranch:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: 'Payment service provider identifier: An identifier for the payment service provider where a payment account is located, such as BIC or a national clearing code.
+
+            * Maps to: Invoice/cac:PaymentMeans/cac:PayeeFinancialAccount/cac:FinancialInstitutionBranch/cbc:ID'
+      additionalProperties: false
+    UblCreditNote:
+      type: object
+      properties:
+        customizationID:
+          type:
+          - string
+          - 'null'
+          description: '* Default: "urn:cen.eu:en16931:2017#compliant#urn:fdc:peppol.eu:2017:poacc:billing:3.0"'
+        profileID:
+          type:
+          - string
+          - 'null'
+          description: '* Default: "urn:fdc:peppol.eu:2017:poacc:billing:01:1.0"'
+        ublVersionID:
+          type:
+          - string
+          - 'null'
+          description: 'UBL Version: The version of the Universal Business Language used for the document.
+
+            * Default: "2.1"'
+        id:
+          type:
+          - string
+          - 'null'
+          description: 'Credit Note number: A unique identification of the Credit Note.
+
+            * Maps to: CreditNote/cbc:ID'
+        uuid:
+          type:
+          - string
+          - 'null'
+          description: 'Unique identifier: A universally unique identifier for an instance of this document.
+
+            * Maps to: CreditNote/cbc:UUID'
+        issueDate:
+          type:
+          - string
+          - 'null'
+          description: 'Invoice issue date: The date when the Invoice was issued.
+
+            * Maps to: CreditNote/cbc:IssueDate'
+          format: date-time
+        issueTime:
+          pattern: ^\d{1,2}:\d{2}:\d{2}$
+          type:
+          - string
+          - 'null'
+          description: 'Invoice issue time: The time when the Invoice was issued.
+
+            * Default: "00:00:00"
+
+            * Maps to: CreditNote/cbc:IssueTime'
+        creditNoteTypeCode:
+          type:
+          - string
+          - 'null'
+          description: 'Credit Note type code: A code specifying the type of the Credit Note. See: https://docs.peppol.eu/poacc/billing/3.0/codelist/UNCL1001-cn/.
+
+            * Maps to: CreditNote/cbc:CreditNoteTypeCode'
+        creditNoteTypeCodeListVersionID:
+          type:
+          - string
+          - 'null'
+          description: 'Credit Note type code list version ID
+
+            * Maps to: CreditNote/cbc:CreditNoteTypeCode/@listVersionID'
+        note:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: 'Document note: A textual note that gives unstructured information that is relevant to the Document. Maps to:
+
+            * CreditNote/cbc:Note'
+        taxPointDate:
+          type:
+          - string
+          - 'null'
+          description: 'Value added tax point date: The date when the VAT becomes accountable for the Seller and for the Buyer if different from the issue date. Maps to:
+
+            * CreditNote/cbc:TaxPointDate'
+          format: date-time
+        documentCurrencyCode:
+          type:
+          - string
+          - 'null'
+          description: 'Document currency code: The currency in which all document amounts are given, except for the Total VAT amount in accounting currency. Maps to:
+
+            * CreditNote/cbc:DocumentCurrencyCode'
+        taxCurrencyCode:
+          type:
+          - string
+          - 'null'
+          description: 'VAT accounting currency code: The currency used for VAT accounting and reporting purposes. Maps to:
+
+            * CreditNote/cbc:TaxCurrencyCode'
+        pricingCurrencyCode:
+          type:
+          - string
+          - 'null'
+          description: 'Pricing currency code: A code signifying the currency used for prices in the Invoice. Maps to:
+
+            * CreditNote/cbc:PricingCurrencyCode'
+        paymentCurrencyCode:
+          type:
+          - string
+          - 'null'
+          description: 'Payment currency code: A code signifying the currency used for payment in the Invoice. Maps to:
+
+            * CreditNote/cbc:PaymentCurrencyCode'
+        accountingCost:
+          type:
+          - string
+          - 'null'
+          description: 'Buyer accounting reference: A textual value that specifies where to book the relevant data into the Buyer''s financial accounts. Maps to:
+
+            * CreditNote/cbc:AccountingCost'
+        buyerReference:
+          type:
+          - string
+          - 'null'
+          description: 'Buyer Reference: An identifier assigned by the Buyer used for internal routing purposes. Maps to:
+
+            * CreditNote/cbc:BuyerReference'
+        invoicePeriod:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/UblInvoicePeriod'
+          description: 'Document period.
+
+            * Maps to: CreditNote/cac:InvoicePeriod'
+        orderReference:
+          $ref: '#/components/schemas/UblInvoiceOrder'
+        billingReference:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/UblInvoiceBilling'
+          description: 'Previous billing information. Maps to:
+
+            * CreditNote/cac:BillingReference'
+        despatchDocumentReference:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/UblInvoiceDespatchDocument'
+          description: 'Despatch advice document information. Maps to:
+
+            * CreditNote/cac:DespatchDocumentReference'
+        receiptDocumentReference:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/UblInvoiceReceiptDocument'
+          description: 'Receiving advice document information. Maps to:
+
+            * CreditNote/cac:ReceiptDocumentReference'
+        originatorDocumentReference:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/UblInvoiceOriginatorDocument'
+          description: 'Originator document information. Maps to:
+
+            * CreditNote/cac:OriginatorDocumentReference'
+        contractDocumentReference:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/UblInvoiceContractDocument'
+          description: 'Contract document information. Maps to:
+
+            * CreditNote/cac:ContractDocumentReference'
+        additionalDocumentReference:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/UblInvoiceAdditionalDocument'
+          description: 'Supporting document information. Maps to:
+
+            * CreditNote/cac:AdditionalDocumentReference'
+        accountingSupplierParty:
+          $ref: '#/components/schemas/UblInvoiceSupplier'
+        accountingCustomerParty:
+          $ref: '#/components/schemas/UblInvoiceCustomer'
+        payeeParty:
+          $ref: '#/components/schemas/UblInvoicePayee'
+        taxRepresentativeParty:
+          $ref: '#/components/schemas/UblInvoiceTaxRepresentative'
+        delivery:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/UblInvoiceDelivery'
+          description: 'Deliver to information.
+
+            * Maps to: CreditNote/cac:Delivery'
+        paymentMeans:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/UblInvoicePaymentMeans'
+          description: 'Payment means information.
+
+            * Maps to: CreditNote/cac:PaymentMeans'
+        paymentTerms:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/UblInvoicePaymentTerms'
+          description: 'Payment terms information.
+
+            * Maps to: CreditNote/cac:PaymentTerms'
+        allowanceCharge:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/UblInvoiceAllowanceCharge'
+          description: 'Allowance or charge information.
+
+            * Maps to: CreditNote/cac:AllowanceCharge'
+        taxExchangeRate:
+          $ref: '#/components/schemas/UblInvoiceTaxExchangeRate'
+        taxTotal:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/UblInvoiceTaxTotal'
+          description: 'Information about the total tax for the document.
+
+            * Maps to: CreditNote/cac:TaxTotal'
+        legalMonetaryTotal:
+          $ref: '#/components/schemas/UblInvoiceLegalMonetaryTotal'
+        creditNoteLine:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/UblCreditNoteLine'
+          description: 'Credit Note line information.
+
+            * Maps to: CreditNote/cac:InvoiceLine'
+        ublExtensions:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/UblInvoiceExtension'
+          description: '[NOT YET IMPLEMENTED] Invoice UBL Extension information.
+
+            * Maps to: CreditNote/cec:UBLExtensions'
+      additionalProperties: false
+    UblInvoicePartyLegalEntity:
+      type: object
+      properties:
+        companyID:
+          type:
+          - string
+          - 'null'
+          description: "Party VAT identifier or party tax registration identifier: The party's VAT identifier (AKA VAT identification number)\nor the local identification of the party for tax purposes\n* Maps to:\n  * Invoice/cac:AccountingSupplierParty/cac:Party/cac:PartyLegalEntity/cbc:CompanyID\n  * Invoice/cac:AccountingCustomerParty/cac:Party/cac:PartyLegalEntity/cbc:CompanyID\n  * Invoice/cac:PayeeParty/cac:PartyLegalEntity/cbc:CompanyID"
+        companyIDSchemeID:
+          type:
+          - string
+          - 'null'
+          description: "Seller/Buyer legal registration identifier identification scheme identifier: The identification scheme identifier of the Seller/Buyer legal registration identifier.\n* Maps to:\n  * Invoice/cac:AccountingSupplierParty/cac:Party/cac:PartyLegalEntity/cbc:CompanyID/@schemeID\n  * Invoice/cac:AccountingCustomerParty/cac:Party/cac:PartyLegalEntity/cbc:CompanyID/@schemeID"
+        registrationName:
+          type:
+          - string
+          - 'null'
+          description: "Seller/Buyer name: The full formal name by which the Seller or Buyer is registered.\n* Maps to:\n  * Invoice/cac:AccountingSupplierParty/cac:Party/cac:PartyLegalEntity/cbc:RegistrationName\n  * Invoice/cac:AccountingCustomerParty/cac:Party/cac:PartyLegalEntity/cbc:RegistrationName\n  * Invoice/cac:Delivery/cac:DeliveryParty/cac:PartyLegalEntity/cbc:RegistrationName"
+        companyLegalForm:
+          type:
+          - string
+          - 'null'
+          description: "Seller additional legal information: Additional legal information relevant for the Seller.\n* Maps to:\n  * Invoice/cac:AccountingSupplierParty/cac:Party/cac:PartyLegalEntity/cbc:CompanyLegalForm"
+      additionalProperties: false
+    UblInvoiceDelivery:
+      type: object
+      properties:
+        actualDeliveryDate:
+          type:
+          - string
+          - 'null'
+          description: 'Actual delivery date: The date on which the supply of goods or services was made or completed.
+
+            * Maps to: Invoice/cac:Delivery/cbc:ActualDeliveryDate'
+          format: date-time
+        latestDeliveryDate:
+          type:
+          - string
+          - 'null'
+          description: 'The latest date of delivery allowed by the buyer. Value will not be used if Actual Delivery Date is populated.
+
+            * Maps to: Invoice/cac:Delivery/cbc:LatestDeliveryDate'
+          format: date-time
+        deliveryLocation:
+          $ref: '#/components/schemas/UblInvoiceDeliveryLocation'
+        deliveryParty:
+          $ref: '#/components/schemas/UblInvoiceDeliveryParty'
+        shipment:
+          $ref: '#/components/schemas/UblInvoiceDeliveryShipment'
+      additionalProperties: false
+    EinvoicePostDocumentResponse:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    UblInvoiceOrder:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: 'Purchase order reference: An identifier of a referenced purchase order, issued by the Buyer. Maps to:
+
+            * Maps to: Invoice/cac:OrderReference/cbc:ID'
+        salesOrderID:
+          type:
+          - string
+          - 'null'
+          description: 'Sales order reference: An identifier of a referenced sales order, issued by the Seller. Maps to:
+
+            * Maps to: Invoice/cac:OrderReference/cbc:SalesOrderID'
+      additionalProperties: false
+    EinvoiceGetDocumentEventResponse:
+      type: object
+      properties:
+        eventDateTime:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        message:
+          type:
+          - string
+          - 'null'
+        additionalDetailKey:
+          type:
+          - string
+          - 'null'
+        additionalDetailValue:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    UblInvoiceTaxSubtotalTaxCategory:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: 'Tax subtotal VAT category code: A coded identification of what VAT category applies to the tax subtotal.
+
+            * Maps to: Invoice/cac:TaxTotal/cac:TaxSubtotal/cac:TaxCategory/cbc:ID'
+        name:
+          type:
+          - string
+          - 'null'
+          description: 'Tax subtotal VAT category name.
+
+            * Maps to: Invoice/cac:TaxTotal/cac:TaxSubtotal/cac:TaxCategory/cbc:Name'
+        percent:
+          type:
+          - number
+          - 'null'
+          description: 'Tax subtotal VAT rate: The VAT rate, represented as percentage that applies to the tax subtotal.
+
+            * Maps to: Invoice/cac:TaxTotal/cac:TaxSubtotal/cac:TaxCategory/cbc:Percent'
+          format: double
+        taxExemptionReasonCode:
+          type:
+          - string
+          - 'null'
+          description: 'Tax subtotal VAT exemption reason code: A coded statement of the reason for why the amount is exempted from VAT.
+
+            * Maps to: Invoice/cac:TaxTotal/cac:TaxSubtotal/cac:TaxCategory/cbc:TaxExemptionReasonCode'
+        taxExemptionReason:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: 'Tax subtotal VAT exemption reason: text: A textual statement of the reason why the amount is exempted from VAT or why no VAT is being charged.
+
+            * Maps to: Invoice/cac:TaxTotal/cac:TaxSubtotal/cac:TaxCategory/cbc:TaxExemptionReason'
+        taxScheme:
+          $ref: '#/components/schemas/UblInvoiceTaxScheme'
+      additionalProperties: false
+    EinvoiceInvoiceDocumentRequest:
+      required:
+      - invoice
+      type: object
+      properties:
+        invoice:
+          $ref: '#/components/schemas/UblInvoice'
+      additionalProperties: false
+    UblInvoicePaymentMeans:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: 'Payment instructions identifier.
+
+            * Maps to: Invoice/cac:PaymentMeans/cbc:ID'
+        paymentMeansCode:
+          type:
+          - string
+          - 'null'
+          description: 'Payment means type code: The means, expressed as code, for how a payment is to be settled.
+
+            * Maps to: Invoice/cac:PaymentMeans/cbc:PaymentMeansCode'
+        paymentMeansCodeName:
+          type:
+          - string
+          - 'null'
+          description: 'Payment means text: The means, expressed as text, for how a payment is to be settled.
+
+            * Maps to: Invoice/cac:PaymentMeans/cbc:PaymentMeansCode/@name'
+        paymentID:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: 'Remittance information: A text value used to link the payment and the Invoice, issued by the Seller.
+
+            * Maps to: Invoice/cac:PaymentMeans/cbc:PaymentID'
+        paymentIDSchemeID:
+          type:
+          - string
+          - 'null'
+          description: '* Maps to: Invoice/cac:PaymentMeans/cbc:PaymentID/@schemeID'
+        cardAccount:
+          $ref: '#/components/schemas/UblInvoicePaymentCardAccount'
+        payeeFinancialAccount:
+          $ref: '#/components/schemas/UblInvoicePaymentFinancialAccount'
+        paymentMandate:
+          $ref: '#/components/schemas/UblInvoicePaymentMandate'
+      additionalProperties: false
+    UblInvoicePeriod:
+      type: object
+      properties:
+        startDate:
+          type:
+          - string
+          - 'null'
+          description: 'Document period start date: The date when the Document period starts.
+
+            * Maps to: Invoice/cac:InvoicePeriod/cbc:StartDate'
+          format: date-time
+        endDate:
+          type:
+          - string
+          - 'null'
+          description: 'Document period end date: The date when the Document period ends.
+
+            * Maps to: Invoice/cac:InvoicePeriod/cbc:EndDate'
+          format: date-time
+        descriptionCode:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: 'Value added tax point date code: The code of the date when the VAT becomes accountable for the Seller and for the Buyer.
+
+            * Maps to: Invoice/cac:InvoicePeriod/cbc:DescriptionCode'
+      additionalProperties: false
+    UblInvoicePostalAddress:
+      type: object
+      properties:
+        streetName:
+          type:
+          - string
+          - 'null'
+          description: "Address line 1: The main address line in an address.\n* Maps to:\n  * Invoice/cac:AccountingSupplierParty/cac:Party/cac:PostalAddress/cbc:StreetName\n  * Invoice/cac:AccountingCustomerParty/cac:Party/cac:PostalAddress/cbc:StreetName\n  * Invoice/cac:TaxRepresentativeParty/cac:PostalAddress/cbc:StreetName\n  * Invoice/cac:Delivery/cac:DeliveryLocation/cac:Address/cbc:StreetName\n  * Invoice/cac:Delivery/cac:DeliveryParty/cac:PostalAddress/cbc:StreetName"
+        additionalStreetName:
+          type:
+          - string
+          - 'null'
+          description: "Address line 2: An additional address line in an address to supplement the main line.\n* Maps to:\n  * Invoice/cac:AccountingSupplierParty/cac:Party/cac:PostalAddress/cbc:AdditionalStreetName\n  * Invoice/cac:AccountingCustomerParty/cac:Party/cac:PostalAddress/cbc:AdditionalStreetName\n  * Invoice/cac:TaxRepresentativeParty/cac:PostalAddress/cbc:AdditionalStreetName\n  * Invoice/cac:Delivery/cac:DeliveryLocation/cac:Address/cbc:AdditionalStreetName\n  * Invoice/cac:Delivery/cac:DeliveryParty/cac:PostalAddress/cbc:AdditionalStreetName"
+        buildingNumber:
+          type:
+          - string
+          - 'null'
+          description: "Address building number.\n* Maps to:\n  * Invoice/cac:AccountingSupplierParty/cac:Party/cac:PostalAddress/cbc:BuildingNumber\n  * Invoice/cac:AccountingCustomerParty/cac:Party/cac:PostalAddress/cbc:BuildingNumber"
+        plotIdentification:
+          type:
+          - string
+          - 'null'
+          description: "Address plot identification.\n* Maps to:\n  * Invoice/cac:AccountingSupplierParty/cac:Party/cac:PostalAddress/cbc:PlotIdentification\n  * Invoice/cac:AccountingCustomerParty/cac:Party/cac:PostalAddress/cbc:PlotIdentification"
+        cityName:
+          type:
+          - string
+          - 'null'
+          description: "Address city:The common name of the city, town or village, where the address is located.\n* Maps to:\n  * Invoice/cac:AccountingSupplierParty/cac:Party/cac:PostalAddress/cbc:CityName\n  * Invoice/cac:AccountingCustomerParty/cac:Party/cac:PostalAddress/cbc:CityName\n  * Invoice/cac:TaxRepresentativeParty/cac:PostalAddress/cbc:CityName\n  * Invoice/cac:Delivery/cac:DeliveryLocation/cac:Address/cbc:CityName\n  * Invoice/cac:Delivery/cac:DeliveryParty/cac:PostalAddress/cbc:CityName"
+        postalZone:
+          type:
+          - string
+          - 'null'
+          description: "Address post code: The identifier for an addressable group of properties according to the relevant postal service.\n* Maps to:\n  * Invoice/cac:AccountingSupplierParty/cac:Party/cac:PostalAddress/cbc:PostalZone\n  * Invoice/cac:AccountingCustomerParty/cac:Party/cac:PostalAddress/cbc:PostalZone\n  * Invoice/cac:TaxRepresentativeParty/cac:PostalAddress/cbc:PostalZone\n  * Invoice/cac:Delivery/cac:DeliveryLocation/cac:Address/cbc:PostalZone\n  * Invoice/cac:Delivery/cac:DeliveryParty/cac:PostalAddress/cbc:PostalZone"
+        citySubdivisionName:
+          type:
+          - string
+          - 'null'
+          description: "Address city subdivision name.\n* Maps to:\n  * Invoice/cac:AccountingSupplierParty/cac:Party/cac:PostalAddress/cbc:CitySubdivisionName\n  * Invoice/cac:AccountingCustomerParty/cac:Party/cac:PostalAddress/cbc:CitySubdivisionName"
+        countrySubentity:
+          type:
+          - string
+          - 'null'
+          description: "Address country subdivision: The subdivision of a country.\n* Maps to:\n  * Invoice/cac:AccountingSupplierParty/cac:Party/cac:PostalAddress/cbc:CountrySubentity\n  * Invoice/cac:AccountingCustomerParty/cac:Party/cac:PostalAddress/cbc:CountrySubentity\n  * Invoice/cac:TaxRepresentativeParty/cac:PostalAddress/cbc:CountrySubentity\n  * Invoice/cac:Delivery/cac:DeliveryLocation/cac:Address/cbc:CountrySubentity"
+        countrySubentityCode:
+          type:
+          - string
+          - 'null'
+          description: "Address country subdivision code: The political or administrative division of a country in which this address is located.\n* Maps to:\n  * Invoice/cac:AccountingSupplierParty/cac:Party/cac:PostalAddress/cbc:CountrySubentityCode\n  * Invoice/cac:Delivery/cac:DeliveryParty/cac:PostalAddress/cbc:CountrySubentityCode"
+        addressLine:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/UblInvoicePostalAddressLine'
+          description: "Additional address lines.\n* Maps to:\n  * Invoice/cac:AccountingSupplierParty/cac:Party/cac:PostalAddress/cac:AddressLine\n  * Invoice/cac:AccountingCustomerParty/cac:Party/cac:PostalAddress/cac:AddressLine\n  * Invoice/cac:TaxRepresentativeParty/cac:PostalAddress/cac:AddressLine\n  * Invoice/cac:Delivery/cac:DeliveryLocation/cac:Address/cac:AddressLine\n  * Invoice/cac:Delivery/cac:DeliveryParty/cac:PostalAddress/cbc:AddressLine"
+        country:
+          $ref: '#/components/schemas/UblInvoicePostalAddressCountry'
+      additionalProperties: false
+    UblInvoiceDeliveryLocation:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: 'Deliver to location identifier: An identifier for the location at which the goods and services are delivered.
+
+            * Maps to: Invoice/cac:Delivery/cac:DeliveryLocation/cbc:ID'
+        idSchemeID:
+          type:
+          - string
+          - 'null'
+          description: 'The identification scheme of the location identifier.
+
+            * Maps to:Invoice/cac:Delivery/cac:DeliveryLocation/cbc:ID/@schemeID'
+        address:
+          $ref: '#/components/schemas/UblInvoicePostalAddress'
+      additionalProperties: false
+    UblInvoiceDeliveryShipmentFreightAllowanceCharge:
+      type: object
+      properties:
+        chargeIndicator:
+          type:
+          - boolean
+          - 'null'
+          description: 'Charge indicator: Whether this information describes a charge (true) or a discount allowance (false).
+
+            * Default: false
+
+            * Maps to: Invoice/cac:Delivery/cac:Shipment/cac:FreightAllowanceCharge/cbc:ChargeIndicator'
+        amount:
+          type:
+          - number
+          - 'null'
+          description: 'Shipment freight allowance or charge amount
+
+            * Maps to: Invoice/cac:Delivery/cac:Shipment/cac:FreightAllowanceCharge/cbc:Amount'
+          format: double
+      additionalProperties: false
+    UblInvoiceSupplier:
+      type: object
+      properties:
+        additionalAccountID:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: '* Maps to: Invoice/cac:AccountingSupplierParty/cac:AdditionalAccountID'
+        additionalAccountIDSchemeAgencyName:
+          type:
+          - string
+          - 'null'
+          description: '* Maps to: Invoice/cac:AccountingSupplierParty/cac:AdditionalAccountID/@schemeAgencyName'
+        party:
+          $ref: '#/components/schemas/UblInvoiceSupplierParty'
+      additionalProperties: false
+    UblInvoiceAllowanceChargeTaxCategory:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: 'Document level allowance or charge VAT category code: A coded identification of what VAT category applies to the document level allowance or charge.
+
+            * Maps to: Invoice/cac:AllowanceCharge/cac:TaxCategory/cbc:ID'
+        percent:
+          type:
+          - number
+          - 'null'
+          description: 'Document level allowance or charge VAT rate: The VAT rate, represented as percentage that applies to the document level allowance or charge.
+
+            * Maps to: Invoice/cac:AllowanceCharge/cac:TaxCategory/cbc:Percent'
+          format: double
+        taxScheme:
+          $ref: '#/components/schemas/UblInvoiceTaxScheme'
+      additionalProperties: false
+    UblInvoiceExtension:
+      type: object
+      properties:
+        extensionContent:
+          type:
+          - array
+          - 'null'
+          items: {}
+          description: 'UBL Extension information
+
+            * Maps to: Invoice/cec:UBLExtensions/cec:UBLExtension/cec:ExtensionContent'
+      additionalProperties: false
+    EinvoiceGetDownloadDocumentResponse:
+      type: object
+      properties:
+        metaData:
+          $ref: '#/components/schemas/Metadata'
+        documentData:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    UblInvoiceDeliveryShipmentConsignment:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: 'Shipment consignment identifier.
+
+            * Maps to: Invoice/cac:Delivery/cac:Shipment/cac:Consignment/cbc:ID'
+        deliveryTerms:
+          $ref: '#/components/schemas/UblInvoiceDeliveryShipmentDeliveryTerms'
+      additionalProperties: false
+  securitySchemes:
+    Bearer:
+      type: oauth2
+      description: OAuth 2.0 Client Credentials Flow with API Users issued from Integration Engine Management Console
+      flows:
+        clientCredentials:
+          tokenUrl: https://api-user.integrations.ecimanufacturing.com/oauth2/api-user/token
+          scopes:
+            openid: openid

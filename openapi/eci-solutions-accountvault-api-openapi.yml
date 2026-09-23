@@ -1,0 +1,361 @@
+openapi: 3.2.0
+info:
+  title: ECI MFG Payment Account Vault API
+  description: '# PaymentIntegration API User Guide
+
+
+    This guide explains how to use the PaymentIntegration API to process payments and manage customer data.'
+  contact:
+    name: ECI Manufacturing Division Integration Team
+    url: https://www.ecisolutions.com/support/
+  version: 2.9.29+ff43d60aad
+security:
+- Bearer: []
+tags:
+- name: AccountVault
+paths:
+  /api/accountvault:
+    get:
+      tags:
+      - AccountVault
+      summary: Gets account vault details
+      description: '### Gets account vault details
+
+        This API retrieves information for account vault records that have already been associated with the account.'
+      parameters:
+      - name: accountVaultId
+        in: query
+        description: This field contains the account vault ID.
+        schema:
+          type: string
+      - name: developerId
+        in: query
+        description: This field contains the developer ID.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/AccountVaultDetailResponseAPIResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountVaultDetailResponseAPIResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/AccountVaultDetailResponseAPIResponse'
+      operationId: getApiAccountvault
+      x-operation-id-source: derived
+    put:
+      tags:
+      - AccountVault
+      summary: Updates account vault details
+      description: '### Updates account vault details
+
+        This API updates information such as the expiry date and account holder name of account vault records.'
+      requestBody:
+        description: This is an object which contains the required fields to process this request.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AccountVaultUpdateModel'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/AccountVaultUpdateModel'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/AccountVaultUpdateModel'
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/StringAPIResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StringAPIResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/StringAPIResponse'
+      operationId: putApiAccountvault
+      x-operation-id-source: derived
+    delete:
+      tags:
+      - AccountVault
+      summary: Deletes an account vault
+      description: '### Deletes an account vault
+
+        This API deletes an associated account vault.'
+      requestBody:
+        description: This is an object which contains the required fields to process this request.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AccountVaultDetailRequest'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/AccountVaultDetailRequest'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/AccountVaultDetailRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/StringAPIResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StringAPIResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/StringAPIResponse'
+      operationId: deleteApiAccountvault
+      x-operation-id-source: derived
+components:
+  schemas:
+    ApiError:
+      type: object
+      properties:
+        isError:
+          type: boolean
+        exceptionMessage:
+          type:
+          - string
+          - 'null'
+        details:
+          type:
+          - string
+          - 'null'
+        referenceErrorCode:
+          type:
+          - string
+          - 'null'
+        referenceDocumentLink:
+          type:
+          - string
+          - 'null'
+        validationErrors:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ValidationError'
+      additionalProperties: false
+    AccountVaultDetail:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+        payment_method:
+          type:
+          - string
+          - 'null'
+        title:
+          type:
+          - string
+          - 'null'
+        account_holder_name:
+          type:
+          - string
+          - 'null'
+        first_six:
+          type:
+          - string
+          - 'null'
+        last_four:
+          type:
+          - string
+          - 'null'
+        billing_address:
+          type:
+          - string
+          - 'null'
+        billing_zip:
+          type:
+          - string
+          - 'null'
+        exp_date:
+          type:
+          - string
+          - 'null'
+        routing: {}
+        account_type:
+          type:
+          - string
+          - 'null'
+        is_company:
+          type:
+          - boolean
+          - 'null'
+        created_ts:
+          type: integer
+          format: int32
+        modified_ts:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        account_vault_api_id: {}
+        contact_id:
+          type:
+          - string
+          - 'null'
+        location_id:
+          type:
+          - string
+          - 'null'
+        expiring_in_months:
+          type: integer
+          format: int32
+        has_recurring:
+          type: boolean
+        accountvault_c1: {}
+        accountvault_c2: {}
+        accountvault_c3: {}
+        active:
+          type:
+          - string
+          - 'null'
+        dl_number: {}
+        dl_state: {}
+        ssn4: {}
+        dob_year: {}
+        billing_state: {}
+        billing_city:
+          type:
+          - string
+          - 'null'
+        billing_phone: {}
+        customer_id: {}
+        _links:
+          $ref: '#/components/schemas/Links'
+      additionalProperties: false
+    Links:
+      type: object
+      properties:
+        self:
+          $ref: '#/components/schemas/Self'
+      additionalProperties: false
+    AccountVaultDetailResponseAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          $ref: '#/components/schemas/ApiError'
+        result:
+          $ref: '#/components/schemas/AccountVaultDetailResponse'
+      additionalProperties: false
+    StringAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          $ref: '#/components/schemas/ApiError'
+        result:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    AccountVaultUpdate:
+      required:
+      - account_holder_name
+      - account_vault_id
+      - developer_id
+      - exp_date
+      type: object
+      properties:
+        account_vault_id:
+          minLength: 1
+          type: string
+        exp_date:
+          minLength: 1
+          pattern: ^(0[1-9]|1[0-2])([0-9]{2})$
+          type: string
+        account_holder_name:
+          minLength: 1
+          type: string
+        developer_id:
+          minLength: 1
+          type: string
+      additionalProperties: false
+    AccountVaultDetailRequest:
+      required:
+      - account_vault_id
+      - developer_id
+      type: object
+      properties:
+        account_vault_id:
+          minLength: 1
+          type: string
+        developer_id:
+          minLength: 1
+          type: string
+      additionalProperties: false
+    ValidationError:
+      type: object
+      properties:
+        field:
+          type:
+          - string
+          - 'null'
+        message:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    AccountVaultDetailResponse:
+      type: object
+      properties:
+        accountvault:
+          $ref: '#/components/schemas/AccountVaultDetail'
+      additionalProperties: false
+    Self:
+      type: object
+      properties:
+        href:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    AccountVaultUpdateModel:
+      type: object
+      properties:
+        accountvault:
+          $ref: '#/components/schemas/AccountVaultUpdate'
+      additionalProperties: false
+  securitySchemes:
+    Bearer:
+      type: oauth2
+      description: OAuth 2.0 Client Credentials Flow with API Users issued from Integration Engine Management Console
+      flows:
+        clientCredentials:
+          tokenUrl: https://api-user.integrations.ecimanufacturing.com/oauth2/api-user/token
+          scopes:
+            openid: openid

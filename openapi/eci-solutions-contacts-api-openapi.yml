@@ -1,0 +1,431 @@
+openapi: 3.2.0
+info:
+  title: JobBOSS² Public Contacts API
+  description: Provides a common API surface for accessing ECI ERP JobBOSS².
+  version: v1
+servers:
+- url: https://api-jb2.integrations.ecimanufacturing.com:443
+  description: API Host
+security:
+- Bearer: []
+tags:
+- name: Contacts
+paths:
+  /api/v1/contacts:
+    get:
+      tags:
+      - Contacts
+      summary: Gets a list of Contacts
+      description: 'By default a contact response will include only the fields: active, cellPhone, comments, contact, contactCode, email, extension, lastModDate, mobileEmail, object, phone, title, uniqueID. You may specify the exact fields to return using the fields parameter.'
+      parameters:
+      - name: fields
+        in: query
+        description: A comma separated list of fields to include in the result.
+        schema:
+          type: string
+      - name: sort
+        in: query
+        description: A comma separated list of field to sort by. See the <a href='#sort-expressions'>Sort Expressions</a> section for more information.
+        schema:
+          type: string
+      - name: filters
+        in: query
+        description: Filters must be provided as query string parameters as defined in the <a href='#filter-expressions'>Filter Expressions</a> section.
+        schema:
+          type: object
+          additionalProperties:
+            type: string
+        examples:
+          No filters: {}
+          Filter by Customer Code:
+            value:
+              object: CUST
+              contactCode: BASS
+      - name: skip
+        in: query
+        description: The number of records at the start of the result set to skip over.
+        schema:
+          type: string
+      - name: take
+        in: query
+        description: The number of records to retrieve.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContactListSuccessResponse'
+              example:
+                Data:
+                - active: false
+                  cellPhone: string
+                  comments: string
+                  contact: string
+                  contactCode: string
+                  email: string
+                  enteredDate: '2026-09-06T17:13:12.0000000+00:00'
+                  extension: string
+                  fax: string
+                  isOptedOut: false
+                  lastModDate: '2026-09-06T17:13:12.0000000+00:00'
+                  lastModUser: string
+                  mobileEmail: string
+                  object: string
+                  phone: string
+                  revisedDate: '2026-09-06T17:13:12.0000000+00:00'
+                  title: string
+                  uniqueID: 0
+      operationId: getApiV1Contacts
+      x-operation-id-source: derived
+    post:
+      tags:
+      - Contacts
+      summary: Creates a Contact
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ContactCreate'
+            example:
+              active: false
+              cellPhone: string
+              comments: string
+              contact: string
+              contactCode: string
+              email: string
+              extension: string
+              fax: string
+              isOptedOut: false
+              mobileEmail: string
+              object: string
+              phone: string
+              title: string
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Contact'
+              example:
+                active: false
+                cellPhone: string
+                comments: string
+                contact: string
+                contactCode: string
+                email: string
+                enteredDate: '2026-09-06T17:13:12.0000000+00:00'
+                extension: string
+                fax: string
+                isOptedOut: false
+                lastModDate: '2026-09-06T17:13:12.0000000+00:00'
+                lastModUser: string
+                mobileEmail: string
+                object: string
+                phone: string
+                revisedDate: '2026-09-06T17:13:12.0000000+00:00'
+                title: string
+                uniqueID: 0
+      operationId: postApiV1Contacts
+      x-operation-id-source: derived
+  /api/v1/contacts/{object}/{contactCode}/{contact}:
+    get:
+      tags:
+      - Contacts
+      summary: Gets a Contact by specifying the object, the contact code and the contact
+      description: 'By default a contact response will include only the fields: active, cellPhone, code, comments, contact, uniqueID, email, extension, lastModDate, mobile, object, phone, title. You may specify the exact fields to return using the fields parameter.'
+      parameters:
+      - name: object
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: contactCode
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: contact
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: fields
+        in: query
+        description: A comma separated list of fields to include in the result.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContactSuccessResponse'
+              example:
+                Data:
+                  active: false
+                  cellPhone: string
+                  comments: string
+                  contact: string
+                  contactCode: string
+                  email: string
+                  enteredDate: '2026-09-06T17:13:12.0000000+00:00'
+                  extension: string
+                  fax: string
+                  isOptedOut: false
+                  lastModDate: '2026-09-06T17:13:12.0000000+00:00'
+                  lastModUser: string
+                  mobileEmail: string
+                  object: string
+                  phone: string
+                  revisedDate: '2026-09-06T17:13:12.0000000+00:00'
+                  title: string
+                  uniqueID: 0
+      operationId: getApiV1ContactsByObjectByContactCodeByContact
+      x-operation-id-source: derived
+    patch:
+      tags:
+      - Contacts
+      summary: Updates a Contact
+      parameters:
+      - name: object
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: contactCode
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: contact
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ContactUpdate'
+            example:
+              active: false
+              cellPhone: string
+              comments: string
+              email: string
+              extension: string
+              fax: string
+              phone: string
+              title: string
+      responses:
+        '204':
+          description: Success
+      operationId: patchApiV1ContactsByObjectByContactCodeByContact
+      x-operation-id-source: derived
+components:
+  schemas:
+    ContactUpdate:
+      type: object
+      properties:
+        active:
+          type: boolean
+        cellPhone:
+          type:
+          - string
+          - 'null'
+        comments:
+          type:
+          - string
+          - 'null'
+        email:
+          type:
+          - string
+          - 'null'
+        extension:
+          type:
+          - string
+          - 'null'
+        fax:
+          type:
+          - string
+          - 'null'
+        phone:
+          type:
+          - string
+          - 'null'
+        title:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    ContactCreate:
+      required:
+      - contact
+      - contactCode
+      - object
+      type: object
+      properties:
+        active:
+          type: boolean
+        cellPhone:
+          type:
+          - string
+          - 'null'
+        comments:
+          type:
+          - string
+          - 'null'
+        contact:
+          type: string
+        contactCode:
+          type: string
+        email:
+          type:
+          - string
+          - 'null'
+        extension:
+          type:
+          - string
+          - 'null'
+        fax:
+          type:
+          - string
+          - 'null'
+        isOptedOut:
+          type: boolean
+        mobileEmail:
+          type:
+          - string
+          - 'null'
+        object:
+          type: string
+        phone:
+          type:
+          - string
+          - 'null'
+        title:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    ContactSuccessResponse:
+      type: object
+      properties:
+        Data:
+          $ref: '#/components/schemas/Contact'
+      additionalProperties: false
+    Contact:
+      type: object
+      properties:
+        active:
+          type: boolean
+          readOnly: true
+        cellPhone:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        comments:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        contact:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        contactCode:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        email:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        enteredDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        extension:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        fax:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        isOptedOut:
+          type: boolean
+          readOnly: true
+        lastModDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        lastModUser:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        mobileEmail:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        object:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        phone:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        revisedDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        title:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        uniqueID:
+          type: integer
+          format: int32
+          readOnly: true
+      additionalProperties: false
+    ContactListSuccessResponse:
+      type: object
+      properties:
+        Data:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Contact'
+      additionalProperties: false
+  securitySchemes:
+    Bearer:
+      type: oauth2
+      description: OAuth 2.0 Client Credentials Flow with API Users issued from Integration Engine Management Console
+      flows:
+        clientCredentials:
+          tokenUrl: https://api-user.integrations.ecimanufacturing.com/oauth2/api-user/token
+          scopes:
+            openid: openid

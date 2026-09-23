@@ -1,0 +1,582 @@
+openapi: 3.2.0
+info:
+  title: ERP API v2.1 Job Operation API
+  description: Provides a common API surface for accessing ECI ERP products.
+  contact:
+    name: ECI Manufacturing Division Integration Team
+    url: https://www.ecisolutions.com/support/
+  version: 3.5.585+b1e45fd230
+servers:
+- url: https://api-erp.integrations.ecimanufacturing.com:443
+  description: Production
+security:
+- Bearer: []
+tags:
+- name: Job Operation
+paths:
+  /api/v2.1/job-operations:
+    get:
+      tags:
+      - Job Operation
+      summary: Get a list of Job Operations from the ERP system that match the given filters
+      description: 'Gets a list of JobOperation.
+
+
+        ## Supported ERPs
+
+        - M1
+
+        - JobBOSS²
+
+        - Macola
+
+        - Deacom
+
+        ## Resource Features
+
+        Feature |Supported |Notes
+
+        ------------|------------|------------
+
+        Filter Expressions|**Yes**|
+
+        Sort Expressions|**Yes**
+
+        Field Selection|**Yes**
+
+        Pagination|**Yes**
+
+        UniqueID|uniqueID|
+
+        ## Features by Field
+
+        Field |Filterable |Sortable |Supported ERPs
+
+        ------------|------------|------------|------------
+
+        jobID|Yes|Yes|M1, JobBOSS², Macola, Deacom
+
+        jobAssembly|Yes|Yes|M1, JobBOSS², Macola, Deacom
+
+        jobOperationSeq|Yes|Yes|M1, JobBOSS², Macola, Deacom
+
+        status|Yes|Yes|M1, JobBOSS², Macola, Deacom
+
+        workCenterID|Yes|Yes|M1, JobBOSS², Macola, Deacom
+
+        processID|Yes|Yes|M1, JobBOSS², Macola, Deacom
+
+        shortDesc|Yes|Yes|M1, JobBOSS², Macola, Deacom
+
+        longDescText|Yes|Yes|M1, JobBOSS², Macola, Deacom
+
+        longDescFormatted|No|Yes|M1, JobBOSS², Macola, Deacom
+
+        outsideOperation|Yes|Yes|M1, JobBOSS², Macola, Deacom
+
+        partID|Yes|Yes|M1, JobBOSS², Macola, Deacom
+
+        partRevisionID|Yes|Yes|M1, JobBOSS², Macola, Deacom
+
+        schedStartDate|Yes|Yes|M1, JobBOSS², Macola, Deacom
+
+        schedEndDate|Yes|Yes|M1, JobBOSS², Macola, Deacom
+
+        actStartDate|Yes|Yes|M1, JobBOSS², Macola, Deacom
+
+        actEndDate|Yes|Yes|M1, JobBOSS², Macola, Deacom
+
+        estSetupHours|No|Yes|M1, JobBOSS², Macola, Deacom
+
+        estProdHours|Yes|Yes|M1, JobBOSS², Macola, Deacom
+
+        estQueueHours|Yes|Yes|M1, JobBOSS², Macola, Deacom
+
+        estMoveHours|Yes|Yes|M1, JobBOSS², Macola, Deacom
+
+        estQAHours|Yes|Yes|M1, JobBOSS², Macola, Deacom
+
+        actSetupHours|Yes|Yes|M1, JobBOSS², Macola, Deacom
+
+        actualProdHours|Yes|Yes|M1, JobBOSS², Macola, Deacom
+
+        actQAHours|Yes|Yes|M1, JobBOSS², Macola, Deacom
+
+        vendorID|Yes|Yes|M1, JobBOSS², Macola, Deacom
+
+        estSetupTimeValue|No|Yes|JobBOSS²
+
+        estSetupTimeUnit|No|Yes|JobBOSS²
+
+        estProdTimeValue|No|Yes|JobBOSS²
+
+        estProdTimeUnit|No|Yes|JobBOSS²
+
+        uniqueID|Yes|Yes|M1, JobBOSS², Macola, Deacom
+
+        rowVersion|Yes|Yes|M1, JobBOSS², Macola, Deacom
+
+        operationQty|No|Yes|M1, JobBOSS², Macola, Deacom
+
+        quantityComplete|No|Yes|M1, JobBOSS², Macola, Deacom
+
+        isSetupComplete|No|Yes|M1, JobBOSS², Macola, Deacom
+
+        plantID|No|Yes|M1, JobBOSS², Macola, Deacom
+
+        purchaseOrderID|No|Yes|M1, JobBOSS², Macola, Deacom
+
+        supplierOrganizationID|No|Yes|M1, JobBOSS², Macola, Deacom
+
+        purchaseLocationID|No|Yes|M1, JobBOSS², Macola, Deacom
+
+        RFQID|No|Yes|M1, JobBOSS², Macola, Deacom
+
+        defaultEmployeeID|Yes|Yes|JobBOSS²
+
+        defaultEmployeeID2|Yes|Yes|JobBOSS²
+
+        defaultEmployeeID3|Yes|Yes|JobBOSS²
+
+        isUnattended|No|Yes|JobBOSS²
+
+        jobType|Yes|Yes|Deacom
+
+        supplierLeadTime|No|Yes|JobBOSS²
+
+        jobIsClosed|Yes|Yes|JobBOSS², M1, Deacom
+
+        jobClosedDate|Yes|Yes|JobBOSS², M1, Deacom'
+      parameters:
+      - name: fields
+        in: query
+        description: A comma-separated list of fields to include in the result.
+        schema:
+          type: string
+      - name: sort
+        in: query
+        description: A comma-separated list of <a href='#sortexpr'>sort expressions</a>.
+        schema:
+          type: string
+      - name: take
+        in: query
+        description: Limit the number of results being returned
+        schema:
+          minimum: 0
+          type: integer
+      - name: skip
+        in: query
+        description: The number of results to skip. Combine with 'take' to fetch records in pages
+        schema:
+          minimum: 0
+          type: integer
+      - name: count
+        in: query
+        description: '<a href=''#countparam''>Data and count</a> response behavior '
+        schema:
+          maximum: 2
+          minimum: 0
+          type: integer
+      - name: filters
+        in: query
+        description: See <a href='#filterexpr'>Filter Expressions</a> for query string syntax. The Test UI and any generated code tool may expose filter parameters as a dictionary of name/value pairs, but if creating a raw HTTP request, they must be provided on the querystring as defined in the Filter Expression section.
+        style: form
+        schema:
+          type: object
+          additionalProperties:
+            type: string
+        examples:
+          Empty:
+            description: No filters applied
+          'Example #1':
+            description: A dictionary of name/value pairs that will be serialized as querystring parameters in the format ```name[operator]=value```
+            value:
+              jobID[eq]: abc123
+              jobAssembly[eq]: abc123
+              jobOperationSeq[gte]: 123
+              status[eq]: abc123
+              workCenterID[eq]: abc123
+              processID[eq]: abc123
+              shortDesc[eq]: abc123
+              longDescText[eq]: abc123
+              outsideOperation[eq]: abc123
+              partID[eq]: abc123
+              partRevisionID[eq]: abc123
+              schedStartDate[gte]: '2020-09-25T04:03:00.0000000'
+              schedEndDate[gte]: '2020-09-25T04:03:00.0000000'
+              actStartDate[gte]: '2020-09-25T04:03:00.0000000'
+              actEndDate[gte]: '2020-09-25T04:03:00.0000000'
+              estProdHours[gte]: 123
+              estQueueHours[gte]: 123
+              estMoveHours[gte]: 123
+              estQAHours[gte]: 123
+              actSetupHours[gte]: 123
+              actualProdHours[gte]: 123
+              actQAHours[gte]: 123
+              vendorID[eq]: abc123
+              uniqueID[eq]: cc90686b-399e-4094-b431-fa462f84b0a8
+              rowVersion[gte]: 123
+              defaultEmployeeID[eq]: abc123
+              defaultEmployeeID2[eq]: abc123
+              defaultEmployeeID3[eq]: abc123
+              jobType[eq]: abc123
+              jobIsClosed[eq]: true
+              jobClosedDate[gte]: '2020-09-25T04:03:00.0000000'
+      - name: convertToUTC
+        in: query
+        description: Convert suppported date/time values to UTC before returning the data.
+        schema:
+          type: boolean
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/JobOperationListResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JobOperationListResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/JobOperationListResponse'
+      operationId: getApiV21JobOperations
+      x-operation-id-source: derived
+  /api/v2.1/job-operations/{id}:
+    get:
+      tags:
+      - Job Operation
+      summary: Get a Job Operation from the ERP system that matches the given unique ID
+      description: 'Gets a JobOperation by unique ID.
+
+
+        ## Supported ERPs
+
+        - M1
+
+        - JobBOSS²
+
+        - Macola
+
+        - Deacom
+
+        ## Features by Field
+
+        Field |Supported ERPs
+
+        ------------|------------
+
+        jobID||M1, JobBOSS², Macola, Deacom
+
+        jobAssembly||M1, JobBOSS², Macola, Deacom
+
+        jobOperationSeq||M1, JobBOSS², Macola, Deacom
+
+        status||M1, JobBOSS², Macola, Deacom
+
+        workCenterID||M1, JobBOSS², Macola, Deacom
+
+        processID||M1, JobBOSS², Macola, Deacom
+
+        shortDesc||M1, JobBOSS², Macola, Deacom
+
+        longDescText||M1, JobBOSS², Macola, Deacom
+
+        longDescFormatted||M1, JobBOSS², Macola, Deacom
+
+        outsideOperation||M1, JobBOSS², Macola, Deacom
+
+        partID||M1, JobBOSS², Macola, Deacom
+
+        partRevisionID||M1, JobBOSS², Macola, Deacom
+
+        schedStartDate||M1, JobBOSS², Macola, Deacom
+
+        schedEndDate||M1, JobBOSS², Macola, Deacom
+
+        actStartDate||M1, JobBOSS², Macola, Deacom
+
+        actEndDate||M1, JobBOSS², Macola, Deacom
+
+        estSetupHours||M1, JobBOSS², Macola, Deacom
+
+        estProdHours||M1, JobBOSS², Macola, Deacom
+
+        estQueueHours||M1, JobBOSS², Macola, Deacom
+
+        estMoveHours||M1, JobBOSS², Macola, Deacom
+
+        estQAHours||M1, JobBOSS², Macola, Deacom
+
+        actSetupHours||M1, JobBOSS², Macola, Deacom
+
+        actualProdHours||M1, JobBOSS², Macola, Deacom
+
+        actQAHours||M1, JobBOSS², Macola, Deacom
+
+        vendorID||M1, JobBOSS², Macola, Deacom
+
+        estSetupTimeValue||JobBOSS²
+
+        estSetupTimeUnit||JobBOSS²
+
+        estProdTimeValue||JobBOSS²
+
+        estProdTimeUnit||JobBOSS²
+
+        uniqueID||M1, JobBOSS², Macola, Deacom
+
+        rowVersion||M1, JobBOSS², Macola, Deacom
+
+        operationQty||M1, JobBOSS², Macola, Deacom
+
+        quantityComplete||M1, JobBOSS², Macola, Deacom
+
+        isSetupComplete||M1, JobBOSS², Macola, Deacom
+
+        plantID||M1, JobBOSS², Macola, Deacom
+
+        purchaseOrderID||M1, JobBOSS², Macola, Deacom
+
+        supplierOrganizationID||M1, JobBOSS², Macola, Deacom
+
+        purchaseLocationID||M1, JobBOSS², Macola, Deacom
+
+        RFQID||M1, JobBOSS², Macola, Deacom
+
+        defaultEmployeeID||JobBOSS²
+
+        defaultEmployeeID2||JobBOSS²
+
+        defaultEmployeeID3||JobBOSS²
+
+        isUnattended||JobBOSS²
+
+        jobType||Deacom
+
+        supplierLeadTime||JobBOSS²
+
+        jobIsClosed||JobBOSS², M1, Deacom
+
+        jobClosedDate||JobBOSS², M1, Deacom'
+      parameters:
+      - name: id
+        in: path
+        description: The ID of the job operation
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/JobOperation'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JobOperation'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/JobOperation'
+      operationId: getApiV21JobOperationsById
+      x-operation-id-source: derived
+    patch:
+      tags:
+      - Job Operation
+      summary: Update a job operation in the ERP system
+      parameters:
+      - name: id
+        in: path
+        description: joboperationid
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JobOperationUpdateModel'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/JobOperationUpdateModel'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/JobOperationUpdateModel'
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/JobOperation'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JobOperation'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/JobOperation'
+      operationId: patchApiV21JobOperationsById
+      x-operation-id-source: derived
+components:
+  schemas:
+    JobOperationUpdateModel:
+      type: object
+      properties:
+        workCenterID:
+          type:
+          - string
+          - 'null'
+        schedStartDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        schedEndDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+      additionalProperties: false
+    JobOperation:
+      title: JobOperation
+      type: object
+      properties:
+        jobID:
+          type: string
+        jobAssembly:
+          type: string
+        jobOperationSeq:
+          type: integer
+          format: int32
+        status:
+          type: string
+        workCenterID:
+          type: string
+        processID:
+          type: string
+        shortDesc:
+          type: string
+        longDescText:
+          type: string
+        longDescFormatted:
+          type: string
+        outsideOperation:
+          type: string
+        partID:
+          type: string
+        partRevisionID:
+          type: string
+        schedStartDate:
+          type: string
+          format: date-time
+        schedEndDate:
+          type: string
+          format: date-time
+        actStartDate:
+          type: string
+          format: date-time
+        actEndDate:
+          type: string
+          format: date-time
+        estSetupHours:
+          type: number
+          format: double
+        estProdHours:
+          type: number
+          format: double
+        estQueueHours:
+          type: number
+          format: double
+        estMoveHours:
+          type: number
+          format: double
+        estQAHours:
+          type: number
+          format: double
+        actSetupHours:
+          type: number
+          format: double
+        actualProdHours:
+          type: number
+          format: double
+        actQAHours:
+          type: number
+          format: double
+        vendorID:
+          type: string
+        estSetupTimeValue:
+          type: number
+          format: double
+        estSetupTimeUnit:
+          type: string
+        estProdTimeValue:
+          type: number
+          format: double
+        estProdTimeUnit:
+          type: string
+        uniqueID:
+          type: string
+        rowVersion:
+          type: integer
+          format: int64
+        operationQty:
+          type: number
+          format: double
+        quantityComplete:
+          type: number
+          format: double
+        isSetupComplete:
+          type: boolean
+        plantID:
+          type: string
+        purchaseOrderID:
+          type: string
+        supplierOrganizationID:
+          type: string
+        purchaseLocationID:
+          type: string
+        RFQID:
+          type: string
+        defaultEmployeeID:
+          type: string
+        defaultEmployeeID2:
+          type: string
+        defaultEmployeeID3:
+          type: string
+        isUnattended:
+          type: boolean
+        jobType:
+          type: string
+        supplierLeadTime:
+          type: integer
+          format: int32
+        jobIsClosed:
+          type: boolean
+        jobClosedDate:
+          type: string
+          format: date-time
+    JobOperationListResponse:
+      type: object
+      properties:
+        data:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/JobOperation'
+          readOnly: true
+        resultCount:
+          type: integer
+          format: int32
+      additionalProperties: false
+  securitySchemes:
+    Bearer:
+      type: oauth2
+      description: OAuth 2.0 Client Credentials Flow with API Users issued from Integration Engine Management Console
+      flows:
+        clientCredentials:
+          tokenUrl: https://api-user.integrations.ecimanufacturing.com/oauth2/api-user/token
+          scopes:
+            openid: openid

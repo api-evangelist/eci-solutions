@@ -1,0 +1,545 @@
+openapi: 3.2.0
+info:
+  title: ERP API v2.1 Sales Order Job API
+  description: Provides a common API surface for accessing ECI ERP products.
+  contact:
+    name: ECI Manufacturing Division Integration Team
+    url: https://www.ecisolutions.com/support/
+  version: 3.5.585+b1e45fd230
+servers:
+- url: https://api-erp.integrations.ecimanufacturing.com:443
+  description: Production
+security:
+- Bearer: []
+tags:
+- name: SalesOrderJob
+paths:
+  /api/v2.1/sales-order-jobs:
+    get:
+      tags:
+      - SalesOrderJob
+      summary: Get a list of SalesOrderJobs from the ERP system that match the given filters
+      description: 'Gets a list of SalesOrderJob.
+
+
+        ## Supported ERPs
+
+        - M1
+
+        - JobBOSS²
+
+        - Macola
+
+        ## Resource Features
+
+        Feature |Supported |Notes
+
+        ------------|------------|------------
+
+        Filter Expressions|**Yes**|
+
+        Sort Expressions|**Yes**
+
+        Field Selection|**Yes**
+
+        Pagination|**Yes**
+
+        UniqueID|uniqueID|
+
+        ## Features by Field
+
+        Field |Filterable |Sortable |Supported ERPs
+
+        ------------|------------|------------|------------
+
+        salesOrderID|Yes|Yes|M1, JobBOSS², Macola
+
+        orderLine|Yes|Yes|M1, JobBOSS², Macola
+
+        orderLineDelivery|Yes|Yes|M1, JobBOSS², Macola
+
+        jobID|Yes|Yes|M1, JobBOSS², Macola
+
+        orderJobSeq|Yes|Yes|M1, JobBOSS², Macola
+
+        uniqueID|Yes|Yes|M1, JobBOSS², Macola
+
+        rowVersion|Yes|Yes|M1, JobBOSS², Macola'
+      parameters:
+      - name: fields
+        in: query
+        description: A comma-separated list of fields to include in the result.
+        schema:
+          type: string
+      - name: sort
+        in: query
+        description: A comma-separated list of <a href='#sortexpr'>sort expressions</a>.
+        schema:
+          type: string
+      - name: take
+        in: query
+        description: Limit the number of results being returned
+        schema:
+          minimum: 0
+          type: integer
+      - name: skip
+        in: query
+        description: The number of results to skip. Combine with 'take' to fetch records in pages
+        schema:
+          minimum: 0
+          type: integer
+      - name: count
+        in: query
+        description: '<a href=''#countparam''>Data and count</a> response behavior '
+        schema:
+          maximum: 2
+          minimum: 0
+          type: integer
+      - name: filters
+        in: query
+        description: See <a href='#filterexpr'>Filter Expressions</a> for query string syntax. The Test UI and any generated code tool may expose filter parameters as a dictionary of name/value pairs, but if creating a raw HTTP request, they must be provided on the querystring as defined in the Filter Expression section.
+        style: form
+        schema:
+          type: object
+          additionalProperties:
+            type: string
+        examples:
+          Empty:
+            description: No filters applied
+          'Example #1':
+            description: A dictionary of name/value pairs that will be serialized as querystring parameters in the format ```name[operator]=value```
+            value:
+              salesOrderID[eq]: abc123
+              orderLine[gte]: 123
+              orderLineDelivery[eq]: abc123
+              jobID[eq]: abc123
+              orderJobSeq[gte]: 123
+              uniqueID[eq]: cc90686b-399e-4094-b431-fa462f84b0a8
+              rowVersion[gte]: 123
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/SalesOrderJobListResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SalesOrderJobListResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/SalesOrderJobListResponse'
+      operationId: getApiV21SalesOrderJobs
+      x-operation-id-source: derived
+  /api/v2.1/sales-order-jobs/{id}:
+    get:
+      tags:
+      - SalesOrderJob
+      summary: Get a SalesOrderJob from the ERP system that match the given filters
+      description: 'Gets a SalesOrderJob by unique ID.
+
+
+        ## Supported ERPs
+
+        - M1
+
+        - JobBOSS²
+
+        - Macola
+
+        ## Features by Field
+
+        Field |Supported ERPs
+
+        ------------|------------
+
+        salesOrderID||M1, JobBOSS², Macola
+
+        orderLine||M1, JobBOSS², Macola
+
+        orderLineDelivery||M1, JobBOSS², Macola
+
+        jobID||M1, JobBOSS², Macola
+
+        orderJobSeq||M1, JobBOSS², Macola
+
+        uniqueID||M1, JobBOSS², Macola
+
+        rowVersion||M1, JobBOSS², Macola'
+      parameters:
+      - name: id
+        in: path
+        description: The ID of the SalesOrderJob
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/SalesOrderLine'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SalesOrderLine'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/SalesOrderLine'
+      operationId: getApiV21SalesOrderJobsById
+      x-operation-id-source: derived
+components:
+  schemas:
+    SalesOrderJob:
+      title: SalesOrderJob
+      type: object
+      properties:
+        salesOrderID:
+          type: string
+        orderLine:
+          type: integer
+        orderLineDelivery:
+          type: string
+        jobID:
+          type: string
+        orderJobSeq:
+          type: integer
+          format: int32
+        uniqueID:
+          type: string
+        rowVersion:
+          type: integer
+          format: int64
+    SalesOrderDelivery:
+      title: SalesOrderDelivery
+      type: object
+      properties:
+        salesOrderID:
+          type: string
+        orderLine:
+          type: integer
+        orderLineDelivery:
+          type: string
+        promisedDate:
+          type: string
+          format: date-time
+        promisedQty:
+          type: number
+          format: double
+        shippedDate:
+          type: string
+          format: date-time
+        shippedQty:
+          type: number
+          format: double
+        uniqueID:
+          type: string
+        rowVersion:
+          type: integer
+          format: int64
+        deliveryTypeCode:
+          type: string
+        salesOrderType:
+          type: string
+        salesOrderJobs:
+          type: array
+          items:
+            $ref: '#/components/schemas/SalesOrderJob'
+    PartGroup:
+      title: PartGroup
+      type: object
+      properties:
+        uniqueID:
+          type: string
+        rowVersion:
+          type: integer
+          format: int64
+        partGroupID:
+          type: string
+        parentPartGroupID:
+          type: string
+        description:
+          type: string
+        isActive:
+          type: boolean
+        inactiveDate:
+          type: string
+          format: date
+    Plant:
+      title: Plant
+      type: object
+      properties:
+        plantID:
+          type: string
+        name:
+          type: string
+        uniqueID:
+          type: string
+        rowVersion:
+          type: integer
+          format: int64
+    Organization:
+      title: Organization
+      type: object
+      properties:
+        uniqueID:
+          type: string
+        rowVersion:
+          type: integer
+          format: int64
+        name:
+          type: string
+        organizationID:
+          type: string
+        country:
+          type: string
+        isActive:
+          type: boolean
+        organizationTypes:
+          type: array
+          items:
+            type: integer
+            format: int32
+        phoneNumber:
+          type: string
+        customerPaymentTermID:
+          type: string
+        customerTaxCodeID:
+          type: string
+        supplierPaymentTermID:
+          type: string
+        supplierTaxCodeID:
+          type: string
+        currencyCode:
+          type: string
+        websiteUrl:
+          type: string
+        comments:
+          type: string
+        salesAccountID:
+          type: string
+        leadTimeDays:
+          type: integer
+          format: int32
+        minimumOrderAmount:
+          type: number
+          format: double
+        customerStatus:
+          type: integer
+        supplierStatus:
+          type: integer
+    PartRevision:
+      title: PartRevision
+      type: object
+      properties:
+        partID:
+          type: string
+        partRevisionID:
+          type: string
+        shortDesc:
+          type: string
+        longDescText:
+          type: string
+        longDescFormatted:
+          type: string
+        uniqueID:
+          type: string
+        rowVersion:
+          type: integer
+          format: int64
+        partCost:
+          type: number
+          format: double
+        effectiveStartDate:
+          type: string
+          format: date
+        expirationEndDate:
+          type: string
+          format: date
+        supplierOrganizationID:
+          type: string
+        leadTime:
+          type: integer
+          format: int32
+        quantityOnHand:
+          type: number
+          format: double
+        pricingUnitOfMeasure:
+          type: string
+    SalesOrderJobListResponse:
+      type: object
+      properties:
+        data:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/SalesOrderJob'
+          readOnly: true
+        resultCount:
+          type: integer
+          format: int32
+      additionalProperties: false
+    Project:
+      title: Project
+      type: object
+      properties:
+        uniqueID:
+          type: string
+        rowVersion:
+          type: integer
+          format: int64
+        projectID:
+          type: string
+        customerID:
+          type: string
+        locationID:
+          type: string
+        contactID:
+          type: string
+        dueDate:
+          type: string
+          format: date
+        projectDate:
+          type: string
+          format: date
+        closedDate:
+          type: string
+          format: date
+        shortDescription:
+          type: string
+        longDescription:
+          type: string
+        statusCode:
+          type: string
+        isClosed:
+          type: boolean
+        customer:
+          $ref: '#/components/schemas/Organization'
+    SalesOrderLine:
+      title: SalesOrderLine
+      type: object
+      properties:
+        salesOrderID:
+          type: string
+        orderLine:
+          type: integer
+        totalSalePrice:
+          type: number
+          format: double
+        uniqueID:
+          type: string
+        rowVersion:
+          type: integer
+          format: int64
+        partID:
+          type: string
+        partRevisionID:
+          type: string
+        partGroupID:
+          type: string
+        shortDescription:
+          type: string
+        saleUom:
+          type: string
+        baseUnitPrice:
+          type: number
+          description: The price expressed in the currency of the seller.
+          format: double
+        foreignUnitPrice:
+          type: number
+          description: The price expressed in the currency of the buyer, if different from that of the seller.
+          format: double
+        baseExtendedPrice:
+          type: number
+          description: The extended (qty x price) total expressed in the currency of the seller.
+          format: double
+        foreignExtendedPrice:
+          type: number
+          description: The extended (qty x price) total expressed in the currency of the buyer, if different from that of the seller.
+          format: double
+        quantityOrdered:
+          type: number
+          format: double
+        quantityShipped:
+          type: number
+          format: double
+        purchaseOrderCost:
+          type: number
+          format: double
+        purchaseOrderCostForeign:
+          type: number
+          format: double
+        salesOrderType:
+          type: string
+        locationID:
+          type: string
+        shippedDate:
+          type: string
+          format: date-time
+        isPosted:
+          type: boolean
+        dueDate:
+          type: string
+          format: date-time
+        salesOrderDeliveries:
+          type: array
+          items:
+            $ref: '#/components/schemas/SalesOrderDelivery'
+        salesOrderJobs:
+          $ref: '#/components/schemas/SalesOrderJob'
+        salesOrder:
+          $ref: '#/components/schemas/SalesOrder'
+        partRevision:
+          $ref: '#/components/schemas/PartRevision'
+        partGroup:
+          $ref: '#/components/schemas/PartGroup'
+    SalesOrder:
+      title: SalesOrder
+      type: object
+      properties:
+        uniqueID:
+          type: string
+        rowVersion:
+          type: integer
+          format: int64
+        salesOrderID:
+          type: string
+        customerID:
+          type: string
+        orderDate:
+          type: string
+          format: date
+        plantID:
+          type: string
+        projectID:
+          type: string
+        salesOrderType:
+          type: string
+        totalSalesAmount:
+          type: number
+          format: double
+        status:
+          type: string
+        originalOrderType:
+          type: string
+        quoteID:
+          type: string
+        closedDate:
+          type: string
+          format: date
+        customer:
+          $ref: '#/components/schemas/Organization'
+        plant:
+          $ref: '#/components/schemas/Plant'
+        project:
+          $ref: '#/components/schemas/Project'
+  securitySchemes:
+    Bearer:
+      type: oauth2
+      description: OAuth 2.0 Client Credentials Flow with API Users issued from Integration Engine Management Console
+      flows:
+        clientCredentials:
+          tokenUrl: https://api-user.integrations.ecimanufacturing.com/oauth2/api-user/token
+          scopes:
+            openid: openid

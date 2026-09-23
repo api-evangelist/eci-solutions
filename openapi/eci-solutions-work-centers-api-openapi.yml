@@ -1,0 +1,1300 @@
+openapi: 3.2.0
+info:
+  title: JobBOSS² Public Work Centers API
+  description: Provides a common API surface for accessing ECI ERP JobBOSS².
+  version: v1
+servers:
+- url: https://api-jb2.integrations.ecimanufacturing.com:443
+  description: API Host
+security:
+- Bearer: []
+tags:
+- name: Work Centers
+paths:
+  /api/v1/work-centers:
+    get:
+      tags:
+      - Work Centers
+      summary: Gets a list of Work Centers
+      description: 'By default a work center response will include only the fields: active, attendanceCode, burdenRate, capacityFactor, comments, departmentNumber, description, laborAccount, laborRate, lastModDate, operationCode, queueTime, queueUnit, shortName, uniqueID, workCenter. You may specify the exact fields to return using the fields parameter.'
+      parameters:
+      - name: fields
+        in: query
+        description: A comma separated list of fields to include in the result.
+        schema:
+          type: string
+      - name: sort
+        in: query
+        description: A comma separated list of field to sort by. See the <a href='#sort-expressions'>Sort Expressions</a> section for more information.
+        schema:
+          type: string
+      - name: filters
+        in: query
+        description: Filters must be provided as query string parameters as defined in the <a href='#filter-expressions'>Filter Expressions</a> section.
+        schema:
+          type: object
+          additionalProperties:
+            type: string
+        examples:
+          No filters: {}
+          Filter by Department:
+            value:
+              departmentNumber: PRODUCT
+      - name: skip
+        in: query
+        description: The number of records at the start of the result set to skip over.
+        schema:
+          type: string
+      - name: take
+        in: query
+        description: The number of records to retrieve.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkCenterListSuccessResponse'
+              example:
+                Data:
+                - active: false
+                  attendanceCode: string
+                  burdenRate: 0
+                  capacityFactor: 0
+                  cycle1: 0
+                  cycle10: 0
+                  cycle2: 0
+                  cycle3: 0
+                  cycle4: 0
+                  cycle5: 0
+                  cycle6: 0
+                  cycle7: 0
+                  cycle8: 0
+                  cycle9: 0
+                  defaultEmployeeCode: string
+                  defaultSetupTime: 0
+                  defaultTimeUnit: string
+                  departmentNumber: string
+                  description: string
+                  enteredDate: '2026-09-06T17:13:13.0000000+00:00'
+                  hoursAvailable: 0
+                  hoursAvailableShift1: 0
+                  hoursAvailableShift2: 0
+                  hoursAvailableShift3: 0
+                  imageRepositoryID: 0
+                  laborAccount: string
+                  laborRate: 0
+                  lastModDate: '2026-09-06T17:13:13.0000000+00:00'
+                  lastModUser: string
+                  loadingMethod: string
+                  locationLeft: 0
+                  locationTop: 0
+                  operationCode: string
+                  queueTime: 0
+                  queueUnit: string
+                  revisedDate: '2026-09-06T17:13:13.0000000+00:00'
+                  runOnShift1: false
+                  runOnShift2: false
+                  runOnShift3: false
+                  scheduleBegin: string
+                  scheduleEnd: string
+                  setup1: 0
+                  setup10: 0
+                  setup2: 0
+                  setup3: 0
+                  setup4: 0
+                  setup5: 0
+                  setup6: 0
+                  setup7: 0
+                  setup8: 0
+                  setup9: 0
+                  shift2DefaultEmployeeCode: string
+                  shift3DefaultEmployeeCode: string
+                  shortName: string
+                  uniqueID: 0
+                  user_Currency1: 0
+                  user_Currency2: 0
+                  user_Date1: '2026-09-06T17:13:13.0000000+00:00'
+                  user_Date2: '2026-09-06T17:13:13.0000000+00:00'
+                  user_Memo1: string
+                  user_Number1: 0
+                  user_Number2: 0
+                  user_Number3: 0
+                  user_Number4: 0
+                  user_Text1: string
+                  user_Text2: string
+                  user_Text3: string
+                  user_Text4: string
+                  utilizationPercent: 0
+                  workCenter: 0
+                  workCenterImageFile: string
+                  workFriday: false
+                  workMonday: false
+                  workSaturday: false
+                  workSunday: false
+                  workThursday: false
+                  workTuesday: false
+                  workWednesday: false
+      operationId: getApiV1WorkCenters
+      x-operation-id-source: derived
+    post:
+      tags:
+      - Work Centers
+      summary: Creates a Work Center
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WorkCenterCreate'
+            example:
+              active: false
+              attendanceCode: string
+              burdenRate: 0
+              capacityFactor: 0
+              cycle1: 0
+              cycle10: 0
+              cycle2: 0
+              cycle3: 0
+              cycle4: 0
+              cycle5: 0
+              cycle6: 0
+              cycle7: 0
+              cycle8: 0
+              cycle9: 0
+              departmentNumber: string
+              description: string
+              laborAccount: string
+              laborRate: 0
+              operationCode: string
+              setup1: 0
+              setup10: 0
+              setup2: 0
+              setup3: 0
+              setup4: 0
+              setup5: 0
+              setup6: 0
+              setup7: 0
+              setup8: 0
+              setup9: 0
+              shortName: string
+              user_Currency1: 0
+              user_Currency2: 0
+              user_Date1: '2026-09-06T17:13:13.0000000+00:00'
+              user_Date2: '2026-09-06T17:13:13.0000000+00:00'
+              user_Memo1: string
+              user_Number1: 0
+              user_Number2: 0
+              user_Number3: 0
+              user_Number4: 0
+              user_Text1: string
+              user_Text2: string
+              user_Text3: string
+              user_Text4: string
+              workCenter: 0
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkCenter'
+              example:
+                active: false
+                attendanceCode: string
+                burdenRate: 0
+                capacityFactor: 0
+                cycle1: 0
+                cycle10: 0
+                cycle2: 0
+                cycle3: 0
+                cycle4: 0
+                cycle5: 0
+                cycle6: 0
+                cycle7: 0
+                cycle8: 0
+                cycle9: 0
+                defaultEmployeeCode: string
+                defaultSetupTime: 0
+                defaultTimeUnit: string
+                departmentNumber: string
+                description: string
+                enteredDate: '2026-09-06T17:13:13.0000000+00:00'
+                hoursAvailable: 0
+                hoursAvailableShift1: 0
+                hoursAvailableShift2: 0
+                hoursAvailableShift3: 0
+                imageRepositoryID: 0
+                laborAccount: string
+                laborRate: 0
+                lastModDate: '2026-09-06T17:13:13.0000000+00:00'
+                lastModUser: string
+                loadingMethod: string
+                locationLeft: 0
+                locationTop: 0
+                operationCode: string
+                queueTime: 0
+                queueUnit: string
+                revisedDate: '2026-09-06T17:13:13.0000000+00:00'
+                runOnShift1: false
+                runOnShift2: false
+                runOnShift3: false
+                scheduleBegin: string
+                scheduleEnd: string
+                setup1: 0
+                setup10: 0
+                setup2: 0
+                setup3: 0
+                setup4: 0
+                setup5: 0
+                setup6: 0
+                setup7: 0
+                setup8: 0
+                setup9: 0
+                shift2DefaultEmployeeCode: string
+                shift3DefaultEmployeeCode: string
+                shortName: string
+                uniqueID: 0
+                user_Currency1: 0
+                user_Currency2: 0
+                user_Date1: '2026-09-06T17:13:13.0000000+00:00'
+                user_Date2: '2026-09-06T17:13:13.0000000+00:00'
+                user_Memo1: string
+                user_Number1: 0
+                user_Number2: 0
+                user_Number3: 0
+                user_Number4: 0
+                user_Text1: string
+                user_Text2: string
+                user_Text3: string
+                user_Text4: string
+                utilizationPercent: 0
+                workCenter: 0
+                workCenterImageFile: string
+                workFriday: false
+                workMonday: false
+                workSaturday: false
+                workSunday: false
+                workThursday: false
+                workTuesday: false
+                workWednesday: false
+      operationId: postApiV1WorkCenters
+      x-operation-id-source: derived
+  /api/v1/work-centers/{workCenter}:
+    get:
+      tags:
+      - Work Centers
+      summary: Gets a Work Center by work center code
+      description: 'By default a work center response will include only the fields: active, attendanceCode, burdenRate, capacityFactor, comments, departmentNumber, description, laborAccount, laborRate, lastModDate, operationCode, queueTime, queueUnit, shortName, uniqueID, workCenter. You may specify the exact fields to return using the fields parameter.'
+      parameters:
+      - name: workCenter
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: fields
+        in: query
+        description: A comma separated list of fields to include in the result.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkCenterSuccessResponse'
+              example:
+                Data:
+                  active: false
+                  attendanceCode: string
+                  burdenRate: 0
+                  capacityFactor: 0
+                  cycle1: 0
+                  cycle10: 0
+                  cycle2: 0
+                  cycle3: 0
+                  cycle4: 0
+                  cycle5: 0
+                  cycle6: 0
+                  cycle7: 0
+                  cycle8: 0
+                  cycle9: 0
+                  defaultEmployeeCode: string
+                  defaultSetupTime: 0
+                  defaultTimeUnit: string
+                  departmentNumber: string
+                  description: string
+                  enteredDate: '2026-09-06T17:13:13.0000000+00:00'
+                  hoursAvailable: 0
+                  hoursAvailableShift1: 0
+                  hoursAvailableShift2: 0
+                  hoursAvailableShift3: 0
+                  imageRepositoryID: 0
+                  laborAccount: string
+                  laborRate: 0
+                  lastModDate: '2026-09-06T17:13:13.0000000+00:00'
+                  lastModUser: string
+                  loadingMethod: string
+                  locationLeft: 0
+                  locationTop: 0
+                  operationCode: string
+                  queueTime: 0
+                  queueUnit: string
+                  revisedDate: '2026-09-06T17:13:13.0000000+00:00'
+                  runOnShift1: false
+                  runOnShift2: false
+                  runOnShift3: false
+                  scheduleBegin: string
+                  scheduleEnd: string
+                  setup1: 0
+                  setup10: 0
+                  setup2: 0
+                  setup3: 0
+                  setup4: 0
+                  setup5: 0
+                  setup6: 0
+                  setup7: 0
+                  setup8: 0
+                  setup9: 0
+                  shift2DefaultEmployeeCode: string
+                  shift3DefaultEmployeeCode: string
+                  shortName: string
+                  uniqueID: 0
+                  user_Currency1: 0
+                  user_Currency2: 0
+                  user_Date1: '2026-09-06T17:13:13.0000000+00:00'
+                  user_Date2: '2026-09-06T17:13:13.0000000+00:00'
+                  user_Memo1: string
+                  user_Number1: 0
+                  user_Number2: 0
+                  user_Number3: 0
+                  user_Number4: 0
+                  user_Text1: string
+                  user_Text2: string
+                  user_Text3: string
+                  user_Text4: string
+                  utilizationPercent: 0
+                  workCenter: 0
+                  workCenterImageFile: string
+                  workFriday: false
+                  workMonday: false
+                  workSaturday: false
+                  workSunday: false
+                  workThursday: false
+                  workTuesday: false
+                  workWednesday: false
+      operationId: getApiV1WorkCentersByWorkCenter
+      x-operation-id-source: derived
+    patch:
+      tags:
+      - Work Centers
+      summary: Updates a Work Center
+      parameters:
+      - name: workCenter
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WorkCenterUpdate'
+            example:
+              active: false
+              attendanceCode: string
+              burdenRate: 0
+              cycle1: 0
+              cycle10: 0
+              cycle2: 0
+              cycle3: 0
+              cycle4: 0
+              cycle5: 0
+              cycle6: 0
+              cycle7: 0
+              cycle8: 0
+              cycle9: 0
+              departmentNumber: string
+              description: string
+              laborAccount: string
+              laborRate: 0
+              operationCode: string
+              setup1: 0
+              setup10: 0
+              setup2: 0
+              setup3: 0
+              setup4: 0
+              setup5: 0
+              setup6: 0
+              setup7: 0
+              setup8: 0
+              setup9: 0
+              user_Currency1: 0
+              user_Currency2: 0
+              user_Date1: '2026-09-06T17:13:13.0000000+00:00'
+              user_Date2: '2026-09-06T17:13:13.0000000+00:00'
+              user_Memo1: string
+              user_Number1: 0
+              user_Number2: 0
+              user_Number3: 0
+              user_Number4: 0
+              user_Text1: string
+              user_Text2: string
+              user_Text3: string
+              user_Text4: string
+      responses:
+        '204':
+          description: Success
+      operationId: patchApiV1WorkCentersByWorkCenter
+      x-operation-id-source: derived
+components:
+  schemas:
+    WorkCenterUpdate:
+      type: object
+      properties:
+        active:
+          type: boolean
+        attendanceCode:
+          type:
+          - string
+          - 'null'
+        burdenRate:
+          type:
+          - number
+          - 'null'
+          format: double
+        cycle1:
+          type:
+          - number
+          - 'null'
+          format: double
+        cycle10:
+          type:
+          - number
+          - 'null'
+          format: double
+        cycle2:
+          type:
+          - number
+          - 'null'
+          format: double
+        cycle3:
+          type:
+          - number
+          - 'null'
+          format: double
+        cycle4:
+          type:
+          - number
+          - 'null'
+          format: double
+        cycle5:
+          type:
+          - number
+          - 'null'
+          format: double
+        cycle6:
+          type:
+          - number
+          - 'null'
+          format: double
+        cycle7:
+          type:
+          - number
+          - 'null'
+          format: double
+        cycle8:
+          type:
+          - number
+          - 'null'
+          format: double
+        cycle9:
+          type:
+          - number
+          - 'null'
+          format: double
+        departmentNumber:
+          type:
+          - string
+          - 'null'
+        description:
+          type:
+          - string
+          - 'null'
+        laborAccount:
+          type:
+          - string
+          - 'null'
+        laborRate:
+          type:
+          - number
+          - 'null'
+          format: double
+        operationCode:
+          type:
+          - string
+          - 'null'
+        setup1:
+          type:
+          - number
+          - 'null'
+          format: double
+        setup10:
+          type:
+          - number
+          - 'null'
+          format: double
+        setup2:
+          type:
+          - number
+          - 'null'
+          format: double
+        setup3:
+          type:
+          - number
+          - 'null'
+          format: double
+        setup4:
+          type:
+          - number
+          - 'null'
+          format: double
+        setup5:
+          type:
+          - number
+          - 'null'
+          format: double
+        setup6:
+          type:
+          - number
+          - 'null'
+          format: double
+        setup7:
+          type:
+          - number
+          - 'null'
+          format: double
+        setup8:
+          type:
+          - number
+          - 'null'
+          format: double
+        setup9:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Currency1:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Currency2:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Date1:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        user_Date2:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        user_Memo1:
+          type:
+          - string
+          - 'null'
+        user_Number1:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Number2:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Number3:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Number4:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Text1:
+          type:
+          - string
+          - 'null'
+        user_Text2:
+          type:
+          - string
+          - 'null'
+        user_Text3:
+          type:
+          - string
+          - 'null'
+        user_Text4:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    WorkCenterCreate:
+      required:
+      - shortName
+      type: object
+      properties:
+        active:
+          type: boolean
+        attendanceCode:
+          type:
+          - string
+          - 'null'
+        burdenRate:
+          type:
+          - number
+          - 'null'
+          format: double
+        capacityFactor:
+          type:
+          - number
+          - 'null'
+          format: float
+        cycle1:
+          type:
+          - number
+          - 'null'
+          format: double
+        cycle10:
+          type:
+          - number
+          - 'null'
+          format: double
+        cycle2:
+          type:
+          - number
+          - 'null'
+          format: double
+        cycle3:
+          type:
+          - number
+          - 'null'
+          format: double
+        cycle4:
+          type:
+          - number
+          - 'null'
+          format: double
+        cycle5:
+          type:
+          - number
+          - 'null'
+          format: double
+        cycle6:
+          type:
+          - number
+          - 'null'
+          format: double
+        cycle7:
+          type:
+          - number
+          - 'null'
+          format: double
+        cycle8:
+          type:
+          - number
+          - 'null'
+          format: double
+        cycle9:
+          type:
+          - number
+          - 'null'
+          format: double
+        departmentNumber:
+          type:
+          - string
+          - 'null'
+        description:
+          type:
+          - string
+          - 'null'
+        laborAccount:
+          type:
+          - string
+          - 'null'
+        laborRate:
+          type:
+          - number
+          - 'null'
+          format: double
+        operationCode:
+          type:
+          - string
+          - 'null'
+        setup1:
+          type:
+          - number
+          - 'null'
+          format: double
+        setup10:
+          type:
+          - number
+          - 'null'
+          format: double
+        setup2:
+          type:
+          - number
+          - 'null'
+          format: double
+        setup3:
+          type:
+          - number
+          - 'null'
+          format: double
+        setup4:
+          type:
+          - number
+          - 'null'
+          format: double
+        setup5:
+          type:
+          - number
+          - 'null'
+          format: double
+        setup6:
+          type:
+          - number
+          - 'null'
+          format: double
+        setup7:
+          type:
+          - number
+          - 'null'
+          format: double
+        setup8:
+          type:
+          - number
+          - 'null'
+          format: double
+        setup9:
+          type:
+          - number
+          - 'null'
+          format: double
+        shortName:
+          type: string
+        user_Currency1:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Currency2:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Date1:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        user_Date2:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        user_Memo1:
+          type:
+          - string
+          - 'null'
+        user_Number1:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Number2:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Number3:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Number4:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Text1:
+          type:
+          - string
+          - 'null'
+        user_Text2:
+          type:
+          - string
+          - 'null'
+        user_Text3:
+          type:
+          - string
+          - 'null'
+        user_Text4:
+          type:
+          - string
+          - 'null'
+        workCenter:
+          type:
+          - integer
+          - 'null'
+          format: int32
+      additionalProperties: false
+    WorkCenterSuccessResponse:
+      type: object
+      properties:
+        Data:
+          $ref: '#/components/schemas/WorkCenter'
+      additionalProperties: false
+    WorkCenter:
+      type: object
+      properties:
+        active:
+          type: boolean
+          readOnly: true
+        attendanceCode:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        burdenRate:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        capacityFactor:
+          type:
+          - number
+          - 'null'
+          format: float
+          readOnly: true
+        cycle1:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        cycle10:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        cycle2:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        cycle3:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        cycle4:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        cycle5:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        cycle6:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        cycle7:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        cycle8:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        cycle9:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        defaultEmployeeCode:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        defaultSetupTime:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        defaultTimeUnit:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        departmentNumber:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        description:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        enteredDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        hoursAvailable:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        hoursAvailableShift1:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        hoursAvailableShift2:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        hoursAvailableShift3:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        imageRepositoryID:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          readOnly: true
+        laborAccount:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        laborRate:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        lastModDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        lastModUser:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        loadingMethod:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        locationLeft:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          readOnly: true
+        locationTop:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          readOnly: true
+        operationCode:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        queueTime:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        queueUnit:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        revisedDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        runOnShift1:
+          type: boolean
+          readOnly: true
+        runOnShift2:
+          type: boolean
+          readOnly: true
+        runOnShift3:
+          type: boolean
+          readOnly: true
+        scheduleBegin:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        scheduleEnd:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        setup1:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        setup10:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        setup2:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        setup3:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        setup4:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        setup5:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        setup6:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        setup7:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        setup8:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        setup9:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        shift2DefaultEmployeeCode:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        shift3DefaultEmployeeCode:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        shortName:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        uniqueID:
+          type: integer
+          format: int32
+          readOnly: true
+        user_Currency1:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        user_Currency2:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        user_Date1:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        user_Date2:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        user_Memo1:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        user_Number1:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        user_Number2:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        user_Number3:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        user_Number4:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        user_Text1:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        user_Text2:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        user_Text3:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        user_Text4:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        utilizationPercent:
+          type:
+          - number
+          - 'null'
+          format: float
+          readOnly: true
+        workCenter:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          readOnly: true
+        workCenterImageFile:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        workFriday:
+          type: boolean
+          readOnly: true
+        workMonday:
+          type: boolean
+          readOnly: true
+        workSaturday:
+          type: boolean
+          readOnly: true
+        workSunday:
+          type: boolean
+          readOnly: true
+        workThursday:
+          type: boolean
+          readOnly: true
+        workTuesday:
+          type: boolean
+          readOnly: true
+        workWednesday:
+          type: boolean
+          readOnly: true
+      additionalProperties: false
+    WorkCenterListSuccessResponse:
+      type: object
+      properties:
+        Data:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/WorkCenter'
+      additionalProperties: false
+  securitySchemes:
+    Bearer:
+      type: oauth2
+      description: OAuth 2.0 Client Credentials Flow with API Users issued from Integration Engine Management Console
+      flows:
+        clientCredentials:
+          tokenUrl: https://api-user.integrations.ecimanufacturing.com/oauth2/api-user/token
+          scopes:
+            openid: openid

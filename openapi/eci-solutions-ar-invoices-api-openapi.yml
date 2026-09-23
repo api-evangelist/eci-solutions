@@ -1,0 +1,455 @@
+openapi: 3.2.0
+info:
+  title: JobBOSS² Public AR Invoices API
+  description: Provides a common API surface for accessing ECI ERP JobBOSS².
+  version: v1
+servers:
+- url: https://api-jb2.integrations.ecimanufacturing.com:443
+  description: API Host
+security:
+- Bearer: []
+tags:
+- name: AR Invoices
+paths:
+  /api/v1/ar-invoices:
+    get:
+      tags:
+      - AR Invoices
+      summary: Gets a list of AR Invoices
+      description: 'By default an AR invoice response will include only the fields: amountPaidSoFar, amountPaidSoFarForeign, ARAccount, currencyCode, customerCode, customerDescription, daysOverdue, deliverTicketNumber, discountDate, enteredBy, exchangeRate, invoiceDate, invoiceNumber, invoiceTotal, invoiceTotalForeign, lastModDate, location, netDueDate, notes, openInvoiceAmount, paymentDate, paymentStatus, periodNumber, projectedPayDate, salesID, taxAccount, taxCode, termsCode, territory, uniqueID, workCode. You may specify the exact fields to return using the fields parameter.'
+      parameters:
+      - name: fields
+        in: query
+        description: A comma separated list of fields to include in the result.
+        schema:
+          type: string
+      - name: sort
+        in: query
+        description: A comma separated list of field to sort by. See the <a href='#sort-expressions'>Sort Expressions</a> section for more information.
+        schema:
+          type: string
+      - name: filters
+        in: query
+        description: Filters must be provided as query string parameters as defined in the <a href='#filter-expressions'>Filter Expressions</a> section.
+        schema:
+          type: object
+          additionalProperties:
+            type: string
+        examples:
+          No filters: {}
+          Filter by Status (Unpaid):
+            value:
+              paymentStatus: UNPAID
+      - name: skip
+        in: query
+        description: The number of records at the start of the result set to skip over.
+        schema:
+          type: string
+      - name: take
+        in: query
+        description: The number of records to retrieve.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ARInvoiceListSuccessResponse'
+              example:
+                Data:
+                - accountingID: string
+                  amountPaidSoFar: 0
+                  amountPaidSoFarForeign: 0
+                  ARAccount: string
+                  cashDiscountAmount: 0
+                  cashDiscountAmountForeign: 0
+                  country: string
+                  currencyCode: string
+                  customerCheckNumber: string
+                  customerCode: string
+                  customerDescription: string
+                  dateEntered: '2026-09-06T17:13:12.0000000+00:00'
+                  daysOverdue: 0
+                  deliverTicketNumber: string
+                  discountAccount: string
+                  discountDate: '2026-09-06T17:13:12.0000000+00:00'
+                  enteredBy: string
+                  exchangeRate: 0
+                  exportedToEDI: false
+                  exportedToQB: false
+                  freightAccount: string
+                  GSTAccount: string
+                  GSTCharges: 0
+                  GSTChargesForeign: 0
+                  GSTCode: string
+                  ignoreMinimumOrder: false
+                  invoiceDate: '2026-09-06T17:13:12.0000000+00:00'
+                  invoiceNumber: string
+                  invoicePosted: false
+                  invoicePrinted: false
+                  invoiceTotal: 0
+                  invoiceTotalForeign: 0
+                  lastModDate: '2026-09-06T17:13:12.0000000+00:00'
+                  lastModUser: string
+                  location: string
+                  netDueDate: '2026-09-06T17:13:12.0000000+00:00'
+                  notes: string
+                  openInvoiceAmount: 0
+                  paymentDate: '2026-09-06T17:13:12.0000000+00:00'
+                  paymentStatus: string
+                  periodNumber: string
+                  projectedPayDate: '2026-09-06T17:13:12.0000000+00:00'
+                  salesID: string
+                  salesTaxCharges: 0
+                  salesTaxChargesForeign: 0
+                  shippingAddress1: string
+                  shippingCharges: 0
+                  shippingChargesForeign: 0
+                  shippingCity: string
+                  shippingCode: string
+                  shippingStreet: string
+                  shippingZip: string
+                  shipToName: string
+                  shipVia: string
+                  taxAccount: string
+                  taxCode: string
+                  termsCode: string
+                  territory: string
+                  uniqueID: 0
+                  workCode: string
+      operationId: getApiV1ArInvoices
+      x-operation-id-source: derived
+components:
+  schemas:
+    ARInvoice:
+      type: object
+      properties:
+        accountingID:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        amountPaidSoFar:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        amountPaidSoFarForeign:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        ARAccount:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        cashDiscountAmount:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        cashDiscountAmountForeign:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        country:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        currencyCode:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        customerCheckNumber:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        customerCode:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        customerDescription:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        dateEntered:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        daysOverdue:
+          type: integer
+          format: int32
+          readOnly: true
+        deliverTicketNumber:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        discountAccount:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        discountDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        enteredBy:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        exchangeRate:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        exportedToEDI:
+          type: boolean
+          readOnly: true
+        exportedToQB:
+          type: boolean
+          readOnly: true
+        freightAccount:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        GSTAccount:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        GSTCharges:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        GSTChargesForeign:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        GSTCode:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        ignoreMinimumOrder:
+          type: boolean
+          readOnly: true
+        invoiceDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        invoiceNumber:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        invoicePosted:
+          type: boolean
+          readOnly: true
+        invoicePrinted:
+          type: boolean
+          readOnly: true
+        invoiceTotal:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        invoiceTotalForeign:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        lastModDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        lastModUser:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        location:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        netDueDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        notes:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        openInvoiceAmount:
+          type: number
+          format: double
+          readOnly: true
+        paymentDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        paymentStatus:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        periodNumber:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        projectedPayDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        salesID:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        salesTaxCharges:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        salesTaxChargesForeign:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        shippingAddress1:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        shippingCharges:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        shippingChargesForeign:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        shippingCity:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        shippingCode:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        shippingStreet:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        shippingZip:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        shipToName:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        shipVia:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        taxAccount:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        taxCode:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        termsCode:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        territory:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        uniqueID:
+          type: integer
+          format: int32
+          readOnly: true
+        workCode:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+      additionalProperties: false
+    ARInvoiceListSuccessResponse:
+      type: object
+      properties:
+        Data:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ARInvoice'
+      additionalProperties: false
+  securitySchemes:
+    Bearer:
+      type: oauth2
+      description: OAuth 2.0 Client Credentials Flow with API Users issued from Integration Engine Management Console
+      flows:
+        clientCredentials:
+          tokenUrl: https://api-user.integrations.ecimanufacturing.com/oauth2/api-user/token
+          scopes:
+            openid: openid

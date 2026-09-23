@@ -1,0 +1,453 @@
+openapi: 3.2.0
+info:
+  title: ERP API v2.1 Location API
+  description: Provides a common API surface for accessing ECI ERP products.
+  contact:
+    name: ECI Manufacturing Division Integration Team
+    url: https://www.ecisolutions.com/support/
+  version: 3.5.585+b1e45fd230
+servers:
+- url: https://api-erp.integrations.ecimanufacturing.com:443
+  description: Production
+security:
+- Bearer: []
+tags:
+- name: Location
+paths:
+  /api/v2.1/locations:
+    post:
+      tags:
+      - Location
+      summary: Create a new Location in the ERP system
+      description: '## Supported ERPs
+
+        - JobBOSS²'
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LocationCreateModel'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/LocationCreateModel'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/LocationCreateModel'
+      responses:
+        '201':
+          description: Created
+      operationId: postApiV21Locations
+      x-operation-id-source: derived
+    get:
+      tags:
+      - Location
+      summary: Get a list of Locations from the ERP system that match the given filters
+      description: 'Gets a list of Location.
+
+
+        ## Supported ERPs
+
+        - M1
+
+        - JobBOSS²
+
+        - Macola
+
+        ## Resource Features
+
+        Feature |Supported |Notes
+
+        ------------|------------|------------
+
+        Filter Expressions|**Yes**|
+
+        Sort Expressions|**Yes**
+
+        Field Selection|**Yes**
+
+        Pagination|**Yes**
+
+        UniqueID|uniqueID|
+
+        ## Features by Field
+
+        Field |Filterable |Sortable |Supported ERPs
+
+        ------------|------------|------------|------------
+
+        uniqueID|Yes|Yes|M1, JobBOSS², Macola
+
+        rowVersion|Yes|Yes|M1, JobBOSS², Macola
+
+        locationID|Yes|Yes|M1, JobBOSS², Macola
+
+        name|Yes|Yes|M1, JobBOSS², Macola
+
+        organizationID|Yes|Yes|M1, JobBOSS², Macola
+
+        organizationTypes|Yes|Yes|JobBOSS²
+
+        addressLine1|No|Yes|M1, JobBOSS², Macola
+
+        addressLine2|No|Yes|M1, JobBOSS², Macola
+
+        addressLine3|No|Yes|M1, JobBOSS², Macola
+
+        city|Yes|Yes|M1, JobBOSS², Macola
+
+        county|Yes|Yes|M1, JobBOSS², Macola
+
+        country|Yes|Yes|M1, JobBOSS², Macola
+
+        postalCode|Yes|Yes|M1, JobBOSS², Macola
+
+        state|Yes|Yes|M1, JobBOSS², Macola
+
+        isActive|Yes|Yes|M1, JobBOSS², Macola
+
+        locationTypes|Yes|Yes|JobBOSS²'
+      parameters:
+      - name: fields
+        in: query
+        description: A comma-separated list of fields to include in the result.
+        schema:
+          type: string
+      - name: sort
+        in: query
+        description: A comma-separated list of <a href='#sortexpr'>sort expressions</a>.
+        schema:
+          type: string
+      - name: take
+        in: query
+        description: Limit the number of results being returned
+        schema:
+          minimum: 0
+          type: integer
+      - name: skip
+        in: query
+        description: The number of results to skip. Combine with 'take' to fetch records in pages
+        schema:
+          minimum: 0
+          type: integer
+      - name: count
+        in: query
+        description: '<a href=''#countparam''>Data and count</a> response behavior '
+        schema:
+          maximum: 2
+          minimum: 0
+          type: integer
+      - name: filters
+        in: query
+        description: See <a href='#filterexpr'>Filter Expressions</a> for query string syntax. The Test UI and any generated code tool may expose filter parameters as a dictionary of name/value pairs, but if creating a raw HTTP request, they must be provided on the querystring as defined in the Filter Expression section.
+        style: form
+        schema:
+          type: object
+          additionalProperties:
+            type: string
+        examples:
+          Empty:
+            description: No filters applied
+          'Example #1':
+            description: A dictionary of name/value pairs that will be serialized as querystring parameters in the format ```name[operator]=value```
+            value:
+              uniqueID[eq]: cc90686b-399e-4094-b431-fa462f84b0a8
+              rowVersion[gte]: 123
+              locationID[eq]: abc123
+              name[eq]: abc123
+              organizationID[eq]: abc123
+              organizationTypes[gte]: 123
+              city[eq]: abc123
+              county[eq]: abc123
+              country[eq]: abc123
+              postalCode[eq]: abc123
+              state[eq]: abc123
+              isActive[eq]: true
+              locationTypes[gte]: 123
+      - name: expand
+        in: query
+        description: '### Supported Expansions
+
+          An expansion expression containing a comma separater list of relationships to expand.
+
+          Name        |Value       |Description
+
+          ------------|------------|-----------
+
+          organization|Organizations|The organization to which the Location belongs.
+
+          '
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/LocationListResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LocationListResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/LocationListResponse'
+      operationId: getApiV21Locations
+      x-operation-id-source: derived
+  /api/v2.1/locations/{id}:
+    get:
+      tags:
+      - Location
+      summary: Get a Location from the ERP system that matches the given unique ID
+      description: 'Gets a Location by unique ID.
+
+
+        ## Supported ERPs
+
+        - M1
+
+        - JobBOSS²
+
+        - Macola
+
+        ## Features by Field
+
+        Field |Supported ERPs
+
+        ------------|------------
+
+        uniqueID||M1, JobBOSS², Macola
+
+        rowVersion||M1, JobBOSS², Macola
+
+        locationID||M1, JobBOSS², Macola
+
+        name||M1, JobBOSS², Macola
+
+        organizationID||M1, JobBOSS², Macola
+
+        organizationTypes||JobBOSS²
+
+        addressLine1||M1, JobBOSS², Macola
+
+        addressLine2||M1, JobBOSS², Macola
+
+        addressLine3||M1, JobBOSS², Macola
+
+        city||M1, JobBOSS², Macola
+
+        county||M1, JobBOSS², Macola
+
+        country||M1, JobBOSS², Macola
+
+        postalCode||M1, JobBOSS², Macola
+
+        state||M1, JobBOSS², Macola
+
+        isActive||M1, JobBOSS², Macola
+
+        locationTypes||JobBOSS²'
+      parameters:
+      - name: id
+        in: path
+        description: The ID of the location
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Location'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Location'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/Location'
+      operationId: getApiV21LocationsById
+      x-operation-id-source: derived
+components:
+  schemas:
+    LocationListResponse:
+      type: object
+      properties:
+        data:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Location'
+          readOnly: true
+        resultCount:
+          type: integer
+          format: int32
+      additionalProperties: false
+    LocationType:
+      enum:
+      - 1
+      - 2
+      - 3
+      type: integer
+      format: int32
+    Location:
+      title: Location
+      type: object
+      properties:
+        uniqueID:
+          type: string
+        rowVersion:
+          type: integer
+          format: int64
+        locationID:
+          type: string
+        name:
+          type: string
+        organizationID:
+          type: string
+        organizationTypes:
+          type: array
+          items:
+            type: integer
+            format: int32
+        addressLine1:
+          type: string
+        addressLine2:
+          type: string
+        addressLine3:
+          type: string
+        city:
+          type: string
+        county:
+          type: string
+        country:
+          type: string
+        postalCode:
+          type: string
+        state:
+          type: string
+        isActive:
+          type: boolean
+        locationTypes:
+          type: array
+          items:
+            type: integer
+            format: int32
+        organization:
+          $ref: '#/components/schemas/Organization'
+    LocationCreateModel:
+      required:
+      - addressLine1
+      - locationTypes
+      - name
+      type: object
+      properties:
+        locationID:
+          type:
+          - string
+          - 'null'
+        locationTypes:
+          minItems: 1
+          type: array
+          items:
+            $ref: '#/components/schemas/LocationType'
+        name:
+          minLength: 1
+          type: string
+        addressLine1:
+          minLength: 1
+          type: string
+        addressLine2:
+          type:
+          - string
+          - 'null'
+        addressLine3:
+          type:
+          - string
+          - 'null'
+        city:
+          type:
+          - string
+          - 'null'
+        county:
+          type:
+          - string
+          - 'null'
+        country:
+          type:
+          - string
+          - 'null'
+        postalCode:
+          type:
+          - string
+          - 'null'
+        state:
+          type:
+          - string
+          - 'null'
+        organizationID:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    Organization:
+      title: Organization
+      type: object
+      properties:
+        uniqueID:
+          type: string
+        rowVersion:
+          type: integer
+          format: int64
+        name:
+          type: string
+        organizationID:
+          type: string
+        country:
+          type: string
+        isActive:
+          type: boolean
+        organizationTypes:
+          type: array
+          items:
+            type: integer
+            format: int32
+        phoneNumber:
+          type: string
+        customerPaymentTermID:
+          type: string
+        customerTaxCodeID:
+          type: string
+        supplierPaymentTermID:
+          type: string
+        supplierTaxCodeID:
+          type: string
+        currencyCode:
+          type: string
+        websiteUrl:
+          type: string
+        comments:
+          type: string
+        salesAccountID:
+          type: string
+        leadTimeDays:
+          type: integer
+          format: int32
+        minimumOrderAmount:
+          type: number
+          format: double
+        customerStatus:
+          type: integer
+        supplierStatus:
+          type: integer
+  securitySchemes:
+    Bearer:
+      type: oauth2
+      description: OAuth 2.0 Client Credentials Flow with API Users issued from Integration Engine Management Console
+      flows:
+        clientCredentials:
+          tokenUrl: https://api-user.integrations.ecimanufacturing.com/oauth2/api-user/token
+          scopes:
+            openid: openid

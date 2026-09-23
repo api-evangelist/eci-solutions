@@ -1,0 +1,66 @@
+openapi: 3.2.0
+info:
+  title: Ecommerce. Product Location Quantity API
+  version: '1.0'
+security:
+- Bearer: []
+tags:
+- name: ProductLocationQuantity
+paths:
+  /api/v1/product-location-quantities:
+    put:
+      tags:
+      - ProductLocationQuantity
+      summary: The bulk create or update product inventory
+      operationId: AddUpdateProductInventory
+      requestBody:
+        description: The list with which to create or update the product inventory and the current limit are set to 750.
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/EcommerceProductInventoryRequest'
+          text/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/EcommerceProductInventoryRequest'
+          application/*+json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/EcommerceProductInventoryRequest'
+      responses:
+        '204':
+          description: No Content
+components:
+  schemas:
+    EcommerceProductInventoryRequest:
+      required:
+      - locationReferenceCode
+      - quantity
+      - sku
+      type: object
+      properties:
+        sku:
+          minLength: 1
+          type: string
+        locationReferenceCode:
+          minLength: 1
+          type: string
+        quantity:
+          minimum: 0
+          type: number
+          format: double
+          default: 0
+      additionalProperties: false
+  securitySchemes:
+    Bearer:
+      type: oauth2
+      description: OAuth 2.0 Client Credentials Flow with API Users issued from Integration Engine Management Console
+      flows:
+        clientCredentials:
+          tokenUrl: https://api-user.integrations.ecimanufacturing.com/oauth2/api-user/token
+          scopes:
+            openid: openid

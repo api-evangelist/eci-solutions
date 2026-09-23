@@ -1,0 +1,773 @@
+openapi: 3.2.0
+info:
+  title: JobBOSS² Public Time Ticket Details API
+  description: Provides a common API surface for accessing ECI ERP JobBOSS².
+  version: v1
+servers:
+- url: https://api-jb2.integrations.ecimanufacturing.com:443
+  description: API Host
+security:
+- Bearer: []
+tags:
+- name: Time Ticket Details
+paths:
+  /api/v1/time-ticket-details:
+    get:
+      tags:
+      - Time Ticket Details
+      summary: Gets a list of Time Ticket Details
+      description: 'By default a time ticket detail response will include only the fields: actualPayRate, billingRate, comments, cycleTime, employeeCode, employeeName, jobNumber, machineHours, machinesRun, manHours, numberMachinesForJob, onlineID, operationNumber, payrollRate, piecesFinished, piecesScrapped, setupTime, shift, stepNumber, ticketDate, timeTicketGUID, uniqueID, workCenter. You may specify the exact fields to return using the fields parameter.'
+      parameters:
+      - name: fields
+        in: query
+        description: A comma separated list of fields to include in the result.
+        schema:
+          type: string
+      - name: sort
+        in: query
+        description: A comma separated list of field to sort by.
+        schema:
+          type: string
+      - name: filters
+        in: query
+        description: Filters must be provided as query string parameters as defined in the <a href='#filter-expressions'>Filter Expressions</a> section.
+        schema:
+          type: object
+          additionalProperties:
+            type: string
+        examples:
+          No filters: {}
+          Filter by Employee:
+            value:
+              employeeCode: '101'
+      - name: skip
+        in: query
+        description: The number of records at the start of the result set to skip over.
+        schema:
+          type: string
+      - name: take
+        in: query
+        description: The number of records to retrieve.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TimeTicketDetailListSuccessResponse'
+              example:
+                Data:
+                - actualPayRate: 0
+                  adjustedPayRate: 0
+                  allowClosedJobs: false
+                  attendanceDetailID: 0
+                  attendanceHeaderID: 0
+                  billingRate: 0
+                  burdenRate: 0
+                  comments: string
+                  createdBy: string
+                  customerRMANumber: string
+                  cycleRate: 0
+                  cycleTime: 0
+                  deviceNumber: 0
+                  employeeCode: 0
+                  employeeName: string
+                  isMaterialAllocated: false
+                  jobNumber: string
+                  lastModDate: '2026-09-06T17:13:13.0000000+00:00'
+                  lastModUser: string
+                  logoffTime: '2026-09-06T17:13:13.0000000+00:00'
+                  machineHours: 0
+                  machinesRun: 0
+                  manHours: 0
+                  nextWorkCenter: string
+                  numberMachinesForJob: 0
+                  onlineID: 0
+                  operationNumber: 0
+                  overTime: false
+                  payrollRate: 0
+                  piecesFinished: 0
+                  piecesScrapped: 0
+                  posted: false
+                  reasonNumber: 0
+                  searchDate: 0
+                  setupRate: 0
+                  setupTime: 0
+                  shift: 0
+                  stepNumber: 0
+                  ticketDate: '2026-09-06T17:13:13.0000000+00:00'
+                  timeEnd: string
+                  timeStart: string
+                  timeTicketGUID: string
+                  unattendedOperation: false
+                  uniqueID: 0
+                  workCenter: 0
+      operationId: getApiV1TimeTicketDetails
+      x-operation-id-source: derived
+    post:
+      tags:
+      - Time Ticket Details
+      summary: Creates a Time Ticket Detail
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TimeTicketDetailCreate'
+            example:
+              allowClosedJobs: false
+              billingRate: 0
+              comments: string
+              cycleTime: 0
+              employeeCode: 0
+              jobNumber: string
+              machinesRun: 0
+              numberMachinesForJob: 0
+              operationNumber: 0
+              overTime: false
+              payrollRate: 0
+              piecesFinished: 0
+              piecesScrapped: 0
+              reasonNumber: 0
+              setupTime: 0
+              shift: 0
+              stepNumber: 0
+              ticketDate: '2026-09-06T17:13:13.0000000+00:00'
+              timeEnd: string
+              timeStart: string
+              unattendedOperation: false
+              workCenter: 0
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TimeTicketDetail'
+              example:
+                actualPayRate: 0
+                adjustedPayRate: 0
+                allowClosedJobs: false
+                attendanceDetailID: 0
+                attendanceHeaderID: 0
+                billingRate: 0
+                burdenRate: 0
+                comments: string
+                createdBy: string
+                customerRMANumber: string
+                cycleRate: 0
+                cycleTime: 0
+                deviceNumber: 0
+                employeeCode: 0
+                employeeName: string
+                isMaterialAllocated: false
+                jobNumber: string
+                lastModDate: '2026-09-06T17:13:13.0000000+00:00'
+                lastModUser: string
+                logoffTime: '2026-09-06T17:13:13.0000000+00:00'
+                machineHours: 0
+                machinesRun: 0
+                manHours: 0
+                nextWorkCenter: string
+                numberMachinesForJob: 0
+                onlineID: 0
+                operationNumber: 0
+                overTime: false
+                payrollRate: 0
+                piecesFinished: 0
+                piecesScrapped: 0
+                posted: false
+                reasonNumber: 0
+                searchDate: 0
+                setupRate: 0
+                setupTime: 0
+                shift: 0
+                stepNumber: 0
+                ticketDate: '2026-09-06T17:13:13.0000000+00:00'
+                timeEnd: string
+                timeStart: string
+                timeTicketGUID: string
+                unattendedOperation: false
+                uniqueID: 0
+                workCenter: 0
+      operationId: postApiV1TimeTicketDetails
+      x-operation-id-source: derived
+  /api/v1/time-ticket-details/{timeTicketGUID}:
+    get:
+      tags:
+      - Time Ticket Details
+      summary: Gets a Time Ticket Detail by timeTicketGUID
+      description: 'By default a time ticket detail response will include only the fields: actualPayRate, billingRate, comments, cycleTime, employeeCode, employeeName, jobNumber, machineHours, machinesRun, manHours, numberMachinesForJob, onlineID, operationNumber, payrollRate, piecesFinished, piecesScrapped, setupTime, shift, stepNumber, ticketDate, timeTicketGUID, uniqueID, workCenter. You may specify the exact fields to return using the fields parameter.'
+      parameters:
+      - name: timeTicketGUID
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: fields
+        in: query
+        description: A comma separated list of fields to include in the result.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TimeTicketDetailSuccessResponse'
+              example:
+                Data:
+                  actualPayRate: 0
+                  adjustedPayRate: 0
+                  allowClosedJobs: false
+                  attendanceDetailID: 0
+                  attendanceHeaderID: 0
+                  billingRate: 0
+                  burdenRate: 0
+                  comments: string
+                  createdBy: string
+                  customerRMANumber: string
+                  cycleRate: 0
+                  cycleTime: 0
+                  deviceNumber: 0
+                  employeeCode: 0
+                  employeeName: string
+                  isMaterialAllocated: false
+                  jobNumber: string
+                  lastModDate: '2026-09-06T17:13:13.0000000+00:00'
+                  lastModUser: string
+                  logoffTime: '2026-09-06T17:13:13.0000000+00:00'
+                  machineHours: 0
+                  machinesRun: 0
+                  manHours: 0
+                  nextWorkCenter: string
+                  numberMachinesForJob: 0
+                  onlineID: 0
+                  operationNumber: 0
+                  overTime: false
+                  payrollRate: 0
+                  piecesFinished: 0
+                  piecesScrapped: 0
+                  posted: false
+                  reasonNumber: 0
+                  searchDate: 0
+                  setupRate: 0
+                  setupTime: 0
+                  shift: 0
+                  stepNumber: 0
+                  ticketDate: '2026-09-06T17:13:13.0000000+00:00'
+                  timeEnd: string
+                  timeStart: string
+                  timeTicketGUID: string
+                  unattendedOperation: false
+                  uniqueID: 0
+                  workCenter: 0
+      operationId: getApiV1TimeTicketDetailsByTimeTicketGUID
+      x-operation-id-source: derived
+    patch:
+      tags:
+      - Time Ticket Details
+      summary: Updates a Time Ticket Detail
+      parameters:
+      - name: timeTicketGUID
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TimeTicketDetailUpdate'
+            example:
+              allowClosedJobs: false
+              billingRate: 0
+              comments: string
+              cycleTime: 0
+              jobNumber: string
+              machinesRun: 0
+              numberMachinesForJob: 0
+              operationNumber: 0
+              overTime: false
+              payrollRate: 0
+              piecesFinished: 0
+              piecesScrapped: 0
+              reasonNumber: 0
+              setupTime: 0
+              shift: 0
+              stepNumber: 0
+              timeEnd: string
+              timeStart: string
+              unattendedOperation: false
+              workCenter: 0
+      responses:
+        '204':
+          description: Success
+      operationId: patchApiV1TimeTicketDetailsByTimeTicketGUID
+      x-operation-id-source: derived
+components:
+  schemas:
+    TimeTicketDetailListSuccessResponse:
+      type: object
+      properties:
+        Data:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/TimeTicketDetail'
+      additionalProperties: false
+    TimeTicketDetail:
+      type: object
+      properties:
+        actualPayRate:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        adjustedPayRate:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        allowClosedJobs:
+          type: boolean
+          readOnly: true
+        attendanceDetailID:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          readOnly: true
+        attendanceHeaderID:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          readOnly: true
+        billingRate:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          readOnly: true
+        burdenRate:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        comments:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        createdBy:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        customerRMANumber:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        cycleRate:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        cycleTime:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        deviceNumber:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          readOnly: true
+        employeeCode:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          readOnly: true
+        employeeName:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        isMaterialAllocated:
+          type: boolean
+          readOnly: true
+        jobNumber:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        lastModDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        lastModUser:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        logoffTime:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        machineHours:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        machinesRun:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          readOnly: true
+        manHours:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        nextWorkCenter:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        numberMachinesForJob:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        onlineID:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          readOnly: true
+        operationNumber:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          readOnly: true
+        overTime:
+          type: boolean
+          readOnly: true
+        payrollRate:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          readOnly: true
+        piecesFinished:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        piecesScrapped:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        posted:
+          type: boolean
+          readOnly: true
+        reasonNumber:
+          type:
+          - number
+          - 'null'
+          format: float
+          readOnly: true
+        searchDate:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          readOnly: true
+        setupRate:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        setupTime:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        shift:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          readOnly: true
+        stepNumber:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          readOnly: true
+        ticketDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        timeEnd:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        timeStart:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        timeTicketGUID:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        unattendedOperation:
+          type: boolean
+          readOnly: true
+        uniqueID:
+          type: integer
+          format: int32
+          readOnly: true
+        workCenter:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          readOnly: true
+      additionalProperties: false
+    TimeTicketDetailUpdate:
+      type: object
+      properties:
+        allowClosedJobs:
+          type: boolean
+        billingRate:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        comments:
+          type:
+          - string
+          - 'null'
+        cycleTime:
+          type:
+          - number
+          - 'null'
+          format: double
+        jobNumber:
+          type:
+          - string
+          - 'null'
+        machinesRun:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        numberMachinesForJob:
+          type:
+          - number
+          - 'null'
+          format: double
+        operationNumber:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        overTime:
+          type: boolean
+        payrollRate:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        piecesFinished:
+          type:
+          - number
+          - 'null'
+          format: double
+        piecesScrapped:
+          type:
+          - number
+          - 'null'
+          format: double
+        reasonNumber:
+          type:
+          - number
+          - 'null'
+          format: float
+        setupTime:
+          type:
+          - number
+          - 'null'
+          format: double
+        shift:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        stepNumber:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        timeEnd:
+          type:
+          - string
+          - 'null'
+        timeStart:
+          type:
+          - string
+          - 'null'
+        unattendedOperation:
+          type: boolean
+        workCenter:
+          type:
+          - integer
+          - 'null'
+          format: int32
+      additionalProperties: false
+    TimeTicketDetailSuccessResponse:
+      type: object
+      properties:
+        Data:
+          $ref: '#/components/schemas/TimeTicketDetail'
+      additionalProperties: false
+    TimeTicketDetailCreate:
+      required:
+      - employeeCode
+      - jobNumber
+      - ticketDate
+      type: object
+      properties:
+        allowClosedJobs:
+          type: boolean
+        billingRate:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        comments:
+          type:
+          - string
+          - 'null'
+        cycleTime:
+          type:
+          - number
+          - 'null'
+          format: double
+        employeeCode:
+          type: integer
+          format: int32
+        jobNumber:
+          type: string
+        machinesRun:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        numberMachinesForJob:
+          type:
+          - number
+          - 'null'
+          format: double
+        operationNumber:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        overTime:
+          type: boolean
+        payrollRate:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        piecesFinished:
+          type:
+          - number
+          - 'null'
+          format: double
+        piecesScrapped:
+          type:
+          - number
+          - 'null'
+          format: double
+        reasonNumber:
+          type:
+          - number
+          - 'null'
+          format: float
+        setupTime:
+          type:
+          - number
+          - 'null'
+          format: double
+        shift:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        stepNumber:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        ticketDate:
+          type: string
+          format: date-time
+        timeEnd:
+          type:
+          - string
+          - 'null'
+        timeStart:
+          type:
+          - string
+          - 'null'
+        unattendedOperation:
+          type: boolean
+        workCenter:
+          type:
+          - integer
+          - 'null'
+          format: int32
+      additionalProperties: false
+  securitySchemes:
+    Bearer:
+      type: oauth2
+      description: OAuth 2.0 Client Credentials Flow with API Users issued from Integration Engine Management Console
+      flows:
+        clientCredentials:
+          tokenUrl: https://api-user.integrations.ecimanufacturing.com/oauth2/api-user/token
+          scopes:
+            openid: openid

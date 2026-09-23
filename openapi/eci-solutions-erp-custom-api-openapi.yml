@@ -1,0 +1,598 @@
+openapi: 3.2.0
+info:
+  title: M1 Public ERP/CUSTOM API
+  description: '## Developer Notes for the M1 Public API (ERP resource):
+
+
+    ### Hosted Environment
+
+
+    If you are using the public API for a hosted M1 customer, you must connect to the public API using the Integration Engine.'
+  contact:
+    name: ECI Software Solutions - M1
+    url: https://www.ecisolutions.com/manufacturers-and-job-shops/m1
+  version: v1
+servers:
+- url: https://api-m1.integrations.ecimanufacturing.com
+  description: API Host
+security:
+- oauth2: []
+tags:
+- name: ERP/CUSTOM
+paths:
+  /api/ERP/CustomTables/{tableName}:
+    get:
+      tags:
+      - ERP/CUSTOM
+      summary: Returns all existing records from the specified M1 custom table with pagination
+      description: 'When passing the filter parameter, the following operators are supported: [eq, ne, gt, lt]. Multiple filters can be specified as separate query parameters in the format M1UserDefinedCustomField[operator]value. eg. `uctCustomTableFieldID[eq]TEST`. An invalid filter will return a 400 Bad Request response.
+
+
+        When passing the orderBy parameter, the following operators are supported: [Asc, Desc]. The format must be M1UserDefinedCustomField[Asc],M1UserDefinedCustomField[Desc]. eg. `uctCustomTableFieldID[Asc],uctCustomTableField2ID[Desc]`. An invalid orderBy will return a 400 Bad Request response.
+
+
+        The M1 custom table passed must exist in the M1 Data Dictionary. If the table does not exist, a 404 Not Found response will be returned.
+
+
+        The M1 custom table must have a field in the format of `uctUniqueID'' of type unique identifier (guid). If the table does not have a unique identifier field, a 400 Bad Request response will be returned.
+
+
+        The M1 custom table must have a prefix defined in the M1 Data Dictionary. If the table does not have a prefix, a 400 Bad Request response will be returned.'
+      operationId: ERPCustomTables_GetAllCustomTableAsync
+      parameters:
+      - name: tableName
+        in: path
+        description: The M1 Custom table name.
+        required: true
+        style: simple
+        schema:
+          type: string
+      - name: pageSize
+        in: query
+        description: Specifies the number of items per page. Defaults to 1000 which is also the maximum.
+        style: form
+        explode: false
+        schema:
+          type: integer
+          format: int32
+      - name: pageNumber
+        in: query
+        description: Specifies the page number to retrieve. Defaults to 0, which corresponds to the first page.
+        style: form
+        explode: false
+        schema:
+          type: integer
+          format: int32
+      - name: filter
+        in: query
+        description: Applies a filter to the returned data. The format should be `M1UserDefinedCustomField[operator]value`.
+        style: form
+        explode: false
+        schema:
+          type: array
+          items:
+            type: string
+      - name: orderBy
+        in: query
+        description: Specifies the sorting criteria for the returned data. The format should be `M1UserDefinedCustomField[Asc],M1UserDefinedCustomField[Desc]`.
+        style: form
+        explode: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_IList_ERPCustomTableDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_IList_ERPCustomTableDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_IList_ERPCustomTableDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_IList_ERPCustomTableDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+    put:
+      tags:
+      - ERP/CUSTOM
+      summary: Creates or updates a single CustomTable record
+      description: 'When a record does not exist, a new record will be created. When a record exists, the record will be updated.
+
+
+        When updating an existing record, all fields must be provided, even if they are not changing.
+
+
+        The M1 custom table passed must exist in the M1 Data Dictionary. If the table does not exist, a 404 Not Found response will be returned.
+
+
+        The M1 custom table must have a field in the format of `uctUniqueID'' of type unique identifier (guid). If the table does not have a unique identifier field, a 400 Bad Request response will be returned.
+
+
+        The M1 custom table must have a prefix defined in the M1 Data Dictionary. If the table does not have a prefix, a 400 Bad Request response will be returned.'
+      operationId: ERPCustomTables_PutCustomTableAsync
+      parameters:
+      - name: tableName
+        in: path
+        description: The custom table name
+        required: true
+        style: simple
+        schema:
+          type: string
+      requestBody:
+        description: The fully populated CustomTable model.
+        content:
+          text/json:
+            schema:
+              $ref: '#/components/schemas/ERPCustomTableDto'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ERPCustomTableDto'
+        required: true
+        x-bodyName: customTable
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPCustomTableDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPCustomTableDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPCustomTableDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPCustomTableDto'
+        '201':
+          description: Created
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPCustomTableDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPCustomTableDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPCustomTableDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPCustomTableDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+  /api/ERP/CustomTables/{tableName}/{key}:
+    get:
+      tags:
+      - ERP/CUSTOM
+      summary: Returns a single CustomTable record for a given CustomTable Unique Id
+      description: 'This endpoint retrieves a CustomTable record based on its identifier. If the record does not exist, a 404 Not Found response will be returned.
+
+
+        The M1 custom table passed must exist in the M1 Data Dictionary. If the table does not exist, a 404 Not Found response will be returned.
+
+
+        The M1 custom table must have a field in the format of `uctUniqueID'' of type unique identifier (guid). If the table does not have a unique identifier field, a 400 Bad Request response will be returned.
+
+
+        The M1 custom table must have a prefix defined in the M1 Data Dictionary. If the table does not have a prefix, a 400 Bad Request response will be returned.'
+      operationId: ERPCustomTables_GetCustomTableAsync
+      parameters:
+      - name: tableName
+        in: path
+        description: The M1 custom table name
+        required: true
+        style: simple
+        schema:
+          type: string
+      - name: key
+        in: path
+        description: The Unique Id of the record to be retrieved
+        required: true
+        style: simple
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPCustomTableDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPCustomTableDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPCustomTableDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPCustomTableDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+    delete:
+      tags:
+      - ERP/CUSTOM
+      summary: Deletes a single CustomTable record
+      description: 'If the CustomTable record is not found, a 404 Not Found response will be returned.
+
+
+        If the CustomTable record is successfully deleted, a 200 OK response will be returned.
+
+
+        The M1 custom table passed must exist in the M1 Data Dictionary. If the table does not exist, a 404 Not Found response will be returned.
+
+
+        The M1 custom table must have a field in the format of `uctUniqueID'' of type unique identifier (guid). If the table does not have a unique identifier field, a 400 Bad Request response will be returned.
+
+
+        The M1 custom table must have a prefix defined in the M1 Data Dictionary. If the table does not have a prefix, a 400 Bad Request response will be returned.
+
+
+        If the CustomTable UniqueID is being used anywhere in the M1 system as a foreign key (ie. DDRelations), a 400 Bad Request response will be returned.'
+      operationId: ERPCustomTables_DeleteCustomTableAsync
+      parameters:
+      - name: tableName
+        in: path
+        description: The custom table name
+        required: true
+        style: simple
+        schema:
+          type: string
+      - name: key
+        in: path
+        description: The Unique Id of the record to be retrieved
+        required: true
+        style: simple
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPCustomTableDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPCustomTableDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPCustomTableDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPCustomTableDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+components:
+  schemas:
+    APIResponseMessageDto:
+      type: object
+      properties:
+        description:
+          type: string
+        status:
+          type: string
+        payloadID:
+          type: string
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+          readOnly: true
+        warnings:
+          type: array
+          items:
+            $ref: '#/components/schemas/Warning'
+          readOnly: true
+    ERPCustomTableDto:
+      type: object
+    ERPResponseMessageDto_IList_ERPCustomTableDto:
+      type: object
+      properties:
+        responseInfo:
+          $ref: '#/components/schemas/APIResponseMessageDto'
+        returnObject:
+          type: array
+          items:
+            $ref: '#/components/schemas/ERPCustomTableDto'
+        recordCount:
+          type: integer
+          format: int32
+    ERPResponseMessageDto_ERPCustomTableDto:
+      type: object
+      properties:
+        responseInfo:
+          $ref: '#/components/schemas/APIResponseMessageDto'
+        returnObject:
+          $ref: '#/components/schemas/ERPCustomTableDto'
+        recordCount:
+          type: integer
+          format: int32
+    Error:
+      type: object
+      properties:
+        innerText:
+          type: string
+    Warning:
+      type: object
+      properties:
+        innerText:
+          type: string
+  securitySchemes:
+    oauth2:
+      type: oauth2
+      description: OAuth 2.0 Client Credentials Flow with API Users issued from Integration Engine Management Console
+      flows:
+        clientCredentials:
+          tokenUrl: https://api-user.integrations.ecimanufacturing.com/oauth2/api-user/token
+          scopes:
+            openid: openid

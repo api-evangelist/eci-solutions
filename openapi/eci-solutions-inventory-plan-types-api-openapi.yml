@@ -1,0 +1,299 @@
+openapi: 3.2.0
+info:
+  title: Lasso Inventory Plan Types API
+  description: 'Overview
+
+
+    Use this API to manage Registrant, Project, and Inventory data within Lasso CRM.'
+  version: 1.0.39
+servers:
+- url: https://api.lassocrm.com/v1
+  description: Production endpoint
+tags:
+- name: Inventory Plan Types
+paths:
+  /inventory/plans:
+    get:
+      tags:
+      - Inventory Plan Types
+      description: Get the plan types associated with this project
+      operationId: get_inventory_plans
+      security:
+      - JwtAuthorizer: []
+      responses:
+        200:
+          description: Plan types associated with this project
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PlanTypeRead'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+      summary: Get inventory plans
+      x-summary-source: derived
+    post:
+      tags:
+      - Inventory Plan Types
+      description: Create a new plan type for this project
+      operationId: post_inventory_plans
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PlanTypeWrite'
+      security:
+      - JwtAuthorizer: []
+      responses:
+        201:
+          description: Plan type created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlanTypeRead'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+      summary: Post inventory plans
+      x-summary-source: derived
+  /inventory/plans/{planTypeId}:
+    parameters:
+    - in: path
+      name: planTypeId
+      schema:
+        type: string
+      required: true
+    get:
+      tags:
+      - Inventory Plan Types
+      description: Get a plan type associated with this project
+      operationId: get_inventory_plans_by_plan_id
+      security:
+      - JwtAuthorizer: []
+      responses:
+        200:
+          description: Plan type associated with this project
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlanTypeRead'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+      summary: Get inventory plans by plan id
+      x-summary-source: derived
+    put:
+      tags:
+      - Inventory Plan Types
+      description: Update a plan type associated with this project
+      operationId: put_inventory_plans_by_plan_id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PlanTypeWrite'
+      security:
+      - JwtAuthorizer: []
+      responses:
+        200:
+          description: Plan type updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlanTypeRead'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+      summary: Put inventory plans by plan id
+      x-summary-source: derived
+  /inventory/{inventoryId}/plans:
+    parameters:
+    - in: path
+      name: inventoryId
+      schema:
+        type: string
+      required: true
+    get:
+      tags:
+      - Inventory Plan Types
+      description: Get the plan type associated with this inventory
+      operationId: get_inventory_plans_by_id
+      security:
+      - JwtAuthorizer: []
+      responses:
+        200:
+          description: Plan type associated with this inventory
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlanTypeRead'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+      summary: Get inventory plans by id
+      x-summary-source: derived
+    put:
+      tags:
+      - Inventory Plan Types
+      description: Associate an inventory with a plan type by ID or by plan type. If both are provided, then lookup will be by ID
+      operationId: put_inventory_plans_by_id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InventoryPlanTypeWrite'
+      security:
+      - JwtAuthorizer: []
+      responses:
+        200:
+          description: Plan type updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlanTypeRead'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+      summary: Put inventory plans by id
+      x-summary-source: derived
+components:
+  schemas:
+    InventoryPlanTypeWrite:
+      title: Inventory Plan Type (Write)
+      type: object
+      description: Associate an inventory with a plan type by ID or by plan type. If both are provided, then lookup will be by ID
+      properties:
+        planTypeId:
+          type: string
+          example: 1
+        planType:
+          type: string
+          example: E2
+    PlanTypeRead:
+      title: Plan Type (Read)
+      type: object
+      properties:
+        planTypeId:
+          type: string
+          example: 1
+        planType:
+          type: string
+          example: E2
+        planPrice:
+          type: number
+          example: '13000'
+    PlanTypeWrite:
+      title: Plan Type (Write)
+      type: object
+      required:
+      - planType
+      - planPrice
+      properties:
+        planType:
+          type: string
+          minLength: 1
+          maxLength: 20
+          example: E2
+        planPrice:
+          type: number
+          example: '13000'
+    StandardError:
+      type: object
+      title: Standard Error
+      description: A standard error response format.
+      properties:
+        errorCode:
+          type: integer
+          example: 4xx
+        error:
+          type: string
+          description: A summary of the error
+          example: A summary of the error
+        errorMessage:
+          type: string
+          description: Details of the error
+          example: Details of the error
+  responses:
+    BadRequest:
+      description: 'The request could not be processed due to invalid input:
+
+        - Is the request payload malformed?
+
+        - Are all required fields present?
+
+        - Are field values of the expected type (ie, number format, date format)?
+
+        - Are field values within the expected constraints (ie, greater than max size of string)?
+
+        - Are query params of the expected format?
+
+
+        Check the body model for more documentation on field constraints and limits.
+
+        '
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/StandardError'
+    Unauthorized:
+      description: The request has not been fulfilled because it lacks valid authentication credentials
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/StandardError'
+    InternalServerError:
+      description: Receiving a 5xx response indicates an error on Lasso's end. Please contact us to report the problem
+    NotFound:
+      description: The specified resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/StandardError'
+    Forbidden:
+      description: The provided authentication credentials does not have sufficient privileges to access this resource
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/StandardError'
+  securitySchemes:
+    JwtAuthorizer:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

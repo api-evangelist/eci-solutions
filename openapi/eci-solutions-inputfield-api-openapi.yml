@@ -1,0 +1,108 @@
+openapi: 3.2.0
+info:
+  title: Einvoice. Input Field API
+  version: '1.0'
+security:
+- Bearer: []
+tags:
+- name: InputField
+paths:
+  /api/v1/input-fields:
+    get:
+      tags:
+      - InputField
+      summary: Get a list of input fields, optionally filtered by a single mandate name
+      operationId: ListInputFields
+      parameters:
+      - name: mandateName
+        in: query
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/EinvoiceGetInputFieldResponseListResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EinvoiceGetInputFieldResponseListResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/EinvoiceGetInputFieldResponseListResponse'
+components:
+  schemas:
+    FieldMandate:
+      type: object
+      properties:
+        mandateName:
+          type:
+          - string
+          - 'null'
+        validationLevel:
+          $ref: '#/components/schemas/FieldMandateValidationLevel'
+        validationLevelDescription:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    EinvoiceGetInputFieldResponse:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+        description:
+          type:
+          - string
+          - 'null'
+        documentationLink:
+          type:
+          - string
+          - 'null'
+        fieldName:
+          type:
+          - string
+          - 'null'
+        path:
+          type:
+          - string
+          - 'null'
+        mandates:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/FieldMandate'
+      additionalProperties: false
+    EinvoiceGetInputFieldResponseListResponse:
+      type: object
+      properties:
+        count:
+          type: integer
+          format: int32
+        data:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/EinvoiceGetInputFieldResponse'
+      additionalProperties: false
+    FieldMandateValidationLevel:
+      enum:
+      - 0
+      - 1
+      - 2
+      type: integer
+      format: int32
+  securitySchemes:
+    Bearer:
+      type: oauth2
+      description: OAuth 2.0 Client Credentials Flow with API Users issued from Integration Engine Management Console
+      flows:
+        clientCredentials:
+          tokenUrl: https://api-user.integrations.ecimanufacturing.com/oauth2/api-user/token
+          scopes:
+            openid: openid

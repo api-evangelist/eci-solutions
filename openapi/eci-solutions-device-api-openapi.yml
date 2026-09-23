@@ -1,0 +1,350 @@
+openapi: 3.2.0
+info:
+  title: MFG Integration Management Device API
+  description: Provides APIs for managing ECI MFG Integration Engine Configurations.
+  contact:
+    name: ECI Manufacturing Integration Team
+    url: https://www.ecisolutions.com/support/
+  version: 2.22.273+b02c1dfd00
+servers:
+- url: https://api-user.integrations.ecimanufacturing.com:443
+  description: Production
+security:
+- oidc:
+  - openid
+- Basic: []
+tags:
+- name: Device
+paths:
+  /api/devices:
+    get:
+      tags:
+      - Device
+      summary: List Devices
+      description: Gets a list of activated or pending devices for the given Product or Company.
+      operationId: ListDevices
+      parameters:
+      - name: company_id
+        in: query
+        description: ''
+        schema:
+          type: integer
+          format: int32
+      - name: product_id
+        in: query
+        description: ''
+        schema:
+          type: integer
+          format: int32
+      - name: status
+        in: query
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/DeviceModelCountResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeviceModelCountResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/DeviceModelCountResponse'
+  /api/devices/{id}:
+    delete:
+      tags:
+      - Device
+      summary: Delete Device (NOT IMPLEMENTED)
+      description: 'Deletes a device with the given id. Not yet implemented.
+
+
+        This can only be invoked by the Application credential that owns the device, a Product Admin, or Global Admin.'
+      operationId: DeleteDevice
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '204':
+          description: No Content
+  /api/devices/{id}/authorization:
+    put:
+      tags:
+      - Device
+      summary: Authorize Device Activation
+      description: 'Authorizes a device activation specified by the given activation code
+
+        and provides additional information.'
+      operationId: AuthorizeDevice
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/DeviceAuthorizationModel'
+          text/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/DeviceAuthorizationModel'
+          application/*+json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/DeviceAuthorizationModel'
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/DeviceModel'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeviceModel'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/DeviceModel'
+        '400':
+          description: Bad Request
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '404':
+          description: Not Found
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+  /api/devices/by-code/{code}:
+    get:
+      tags:
+      - Device
+      summary: Get Device by Authorization Code
+      description: 'Retreives device information for the given authorization code. This allows
+
+        a device administrator to see the basic information about the device
+
+        requesting authorization before confirming it.'
+      operationId: GetPendingDevice
+      parameters:
+      - name: code
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/DeviceModel'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeviceModel'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/DeviceModel'
+        '404':
+          description: Not Found
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+components:
+  schemas:
+    DeviceCredentialModel:
+      type: object
+      properties:
+        secret:
+          type:
+          - string
+          - 'null'
+          description: 'If requested, this will contain the secret that can be used
+
+            to obtain tokens from the token_url using a resource-owner-password
+
+            grant.'
+        tokenEndpoint:
+          type:
+          - string
+          - 'null'
+          description: 'When a token is provided, this URL can be used with a refresh_token OAuth2 grant
+
+            to obtain a new set of tokens.'
+        tokenIssuer:
+          type:
+          - string
+          - 'null'
+        tokenType:
+          type:
+          - string
+          - 'null'
+        accessToken:
+          type:
+          - string
+          - 'null'
+        idToken:
+          type:
+          - string
+          - 'null'
+        clientId:
+          type:
+          - string
+          - 'null'
+        expiresAt:
+          type:
+          - integer
+          - 'null'
+          description: The expiration date in unix epoch seconds.
+          format: int64
+        refreshToken:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+        title:
+          type:
+          - string
+          - 'null'
+        status:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        detail:
+          type:
+          - string
+          - 'null'
+        instance:
+          type:
+          - string
+          - 'null'
+      additionalProperties: {}
+    DeviceAuthorizationModel:
+      required:
+      - code
+      type: object
+      properties:
+        code:
+          minLength: 1
+          type: string
+          description: The activation code displayed on the device.
+        companyId:
+          type:
+          - string
+          - 'null'
+          description: "The Company ID of the Customer that the device is being activated for, or a string in the format 'PREFIX:VALUE' where prefix\nis CustomerID, NexusID, or a customer alias value available in Nexus by which the company can be \nidentified."
+        properties:
+          type:
+          - object
+          - 'null'
+          additionalProperties:
+            type: string
+          description: Application specific to provide the device on activation
+        credential:
+          allOf:
+          - $ref: '#/components/schemas/DeviceCredentialModel'
+          description: 'If set, this credential will be provided to the device
+
+            on activation.'
+      additionalProperties: false
+    DeviceCredentialType:
+      enum:
+      - None
+      - Token
+      - Secret
+      - TokenAndSecret
+      type: string
+    DeviceModel:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        ipAddress:
+          type:
+          - string
+          - 'null'
+        userAgent:
+          type:
+          - string
+          - 'null'
+        description:
+          type:
+          - string
+          - 'null'
+        origin:
+          type:
+          - string
+          - 'null'
+        deviceType:
+          type:
+          - string
+          - 'null'
+        requestedCredentialType:
+          allOf:
+          - $ref: '#/components/schemas/DeviceCredentialType'
+      additionalProperties: false
+    DeviceModelCountResponse:
+      type: object
+      properties:
+        count:
+          type: integer
+          format: int64
+        value:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/DeviceModel'
+      additionalProperties: false
+  securitySchemes:
+    oidc:
+      type: openIdConnect
+      description: Use id_token obtained from OpenID Connect flow.
+      openIdConnectUrl: https://cognito-idp.us-east-1.amazonaws.com/us-east-1_9IYBf4TpD/.well-known/openid-configuration
+      x-tokenName: id_token
+    Basic:
+      type: http
+      description: Username is ClientID, Password is Client Secret.
+      scheme: Basic

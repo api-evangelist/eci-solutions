@@ -1,0 +1,307 @@
+openapi: 3.2.0
+info:
+  title: MFG Integration Management Activation Code API
+  description: Provides APIs for managing ECI MFG Integration Engine Configurations.
+  contact:
+    name: ECI Manufacturing Integration Team
+    url: https://www.ecisolutions.com/support/
+  version: 2.22.273+b02c1dfd00
+servers:
+- url: https://api-user.integrations.ecimanufacturing.com:443
+  description: Production
+security:
+- oidc:
+  - openid
+- Basic: []
+tags:
+- name: ActivationCode
+paths:
+  /api/activation-codes:
+    get:
+      tags:
+      - ActivationCode
+      summary: Get the list of Activation-Codes
+      description: 'Accessible By: Global Admin.\
+
+        Accessed From: User Mgmt UI.\
+
+        Description: Get the list of Activation-Codes matching the specified filter criteria.'
+      operationId: ListActivationCode
+      parameters:
+      - name: integration_id
+        in: query
+        schema:
+          type: integer
+          format: int32
+      - name: product_id
+        in: query
+        schema:
+          type: integer
+          format: int32
+      - name: is_active
+        in: query
+        schema:
+          type: boolean
+      - name: is_used
+        in: query
+        schema:
+          type: boolean
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ActivationCodeResponseModelIListAPIResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ActivationCodeResponseModelIListAPIResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ActivationCodeResponseModelIListAPIResponse'
+    post:
+      tags:
+      - ActivationCode
+      summary: Register the Activation code
+      description: 'Accessible By: Global Admin and Product Admin.\
+
+        Accessed From: User Mgmt UI.\
+
+        Description: Register the Activation code by Global Admin only.'
+      operationId: AddActivationCode
+      requestBody:
+        description: This is an object which contains all optional fields to add the Activation codes.
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/ActivationCodeRequestModel'
+          text/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/ActivationCodeRequestModel'
+          application/*+json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/ActivationCodeRequestModel'
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ActivationCodeResponseModelAPIResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ActivationCodeResponseModelAPIResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ActivationCodeResponseModelAPIResponse'
+  /api/activation-codes/generate:
+    post:
+      tags:
+      - ActivationCode
+      summary: Generate the Bulk Activation code
+      description: 'Accessible By: Global Admin and Product Admin.\
+
+        Accessed From: User Mgmt UI.\
+
+        Description: Generate the bulk activation code by Global Admin only.'
+      operationId: GenerateActivationCode
+      requestBody:
+        description: This is an object which contains all fields to add the Activation codes.
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/GenerateActivationCodeRequestModel'
+          text/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/GenerateActivationCodeRequestModel'
+          application/*+json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/GenerateActivationCodeRequestModel'
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ActivationCodeResponseModelAPIResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ActivationCodeResponseModelAPIResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ActivationCodeResponseModelAPIResponse'
+components:
+  schemas:
+    ActivationCodeResponseModelAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        result:
+          allOf:
+          - $ref: '#/components/schemas/ActivationCodeResponseModel'
+      additionalProperties: false
+    ActivationCodeResponseModelIListAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        result:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ActivationCodeResponseModel'
+      additionalProperties: false
+    ApiError:
+      type: object
+      properties:
+        isError:
+          type: boolean
+        exceptionMessage:
+          type:
+          - string
+          - 'null'
+        details:
+          type:
+          - string
+          - 'null'
+        referenceErrorCode:
+          type:
+          - string
+          - 'null'
+        referenceDocumentLink:
+          type:
+          - string
+          - 'null'
+        validationErrors:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ValidationError'
+      additionalProperties: false
+    ActivationCodeRequestModel:
+      required:
+      - activationCode
+      type: object
+      properties:
+        integrationId:
+          type: integer
+          format: int32
+        productId:
+          type: integer
+          format: int32
+        activationCode:
+          maxLength: 64
+          minLength: 24
+          type: string
+      additionalProperties: false
+    GenerateActivationCodeRequestModel:
+      required:
+      - count
+      - integrationId
+      - productId
+      type: object
+      properties:
+        integrationId:
+          type: integer
+          format: int32
+        productId:
+          type: integer
+          format: int32
+        count:
+          maximum: 2147483647
+          minimum: 1
+          type: integer
+          format: int32
+        codeLength:
+          type: integer
+          format: int32
+      additionalProperties: false
+    ValidationError:
+      type: object
+      properties:
+        field:
+          type:
+          - string
+          - 'null'
+        message:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    ActivationCodeResponseModel:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        code:
+          type:
+          - string
+          - 'null'
+        productId:
+          type: integer
+          format: int32
+        productName:
+          type:
+          - string
+          - 'null'
+        integrationId:
+          type: integer
+          format: int32
+        integrationName:
+          type:
+          - string
+          - 'null'
+        isActive:
+          type: boolean
+        isUsed:
+          type: boolean
+        usedDateTime:
+          type:
+          - string
+          - 'null'
+          format: date-time
+      additionalProperties: false
+  securitySchemes:
+    oidc:
+      type: openIdConnect
+      description: Use id_token obtained from OpenID Connect flow.
+      openIdConnectUrl: https://cognito-idp.us-east-1.amazonaws.com/us-east-1_9IYBf4TpD/.well-known/openid-configuration
+      x-tokenName: id_token
+    Basic:
+      type: http
+      description: Username is ClientID, Password is Client Secret.
+      scheme: Basic

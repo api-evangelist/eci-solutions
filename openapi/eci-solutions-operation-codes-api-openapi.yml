@@ -1,0 +1,245 @@
+openapi: 3.2.0
+info:
+  title: JobBOSS² Public Operation Codes API
+  description: Provides a common API surface for accessing ECI ERP JobBOSS².
+  version: v1
+servers:
+- url: https://api-jb2.integrations.ecimanufacturing.com:443
+  description: API Host
+security:
+- Bearer: []
+tags:
+- name: Operation Codes
+paths:
+  /api/v1/operation-codes:
+    get:
+      tags:
+      - Operation Codes
+      summary: Gets a list of Operation Codes
+      description: 'By default an operation code response will include only the fields: active, defaultCycleTime, defaultCycleUnit, defaultSetupTime, defaultTimeUnit, description, isUnattendedOperation, lastModDate, lastModUser, machinesRunByOperator, machinesJobRunOn, operationCode, uniqueID, operationNumber, percentEfficiency, scrapPercent, teamSize. You may specify the exact fields to return using the fields parameter.'
+      parameters:
+      - name: fields
+        in: query
+        description: A comma separated list of fields to include in the result.
+        schema:
+          type: string
+      - name: sort
+        in: query
+        description: A comma separated list of fields to sort by.
+        schema:
+          type: string
+      - name: filters
+        in: query
+        description: Filters must be provided as query string parameters as defined in the Filter Expression section.
+        schema:
+          type: object
+          additionalProperties:
+            type: string
+        examples:
+          No filters: {}
+          Filter by Code:
+            value:
+              operationCode: SAW
+      - name: skip
+        in: query
+        description: The number of records at the start of the result set to skip over.
+        schema:
+          type: string
+      - name: take
+        in: query
+        description: The number of records to retrieve.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationCodeListSuccessResponse'
+              example:
+                Data:
+                - active: false
+                  defaultCycleTime: 0
+                  defaultCycleUnit: string
+                  defaultSetupTime: 0
+                  defaultTimeUnit: string
+                  description: string
+                  isUnattendedOperation: false
+                  lastModDate: '2026-09-06T17:13:12.0000000+00:00'
+                  lastModUser: string
+                  machinesJobRunOn: 0
+                  machinesRunByOperator: 0
+                  operationCode: string
+                  operationNumber: 0
+                  percentEfficiency: 0
+                  scrapPercent: 0
+                  teamSize: 0
+                  uniqueID: 0
+      operationId: getApiV1OperationCodes
+      x-operation-id-source: derived
+  /api/v1/operation-codes/{operationCode}:
+    get:
+      tags:
+      - Operation Codes
+      summary: Gets an Operation Code by operation code
+      description: 'By default an operation code response will include only the fields: active, defaultCycleTime, defaultCycleUnit, defaultSetupTime, defaultTimeUnit, description, isUnattendedOperation, lastModDate, lastModUser, machinesRunByOperator, machinesJobRunOn, operationCode, uniqueID, operationNumber, percentEfficiency, scrapPercent, teamSize. You may specify the exact fields to return using the fields parameter.'
+      parameters:
+      - name: operationCode
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: fields
+        in: query
+        description: A comma separated list of fields to include in the result.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationCodeSuccessResponse'
+              example:
+                Data:
+                  active: false
+                  defaultCycleTime: 0
+                  defaultCycleUnit: string
+                  defaultSetupTime: 0
+                  defaultTimeUnit: string
+                  description: string
+                  isUnattendedOperation: false
+                  lastModDate: '2026-09-06T17:13:12.0000000+00:00'
+                  lastModUser: string
+                  machinesJobRunOn: 0
+                  machinesRunByOperator: 0
+                  operationCode: string
+                  operationNumber: 0
+                  percentEfficiency: 0
+                  scrapPercent: 0
+                  teamSize: 0
+                  uniqueID: 0
+      operationId: getApiV1OperationCodesByOperationCode
+      x-operation-id-source: derived
+components:
+  schemas:
+    OperationCodeSuccessResponse:
+      type: object
+      properties:
+        Data:
+          $ref: '#/components/schemas/OperationCode'
+      additionalProperties: false
+    OperationCode:
+      type: object
+      properties:
+        active:
+          type: boolean
+          readOnly: true
+        defaultCycleTime:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        defaultCycleUnit:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        defaultSetupTime:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        defaultTimeUnit:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        description:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        isUnattendedOperation:
+          type: boolean
+          readOnly: true
+        lastModDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        lastModUser:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        machinesJobRunOn:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        machinesRunByOperator:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          readOnly: true
+        operationCode:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        operationNumber:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          readOnly: true
+        percentEfficiency:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          readOnly: true
+        scrapPercent:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        teamSize:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          readOnly: true
+        uniqueID:
+          type: integer
+          format: int32
+          readOnly: true
+      additionalProperties: false
+    OperationCodeListSuccessResponse:
+      type: object
+      properties:
+        Data:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/OperationCode'
+      additionalProperties: false
+  securitySchemes:
+    Bearer:
+      type: oauth2
+      description: OAuth 2.0 Client Credentials Flow with API Users issued from Integration Engine Management Console
+      flows:
+        clientCredentials:
+          tokenUrl: https://api-user.integrations.ecimanufacturing.com/oauth2/api-user/token
+          scopes:
+            openid: openid

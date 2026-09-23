@@ -1,0 +1,1695 @@
+openapi: 3.2.0
+info:
+  title: JobBOSS² Public Quotes API
+  description: Provides a common API surface for accessing ECI ERP JobBOSS².
+  version: v1
+servers:
+- url: https://api-jb2.integrations.ecimanufacturing.com:443
+  description: API Host
+security:
+- Bearer: []
+tags:
+- name: Quotes
+paths:
+  /api/v1/quotes:
+    get:
+      tags:
+      - Quotes
+      summary: Gets a list of Quotes
+      description: 'By default a quote response will include only the fields: quoteNumber, customerCode, customerName, address1, phone, dateEntered, quotedBy, contactName, salesID, followUpDate, expireDate, uniqueID. You may specify the exact fields to return using the fields parameter.'
+      parameters:
+      - name: fields
+        in: query
+        description: A comma separated list of fields to include in the result.
+        schema:
+          type: string
+      - name: sort
+        in: query
+        description: A comma separated list of field to sort by. See the <a href='#sort-expressions'>Sort Expressions</a> section for more information.
+        schema:
+          type: string
+      - name: filters
+        in: query
+        description: Filters must be provided as query string parameters as defined in the <a href='#filter-expressions'>Filter Expressions</a> section.
+        schema:
+          type: object
+          additionalProperties:
+            type: string
+        examples:
+          No filters: {}
+          Filter by Quote:
+            value:
+              customerCode: ALPHA
+      - name: skip
+        in: query
+        description: The number of records at the start of the result set to skip over.
+        schema:
+          type: string
+      - name: take
+        in: query
+        description: The number of records to retrieve.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuoteListSuccessResponse'
+              example:
+                Data:
+                - address1: string
+                  city: string
+                  contactName: string
+                  country: string
+                  currencyCode: string
+                  customerCode: string
+                  customerName: string
+                  dateEntered: '2026-09-06T17:13:12.0000000+00:00'
+                  enteredBy: string
+                  exchangeRate: 0
+                  expireDate: '2026-09-06T17:13:12.0000000+00:00'
+                  fax: string
+                  followUpDate: '2026-09-06T17:13:12.0000000+00:00'
+                  GSTCode: string
+                  inquiryNumber: string
+                  isFreeFormCustomer: false
+                  lastModDate: '2026-09-06T17:13:12.0000000+00:00'
+                  lastModUser: string
+                  location: string
+                  notes: string
+                  phone: string
+                  printed: false
+                  quotedBy: string
+                  quoteNumber: string
+                  salesID: string
+                  shippingCode: string
+                  shipToName: string
+                  shipVia: string
+                  state: string
+                  taxCode: string
+                  termsCode: string
+                  territory: string
+                  uniqueID: 0
+                  user_Currency1: 0
+                  user_Currency2: 0
+                  user_Date1: '2026-09-06T17:13:12.0000000+00:00'
+                  user_Date2: '2026-09-06T17:13:12.0000000+00:00'
+                  user_Memo1: string
+                  user_Number1: 0
+                  user_Number2: 0
+                  user_Number3: 0
+                  user_Number4: 0
+                  user_Text1: string
+                  user_Text2: string
+                  user_Text3: string
+                  user_Text4: string
+                  zipCode: string
+      operationId: getApiV1Quotes
+      x-operation-id-source: derived
+    post:
+      tags:
+      - Quotes
+      summary: Creates a Quote
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/QuoteCreate'
+            example:
+              lineItems:
+              - commissionPercent: 0
+                delivery: string
+                description: string
+                discountPercent: 0
+                FOB: string
+                itemNumber: 0
+                jobNotes: string
+                jobNumber: string
+                miscCharge: 0
+                miscChargeForeign: 0
+                miscDescription: string
+                partNumber: string
+                price1: 0
+                price2: 0
+                price3: 0
+                price4: 0
+                price5: 0
+                price6: 0
+                price7: 0
+                price8: 0
+                priceForeign1: 0
+                priceForeign2: 0
+                priceForeign3: 0
+                priceForeign4: 0
+                priceForeign5: 0
+                priceForeign6: 0
+                priceForeign7: 0
+                priceForeign8: 0
+                quantity1: 0
+                quantity2: 0
+                quantity3: 0
+                quantity4: 0
+                quantity5: 0
+                quantity6: 0
+                quantity7: 0
+                quantity8: 0
+                revision: string
+                status: string
+                uniqueID: 0
+                unit1: string
+                unit2: string
+                unit3: string
+                unit4: string
+                unit5: string
+                unit6: string
+                unit7: string
+                unit8: string
+                user_Currency1: 0
+                user_Currency2: 0
+                user_Date1: '2026-09-06T17:13:12.0000000+00:00'
+                user_Date2: '2026-09-06T17:13:12.0000000+00:00'
+                user_Memo1: string
+                user_Number1: 0
+                user_Number2: 0
+                user_Number3: 0
+                user_Number4: 0
+                user_Text1: string
+                user_Text2: string
+                user_Text3: string
+                user_Text4: string
+                workCode: string
+              address1: string
+              city: string
+              contactName: string
+              country: string
+              currencyCode: string
+              customerCode: string
+              customerName: string
+              dateEntered: '2026-09-06T17:13:12.0000000+00:00'
+              exchangeRate: 0
+              expireDate: '2026-09-06T17:13:12.0000000+00:00'
+              fax: string
+              followUpDate: '2026-09-06T17:13:12.0000000+00:00'
+              GSTCode: string
+              inquiryNumber: string
+              isFreeFormCustomer: false
+              location: string
+              notes: string
+              phone: string
+              quotedBy: string
+              quoteNumber: string
+              salesID: string
+              shippingCode: string
+              shipToName: string
+              shipVia: string
+              state: string
+              taxCode: string
+              termsCode: string
+              territory: string
+              user_Currency1: 0
+              user_Currency2: 0
+              user_Date1: '2026-09-06T17:13:12.0000000+00:00'
+              user_Date2: '2026-09-06T17:13:12.0000000+00:00'
+              user_Memo1: string
+              user_Number1: 0
+              user_Number2: 0
+              user_Number3: 0
+              user_Number4: 0
+              user_Text1: string
+              user_Text2: string
+              user_Text3: string
+              user_Text4: string
+              zipCode: string
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Quote'
+              example:
+                address1: string
+                city: string
+                contactName: string
+                country: string
+                currencyCode: string
+                customerCode: string
+                customerName: string
+                dateEntered: '2026-09-06T17:13:12.0000000+00:00'
+                enteredBy: string
+                exchangeRate: 0
+                expireDate: '2026-09-06T17:13:12.0000000+00:00'
+                fax: string
+                followUpDate: '2026-09-06T17:13:12.0000000+00:00'
+                GSTCode: string
+                inquiryNumber: string
+                isFreeFormCustomer: false
+                lastModDate: '2026-09-06T17:13:12.0000000+00:00'
+                lastModUser: string
+                location: string
+                notes: string
+                phone: string
+                printed: false
+                quotedBy: string
+                quoteNumber: string
+                salesID: string
+                shippingCode: string
+                shipToName: string
+                shipVia: string
+                state: string
+                taxCode: string
+                termsCode: string
+                territory: string
+                uniqueID: 0
+                user_Currency1: 0
+                user_Currency2: 0
+                user_Date1: '2026-09-06T17:13:12.0000000+00:00'
+                user_Date2: '2026-09-06T17:13:12.0000000+00:00'
+                user_Memo1: string
+                user_Number1: 0
+                user_Number2: 0
+                user_Number3: 0
+                user_Number4: 0
+                user_Text1: string
+                user_Text2: string
+                user_Text3: string
+                user_Text4: string
+                zipCode: string
+      operationId: postApiV1Quotes
+      x-operation-id-source: derived
+  /api/v1/quotes/{quoteNumber}:
+    get:
+      tags:
+      - Quotes
+      summary: Gets a Quote by order number
+      description: 'By default a quote response will include only the fields: quoteNumber, customerCode, customerName, address1, phone, dateEntered, quotedBy, contactName, salesID, followUpDate, expireDate, uniqueID. You may specify the exact fields to return using the fields parameter.'
+      parameters:
+      - name: quoteNumber
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: fields
+        in: query
+        description: A comma separated list of fields to include in the result.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuoteSuccessResponse'
+              example:
+                Data:
+                  address1: string
+                  city: string
+                  contactName: string
+                  country: string
+                  currencyCode: string
+                  customerCode: string
+                  customerName: string
+                  dateEntered: '2026-09-06T17:13:12.0000000+00:00'
+                  enteredBy: string
+                  exchangeRate: 0
+                  expireDate: '2026-09-06T17:13:12.0000000+00:00'
+                  fax: string
+                  followUpDate: '2026-09-06T17:13:12.0000000+00:00'
+                  GSTCode: string
+                  inquiryNumber: string
+                  isFreeFormCustomer: false
+                  lastModDate: '2026-09-06T17:13:12.0000000+00:00'
+                  lastModUser: string
+                  location: string
+                  notes: string
+                  phone: string
+                  printed: false
+                  quotedBy: string
+                  quoteNumber: string
+                  salesID: string
+                  shippingCode: string
+                  shipToName: string
+                  shipVia: string
+                  state: string
+                  taxCode: string
+                  termsCode: string
+                  territory: string
+                  uniqueID: 0
+                  user_Currency1: 0
+                  user_Currency2: 0
+                  user_Date1: '2026-09-06T17:13:12.0000000+00:00'
+                  user_Date2: '2026-09-06T17:13:12.0000000+00:00'
+                  user_Memo1: string
+                  user_Number1: 0
+                  user_Number2: 0
+                  user_Number3: 0
+                  user_Number4: 0
+                  user_Text1: string
+                  user_Text2: string
+                  user_Text3: string
+                  user_Text4: string
+                  zipCode: string
+      operationId: getApiV1QuotesByQuoteNumber
+      x-operation-id-source: derived
+    patch:
+      tags:
+      - Quotes
+      summary: Updates a Quote
+      parameters:
+      - name: quoteNumber
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/QuoteUpdate'
+            example:
+              lineItems:
+              - commissionPercent: 0
+                delivery: string
+                description: string
+                discountPercent: 0
+                FOB: string
+                itemNumber: 0
+                jobNotes: string
+                jobNumber: string
+                miscCharge: 0
+                miscChargeForeign: 0
+                miscDescription: string
+                partNumber: string
+                price1: 0
+                price2: 0
+                price3: 0
+                price4: 0
+                price5: 0
+                price6: 0
+                price7: 0
+                price8: 0
+                priceForeign1: 0
+                priceForeign2: 0
+                priceForeign3: 0
+                priceForeign4: 0
+                priceForeign5: 0
+                priceForeign6: 0
+                priceForeign7: 0
+                priceForeign8: 0
+                quantity1: 0
+                quantity2: 0
+                quantity3: 0
+                quantity4: 0
+                quantity5: 0
+                quantity6: 0
+                quantity7: 0
+                quantity8: 0
+                revision: string
+                status: string
+                uniqueID: 0
+                unit1: string
+                unit2: string
+                unit3: string
+                unit4: string
+                unit5: string
+                unit6: string
+                unit7: string
+                unit8: string
+                user_Currency1: 0
+                user_Currency2: 0
+                user_Date1: '2026-09-06T17:13:12.0000000+00:00'
+                user_Date2: '2026-09-06T17:13:12.0000000+00:00'
+                user_Memo1: string
+                user_Number1: 0
+                user_Number2: 0
+                user_Number3: 0
+                user_Number4: 0
+                user_Text1: string
+                user_Text2: string
+                user_Text3: string
+                user_Text4: string
+                workCode: string
+              address1: string
+              city: string
+              contactName: string
+              country: string
+              currencyCode: string
+              customerCode: string
+              customerName: string
+              dateEntered: '2026-09-06T17:13:12.0000000+00:00'
+              exchangeRate: 0
+              expireDate: '2026-09-06T17:13:12.0000000+00:00'
+              fax: string
+              followUpDate: '2026-09-06T17:13:12.0000000+00:00'
+              GSTCode: string
+              inquiryNumber: string
+              isFreeFormCustomer: false
+              location: string
+              notes: string
+              phone: string
+              quotedBy: string
+              salesID: string
+              shippingCode: string
+              shipToName: string
+              shipVia: string
+              state: string
+              taxCode: string
+              termsCode: string
+              territory: string
+              user_Currency1: 0
+              user_Currency2: 0
+              user_Date1: '2026-09-06T17:13:12.0000000+00:00'
+              user_Date2: '2026-09-06T17:13:12.0000000+00:00'
+              user_Memo1: string
+              user_Number1: 0
+              user_Number2: 0
+              user_Number3: 0
+              user_Number4: 0
+              user_Text1: string
+              user_Text2: string
+              user_Text3: string
+              user_Text4: string
+              zipCode: string
+      responses:
+        '204':
+          description: Success
+      operationId: patchApiV1QuotesByQuoteNumber
+      x-operation-id-source: derived
+components:
+  schemas:
+    QuoteListSuccessResponse:
+      type: object
+      properties:
+        Data:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Quote'
+      additionalProperties: false
+    QuoteCreate:
+      required:
+      - customerCode
+      type: object
+      properties:
+        lineItems:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/QuoteLineItemCreate'
+        address1:
+          type:
+          - string
+          - 'null'
+        city:
+          type:
+          - string
+          - 'null'
+        contactName:
+          type:
+          - string
+          - 'null'
+        country:
+          type:
+          - string
+          - 'null'
+        currencyCode:
+          type:
+          - string
+          - 'null'
+        customerCode:
+          type: string
+        customerName:
+          type:
+          - string
+          - 'null'
+        dateEntered:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        exchangeRate:
+          type:
+          - number
+          - 'null'
+          format: double
+        expireDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        fax:
+          type:
+          - string
+          - 'null'
+        followUpDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        GSTCode:
+          type:
+          - string
+          - 'null'
+        inquiryNumber:
+          type:
+          - string
+          - 'null'
+        isFreeFormCustomer:
+          type: boolean
+        location:
+          type:
+          - string
+          - 'null'
+        notes:
+          type:
+          - string
+          - 'null'
+        phone:
+          type:
+          - string
+          - 'null'
+        quotedBy:
+          type:
+          - string
+          - 'null'
+        quoteNumber:
+          type:
+          - string
+          - 'null'
+        salesID:
+          type:
+          - string
+          - 'null'
+        shippingCode:
+          type:
+          - string
+          - 'null'
+        shipToName:
+          type:
+          - string
+          - 'null'
+        shipVia:
+          type:
+          - string
+          - 'null'
+        state:
+          type:
+          - string
+          - 'null'
+        taxCode:
+          type:
+          - string
+          - 'null'
+        termsCode:
+          type:
+          - string
+          - 'null'
+        territory:
+          type:
+          - string
+          - 'null'
+        user_Currency1:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        user_Currency2:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Date1:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        user_Date2:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        user_Memo1:
+          type:
+          - string
+          - 'null'
+        user_Number1:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Number2:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Number3:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Number4:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Text1:
+          type:
+          - string
+          - 'null'
+        user_Text2:
+          type:
+          - string
+          - 'null'
+        user_Text3:
+          type:
+          - string
+          - 'null'
+        user_Text4:
+          type:
+          - string
+          - 'null'
+        zipCode:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    QuoteLineItemUpdate:
+      type: object
+      properties:
+        commissionPercent:
+          type:
+          - number
+          - 'null'
+          format: double
+        delivery:
+          type:
+          - string
+          - 'null'
+        description:
+          type:
+          - string
+          - 'null'
+        discountPercent:
+          type:
+          - number
+          - 'null'
+          format: double
+        FOB:
+          type:
+          - string
+          - 'null'
+        itemNumber:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        jobNotes:
+          type:
+          - string
+          - 'null'
+        jobNumber:
+          type:
+          - string
+          - 'null'
+        miscCharge:
+          type:
+          - number
+          - 'null'
+          format: double
+        miscChargeForeign:
+          type:
+          - number
+          - 'null'
+          format: double
+        miscDescription:
+          type:
+          - string
+          - 'null'
+        partNumber:
+          type:
+          - string
+          - 'null'
+        price1:
+          type:
+          - number
+          - 'null'
+          format: double
+        price2:
+          type:
+          - number
+          - 'null'
+          format: double
+        price3:
+          type:
+          - number
+          - 'null'
+          format: double
+        price4:
+          type:
+          - number
+          - 'null'
+          format: double
+        price5:
+          type:
+          - number
+          - 'null'
+          format: double
+        price6:
+          type:
+          - number
+          - 'null'
+          format: double
+        price7:
+          type:
+          - number
+          - 'null'
+          format: double
+        price8:
+          type:
+          - number
+          - 'null'
+          format: double
+        priceForeign1:
+          type:
+          - number
+          - 'null'
+          format: double
+        priceForeign2:
+          type:
+          - number
+          - 'null'
+          format: double
+        priceForeign3:
+          type:
+          - number
+          - 'null'
+          format: double
+        priceForeign4:
+          type:
+          - number
+          - 'null'
+          format: double
+        priceForeign5:
+          type:
+          - number
+          - 'null'
+          format: double
+        priceForeign6:
+          type:
+          - number
+          - 'null'
+          format: double
+        priceForeign7:
+          type:
+          - number
+          - 'null'
+          format: double
+        priceForeign8:
+          type:
+          - number
+          - 'null'
+          format: double
+        quantity1:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        quantity2:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        quantity3:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        quantity4:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        quantity5:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        quantity6:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        quantity7:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        quantity8:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        revision:
+          type:
+          - string
+          - 'null'
+        status:
+          type:
+          - string
+          - 'null'
+        uniqueID:
+          type: integer
+          format: int32
+        unit1:
+          type:
+          - string
+          - 'null'
+        unit2:
+          type:
+          - string
+          - 'null'
+        unit3:
+          type:
+          - string
+          - 'null'
+        unit4:
+          type:
+          - string
+          - 'null'
+        unit5:
+          type:
+          - string
+          - 'null'
+        unit6:
+          type:
+          - string
+          - 'null'
+        unit7:
+          type:
+          - string
+          - 'null'
+        unit8:
+          type:
+          - string
+          - 'null'
+        user_Currency1:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Currency2:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Date1:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        user_Date2:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        user_Memo1:
+          type:
+          - string
+          - 'null'
+        user_Number1:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Number2:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Number3:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Number4:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Text1:
+          type:
+          - string
+          - 'null'
+        user_Text2:
+          type:
+          - string
+          - 'null'
+        user_Text3:
+          type:
+          - string
+          - 'null'
+        user_Text4:
+          type:
+          - string
+          - 'null'
+        workCode:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    Quote:
+      type: object
+      properties:
+        address1:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        city:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        contactName:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        country:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        currencyCode:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        customerCode:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        customerName:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        dateEntered:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        enteredBy:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        exchangeRate:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        expireDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        fax:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        followUpDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        GSTCode:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        inquiryNumber:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        isFreeFormCustomer:
+          type: boolean
+          readOnly: true
+        lastModDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        lastModUser:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        location:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        notes:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        phone:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        printed:
+          type: boolean
+          readOnly: true
+        quotedBy:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        quoteNumber:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        salesID:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        shippingCode:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        shipToName:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        shipVia:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        state:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        taxCode:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        termsCode:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        territory:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        uniqueID:
+          type: integer
+          format: int32
+          readOnly: true
+        user_Currency1:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        user_Currency2:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        user_Date1:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        user_Date2:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        user_Memo1:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        user_Number1:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        user_Number2:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        user_Number3:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        user_Number4:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        user_Text1:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        user_Text2:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        user_Text3:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        user_Text4:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        zipCode:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+      additionalProperties: false
+    QuoteLineItemCreate:
+      type: object
+      properties:
+        commissionPercent:
+          type:
+          - number
+          - 'null'
+          format: double
+        delivery:
+          type:
+          - string
+          - 'null'
+        description:
+          type:
+          - string
+          - 'null'
+        discountPercent:
+          type:
+          - number
+          - 'null'
+          format: double
+        FOB:
+          type:
+          - string
+          - 'null'
+        itemNumber:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        jobNotes:
+          type:
+          - string
+          - 'null'
+        jobNumber:
+          type:
+          - string
+          - 'null'
+        miscCharge:
+          type:
+          - number
+          - 'null'
+          format: double
+        miscChargeForeign:
+          type:
+          - number
+          - 'null'
+          format: double
+        miscDescription:
+          type:
+          - string
+          - 'null'
+        partNumber:
+          type:
+          - string
+          - 'null'
+        price1:
+          type:
+          - number
+          - 'null'
+          format: double
+        price2:
+          type:
+          - number
+          - 'null'
+          format: double
+        price3:
+          type:
+          - number
+          - 'null'
+          format: double
+        price4:
+          type:
+          - number
+          - 'null'
+          format: double
+        price5:
+          type:
+          - number
+          - 'null'
+          format: double
+        price6:
+          type:
+          - number
+          - 'null'
+          format: double
+        price7:
+          type:
+          - number
+          - 'null'
+          format: double
+        price8:
+          type:
+          - number
+          - 'null'
+          format: double
+        priceForeign1:
+          type:
+          - number
+          - 'null'
+          format: double
+        priceForeign2:
+          type:
+          - number
+          - 'null'
+          format: double
+        priceForeign3:
+          type:
+          - number
+          - 'null'
+          format: double
+        priceForeign4:
+          type:
+          - number
+          - 'null'
+          format: double
+        priceForeign5:
+          type:
+          - number
+          - 'null'
+          format: double
+        priceForeign6:
+          type:
+          - number
+          - 'null'
+          format: double
+        priceForeign7:
+          type:
+          - number
+          - 'null'
+          format: double
+        priceForeign8:
+          type:
+          - number
+          - 'null'
+          format: double
+        quantity1:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        quantity2:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        quantity3:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        quantity4:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        quantity5:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        quantity6:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        quantity7:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        quantity8:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        revision:
+          type:
+          - string
+          - 'null'
+        status:
+          type:
+          - string
+          - 'null'
+        uniqueID:
+          type: integer
+          format: int32
+        unit1:
+          type:
+          - string
+          - 'null'
+        unit2:
+          type:
+          - string
+          - 'null'
+        unit3:
+          type:
+          - string
+          - 'null'
+        unit4:
+          type:
+          - string
+          - 'null'
+        unit5:
+          type:
+          - string
+          - 'null'
+        unit6:
+          type:
+          - string
+          - 'null'
+        unit7:
+          type:
+          - string
+          - 'null'
+        unit8:
+          type:
+          - string
+          - 'null'
+        user_Currency1:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Currency2:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Date1:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        user_Date2:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        user_Memo1:
+          type:
+          - string
+          - 'null'
+        user_Number1:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Number2:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Number3:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Number4:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Text1:
+          type:
+          - string
+          - 'null'
+        user_Text2:
+          type:
+          - string
+          - 'null'
+        user_Text3:
+          type:
+          - string
+          - 'null'
+        user_Text4:
+          type:
+          - string
+          - 'null'
+        workCode:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    QuoteSuccessResponse:
+      type: object
+      properties:
+        Data:
+          $ref: '#/components/schemas/Quote'
+      additionalProperties: false
+    QuoteUpdate:
+      type: object
+      properties:
+        lineItems:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/QuoteLineItemUpdate'
+        address1:
+          type:
+          - string
+          - 'null'
+        city:
+          type:
+          - string
+          - 'null'
+        contactName:
+          type:
+          - string
+          - 'null'
+        country:
+          type:
+          - string
+          - 'null'
+        currencyCode:
+          type:
+          - string
+          - 'null'
+        customerCode:
+          type:
+          - string
+          - 'null'
+        customerName:
+          type:
+          - string
+          - 'null'
+        dateEntered:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        exchangeRate:
+          type:
+          - number
+          - 'null'
+          format: double
+        expireDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        fax:
+          type:
+          - string
+          - 'null'
+        followUpDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        GSTCode:
+          type:
+          - string
+          - 'null'
+        inquiryNumber:
+          type:
+          - string
+          - 'null'
+        isFreeFormCustomer:
+          type: boolean
+        location:
+          type:
+          - string
+          - 'null'
+        notes:
+          type:
+          - string
+          - 'null'
+        phone:
+          type:
+          - string
+          - 'null'
+        quotedBy:
+          type:
+          - string
+          - 'null'
+        salesID:
+          type:
+          - string
+          - 'null'
+        shippingCode:
+          type:
+          - string
+          - 'null'
+        shipToName:
+          type:
+          - string
+          - 'null'
+        shipVia:
+          type:
+          - string
+          - 'null'
+        state:
+          type:
+          - string
+          - 'null'
+        taxCode:
+          type:
+          - string
+          - 'null'
+        termsCode:
+          type:
+          - string
+          - 'null'
+        territory:
+          type:
+          - string
+          - 'null'
+        user_Currency1:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Currency2:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Date1:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        user_Date2:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        user_Memo1:
+          type:
+          - string
+          - 'null'
+        user_Number1:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Number2:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Number3:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Number4:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Text1:
+          type:
+          - string
+          - 'null'
+        user_Text2:
+          type:
+          - string
+          - 'null'
+        user_Text3:
+          type:
+          - string
+          - 'null'
+        user_Text4:
+          type:
+          - string
+          - 'null'
+        zipCode:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+  securitySchemes:
+    Bearer:
+      type: oauth2
+      description: OAuth 2.0 Client Credentials Flow with API Users issued from Integration Engine Management Console
+      flows:
+        clientCredentials:
+          tokenUrl: https://api-user.integrations.ecimanufacturing.com/oauth2/api-user/token
+          scopes:
+            openid: openid

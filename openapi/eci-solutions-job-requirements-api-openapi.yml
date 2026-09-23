@@ -1,0 +1,333 @@
+openapi: 3.2.0
+info:
+  title: JobBOSS² Public Job Requirements API
+  description: Provides a common API surface for accessing ECI ERP JobBOSS².
+  version: v1
+servers:
+- url: https://api-jb2.integrations.ecimanufacturing.com:443
+  description: API Host
+security:
+- Bearer: []
+tags:
+- name: Job Requirements
+paths:
+  /api/v1/job-requirements:
+    get:
+      tags:
+      - Job Requirements
+      summary: Gets a list of Job Requirements
+      description: 'By default a job requirement response will include only the fields: certificationRequired, cost, dateProcessed, GLCode, jobDue, jobNumber, uniqueID, lastModDate, lastModUser, leadTime, orderNumber, outsideService, partDescription, partNumber, PODate, POItemNumber, PONumber, price, pricingUnit, productCode, purchaseQuantity, purchaseUnit, quantityToBuy, setupCharge, stepNumber, stockingUnit, temporaryJobDue, vendorCode, workCode. You may specify the exact fields to return using the fields parameter.'
+      parameters:
+      - name: fields
+        in: query
+        description: A comma separated list of fields to include in the result.
+        schema:
+          type: string
+      - name: sort
+        in: query
+        description: A comma separated list of field to sort by. See the <a href='#sort-expressions'>Sort Expressions</a> section for more information.
+        schema:
+          type: string
+      - name: filters
+        in: query
+        description: Filters must be provided as query string parameters as defined in the <a href='#filter-expressions'>Filter Expressions</a> section.
+        schema:
+          type: object
+          additionalProperties:
+            type: string
+        examples:
+          No filters: {}
+          Filter by Order Number:
+            value:
+              orderNumber: '7082'
+      - name: skip
+        in: query
+        description: The number of records at the start of the result set to skip over.
+        schema:
+          type: string
+      - name: take
+        in: query
+        description: The number of records to retrieve.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JobRequirementListSuccessResponse'
+              example:
+                Data:
+                - certificationRequired: false
+                  cost: 0
+                  dateProcessed: '2026-09-06T17:13:12.0000000+00:00'
+                  GLCode: string
+                  jobDue: '2026-09-06T17:13:12.0000000+00:00'
+                  jobNumber: string
+                  lastModDate: '2026-09-06T17:13:12.0000000+00:00'
+                  lastModUser: string
+                  leadTime: 0
+                  orderNumber: string
+                  outsideService: false
+                  partDescription: string
+                  partNumber: string
+                  PODate: '2026-09-06T17:13:12.0000000+00:00'
+                  POItemNumber: 0
+                  PONumber: string
+                  price: 0
+                  pricingUnit: string
+                  productCode: string
+                  purchaseQuantity: 0
+                  purchaseUnit: string
+                  quantityToBuy: 0
+                  setupCharge: 0
+                  stepNumber: 0
+                  stockingUnit: string
+                  temporaryJobDue: '2026-09-06T17:13:12.0000000+00:00'
+                  uniqueID: 0
+                  vendorCode: string
+                  workCode: string
+      operationId: getApiV1JobRequirements
+      x-operation-id-source: derived
+  /api/v1/job-requirements/{uniqueID}:
+    get:
+      tags:
+      - Job Requirements
+      summary: Gets a Job Requirement by uniqueID
+      description: 'By default a job requirement response will include only the fields: certificationRequired, cost, dateProcessed, GLCode, jobDue, jobNumber, uniqueID, lastModDate, lastModUser, leadTime, orderNumber, outsideService, partDescription, partNumber, PODate, POItemNumber, PONumber, price, pricingUnit, productCode, purchaseQuantity, purchaseUnit, quantityToBuy, setupCharge, stepNumber, stockingUnit, temporaryJobDue, vendorCode, workCode. You may specify the exact fields to return using the fields parameter.'
+      parameters:
+      - name: uniqueID
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: fields
+        in: query
+        description: A comma separated list of fields to include in the result.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JobRequirementSuccessResponse'
+              example:
+                Data:
+                  certificationRequired: false
+                  cost: 0
+                  dateProcessed: '2026-09-06T17:13:12.0000000+00:00'
+                  GLCode: string
+                  jobDue: '2026-09-06T17:13:12.0000000+00:00'
+                  jobNumber: string
+                  lastModDate: '2026-09-06T17:13:12.0000000+00:00'
+                  lastModUser: string
+                  leadTime: 0
+                  orderNumber: string
+                  outsideService: false
+                  partDescription: string
+                  partNumber: string
+                  PODate: '2026-09-06T17:13:12.0000000+00:00'
+                  POItemNumber: 0
+                  PONumber: string
+                  price: 0
+                  pricingUnit: string
+                  productCode: string
+                  purchaseQuantity: 0
+                  purchaseUnit: string
+                  quantityToBuy: 0
+                  setupCharge: 0
+                  stepNumber: 0
+                  stockingUnit: string
+                  temporaryJobDue: '2026-09-06T17:13:12.0000000+00:00'
+                  uniqueID: 0
+                  vendorCode: string
+                  workCode: string
+      operationId: getApiV1JobRequirementsByUniqueID
+      x-operation-id-source: derived
+components:
+  schemas:
+    JobRequirementListSuccessResponse:
+      type: object
+      properties:
+        Data:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/JobRequirement'
+      additionalProperties: false
+    JobRequirement:
+      type: object
+      properties:
+        certificationRequired:
+          type: boolean
+          readOnly: true
+        cost:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        dateProcessed:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        GLCode:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        jobDue:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        jobNumber:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        lastModDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        lastModUser:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        leadTime:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          readOnly: true
+        orderNumber:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        outsideService:
+          type: boolean
+          readOnly: true
+        partDescription:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        partNumber:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        PODate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        POItemNumber:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          readOnly: true
+        PONumber:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        price:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        pricingUnit:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        productCode:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        purchaseQuantity:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        purchaseUnit:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        quantityToBuy:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        setupCharge:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        stepNumber:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          readOnly: true
+        stockingUnit:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        temporaryJobDue:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        uniqueID:
+          type: integer
+          format: int32
+          readOnly: true
+        vendorCode:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        workCode:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+      additionalProperties: false
+    JobRequirementSuccessResponse:
+      type: object
+      properties:
+        Data:
+          $ref: '#/components/schemas/JobRequirement'
+      additionalProperties: false
+  securitySchemes:
+    Bearer:
+      type: oauth2
+      description: OAuth 2.0 Client Credentials Flow with API Users issued from Integration Engine Management Console
+      flows:
+        clientCredentials:
+          tokenUrl: https://api-user.integrations.ecimanufacturing.com/oauth2/api-user/token
+          scopes:
+            openid: openid

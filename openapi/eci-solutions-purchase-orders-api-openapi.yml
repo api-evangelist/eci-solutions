@@ -1,0 +1,653 @@
+openapi: 3.2.0
+info:
+  title: JobBOSS² Public Purchase Orders API
+  description: Provides a common API surface for accessing ECI ERP JobBOSS².
+  version: v1
+servers:
+- url: https://api-jb2.integrations.ecimanufacturing.com:443
+  description: API Host
+security:
+- Bearer: []
+tags:
+- name: Purchase Orders
+paths:
+  /api/v1/purchase-orders:
+    get:
+      tags:
+      - Purchase Orders
+      summary: Gets a list of Purchase Orders
+      description: 'By default a purchase order response will include only the fields: contact, currencyCode, dateEntered, lastModDate, phone, PONumber, purchasedBy, shipCode, status, uniqueID, vendorCode, vendorDescription, vendorQuoteNumber, vendorType. You may specify the exact fields to return using the fields parameter. When filtering by status, use O for open purchase orders and C for closed purchase orders.'
+      parameters:
+      - name: fields
+        in: query
+        description: A comma separated list of fields to include in the result.
+        schema:
+          type: string
+      - name: sort
+        in: query
+        description: A comma separated list of field to sort by. See the <a href='#sort-expressions'>Sort Expressions</a> section for more information.
+        schema:
+          type: string
+      - name: filters
+        in: query
+        description: Filters must be provided as query string parameters as defined in the <a href='#filter-expressions'>Filter Expressions</a> section. For status filters, use O (open) or C (closed).
+        schema:
+          type: object
+          additionalProperties:
+            type: string
+        examples:
+          No filters: {}
+          Filter by Vendor:
+            value:
+              vendorCode: RYERSON
+      - name: skip
+        in: query
+        description: The number of records at the start of the result set to skip over.
+        schema:
+          type: string
+      - name: take
+        in: query
+        description: The number of records to retrieve.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PurchaseOrderListSuccessResponse'
+              example:
+                Data:
+                - contact: string
+                  currencyCode: string
+                  dateComplete: '2026-09-06T17:13:12.0000000+00:00'
+                  dateEntered: '2026-09-06T17:13:12.0000000+00:00'
+                  dateEnteredLabel: '2026-09-06T17:13:12.0000000+00:00'
+                  dateRequired: '2026-09-06T17:13:12.0000000+00:00'
+                  deliveryTicketPrinted: false
+                  enteredBy: string
+                  exchangeRate: 0
+                  fax: string
+                  GSTCharges: 0
+                  GSTCode: string
+                  GSTCodeForeign: 0
+                  ignoreMinimumOrder: false
+                  labelPrinted: false
+                  lastModDate: '2026-09-06T17:13:12.0000000+00:00'
+                  lastModUser: string
+                  location: string
+                  mainDueDate: '2026-09-06T17:13:12.0000000+00:00'
+                  notesToVendor: string
+                  phone: string
+                  PONumber: string
+                  POPrinted: false
+                  POTotal: 0
+                  POTotalForeign: 0
+                  processFlag: 0
+                  purchasedBy: string
+                  RFQNumber: string
+                  salesTaxCharges: 0
+                  salesTaxChargesForeign: 0
+                  salesTaxCode: string
+                  shipCode: string
+                  shippingAddress1: string
+                  shippingAddressType: string
+                  shippingCity: string
+                  shippingCountry: string
+                  shippingStreet: string
+                  shippingZip: string
+                  shipToName: string
+                  shipVia: string
+                  status: string
+                  termsCode: string
+                  uniqueID: 0
+                  user_Currency1: 0
+                  user_Currency2: 0
+                  user_Date1: '2026-09-06T17:13:12.0000000+00:00'
+                  user_Date2: '2026-09-06T17:13:12.0000000+00:00'
+                  user_Memo1: string
+                  user_Number1: 0
+                  user_Number2: 0
+                  user_Number3: 0
+                  user_Number4: 0
+                  user_Text1: string
+                  user_Text2: string
+                  user_Text3: string
+                  user_Text4: string
+                  vendorCode: string
+                  vendorDescription: string
+                  vendorQuoteNumber: string
+                  vendorType: string
+      operationId: getApiV1PurchaseOrders
+      x-operation-id-source: derived
+  /api/v1/purchase-orders/{PONumber}:
+    get:
+      tags:
+      - Purchase Orders
+      summary: Gets a Purchase Order by PO number
+      description: 'By default a purchase order response will include only the fields: contact, currencyCode, dateEntered, lastModDate, phone, PONumber, purchasedBy, shipCode, status, uniqueID, vendorCode, vendorDescription, vendorQuoteNumber, vendorType. You may specify the exact fields to return using the fields parameter.'
+      parameters:
+      - name: PONumber
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: fields
+        in: query
+        description: A comma separated list of fields to include in the result.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PurchaseOrderSuccessResponse'
+              example:
+                Data:
+                  contact: string
+                  currencyCode: string
+                  dateComplete: '2026-09-06T17:13:12.0000000+00:00'
+                  dateEntered: '2026-09-06T17:13:12.0000000+00:00'
+                  dateEnteredLabel: '2026-09-06T17:13:12.0000000+00:00'
+                  dateRequired: '2026-09-06T17:13:12.0000000+00:00'
+                  deliveryTicketPrinted: false
+                  enteredBy: string
+                  exchangeRate: 0
+                  fax: string
+                  GSTCharges: 0
+                  GSTCode: string
+                  GSTCodeForeign: 0
+                  ignoreMinimumOrder: false
+                  labelPrinted: false
+                  lastModDate: '2026-09-06T17:13:12.0000000+00:00'
+                  lastModUser: string
+                  location: string
+                  mainDueDate: '2026-09-06T17:13:12.0000000+00:00'
+                  notesToVendor: string
+                  phone: string
+                  PONumber: string
+                  POPrinted: false
+                  POTotal: 0
+                  POTotalForeign: 0
+                  processFlag: 0
+                  purchasedBy: string
+                  RFQNumber: string
+                  salesTaxCharges: 0
+                  salesTaxChargesForeign: 0
+                  salesTaxCode: string
+                  shipCode: string
+                  shippingAddress1: string
+                  shippingAddressType: string
+                  shippingCity: string
+                  shippingCountry: string
+                  shippingStreet: string
+                  shippingZip: string
+                  shipToName: string
+                  shipVia: string
+                  status: string
+                  termsCode: string
+                  uniqueID: 0
+                  user_Currency1: 0
+                  user_Currency2: 0
+                  user_Date1: '2026-09-06T17:13:12.0000000+00:00'
+                  user_Date2: '2026-09-06T17:13:12.0000000+00:00'
+                  user_Memo1: string
+                  user_Number1: 0
+                  user_Number2: 0
+                  user_Number3: 0
+                  user_Number4: 0
+                  user_Text1: string
+                  user_Text2: string
+                  user_Text3: string
+                  user_Text4: string
+                  vendorCode: string
+                  vendorDescription: string
+                  vendorQuoteNumber: string
+                  vendorType: string
+      operationId: getApiV1PurchaseOrdersByPONumber
+      x-operation-id-source: derived
+    patch:
+      tags:
+      - Purchase Orders
+      summary: Updates a Purchase Order
+      parameters:
+      - name: PONumber
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PurchaseOrderUpdate'
+            example:
+              user_Currency1: 0
+              user_Currency2: 0
+              user_Date1: '2026-09-06T17:13:12.0000000+00:00'
+              user_Date2: '2026-09-06T17:13:12.0000000+00:00'
+              user_Memo1: string
+              user_Number1: 0
+              user_Number2: 0
+              user_Number3: 0
+              user_Number4: 0
+              user_Text1: string
+              user_Text2: string
+              user_Text3: string
+              user_Text4: string
+      responses:
+        '204':
+          description: Success
+      operationId: patchApiV1PurchaseOrdersByPONumber
+      x-operation-id-source: derived
+components:
+  schemas:
+    PurchaseOrderUpdate:
+      type: object
+      properties:
+        user_Currency1:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Currency2:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Date1:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        user_Date2:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        user_Memo1:
+          type:
+          - string
+          - 'null'
+        user_Number1:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Number2:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Number3:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Number4:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Text1:
+          type:
+          - string
+          - 'null'
+        user_Text2:
+          type:
+          - string
+          - 'null'
+        user_Text3:
+          type:
+          - string
+          - 'null'
+        user_Text4:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    PurchaseOrderSuccessResponse:
+      type: object
+      properties:
+        Data:
+          $ref: '#/components/schemas/PurchaseOrder'
+      additionalProperties: false
+    PurchaseOrder:
+      type: object
+      properties:
+        contact:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        currencyCode:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        dateComplete:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        dateEntered:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        dateEnteredLabel:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        dateRequired:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        deliveryTicketPrinted:
+          type: boolean
+          readOnly: true
+        enteredBy:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        exchangeRate:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        fax:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        GSTCharges:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        GSTCode:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        GSTCodeForeign:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        ignoreMinimumOrder:
+          type: boolean
+          readOnly: true
+        labelPrinted:
+          type: boolean
+          readOnly: true
+        lastModDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        lastModUser:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        location:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        mainDueDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        notesToVendor:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        phone:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        PONumber:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        POPrinted:
+          type: boolean
+          readOnly: true
+        POTotal:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        POTotalForeign:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        processFlag:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          readOnly: true
+        purchasedBy:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        RFQNumber:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        salesTaxCharges:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        salesTaxChargesForeign:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        salesTaxCode:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        shipCode:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        shippingAddress1:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        shippingAddressType:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        shippingCity:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        shippingCountry:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        shippingStreet:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        shippingZip:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        shipToName:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        shipVia:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        status:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        termsCode:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        uniqueID:
+          type: integer
+          format: int32
+          readOnly: true
+        user_Currency1:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        user_Currency2:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        user_Date1:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        user_Date2:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        user_Memo1:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        user_Number1:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        user_Number2:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        user_Number3:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        user_Number4:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        user_Text1:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        user_Text2:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        user_Text3:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        user_Text4:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        vendorCode:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        vendorDescription:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        vendorQuoteNumber:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        vendorType:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+      additionalProperties: false
+    PurchaseOrderListSuccessResponse:
+      type: object
+      properties:
+        Data:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/PurchaseOrder'
+      additionalProperties: false
+  securitySchemes:
+    Bearer:
+      type: oauth2
+      description: OAuth 2.0 Client Credentials Flow with API Users issued from Integration Engine Management Console
+      flows:
+        clientCredentials:
+          tokenUrl: https://api-user.integrations.ecimanufacturing.com/oauth2/api-user/token
+          scopes:
+            openid: openid

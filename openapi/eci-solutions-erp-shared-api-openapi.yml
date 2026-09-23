@@ -1,0 +1,363 @@
+openapi: 3.2.0
+info:
+  title: M1 Public ERP/SHARED API
+  description: '## Developer Notes for the M1 Public API (ERP resource):
+
+
+    ### Hosted Environment
+
+
+    If you are using the public API for a hosted M1 customer, you must connect to the public API using the Integration Engine.'
+  contact:
+    name: ECI Software Solutions - M1
+    url: https://www.ecisolutions.com/manufacturers-and-job-shops/m1
+  version: v1
+servers:
+- url: https://api-m1.integrations.ecimanufacturing.com
+  description: API Host
+security:
+- oauth2: []
+tags:
+- name: ERP/SHARED
+paths:
+  /api/ERP/IntegrationTransactionQueue:
+    get:
+      tags:
+      - ERP/SHARED
+      summary: Returns all existing IntegrationTransactionQueue according to the filter, order…
+      description: 'When passing the filter parameter, the following operators are supported: [eq, ne, gt, lt]. Multiple filters can be specified as separate query parameters in the format M1Field[operator]value. eg. `impPartID[eq]CLIP`. An invalid filter will return a 400 Bad Request response.
+
+
+        When passing the orderBy parameter, the following operators are supported: [Asc, Desc]. The format must be M1Field[Asc],M1Field[Desc]. eg. `impPartID[Asc],impPartType[Desc]`. An invalid orderBy will return a 400 Bad Request response.
+
+
+        Custom fields are returned in the response as their full field name, they are also filterable and sortable. The format should be `M1CustomField[operator]value`. eg. `uimpCustomField1[eq]12`.'
+      operationId: MesIntegrationTransactionQueue_GetAllIntegrationTransactionQueueAsync
+      parameters:
+      - name: pageSize
+        in: query
+        description: Specifies the number of items per page. Defaults to 1000 which is also the maximum.
+        style: form
+        explode: false
+        schema:
+          type: integer
+          format: int32
+      - name: pageNumber
+        in: query
+        description: Specifies the page number to retrieve. Defaults to 0, which corresponds to the first page.
+        style: form
+        explode: false
+        schema:
+          type: integer
+          format: int32
+      - name: filter
+        in: query
+        description: Applies a filter to the returned data. The format should be `M1Field[operator]value`.
+        style: form
+        explode: false
+        schema:
+          type: array
+          items:
+            type: string
+      - name: orderBy
+        in: query
+        description: Specifies the sorting criteria for the returned data. The format should be `M1Field[Asc],M1Field[Desc]`.
+        style: form
+        explode: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_IList_ERPIntegrationTransactionQueueDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_IList_ERPIntegrationTransactionQueueDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_IList_ERPIntegrationTransactionQueueDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_IList_ERPIntegrationTransactionQueueDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+  /api/ERP/IntegrationTransactionQueue/{key}:
+    get:
+      tags:
+      - ERP/SHARED
+      summary: Returns a single IntegrationTransactionQueue record for a given Unique Id
+      description: This endpoint retrieves a IntegrationTransactionQueue based on its identifier. If the record does not exist, a 404 Not Found response will be returned.
+      operationId: MesIntegrationTransactionQueue_GetIntegrationTransactionQueueAsync
+      parameters:
+      - name: key
+        in: path
+        description: The Unique Id of the record to be retrieved
+        required: true
+        style: simple
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPIntegrationTransactionQueueDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPIntegrationTransactionQueueDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPIntegrationTransactionQueueDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/ERPResponseMessageDto_ERPIntegrationTransactionQueueDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+components:
+  schemas:
+    ERPIntegrationTransactionQueueDto:
+      required:
+      - itqStatus
+      type: object
+      properties:
+        itqApIAction:
+          type: string
+        itqCreatedBy:
+          type: string
+        itqCreatedDate:
+          type: string
+          format: date-time
+        itqEntityType:
+          type: string
+        itqUniqueID:
+          type: string
+          format: uuid
+          example: 00000000-0000-0000-0000-000000000000
+        itqErrorCode:
+          type: string
+        itqErrorMessage:
+          type: string
+        itqIntegrationType:
+          type: string
+        itqNextRetryTime:
+          type: string
+          format: date-time
+        itqParentUniqueID:
+          type: string
+          format: uuid
+          example: 00000000-0000-0000-0000-000000000000
+        itqRequest:
+          type: string
+        itqResponse:
+          type: string
+        itqRetryCount:
+          type: integer
+          format: int32
+        itqSourceTableName:
+          type: string
+        itqSourceTableUniqueID:
+          type: string
+          format: uuid
+          example: 00000000-0000-0000-0000-000000000000
+        itqStatus:
+          type: string
+        itqStatusUpdatedDate:
+          type: string
+          format: date-time
+        itqTransactionType:
+          type: string
+    APIResponseMessageDto:
+      type: object
+      properties:
+        description:
+          type: string
+        status:
+          type: string
+        payloadID:
+          type: string
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+          readOnly: true
+        warnings:
+          type: array
+          items:
+            $ref: '#/components/schemas/Warning'
+          readOnly: true
+    ERPResponseMessageDto_ERPIntegrationTransactionQueueDto:
+      type: object
+      properties:
+        responseInfo:
+          $ref: '#/components/schemas/APIResponseMessageDto'
+        returnObject:
+          $ref: '#/components/schemas/ERPIntegrationTransactionQueueDto'
+        recordCount:
+          type: integer
+          format: int32
+    Error:
+      type: object
+      properties:
+        innerText:
+          type: string
+    ERPResponseMessageDto_IList_ERPIntegrationTransactionQueueDto:
+      type: object
+      properties:
+        responseInfo:
+          $ref: '#/components/schemas/APIResponseMessageDto'
+        returnObject:
+          type: array
+          items:
+            $ref: '#/components/schemas/ERPIntegrationTransactionQueueDto'
+        recordCount:
+          type: integer
+          format: int32
+    Warning:
+      type: object
+      properties:
+        innerText:
+          type: string
+  securitySchemes:
+    oauth2:
+      type: oauth2
+      description: OAuth 2.0 Client Credentials Flow with API Users issued from Integration Engine Management Console
+      flows:
+        clientCredentials:
+          tokenUrl: https://api-user.integrations.ecimanufacturing.com/oauth2/api-user/token
+          scopes:
+            openid: openid

@@ -1,0 +1,260 @@
+openapi: 3.2.0
+info:
+  title: JobBOSS² Public Salespersons API
+  description: Provides a common API surface for accessing ECI ERP JobBOSS².
+  version: v1
+servers:
+- url: https://api-jb2.integrations.ecimanufacturing.com:443
+  description: API Host
+security:
+- Bearer: []
+tags:
+- name: Salespersons
+paths:
+  /api/v1/salespersons:
+    get:
+      tags:
+      - Salespersons
+      summary: Gets a list of Salespersons
+      description: 'By default a salesperson response will include only the fields: active, address1, city, commissionAccount, commissionPercent, country, lastModDate, lastModUser, name, phone, salesID, state, uniqueID, YTDCommission, YTDSales, zipCode. You may specify the exact fields to return using the fields parameter.'
+      parameters:
+      - name: fields
+        in: query
+        description: A comma separated list of fields to include in the result.
+        schema:
+          type: string
+      - name: sort
+        in: query
+        description: A comma separated list of field to sort by. See the <a href='#sort-expressions'>Sort Expressions</a> section for more information.
+        schema:
+          type: string
+      - name: filters
+        in: query
+        description: Filters must be provided as query string parameters as defined in the <a href='#filter-expressions'>Filter Expressions</a> section.
+        schema:
+          type: object
+          additionalProperties:
+            type: string
+        examples:
+          No filters: {}
+          Filter by State:
+            value:
+              state: OH
+      - name: skip
+        in: query
+        description: The number of records at the start of the result set to skip over.
+        schema:
+          type: string
+      - name: take
+        in: query
+        description: The number of records to retrieve.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SalespersonListSuccessResponse'
+              example:
+                Data:
+                - active: false
+                  address1: string
+                  city: string
+                  commissionAccount: string
+                  commissionPercent: 0
+                  country: string
+                  lastModDate: '2026-09-06T17:13:12.0000000+00:00'
+                  lastModUser: string
+                  name: string
+                  phone: string
+                  salesID: string
+                  state: string
+                  uniqueID: 0
+                  YTDCommission: 0
+                  YTDSales: 0
+                  zipCode: string
+      operationId: getApiV1Salespersons
+      x-operation-id-source: derived
+  /api/v1/salespersons/{salesID}:
+    patch:
+      tags:
+      - Salespersons
+      summary: Updates a Salesperson
+      parameters:
+      - name: salesID
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SalespersonUpdate'
+            example:
+              active: false
+              address1: string
+              city: string
+              commissionAccount: string
+              commissionPercent: 0
+              country: string
+              name: string
+              phone: string
+              state: string
+              zipCode: string
+      responses:
+        '204':
+          description: Success
+      operationId: patchApiV1SalespersonsBySalesID
+      x-operation-id-source: derived
+components:
+  schemas:
+    SalespersonUpdate:
+      type: object
+      properties:
+        active:
+          type: boolean
+        address1:
+          type:
+          - string
+          - 'null'
+        city:
+          type:
+          - string
+          - 'null'
+        commissionAccount:
+          type:
+          - string
+          - 'null'
+        commissionPercent:
+          type:
+          - number
+          - 'null'
+          format: double
+        country:
+          type:
+          - string
+          - 'null'
+        name:
+          type:
+          - string
+          - 'null'
+        phone:
+          type:
+          - string
+          - 'null'
+        state:
+          type:
+          - string
+          - 'null'
+        zipCode:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    SalespersonListSuccessResponse:
+      type: object
+      properties:
+        Data:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Salesperson'
+      additionalProperties: false
+    Salesperson:
+      type: object
+      properties:
+        active:
+          type: boolean
+          readOnly: true
+        address1:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        city:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        commissionAccount:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        commissionPercent:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        country:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        lastModDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        lastModUser:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        name:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        phone:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        salesID:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        state:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        uniqueID:
+          type: integer
+          format: int32
+          readOnly: true
+        YTDCommission:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        YTDSales:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        zipCode:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+      additionalProperties: false
+  securitySchemes:
+    Bearer:
+      type: oauth2
+      description: OAuth 2.0 Client Credentials Flow with API Users issued from Integration Engine Management Console
+      flows:
+        clientCredentials:
+          tokenUrl: https://api-user.integrations.ecimanufacturing.com/oauth2/api-user/token
+          scopes:
+            openid: openid

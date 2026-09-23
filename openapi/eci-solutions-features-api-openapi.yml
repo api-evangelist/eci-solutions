@@ -1,0 +1,140 @@
+openapi: 3.2.0
+info:
+  title: Financial Integration Features API
+  description: 'v2 of the Common Financial Package API supporting ECI Financials.
+
+
+    ## Authentication
+
+    Pass an access token in the HTTP Authorization header of each request. For example:
+
+
+    ```Authorization: Bearer [token]```
+
+
+    Access tokens are obtained from the Authentication API. See the Authentication API token endpoint for more information.'
+  contact:
+    name: ECI Integration Team
+    url: https://www.ecisolutions.com/support/
+  version: v2
+security:
+- Bearer: []
+tags:
+- name: Features
+paths:
+  /api/v2/features:
+    get:
+      tags:
+      - Features
+      summary: Get the features of the Financial Package
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/FinancialPackageFeatures'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FinancialPackageFeatures'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/FinancialPackageFeatures'
+        '202':
+          description: Accepted
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/AsyncAcceptedResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AsyncAcceptedResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/AsyncAcceptedResponse'
+      operationId: getApiV2Features
+      x-operation-id-source: derived
+components:
+  schemas:
+    FinancialPackageFeatures:
+      type: object
+      properties:
+        addressModel:
+          enum:
+          - AddressLines
+          - StreetHousenumberExtension
+          type: integer
+          description: The address model used by the financial package.
+          format: int32
+        hasOutstandingItems:
+          type: boolean
+          description: Does the financial package support outstanding items?
+        hasPaymentStatusUpdate:
+          type: boolean
+          description: Does the financial package support updating payment status?
+        hasInvoices:
+          type: boolean
+          description: Does the financial package support invoices?
+        hasInvoiceAttachments:
+          type: boolean
+          description: Does the financial package support attachments for invoices?
+        hasBills:
+          type: boolean
+          description: Does the financial package support bills?
+        hasBillAttachments:
+          type: boolean
+          description: Does the financial package support attachments for bills?
+        hasPurchaseJournalEntries:
+          type: boolean
+          description: Does the financial package support purchase journal entries?
+        hasSalesJournalEntries:
+          type: boolean
+          description: Does the financial package support sales journal entries?
+        hasGeneralJournalEntries:
+          type: boolean
+          description: Does the financial package support general journal entries?
+        hasSalesFrozenAccounts:
+          type: boolean
+          description: Does the financial package support sales frozen accounts?
+        hasPurchaseFrozenAccounts:
+          type: boolean
+          description: Does the financial package support purchase frozen accounts?
+        hasOrders:
+          type: boolean
+          description: Does the financial package support orders?
+        hasPurchasePaymentInfo:
+          type: boolean
+          description: Does the financial package support purchase payment info?
+        hasSalesPaymentInfo:
+          type: boolean
+          description: Does the financial package support sales payment info?
+        hasTaxCodes:
+          type: boolean
+          description: Does the financial package support taxes?
+        maxFileSize:
+          type:
+          - integer
+          - 'null'
+          description: The maximum file size for attachments in bytes.
+          format: int32
+      additionalProperties: false
+    AsyncAcceptedResponse:
+      type: object
+      properties:
+        requestId:
+          type: string
+          description: 'A unique identifier for the asynchronous request.
+
+            This ID can be used in a follow-up request (via the async-request-id header) to retrieve the result of the original operation once processing is complete.'
+          format: uuid
+      additionalProperties: false
+      description: Represents the response returned when an asynchronous request is accepted for processing.
+  securitySchemes:
+    Bearer:
+      type: oauth2
+      description: Use the Authentication API OAuth endpoints
+      flows:
+        clientCredentials:
+          tokenUrl: https://api-user.integrations.ecimanufacturing.com/oauth2/api-user/token
+          scopes:
+            openid: openid

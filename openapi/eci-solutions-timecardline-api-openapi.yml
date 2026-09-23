@@ -1,0 +1,1025 @@
+openapi: 3.2.0
+info:
+  title: ERP API v2.1 Timecard Line API
+  description: Provides a common API surface for accessing ECI ERP products.
+  contact:
+    name: ECI Manufacturing Division Integration Team
+    url: https://www.ecisolutions.com/support/
+  version: 3.5.585+b1e45fd230
+servers:
+- url: https://api-erp.integrations.ecimanufacturing.com:443
+  description: Production
+security:
+- Bearer: []
+tags:
+- name: TimecardLine
+paths:
+  /api/v2.1/timecard-lines:
+    post:
+      tags:
+      - TimecardLine
+      summary: Create a new Timecard Line in the ERP system
+      description: '## Supported ERPs
+
+        - JobBOSS²
+
+        - M1'
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TimecardLineDetailCreateModel'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/TimecardLineDetailCreateModel'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/TimecardLineDetailCreateModel'
+      responses:
+        '201':
+          description: Created
+      operationId: postApiV21TimecardLines
+      x-operation-id-source: derived
+    get:
+      tags:
+      - TimecardLine
+      summary: Get a list of Timecard Lines from the ERP system that match the given filters
+      description: 'Gets a list of TimecardLine.
+
+
+        ## Supported ERPs
+
+        - M1
+
+        - JobBOSS²
+
+        - Macola
+
+        ## Resource Features
+
+        Feature |Supported |Notes
+
+        ------------|------------|------------
+
+        Filter Expressions|**Yes**|
+
+        Sort Expressions|**Yes**
+
+        Field Selection|**Yes**
+
+        Pagination|**Yes**
+
+        UniqueID|uniqueID|
+
+        ## Features by Field
+
+        Field |Filterable |Sortable |Supported ERPs
+
+        ------------|------------|------------|------------
+
+        timecardID|Yes|Yes|M1, JobBOSS², Macola
+
+        timecardLine|Yes|Yes|M1, JobBOSS², Macola
+
+        jobID|Yes|Yes|M1, JobBOSS², Macola
+
+        jobAssembly|Yes|Yes|M1, JobBOSS², Macola
+
+        jobOperation|Yes|Yes|M1, JobBOSS², Macola
+
+        workCenterID|Yes|Yes|M1, JobBOSS², Macola
+
+        processID|Yes|Yes|M1, JobBOSS², Macola
+
+        status|Yes|Yes|M1, JobBOSS², Macola
+
+        timecardType|Yes|Yes|M1, JobBOSS², Macola
+
+        goodQty|Yes|Yes|M1, JobBOSS², Macola
+
+        scrapQty|Yes|Yes|M1, JobBOSS², Macola
+
+        reworkQty|Yes|Yes|M1, JobBOSS², Macola
+
+        rejectQty|Yes|Yes|M1, JobBOSS², Macola
+
+        startTime|Yes|Yes|M1, JobBOSS², Macola
+
+        endTime|Yes|Yes|M1, JobBOSS², Macola
+
+        machineHours|Yes|Yes|M1, JobBOSS², Macola
+
+        laborHours|Yes|Yes|M1, JobBOSS², Macola
+
+        employeeID|Yes|Yes|JobBOSS²
+
+        timecardDate|Yes|Yes|JobBOSS²
+
+        uniqueID|Yes|Yes|M1, JobBOSS², Macola
+
+        rowVersion|Yes|Yes|M1, JobBOSS², Macola'
+      parameters:
+      - name: fields
+        in: query
+        description: A comma-separated list of fields to include in the result.
+        schema:
+          type: string
+      - name: sort
+        in: query
+        description: A comma-separated list of <a href='#sortexpr'>sort expressions</a>.
+        schema:
+          type: string
+      - name: take
+        in: query
+        description: Limit the number of results being returned
+        schema:
+          minimum: 0
+          type: integer
+      - name: skip
+        in: query
+        description: The number of results to skip. Combine with 'take' to fetch records in pages
+        schema:
+          minimum: 0
+          type: integer
+      - name: count
+        in: query
+        description: '<a href=''#countparam''>Data and count</a> response behavior '
+        schema:
+          maximum: 2
+          minimum: 0
+          type: integer
+      - name: filters
+        in: query
+        description: See <a href='#filterexpr'>Filter Expressions</a> for query string syntax. The Test UI and any generated code tool may expose filter parameters as a dictionary of name/value pairs, but if creating a raw HTTP request, they must be provided on the querystring as defined in the Filter Expression section.
+        style: form
+        schema:
+          type: object
+          additionalProperties:
+            type: string
+        examples:
+          Empty:
+            description: No filters applied
+          'Example #1':
+            description: A dictionary of name/value pairs that will be serialized as querystring parameters in the format ```name[operator]=value```
+            value:
+              timecardID[eq]: abc123
+              timecardLine[eq]: abc123
+              jobID[eq]: abc123
+              jobAssembly[eq]: abc123
+              jobOperation[gte]: 123
+              workCenterID[eq]: abc123
+              processID[eq]: abc123
+              status[eq]: abc123
+              timecardType[eq]: abc123
+              goodQty[gte]: 123
+              scrapQty[gte]: 123
+              reworkQty[gte]: 123
+              rejectQty[gte]: 123
+              startTime[gte]: '2020-09-25T04:03:00.0000000'
+              endTime[gte]: '2020-09-25T04:03:00.0000000'
+              machineHours[gte]: 123
+              laborHours[gte]: 123
+              employeeID[gte]: 123
+              timecardDate[gte]: '2020-09-25T04:03:00.0000000'
+              uniqueID[eq]: cc90686b-399e-4094-b431-fa462f84b0a8
+              rowVersion[gte]: 123
+      - name: expand
+        in: query
+        description: '### Supported Expansions
+
+          An expansion expression containing a comma separater list of relationships to expand.
+
+          Name        |Value       |Description
+
+          ------------|------------|-----------
+
+          workCenters|WorkCenters[]|<span style=''color:red''>This relationship is obsolete and will be removed in a future release. Use ''workCenter'' instead</span>
+
+          workCenter|WorkCenters|The workcenter associated with this line.
+
+          timecards|Timecards[]|<span style=''color:red''>This relationship is obsolete and will be removed in a future release. Use ''timecard'' instead</span>
+
+          timecard|Timecards|The timecard record associated with this line.
+
+          jobs|Jobs|<span style=''color:red''>This relationship is obsolete and will be removed in a future release. Use ''job'' instead</span>
+
+          job|Jobs|The Job associated with this line.
+
+          processes|Processes|<span style=''color:red''>This relationship is obsolete and will be removed in a future release. Use ''process'' instead</span>
+
+          process|Processes|The Process associated with this line.
+
+          jobOperations|JobOperations|<span style=''color:red''>This relationship is obsolete and will be removed in a future release. Use ''jobOperation'' instead</span>
+
+          jobOperationx|JobOperations|The Job Operation associated with this line.
+
+          salesOrderDeliveries|SalesOrderDeliveries[]|
+
+          salesOrderJobs|SalesOrderJobs|<span style=''color:red''>This relationship is obsolete and will be removed in a future release. Use ''salesOrderJob'' instead</span>
+
+          salesOrderJob|SalesOrderJobs|The Sales Order Job associated with this line.
+
+          '
+        schema:
+          type: string
+      - name: convertToUTC
+        in: query
+        description: Convert suppported date/time values to UTC before returning the data.
+        schema:
+          type: boolean
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/TimecardLineListResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TimecardLineListResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/TimecardLineListResponse'
+      operationId: getApiV21TimecardLines
+      x-operation-id-source: derived
+  /api/v2.1/timecard-lines/{id}:
+    get:
+      tags:
+      - TimecardLine
+      summary: Get a TimecardLine from the ERP system that match the given unique ID
+      description: 'Gets a TimecardLine by unique ID.
+
+
+        ## Supported ERPs
+
+        - M1
+
+        - JobBOSS²
+
+        - Macola
+
+        ## Features by Field
+
+        Field |Supported ERPs
+
+        ------------|------------
+
+        timecardID||M1, JobBOSS², Macola
+
+        timecardLine||M1, JobBOSS², Macola
+
+        jobID||M1, JobBOSS², Macola
+
+        jobAssembly||M1, JobBOSS², Macola
+
+        jobOperation||M1, JobBOSS², Macola
+
+        workCenterID||M1, JobBOSS², Macola
+
+        processID||M1, JobBOSS², Macola
+
+        status||M1, JobBOSS², Macola
+
+        timecardType||M1, JobBOSS², Macola
+
+        goodQty||M1, JobBOSS², Macola
+
+        scrapQty||M1, JobBOSS², Macola
+
+        reworkQty||M1, JobBOSS², Macola
+
+        rejectQty||M1, JobBOSS², Macola
+
+        startTime||M1, JobBOSS², Macola
+
+        endTime||M1, JobBOSS², Macola
+
+        machineHours||M1, JobBOSS², Macola
+
+        laborHours||M1, JobBOSS², Macola
+
+        employeeID||JobBOSS²
+
+        timecardDate||JobBOSS²
+
+        uniqueID||M1, JobBOSS², Macola
+
+        rowVersion||M1, JobBOSS², Macola'
+      parameters:
+      - name: id
+        in: path
+        description: The ID of the TimecardLine
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/TimecardLine'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TimecardLine'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/TimecardLine'
+      operationId: getApiV21TimecardLinesById
+      x-operation-id-source: derived
+    patch:
+      tags:
+      - TimecardLine
+      summary: Update an existing Timecard Line in the ERP system
+      parameters:
+      - name: id
+        in: path
+        description: The ID of the TimecardLine
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TimecardLineUpdateModel'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/TimecardLineUpdateModel'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/TimecardLineUpdateModel'
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/TimecardLine'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TimecardLine'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/TimecardLine'
+      operationId: patchApiV21TimecardLinesById
+      x-operation-id-source: derived
+components:
+  schemas:
+    SalesOrderJob:
+      title: SalesOrderJob
+      type: object
+      properties:
+        salesOrderID:
+          type: string
+        orderLine:
+          type: integer
+        orderLineDelivery:
+          type: string
+        jobID:
+          type: string
+        orderJobSeq:
+          type: integer
+          format: int32
+        uniqueID:
+          type: string
+        rowVersion:
+          type: integer
+          format: int64
+    TimecardLineDetailCreateModel:
+      required:
+      - jobID
+      type: object
+      properties:
+        jobID:
+          minLength: 1
+          type: string
+        jobOperationSeq:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        elapsedTime:
+          type:
+          - number
+          - 'null'
+          format: double
+        setupTime:
+          type:
+          - number
+          - 'null'
+          format: double
+        machineHours:
+          type:
+          - number
+          - 'null'
+          description: Not used for JobBOSS²
+          format: double
+        laborHours:
+          type:
+          - number
+          - 'null'
+          description: Not used for JobBOSS²
+          format: double
+        processID:
+          type:
+          - string
+          - 'null'
+        workCenterID:
+          type:
+          - string
+          - 'null'
+        goodQty:
+          type:
+          - number
+          - 'null'
+          format: double
+        scrapQty:
+          type:
+          - number
+          - 'null'
+          format: double
+        comments:
+          type:
+          - string
+          - 'null'
+        startTime:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        endTime:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        jobOperationID:
+          type:
+          - string
+          - 'null'
+        timecardID:
+          type:
+          - string
+          - 'null'
+        employeeID:
+          type:
+          - string
+          - 'null'
+        timecardDate:
+          type:
+          - string
+          - 'null'
+          format: date
+      additionalProperties: false
+    TimecardLineUpdateModel:
+      type: object
+      properties:
+        goodQty:
+          type:
+          - number
+          - 'null'
+          format: double
+        scrapQty:
+          type:
+          - number
+          - 'null'
+          format: double
+      additionalProperties: false
+    ShiftDay:
+      title: ShiftDay
+      type: object
+      properties:
+        shiftID:
+          type: number
+          format: float
+        shiftDay:
+          type: number
+          format: float
+        startTime:
+          type: string
+        endTime:
+          type: string
+        uniqueID:
+          type: string
+        rowVersion:
+          type: integer
+          format: int64
+    SalesOrderDelivery:
+      title: SalesOrderDelivery
+      type: object
+      properties:
+        salesOrderID:
+          type: string
+        orderLine:
+          type: integer
+        orderLineDelivery:
+          type: string
+        promisedDate:
+          type: string
+          format: date-time
+        promisedQty:
+          type: number
+          format: double
+        shippedDate:
+          type: string
+          format: date-time
+        shippedQty:
+          type: number
+          format: double
+        uniqueID:
+          type: string
+        rowVersion:
+          type: integer
+          format: int64
+        deliveryTypeCode:
+          type: string
+        salesOrderType:
+          type: string
+        salesOrderJobs:
+          type: array
+          items:
+            $ref: '#/components/schemas/SalesOrderJob'
+    Employee:
+      title: Employee
+      type: object
+      properties:
+        employeeID:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        title:
+          type: string
+        supervisorEmployeeID:
+          type: string
+        payRate:
+          type: number
+          format: double
+        deptID:
+          type: string
+        shiftID:
+          type: string
+        isActive:
+          type: boolean
+        uniqueID:
+          type: string
+        rowVersion:
+          type: integer
+          format: int64
+    Job:
+      title: Job
+      type: object
+      properties:
+        jobID:
+          type: string
+        customerID:
+          type: string
+        partID:
+          type: string
+        partRevisionID:
+          type: string
+        orderQty:
+          type: number
+          format: double
+        prodQty:
+          type: number
+          format: double
+        schedStartDate:
+          type: string
+          format: date-time
+        schedEndDate:
+          type: string
+          format: date-time
+        estLeadTime:
+          type: number
+          format: double
+        actStartDate:
+          type: string
+          format: date-time
+        actEndDate:
+          type: string
+          format: date-time
+        dueDate:
+          type: string
+          format: date-time
+        status:
+          type: string
+        uniqueID:
+          type: string
+        rowVersion:
+          type: integer
+          format: int64
+        jobCost:
+          type: number
+          format: double
+        jobCostForeign:
+          type: number
+          format: double
+        plantID:
+          type: string
+        jobDate:
+          type: string
+          format: date-time
+        partWarehouseID:
+          type: string
+        partBinID:
+          type: string
+        partShortDesc:
+          type: string
+        inventoryQty:
+          type: number
+          format: double
+        isPlanningComplete:
+          type: boolean
+        isScheduleComplete:
+          type: boolean
+        isReleasedToFloor:
+          type: boolean
+        isOnHold:
+          type: boolean
+        completedDate:
+          type: string
+          format: date-time
+        quantityCompleted:
+          type: number
+          format: double
+        quantityShipped:
+          type: number
+          format: double
+        quantityRcvdToInventory:
+          type: number
+          format: double
+        projectID:
+          type: string
+        projectAreaID:
+          type: string
+        isClosed:
+          type: boolean
+        closedDate:
+          type: string
+          format: date-time
+        jobPriorityID:
+          type: string
+        unitOfMeasure:
+          type: string
+        plannerEmployeeID:
+          type: string
+        parentJobID:
+          type: string
+        shortDesc:
+          type: string
+        childJobID:
+          type: string
+        jobType:
+          type: string
+        jobOperations:
+          type: array
+          items:
+            $ref: '#/components/schemas/JobOperation'
+    Shift:
+      title: Shift
+      type: object
+      properties:
+        shiftID:
+          type: number
+          format: float
+        shortDesc:
+          type: string
+        inactiveDate:
+          type: string
+          format: date-time
+        uniqueID:
+          type: string
+        rowVersion:
+          type: integer
+          format: int64
+        shiftDays:
+          type: array
+          items:
+            $ref: '#/components/schemas/ShiftDay'
+    Department:
+      title: Department
+      type: object
+      properties:
+        deptID:
+          type: string
+        shortDesc:
+          type: string
+        uniqueID:
+          type: string
+        rowVersion:
+          type: integer
+          format: int64
+    TimecardLine:
+      title: TimecardLine
+      type: object
+      properties:
+        timecardID:
+          type: string
+        timecardLine:
+          type: string
+        jobID:
+          type: string
+        jobAssembly:
+          type: string
+        jobOperation:
+          type: integer
+          format: int32
+        workCenterID:
+          type: string
+        processID:
+          type: string
+        status:
+          type: string
+        timecardType:
+          type: string
+        goodQty:
+          type: number
+          format: double
+        scrapQty:
+          type: number
+          format: double
+        reworkQty:
+          type: number
+          format: double
+        rejectQty:
+          type: number
+          format: double
+        startTime:
+          type: string
+          format: date-time
+        endTime:
+          type: string
+          format: date-time
+        machineHours:
+          type: number
+          format: double
+        laborHours:
+          type: number
+          format: double
+        employeeID:
+          type: integer
+          format: int32
+        timecardDate:
+          type: string
+          format: date-time
+        uniqueID:
+          type: string
+        rowVersion:
+          type: integer
+          format: int64
+        workCenters:
+          type: array
+          items:
+            $ref: '#/components/schemas/WorkCenter'
+        workCenter:
+          $ref: '#/components/schemas/WorkCenter'
+        timecards:
+          type: array
+          items:
+            $ref: '#/components/schemas/Timecard'
+        timecard:
+          $ref: '#/components/schemas/Timecard'
+        jobs:
+          $ref: '#/components/schemas/Job'
+        job:
+          $ref: '#/components/schemas/Job'
+        processes:
+          $ref: '#/components/schemas/Process'
+        process:
+          $ref: '#/components/schemas/Process'
+        jobOperations:
+          $ref: '#/components/schemas/JobOperation'
+        jobOperationx:
+          $ref: '#/components/schemas/JobOperation'
+        salesOrderDeliveries:
+          type: array
+          items:
+            $ref: '#/components/schemas/SalesOrderDelivery'
+        salesOrderJobs:
+          $ref: '#/components/schemas/SalesOrderJob'
+        salesOrderJob:
+          $ref: '#/components/schemas/SalesOrderJob'
+    WorkCenter:
+      title: WorkCenter
+      type: object
+      properties:
+        workCenterID:
+          type: string
+        shortDesc:
+          type: string
+        deptID:
+          type: string
+        overHeadRate:
+          type: string
+        quoteRate:
+          type: string
+        processID:
+          type: string
+        parentWorkCenterID:
+          type: string
+        shiftID:
+          type: string
+        uniqueID:
+          type: string
+        rowVersion:
+          type: integer
+          format: int64
+        laborRate:
+          type: string
+        departments:
+          type: array
+          items:
+            $ref: '#/components/schemas/Department'
+        shifts:
+          type: array
+          items:
+            $ref: '#/components/schemas/Shift'
+    TimecardLineListResponse:
+      type: object
+      properties:
+        data:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/TimecardLine'
+          readOnly: true
+        resultCount:
+          type: integer
+          format: int32
+      additionalProperties: false
+    Process:
+      title: Process
+      type: object
+      properties:
+        processID:
+          type: string
+        shortDesc:
+          type: string
+        setupRate:
+          type: string
+        productionRate:
+          type: string
+        uniqueID:
+          type: string
+        rowVersion:
+          type: integer
+          format: int64
+    JobOperation:
+      title: JobOperation
+      type: object
+      properties:
+        jobID:
+          type: string
+        jobAssembly:
+          type: string
+        jobOperationSeq:
+          type: integer
+          format: int32
+        status:
+          type: string
+        workCenterID:
+          type: string
+        processID:
+          type: string
+        shortDesc:
+          type: string
+        longDescText:
+          type: string
+        longDescFormatted:
+          type: string
+        outsideOperation:
+          type: string
+        partID:
+          type: string
+        partRevisionID:
+          type: string
+        schedStartDate:
+          type: string
+          format: date-time
+        schedEndDate:
+          type: string
+          format: date-time
+        actStartDate:
+          type: string
+          format: date-time
+        actEndDate:
+          type: string
+          format: date-time
+        estSetupHours:
+          type: number
+          format: double
+        estProdHours:
+          type: number
+          format: double
+        estQueueHours:
+          type: number
+          format: double
+        estMoveHours:
+          type: number
+          format: double
+        estQAHours:
+          type: number
+          format: double
+        actSetupHours:
+          type: number
+          format: double
+        actualProdHours:
+          type: number
+          format: double
+        actQAHours:
+          type: number
+          format: double
+        vendorID:
+          type: string
+        estSetupTimeValue:
+          type: number
+          format: double
+        estSetupTimeUnit:
+          type: string
+        estProdTimeValue:
+          type: number
+          format: double
+        estProdTimeUnit:
+          type: string
+        uniqueID:
+          type: string
+        rowVersion:
+          type: integer
+          format: int64
+        operationQty:
+          type: number
+          format: double
+        quantityComplete:
+          type: number
+          format: double
+        isSetupComplete:
+          type: boolean
+        plantID:
+          type: string
+        purchaseOrderID:
+          type: string
+        supplierOrganizationID:
+          type: string
+        purchaseLocationID:
+          type: string
+        RFQID:
+          type: string
+        defaultEmployeeID:
+          type: string
+        defaultEmployeeID2:
+          type: string
+        defaultEmployeeID3:
+          type: string
+        isUnattended:
+          type: boolean
+        jobType:
+          type: string
+        supplierLeadTime:
+          type: integer
+          format: int32
+        jobIsClosed:
+          type: boolean
+        jobClosedDate:
+          type: string
+          format: date-time
+    Timecard:
+      title: Timecard
+      type: object
+      properties:
+        timecardID:
+          type: string
+        employeeID:
+          type: string
+        shiftID:
+          type: number
+          format: float
+        timecardDate:
+          type: string
+          format: date-time
+        uniqueID:
+          type: string
+        rowVersion:
+          type: integer
+          format: int64
+        timecardlines:
+          type: array
+          items:
+            $ref: '#/components/schemas/TimecardLine'
+        employees:
+          type: array
+          items:
+            $ref: '#/components/schemas/Employee'
+  securitySchemes:
+    Bearer:
+      type: oauth2
+      description: OAuth 2.0 Client Credentials Flow with API Users issued from Integration Engine Management Console
+      flows:
+        clientCredentials:
+          tokenUrl: https://api-user.integrations.ecimanufacturing.com/oauth2/api-user/token
+          scopes:
+            openid: openid

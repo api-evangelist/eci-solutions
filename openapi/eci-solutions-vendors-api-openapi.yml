@@ -1,0 +1,1343 @@
+openapi: 3.2.0
+info:
+  title: JobBOSS² Public Vendors API
+  description: Provides a common API surface for accessing ECI ERP JobBOSS².
+  version: v1
+servers:
+- url: https://api-jb2.integrations.ecimanufacturing.com:443
+  description: API Host
+security:
+- Bearer: []
+tags:
+- name: Vendors
+paths:
+  /api/v1/vendors:
+    get:
+      tags:
+      - Vendors
+      summary: Gets a list of Vendors
+      description: 'By default a vendor response will include only the fields: active, comments2, currencyCode, enteredDate, federalIDNumber, GLAccount1, lastModDate, leadTime, termsCode, uniqueID, vendorAccountNumber, vendorCode, vendorName, vendorType. You may specify the exact fields to return using the fields parameter.'
+      parameters:
+      - name: fields
+        in: query
+        description: A comma separated list of fields to include in the result.
+        schema:
+          type: string
+      - name: sort
+        in: query
+        description: A comma separated list of field to sort by. See the <a href='#sort-expressions'>Sort Expressions</a> section for more information.
+        schema:
+          type: string
+      - name: filters
+        in: query
+        description: Filters must be provided as query string parameters as defined in the <a href='#filter-expressions'>Filter Expressions</a> section.
+        schema:
+          type: object
+          additionalProperties:
+            type: string
+        examples:
+          No filters: {}
+          Filter by Type:
+            value:
+              vendorType: STEEL
+      - name: skip
+        in: query
+        description: The number of records at the start of the result set to skip over.
+        schema:
+          type: string
+      - name: take
+        in: query
+        description: The number of records to retrieve.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VendorListSuccessResponse'
+              example:
+                Data:
+                - accountingID: string
+                  active: false
+                  ARContact: string
+                  ARPhone: string
+                  averageDaysToPay: 0
+                  comments1: string
+                  comments2: string
+                  currencyCode: string
+                  dateLast: '2026-09-06T17:13:13.0000000+00:00'
+                  dateOpen: '2026-09-06T17:13:13.0000000+00:00'
+                  defaultEmployeeCode: string
+                  defaultFOB: string
+                  enteredBy: string
+                  enteredDate: '2026-09-06T17:13:13.0000000+00:00'
+                  FAX: string
+                  federalIDNumber: string
+                  form1099Vendor: false
+                  GLAccount1: string
+                  GSTCode: string
+                  isWebUser: false
+                  lastModDate: '2026-09-06T17:13:13.0000000+00:00'
+                  lastModUser: string
+                  leadTime: 0
+                  markup: 0
+                  minimumOrder: 0
+                  outsideService: false
+                  phone: string
+                  printTicket: false
+                  purchasingAddress1: string
+                  purchasingCity: string
+                  purchasingContact: string
+                  purchasingCountry: string
+                  purchasingPhone: string
+                  purchasingState: string
+                  purchasingZipCode: string
+                  QBVendorCode: string
+                  remittanceAddress1: string
+                  remittanceCity: string
+                  remittanceCountry: string
+                  remittanceState: string
+                  remittanceZipCode: string
+                  restockingPercent: 0
+                  revisedDate: '2026-09-06T17:13:13.0000000+00:00'
+                  salesTaxCode: string
+                  setupCharge: 0
+                  shipCode: string
+                  shippingAddress1: string
+                  shippingCity: string
+                  shippingCountry: string
+                  shippingState: string
+                  shippingZipCode: string
+                  shipVia: string
+                  termsCode: string
+                  uniqueID: 0
+                  user_Currency1: 0
+                  user_Currency2: 0
+                  user_Date1: '2026-09-06T17:13:13.0000000+00:00'
+                  user_Date2: '2026-09-06T17:13:13.0000000+00:00'
+                  user_Memo1: string
+                  user_Number1: 0
+                  user_Number2: 0
+                  user_Number3: 0
+                  user_Number4: 0
+                  user_Text1: string
+                  user_Text2: string
+                  user_Text3: string
+                  user_Text4: string
+                  vendorAccountNumber: string
+                  vendorCode: string
+                  vendorName: string
+                  vendorType: string
+                  website: string
+                  workdayBegin: string
+                  workdayEnd: string
+                  workSaturday: false
+                  workSunday: false
+                  YTDPurchases: 0
+      operationId: getApiV1Vendors
+      x-operation-id-source: derived
+    post:
+      tags:
+      - Vendors
+      summary: Creates a Vendor
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VendorCreate'
+            example:
+              active: false
+              comments1: string
+              comments2: string
+              currencyCode: string
+              defaultEmployeeCode: string
+              FAX: string
+              federalIDNumber: string
+              form1099Vendor: false
+              GLAccount1: string
+              GSTCode: string
+              leadTime: 0
+              markup: 0
+              minimumOrder: 0
+              outsideService: false
+              phone: string
+              purchasingAddress1: string
+              purchasingCity: string
+              purchasingContact: string
+              purchasingCountry: string
+              purchasingPhone: string
+              purchasingState: string
+              purchasingZipCode: string
+              QBVendorCode: string
+              remittanceAddress1: string
+              remittanceCity: string
+              remittanceCountry: string
+              remittanceState: string
+              remittanceZipCode: string
+              restockingPercent: 0
+              salesTaxCode: string
+              setupCharge: 0
+              shipCode: string
+              shippingAddress1: string
+              shippingCity: string
+              shippingCountry: string
+              shippingState: string
+              shippingZipCode: string
+              shipVia: string
+              termsCode: string
+              user_Currency1: 0
+              user_Currency2: 0
+              user_Date1: '2026-09-06T17:13:13.0000000+00:00'
+              user_Date2: '2026-09-06T17:13:13.0000000+00:00'
+              user_Memo1: string
+              user_Number1: 0
+              user_Number2: 0
+              user_Number3: 0
+              user_Number4: 0
+              user_Text1: string
+              user_Text2: string
+              user_Text3: string
+              user_Text4: string
+              vendorAccountNumber: string
+              vendorCode: string
+              vendorName: string
+              vendorType: string
+              website: string
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Vendor'
+              example:
+                accountingID: string
+                active: false
+                ARContact: string
+                ARPhone: string
+                averageDaysToPay: 0
+                comments1: string
+                comments2: string
+                currencyCode: string
+                dateLast: '2026-09-06T17:13:13.0000000+00:00'
+                dateOpen: '2026-09-06T17:13:13.0000000+00:00'
+                defaultEmployeeCode: string
+                defaultFOB: string
+                enteredBy: string
+                enteredDate: '2026-09-06T17:13:13.0000000+00:00'
+                FAX: string
+                federalIDNumber: string
+                form1099Vendor: false
+                GLAccount1: string
+                GSTCode: string
+                isWebUser: false
+                lastModDate: '2026-09-06T17:13:13.0000000+00:00'
+                lastModUser: string
+                leadTime: 0
+                markup: 0
+                minimumOrder: 0
+                outsideService: false
+                phone: string
+                printTicket: false
+                purchasingAddress1: string
+                purchasingCity: string
+                purchasingContact: string
+                purchasingCountry: string
+                purchasingPhone: string
+                purchasingState: string
+                purchasingZipCode: string
+                QBVendorCode: string
+                remittanceAddress1: string
+                remittanceCity: string
+                remittanceCountry: string
+                remittanceState: string
+                remittanceZipCode: string
+                restockingPercent: 0
+                revisedDate: '2026-09-06T17:13:13.0000000+00:00'
+                salesTaxCode: string
+                setupCharge: 0
+                shipCode: string
+                shippingAddress1: string
+                shippingCity: string
+                shippingCountry: string
+                shippingState: string
+                shippingZipCode: string
+                shipVia: string
+                termsCode: string
+                uniqueID: 0
+                user_Currency1: 0
+                user_Currency2: 0
+                user_Date1: '2026-09-06T17:13:13.0000000+00:00'
+                user_Date2: '2026-09-06T17:13:13.0000000+00:00'
+                user_Memo1: string
+                user_Number1: 0
+                user_Number2: 0
+                user_Number3: 0
+                user_Number4: 0
+                user_Text1: string
+                user_Text2: string
+                user_Text3: string
+                user_Text4: string
+                vendorAccountNumber: string
+                vendorCode: string
+                vendorName: string
+                vendorType: string
+                website: string
+                workdayBegin: string
+                workdayEnd: string
+                workSaturday: false
+                workSunday: false
+                YTDPurchases: 0
+      operationId: postApiV1Vendors
+      x-operation-id-source: derived
+  /api/v1/vendors/{vendorCode}:
+    get:
+      tags:
+      - Vendors
+      summary: Gets a Vendor by vendor code
+      description: 'By default a vendor response will include only the fields: active, comments2, currencyCode, enteredDate, federalIDNumber, GLAccount1, lastModDate, leadTime, termsCode, uniqueID, vendorAccountNumber, vendorCode, vendorName, vendorType. You may specify the exact fields to return using the fields parameter.'
+      parameters:
+      - name: vendorCode
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: fields
+        in: query
+        description: A comma separated list of fields to include in the result.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VendorSuccessResponse'
+              example:
+                Data:
+                  accountingID: string
+                  active: false
+                  ARContact: string
+                  ARPhone: string
+                  averageDaysToPay: 0
+                  comments1: string
+                  comments2: string
+                  currencyCode: string
+                  dateLast: '2026-09-06T17:13:13.0000000+00:00'
+                  dateOpen: '2026-09-06T17:13:13.0000000+00:00'
+                  defaultEmployeeCode: string
+                  defaultFOB: string
+                  enteredBy: string
+                  enteredDate: '2026-09-06T17:13:13.0000000+00:00'
+                  FAX: string
+                  federalIDNumber: string
+                  form1099Vendor: false
+                  GLAccount1: string
+                  GSTCode: string
+                  isWebUser: false
+                  lastModDate: '2026-09-06T17:13:13.0000000+00:00'
+                  lastModUser: string
+                  leadTime: 0
+                  markup: 0
+                  minimumOrder: 0
+                  outsideService: false
+                  phone: string
+                  printTicket: false
+                  purchasingAddress1: string
+                  purchasingCity: string
+                  purchasingContact: string
+                  purchasingCountry: string
+                  purchasingPhone: string
+                  purchasingState: string
+                  purchasingZipCode: string
+                  QBVendorCode: string
+                  remittanceAddress1: string
+                  remittanceCity: string
+                  remittanceCountry: string
+                  remittanceState: string
+                  remittanceZipCode: string
+                  restockingPercent: 0
+                  revisedDate: '2026-09-06T17:13:13.0000000+00:00'
+                  salesTaxCode: string
+                  setupCharge: 0
+                  shipCode: string
+                  shippingAddress1: string
+                  shippingCity: string
+                  shippingCountry: string
+                  shippingState: string
+                  shippingZipCode: string
+                  shipVia: string
+                  termsCode: string
+                  uniqueID: 0
+                  user_Currency1: 0
+                  user_Currency2: 0
+                  user_Date1: '2026-09-06T17:13:13.0000000+00:00'
+                  user_Date2: '2026-09-06T17:13:13.0000000+00:00'
+                  user_Memo1: string
+                  user_Number1: 0
+                  user_Number2: 0
+                  user_Number3: 0
+                  user_Number4: 0
+                  user_Text1: string
+                  user_Text2: string
+                  user_Text3: string
+                  user_Text4: string
+                  vendorAccountNumber: string
+                  vendorCode: string
+                  vendorName: string
+                  vendorType: string
+                  website: string
+                  workdayBegin: string
+                  workdayEnd: string
+                  workSaturday: false
+                  workSunday: false
+                  YTDPurchases: 0
+      operationId: getApiV1VendorsByVendorCode
+      x-operation-id-source: derived
+    patch:
+      tags:
+      - Vendors
+      summary: Updates a Vendor
+      parameters:
+      - name: vendorCode
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VendorUpdate'
+            example:
+              active: false
+              comments1: string
+              comments2: string
+              currencyCode: string
+              defaultEmployeeCode: string
+              federalIDNumber: string
+              form1099Vendor: false
+              GLAccount1: string
+              GSTCode: string
+              leadTime: 0
+              markup: 0
+              outsideService: false
+              purchasingAddress1: string
+              purchasingCity: string
+              purchasingContact: string
+              purchasingCountry: string
+              purchasingPhone: string
+              purchasingState: string
+              purchasingZipCode: string
+              remittanceAddress1: string
+              remittanceCity: string
+              remittanceCountry: string
+              remittanceState: string
+              remittanceZipCode: string
+              restockingPercent: 0
+              salesTaxCode: string
+              setupCharge: 0
+              shipCode: string
+              shippingAddress1: string
+              shippingCity: string
+              shippingCountry: string
+              shippingState: string
+              shippingZipCode: string
+              shipVia: string
+              user_Currency1: 0
+              user_Currency2: 0
+              user_Date1: '2026-09-06T17:13:13.0000000+00:00'
+              user_Date2: '2026-09-06T17:13:13.0000000+00:00'
+              user_Memo1: string
+              user_Number1: 0
+              user_Number2: 0
+              user_Number3: 0
+              user_Number4: 0
+              user_Text1: string
+              user_Text2: string
+              user_Text3: string
+              user_Text4: string
+              vendorAccountNumber: string
+              vendorName: string
+              vendorType: string
+              website: string
+      responses:
+        '204':
+          description: Success
+      operationId: patchApiV1VendorsByVendorCode
+      x-operation-id-source: derived
+components:
+  schemas:
+    Vendor:
+      type: object
+      properties:
+        accountingID:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        active:
+          type: boolean
+          readOnly: true
+        ARContact:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        ARPhone:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        averageDaysToPay:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          readOnly: true
+        comments1:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        comments2:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        currencyCode:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        dateLast:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        dateOpen:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        defaultEmployeeCode:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        defaultFOB:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        enteredBy:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        enteredDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        FAX:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        federalIDNumber:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        form1099Vendor:
+          type: boolean
+          readOnly: true
+        GLAccount1:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        GSTCode:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        isWebUser:
+          type: boolean
+          readOnly: true
+        lastModDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        lastModUser:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        leadTime:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          readOnly: true
+        markup:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        minimumOrder:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        outsideService:
+          type: boolean
+          readOnly: true
+        phone:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        printTicket:
+          type: boolean
+          readOnly: true
+        purchasingAddress1:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        purchasingCity:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        purchasingContact:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        purchasingCountry:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        purchasingPhone:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        purchasingState:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        purchasingZipCode:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        QBVendorCode:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        remittanceAddress1:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        remittanceCity:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        remittanceCountry:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        remittanceState:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        remittanceZipCode:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        restockingPercent:
+          type:
+          - number
+          - 'null'
+          format: float
+          readOnly: true
+        revisedDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        salesTaxCode:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        setupCharge:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        shipCode:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        shippingAddress1:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        shippingCity:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        shippingCountry:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        shippingState:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        shippingZipCode:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        shipVia:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        termsCode:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        uniqueID:
+          type: integer
+          format: int32
+          readOnly: true
+        user_Currency1:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        user_Currency2:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        user_Date1:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        user_Date2:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        user_Memo1:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        user_Number1:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        user_Number2:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        user_Number3:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        user_Number4:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        user_Text1:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        user_Text2:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        user_Text3:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        user_Text4:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        vendorAccountNumber:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        vendorCode:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        vendorName:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        vendorType:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        website:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        workdayBegin:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        workdayEnd:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        workSaturday:
+          type: boolean
+          readOnly: true
+        workSunday:
+          type: boolean
+          readOnly: true
+        YTDPurchases:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+      additionalProperties: false
+    VendorCreate:
+      required:
+      - currencyCode
+      - vendorCode
+      - vendorName
+      type: object
+      properties:
+        active:
+          type: boolean
+        comments1:
+          type:
+          - string
+          - 'null'
+        comments2:
+          type:
+          - string
+          - 'null'
+        currencyCode:
+          type: string
+        defaultEmployeeCode:
+          type:
+          - string
+          - 'null'
+        FAX:
+          type:
+          - string
+          - 'null'
+        federalIDNumber:
+          type:
+          - string
+          - 'null'
+        form1099Vendor:
+          type: boolean
+        GLAccount1:
+          type:
+          - string
+          - 'null'
+        GSTCode:
+          type:
+          - string
+          - 'null'
+        leadTime:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        markup:
+          type:
+          - number
+          - 'null'
+          format: double
+        minimumOrder:
+          type:
+          - number
+          - 'null'
+          format: double
+        outsideService:
+          type: boolean
+        phone:
+          type:
+          - string
+          - 'null'
+        purchasingAddress1:
+          type:
+          - string
+          - 'null'
+        purchasingCity:
+          type:
+          - string
+          - 'null'
+        purchasingContact:
+          type:
+          - string
+          - 'null'
+        purchasingCountry:
+          type:
+          - string
+          - 'null'
+        purchasingPhone:
+          type:
+          - string
+          - 'null'
+        purchasingState:
+          type:
+          - string
+          - 'null'
+        purchasingZipCode:
+          type:
+          - string
+          - 'null'
+        QBVendorCode:
+          type:
+          - string
+          - 'null'
+        remittanceAddress1:
+          type:
+          - string
+          - 'null'
+        remittanceCity:
+          type:
+          - string
+          - 'null'
+        remittanceCountry:
+          type:
+          - string
+          - 'null'
+        remittanceState:
+          type:
+          - string
+          - 'null'
+        remittanceZipCode:
+          type:
+          - string
+          - 'null'
+        restockingPercent:
+          type:
+          - number
+          - 'null'
+          format: float
+        salesTaxCode:
+          type:
+          - string
+          - 'null'
+        setupCharge:
+          type:
+          - number
+          - 'null'
+          format: double
+        shipCode:
+          type:
+          - string
+          - 'null'
+        shippingAddress1:
+          type:
+          - string
+          - 'null'
+        shippingCity:
+          type:
+          - string
+          - 'null'
+        shippingCountry:
+          type:
+          - string
+          - 'null'
+        shippingState:
+          type:
+          - string
+          - 'null'
+        shippingZipCode:
+          type:
+          - string
+          - 'null'
+        shipVia:
+          type:
+          - string
+          - 'null'
+        termsCode:
+          type:
+          - string
+          - 'null'
+        user_Currency1:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Currency2:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Date1:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        user_Date2:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        user_Memo1:
+          type:
+          - string
+          - 'null'
+        user_Number1:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Number2:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Number3:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Number4:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Text1:
+          type:
+          - string
+          - 'null'
+        user_Text2:
+          type:
+          - string
+          - 'null'
+        user_Text3:
+          type:
+          - string
+          - 'null'
+        user_Text4:
+          type:
+          - string
+          - 'null'
+        vendorAccountNumber:
+          type:
+          - string
+          - 'null'
+        vendorCode:
+          type: string
+        vendorName:
+          type: string
+        vendorType:
+          type:
+          - string
+          - 'null'
+        website:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    VendorListSuccessResponse:
+      type: object
+      properties:
+        Data:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Vendor'
+      additionalProperties: false
+    VendorSuccessResponse:
+      type: object
+      properties:
+        Data:
+          $ref: '#/components/schemas/Vendor'
+      additionalProperties: false
+    VendorUpdate:
+      type: object
+      properties:
+        active:
+          type: boolean
+        comments1:
+          type:
+          - string
+          - 'null'
+        comments2:
+          type:
+          - string
+          - 'null'
+        currencyCode:
+          type:
+          - string
+          - 'null'
+        defaultEmployeeCode:
+          type:
+          - string
+          - 'null'
+        federalIDNumber:
+          type:
+          - string
+          - 'null'
+        form1099Vendor:
+          type: boolean
+        GLAccount1:
+          type:
+          - string
+          - 'null'
+        GSTCode:
+          type:
+          - string
+          - 'null'
+        leadTime:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        markup:
+          type:
+          - number
+          - 'null'
+          format: double
+        outsideService:
+          type: boolean
+        purchasingAddress1:
+          type:
+          - string
+          - 'null'
+        purchasingCity:
+          type:
+          - string
+          - 'null'
+        purchasingContact:
+          type:
+          - string
+          - 'null'
+        purchasingCountry:
+          type:
+          - string
+          - 'null'
+        purchasingPhone:
+          type:
+          - string
+          - 'null'
+        purchasingState:
+          type:
+          - string
+          - 'null'
+        purchasingZipCode:
+          type:
+          - string
+          - 'null'
+        remittanceAddress1:
+          type:
+          - string
+          - 'null'
+        remittanceCity:
+          type:
+          - string
+          - 'null'
+        remittanceCountry:
+          type:
+          - string
+          - 'null'
+        remittanceState:
+          type:
+          - string
+          - 'null'
+        remittanceZipCode:
+          type:
+          - string
+          - 'null'
+        restockingPercent:
+          type:
+          - number
+          - 'null'
+          format: float
+        salesTaxCode:
+          type:
+          - string
+          - 'null'
+        setupCharge:
+          type:
+          - number
+          - 'null'
+          format: double
+        shipCode:
+          type:
+          - string
+          - 'null'
+        shippingAddress1:
+          type:
+          - string
+          - 'null'
+        shippingCity:
+          type:
+          - string
+          - 'null'
+        shippingCountry:
+          type:
+          - string
+          - 'null'
+        shippingState:
+          type:
+          - string
+          - 'null'
+        shippingZipCode:
+          type:
+          - string
+          - 'null'
+        shipVia:
+          type:
+          - string
+          - 'null'
+        user_Currency1:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Currency2:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Date1:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        user_Date2:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        user_Memo1:
+          type:
+          - string
+          - 'null'
+        user_Number1:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Number2:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Number3:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Number4:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Text1:
+          type:
+          - string
+          - 'null'
+        user_Text2:
+          type:
+          - string
+          - 'null'
+        user_Text3:
+          type:
+          - string
+          - 'null'
+        user_Text4:
+          type:
+          - string
+          - 'null'
+        vendorAccountNumber:
+          type:
+          - string
+          - 'null'
+        vendorName:
+          type:
+          - string
+          - 'null'
+        vendorType:
+          type:
+          - string
+          - 'null'
+        website:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+  securitySchemes:
+    Bearer:
+      type: oauth2
+      description: OAuth 2.0 Client Credentials Flow with API Users issued from Integration Engine Management Console
+      flows:
+        clientCredentials:
+          tokenUrl: https://api-user.integrations.ecimanufacturing.com/oauth2/api-user/token
+          scopes:
+            openid: openid

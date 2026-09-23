@@ -1,0 +1,1239 @@
+openapi: 3.2.0
+info:
+  title: JobBOSS² Public Order Line Items API
+  description: Provides a common API surface for accessing ECI ERP JobBOSS².
+  version: v1
+servers:
+- url: https://api-jb2.integrations.ecimanufacturing.com:443
+  description: API Host
+security:
+- Bearer: []
+tags:
+- name: Order Line Items
+paths:
+  /api/v1/order-line-items:
+    get:
+      tags:
+      - Order Line Items
+      summary: Gets a list of Order Line Items
+      description: 'By default an order line item response will include only the fields: actualEndDate, actualStartDate, dateFinished, dueDate, estimatedEndDate, estimatedStartDate, itemNumber, jobNotes, jobNumber, masterJobNumber, orderNumber, partDescription, partNumber, pricingUnit, productCode, quantityCanceled, quantityOrdered, quantityShippedToCustomer, quantityShippedToStock, quantityToMake, quantityToStock, revision, status, totalActualHours, totalEstimatedHours, uniqueID, unitPrice, unitPriceForeign, workCode. You may specify the exact fields to return using the fields parameter.'
+      parameters:
+      - name: fields
+        in: query
+        description: A comma separated list of fields to include in the result.
+        schema:
+          type: string
+      - name: sort
+        in: query
+        description: A comma separated list of field to sort by. See the <a href='#sort-expressions'>Sort Expressions</a> section for more information.
+        schema:
+          type: string
+      - name: filters
+        in: query
+        description: Filters must be provided as query string parameters as defined in the <a href='#filter-expressions'>Filter Expressions</a> section.
+        schema:
+          type: object
+          additionalProperties:
+            type: string
+        examples:
+          No filters: {}
+          Filter by Order:
+            value:
+              orderNumber: '4370'
+      - name: skip
+        in: query
+        description: The number of records at the start of the result set to skip over.
+        schema:
+          type: string
+      - name: take
+        in: query
+        description: The number of records to retrieve.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderLineItemListSuccessResponse'
+              example:
+                Data:
+                - actualEndDate: '2026-09-06T17:13:12.0000000+00:00'
+                  actualStartDate: '2026-09-06T17:13:12.0000000+00:00'
+                  billingRate: 0
+                  commissionPercent: 0
+                  cumulativeBilling: 0
+                  currentWorkCenter: string
+                  dateFinished: '2026-09-06T17:13:12.0000000+00:00'
+                  discountPercent: 0
+                  dueDate: '2026-09-06T17:13:12.0000000+00:00'
+                  estimatedEndDate: '2026-09-06T17:13:12.0000000+00:00'
+                  estimatedStartDate: '2026-09-06T17:13:12.0000000+00:00'
+                  FOB: string
+                  isJobLabelPrinted: false
+                  isScheduled: false
+                  isTaxable: false
+                  itemNumber: 0
+                  jobNotes: string
+                  jobNumber: string
+                  jobOnHold: false
+                  lastModDate: '2026-09-06T17:13:12.0000000+00:00'
+                  lastModUser: string
+                  masterJobNumber: string
+                  masterStepNumber: 0
+                  miscCharges: 0
+                  miscChargesBilled: false
+                  miscChargesForeign: 0
+                  miscDescription: string
+                  orderNumber: string
+                  overlapSteps: false
+                  partDescription: string
+                  partNumber: string
+                  pricingUnit: string
+                  priority: 0
+                  productCode: string
+                  quantityCanceled: 0
+                  quantityOrdered: 0
+                  quantityShippedToCustomer: 0
+                  quantityShippedToStock: 0
+                  quantityToMake: 0
+                  quantityToStock: 0
+                  quoteItemNumber: 0
+                  quoteNumber: string
+                  revision: string
+                  scheduleLocked: false
+                  status: string
+                  tempPriority: 0
+                  totalActualHours: 0
+                  totalEstimatedHours: 0
+                  travelerPrinted: false
+                  uniqueID: 0
+                  unitPrice: 0
+                  unitPriceForeign: 0
+                  user_Currency1: 0
+                  user_Currency2: 0
+                  user_Date1: '2026-09-06T17:13:12.0000000+00:00'
+                  user_Date2: '2026-09-06T17:13:12.0000000+00:00'
+                  user_Memo1: string
+                  user_Number1: 0
+                  user_Number2: 0
+                  user_Number3: 0
+                  user_Number4: 0
+                  user_Text1: string
+                  user_Text2: string
+                  user_Text3: string
+                  user_Text4: string
+                  workCode: string
+      operationId: getApiV1OrderLineItems
+      x-operation-id-source: derived
+  /api/v1/orders/{orderNumber}/order-line-items:
+    post:
+      tags:
+      - Order Line Items
+      summary: Creates an order line item
+      description: '**Parts from Quotes** *Note: If you add a new line where has a Quote asociated(quoteNumber, quoteItemNumber) then Part Description, Revision, Product Code and Work Code will be set from the quote and will ignore these fields from the request.'
+      parameters:
+      - name: orderNumber
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrderLineItemCreate'
+            example:
+              billingRate: 0
+              commissionPercent: 0
+              discountPercent: 0
+              dueDate: '2026-09-06T17:13:12.0000000+00:00'
+              estimatedEndDate: '2026-09-06T17:13:12.0000000+00:00'
+              estimatedStartDate: '2026-09-06T17:13:12.0000000+00:00'
+              FOB: string
+              isTaxable: false
+              jobNotes: string
+              miscCharges: 0
+              miscDescription: string
+              partDescription: string
+              partNumber: string
+              pricingUnit: string
+              priority: 0
+              productCode: string
+              quantityOrdered: 0
+              quoteItemNumber: 0
+              quoteNumber: string
+              revision: string
+              totalEstimatedHours: 0
+              unitPrice: 0
+              user_Currency1: 0
+              user_Currency2: 0
+              user_Date1: '2026-09-06T17:13:12.0000000+00:00'
+              user_Date2: '2026-09-06T17:13:12.0000000+00:00'
+              user_Memo1: string
+              user_Number1: 0
+              user_Number2: 0
+              user_Number3: 0
+              user_Number4: 0
+              user_Text1: string
+              user_Text2: string
+              user_Text3: string
+              user_Text4: string
+              workCode: string
+              releases:
+              - binLocation: string
+                comments: string
+                deliveryType: 0
+                dueDate: '2026-09-06T17:13:12.0000000+00:00'
+                EDISoftItemNumber: 0
+                lastModDate: '2026-09-06T17:13:12.0000000+00:00'
+                lastModUser: string
+                lotNumber: string
+                quantity: 0
+              orderRoutings:
+              - certificationRequired: false
+                cyclePrice: 0
+                cycleTime: 0
+                cycleUnit: string
+                departmentNumber: string
+                description: string
+                employeeCode: string
+                estimatedEndDate: '2026-09-06T17:13:12.0000000+00:00'
+                estimatedQuantity: 0
+                estimatedStartDate: '2026-09-06T17:13:12.0000000+00:00'
+                ignoreVendorMinimum: false
+                operationCode: string
+                overlapSteps: false
+                setupPrice: 0
+                setupTime: 0
+                shift2DefaultEmployeeCode: string
+                shift3DefaultEmployeeCode: string
+                stepNumber: 0
+                timeUnit: string
+                total: 0
+                vendorCode: string
+                workCenter: string
+                workCenterOrVendor: string
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderLineItem'
+              example:
+                actualEndDate: '2026-09-06T17:13:12.0000000+00:00'
+                actualStartDate: '2026-09-06T17:13:12.0000000+00:00'
+                billingRate: 0
+                commissionPercent: 0
+                cumulativeBilling: 0
+                currentWorkCenter: string
+                dateFinished: '2026-09-06T17:13:12.0000000+00:00'
+                discountPercent: 0
+                dueDate: '2026-09-06T17:13:12.0000000+00:00'
+                estimatedEndDate: '2026-09-06T17:13:12.0000000+00:00'
+                estimatedStartDate: '2026-09-06T17:13:12.0000000+00:00'
+                FOB: string
+                isJobLabelPrinted: false
+                isScheduled: false
+                isTaxable: false
+                itemNumber: 0
+                jobNotes: string
+                jobNumber: string
+                jobOnHold: false
+                lastModDate: '2026-09-06T17:13:12.0000000+00:00'
+                lastModUser: string
+                masterJobNumber: string
+                masterStepNumber: 0
+                miscCharges: 0
+                miscChargesBilled: false
+                miscChargesForeign: 0
+                miscDescription: string
+                orderNumber: string
+                overlapSteps: false
+                partDescription: string
+                partNumber: string
+                pricingUnit: string
+                priority: 0
+                productCode: string
+                quantityCanceled: 0
+                quantityOrdered: 0
+                quantityShippedToCustomer: 0
+                quantityShippedToStock: 0
+                quantityToMake: 0
+                quantityToStock: 0
+                quoteItemNumber: 0
+                quoteNumber: string
+                revision: string
+                scheduleLocked: false
+                status: string
+                tempPriority: 0
+                totalActualHours: 0
+                totalEstimatedHours: 0
+                travelerPrinted: false
+                uniqueID: 0
+                unitPrice: 0
+                unitPriceForeign: 0
+                user_Currency1: 0
+                user_Currency2: 0
+                user_Date1: '2026-09-06T17:13:12.0000000+00:00'
+                user_Date2: '2026-09-06T17:13:12.0000000+00:00'
+                user_Memo1: string
+                user_Number1: 0
+                user_Number2: 0
+                user_Number3: 0
+                user_Number4: 0
+                user_Text1: string
+                user_Text2: string
+                user_Text3: string
+                user_Text4: string
+                workCode: string
+      operationId: postApiV1OrdersByOrderNumberOrderLineItems
+      x-operation-id-source: derived
+  /api/v1/orders/{orderNumber}/order-line-items/{itemNumber}:
+    get:
+      tags:
+      - Order Line Items
+      summary: Gets an Order Line Item by Order's order number and Order Line Item's item…
+      description: 'By default an order line item response will include only the fields: actualEndDate, actualStartDate, dateFinished, dueDate, estimatedEndDate, estimatedStartDate, itemNumber, jobNotes, jobNumber, masterJobNumber, orderNumber, partDescription, partNumber, pricingUnit, productCode, quantityCanceled, quantityOrdered, quantityShippedToCustomer, quantityShippedToStock, quantityToMake, quantityToStock, revision, status, totalActualHours, totalEstimatedHours, uniqueID, unitPrice, unitPriceForeign, workCode. You may specify the exact fields to return using the fields parameter.'
+      parameters:
+      - name: orderNumber
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: itemNumber
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: fields
+        in: query
+        description: A comma separated list of fields to include in the result.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderLineItemSuccessResponse'
+              example:
+                Data:
+                  actualEndDate: '2026-09-06T17:13:12.0000000+00:00'
+                  actualStartDate: '2026-09-06T17:13:12.0000000+00:00'
+                  billingRate: 0
+                  commissionPercent: 0
+                  cumulativeBilling: 0
+                  currentWorkCenter: string
+                  dateFinished: '2026-09-06T17:13:12.0000000+00:00'
+                  discountPercent: 0
+                  dueDate: '2026-09-06T17:13:12.0000000+00:00'
+                  estimatedEndDate: '2026-09-06T17:13:12.0000000+00:00'
+                  estimatedStartDate: '2026-09-06T17:13:12.0000000+00:00'
+                  FOB: string
+                  isJobLabelPrinted: false
+                  isScheduled: false
+                  isTaxable: false
+                  itemNumber: 0
+                  jobNotes: string
+                  jobNumber: string
+                  jobOnHold: false
+                  lastModDate: '2026-09-06T17:13:12.0000000+00:00'
+                  lastModUser: string
+                  masterJobNumber: string
+                  masterStepNumber: 0
+                  miscCharges: 0
+                  miscChargesBilled: false
+                  miscChargesForeign: 0
+                  miscDescription: string
+                  orderNumber: string
+                  overlapSteps: false
+                  partDescription: string
+                  partNumber: string
+                  pricingUnit: string
+                  priority: 0
+                  productCode: string
+                  quantityCanceled: 0
+                  quantityOrdered: 0
+                  quantityShippedToCustomer: 0
+                  quantityShippedToStock: 0
+                  quantityToMake: 0
+                  quantityToStock: 0
+                  quoteItemNumber: 0
+                  quoteNumber: string
+                  revision: string
+                  scheduleLocked: false
+                  status: string
+                  tempPriority: 0
+                  totalActualHours: 0
+                  totalEstimatedHours: 0
+                  travelerPrinted: false
+                  uniqueID: 0
+                  unitPrice: 0
+                  unitPriceForeign: 0
+                  user_Currency1: 0
+                  user_Currency2: 0
+                  user_Date1: '2026-09-06T17:13:12.0000000+00:00'
+                  user_Date2: '2026-09-06T17:13:12.0000000+00:00'
+                  user_Memo1: string
+                  user_Number1: 0
+                  user_Number2: 0
+                  user_Number3: 0
+                  user_Number4: 0
+                  user_Text1: string
+                  user_Text2: string
+                  user_Text3: string
+                  user_Text4: string
+                  workCode: string
+      operationId: getApiV1OrdersByOrderNumberOrderLineItemsByItemNumber
+      x-operation-id-source: derived
+    patch:
+      tags:
+      - Order Line Items
+      summary: Updates an Order Line Item
+      parameters:
+      - name: orderNumber
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: itemNumber
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrderLineItemUpdate'
+            example:
+              user_Currency1: 0
+              user_Currency2: 0
+              user_Date1: '2026-09-06T17:13:12.0000000+00:00'
+              user_Date2: '2026-09-06T17:13:12.0000000+00:00'
+              user_Memo1: string
+              user_Number1: 0
+              user_Number2: 0
+              user_Number3: 0
+              user_Number4: 0
+              user_Text1: string
+              user_Text2: string
+              user_Text3: string
+              user_Text4: string
+              orderRoutings:
+              - stepNumber: 0
+                operationCode: string
+                employeeCode: string
+                estimatedEndDate: '2026-09-06T17:13:12.7988858+00:00'
+                estimatedStartDate: '2026-09-06T17:13:12.7988859+00:00'
+                workCenter: string
+      responses:
+        '204':
+          description: Success
+      operationId: patchApiV1OrdersByOrderNumberOrderLineItemsByItemNumber
+      x-operation-id-source: derived
+components:
+  schemas:
+    OrderLineItemCreate:
+      required:
+      - partNumber
+      type: object
+      properties:
+        billingRate:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        commissionPercent:
+          type:
+          - number
+          - 'null'
+          format: double
+        discountPercent:
+          type:
+          - number
+          - 'null'
+          format: double
+        dueDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        estimatedEndDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        estimatedStartDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        FOB:
+          type:
+          - string
+          - 'null'
+        isTaxable:
+          type: boolean
+        jobNotes:
+          type:
+          - string
+          - 'null'
+        miscCharges:
+          type:
+          - number
+          - 'null'
+          format: double
+        miscDescription:
+          type:
+          - string
+          - 'null'
+        partDescription:
+          type:
+          - string
+          - 'null'
+        partNumber:
+          type: string
+        pricingUnit:
+          type:
+          - string
+          - 'null'
+        priority:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        productCode:
+          type:
+          - string
+          - 'null'
+        quantityOrdered:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        quoteItemNumber:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        quoteNumber:
+          type:
+          - string
+          - 'null'
+        revision:
+          type:
+          - string
+          - 'null'
+        totalEstimatedHours:
+          type:
+          - number
+          - 'null'
+          format: double
+        unitPrice:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Currency1:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Currency2:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Date1:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        user_Date2:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        user_Memo1:
+          type:
+          - string
+          - 'null'
+        user_Number1:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Number2:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Number3:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Number4:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Text1:
+          type:
+          - string
+          - 'null'
+        user_Text2:
+          type:
+          - string
+          - 'null'
+        user_Text3:
+          type:
+          - string
+          - 'null'
+        user_Text4:
+          type:
+          - string
+          - 'null'
+        workCode:
+          type:
+          - string
+          - 'null'
+        releases:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ReleaseCreate'
+        orderRoutings:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/OrderRoutingCreate'
+      additionalProperties: false
+    OrderLineItem:
+      type: object
+      properties:
+        actualEndDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        actualStartDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        billingRate:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          readOnly: true
+        commissionPercent:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        cumulativeBilling:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        currentWorkCenter:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        dateFinished:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        discountPercent:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        dueDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        estimatedEndDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        estimatedStartDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        FOB:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        isJobLabelPrinted:
+          type: boolean
+          readOnly: true
+        isScheduled:
+          type: boolean
+          readOnly: true
+        isTaxable:
+          type: boolean
+          readOnly: true
+        itemNumber:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          readOnly: true
+        jobNotes:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        jobNumber:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        jobOnHold:
+          type: boolean
+          readOnly: true
+        lastModDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        lastModUser:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        masterJobNumber:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        masterStepNumber:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          readOnly: true
+        miscCharges:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        miscChargesBilled:
+          type: boolean
+          readOnly: true
+        miscChargesForeign:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        miscDescription:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        orderNumber:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        overlapSteps:
+          type: boolean
+          readOnly: true
+        partDescription:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        partNumber:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        pricingUnit:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        priority:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          readOnly: true
+        productCode:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        quantityCanceled:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          readOnly: true
+        quantityOrdered:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          readOnly: true
+        quantityShippedToCustomer:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          readOnly: true
+        quantityShippedToStock:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          readOnly: true
+        quantityToMake:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          readOnly: true
+        quantityToStock:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          readOnly: true
+        quoteItemNumber:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          readOnly: true
+        quoteNumber:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        revision:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        scheduleLocked:
+          type: boolean
+          readOnly: true
+        status:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        tempPriority:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          readOnly: true
+        totalActualHours:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        totalEstimatedHours:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        travelerPrinted:
+          type: boolean
+          readOnly: true
+        uniqueID:
+          type: integer
+          format: int32
+          readOnly: true
+        unitPrice:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        unitPriceForeign:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        user_Currency1:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        user_Currency2:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        user_Date1:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        user_Date2:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        user_Memo1:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        user_Number1:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        user_Number2:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        user_Number3:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        user_Number4:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        user_Text1:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        user_Text2:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        user_Text3:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        user_Text4:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        workCode:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+      additionalProperties: false
+    OrderLineItemSuccessResponse:
+      type: object
+      properties:
+        Data:
+          $ref: '#/components/schemas/OrderLineItem'
+      additionalProperties: false
+    OrderLineItemUpdate:
+      type: object
+      properties:
+        user_Currency1:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Currency2:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Date1:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        user_Date2:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        user_Memo1:
+          type:
+          - string
+          - 'null'
+        user_Number1:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Number2:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Number3:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Number4:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Text1:
+          type:
+          - string
+          - 'null'
+        user_Text2:
+          type:
+          - string
+          - 'null'
+        user_Text3:
+          type:
+          - string
+          - 'null'
+        user_Text4:
+          type:
+          - string
+          - 'null'
+        orderRoutings:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/OrderLineItemOrderRoutingUpdate'
+      additionalProperties: false
+    OrderLineItemOrderRoutingUpdate:
+      type: object
+      properties:
+        stepNumber:
+          type: integer
+          format: int32
+        operationCode:
+          type:
+          - string
+          - 'null'
+        employeeCode:
+          type:
+          - string
+          - 'null'
+        estimatedEndDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        estimatedStartDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        workCenter:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    ReleaseCreate:
+      required:
+      - quantity
+      type: object
+      properties:
+        binLocation:
+          type:
+          - string
+          - 'null'
+        comments:
+          type:
+          - string
+          - 'null'
+        deliveryType:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        dueDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        EDISoftItemNumber:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        lastModDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        lastModUser:
+          type:
+          - string
+          - 'null'
+        lotNumber:
+          type:
+          - string
+          - 'null'
+        quantity:
+          type: integer
+          format: int32
+      additionalProperties: false
+    OrderLineItemListSuccessResponse:
+      type: object
+      properties:
+        Data:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/OrderLineItem'
+      additionalProperties: false
+    OrderRoutingCreate:
+      required:
+      - workCenterOrVendor
+      type: object
+      properties:
+        certificationRequired:
+          type: boolean
+        cyclePrice:
+          type:
+          - number
+          - 'null'
+          format: double
+        cycleTime:
+          type:
+          - number
+          - 'null'
+          format: double
+        cycleUnit:
+          type:
+          - string
+          - 'null'
+        departmentNumber:
+          type:
+          - string
+          - 'null'
+        description:
+          type:
+          - string
+          - 'null'
+        employeeCode:
+          type:
+          - string
+          - 'null'
+        estimatedEndDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        estimatedQuantity:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        estimatedStartDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        ignoreVendorMinimum:
+          type: boolean
+        operationCode:
+          type:
+          - string
+          - 'null'
+        overlapSteps:
+          type: boolean
+        setupPrice:
+          type:
+          - number
+          - 'null'
+          format: double
+        setupTime:
+          type:
+          - number
+          - 'null'
+          format: double
+        shift2DefaultEmployeeCode:
+          type:
+          - string
+          - 'null'
+        shift3DefaultEmployeeCode:
+          type:
+          - string
+          - 'null'
+        stepNumber:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        timeUnit:
+          type:
+          - string
+          - 'null'
+        total:
+          type:
+          - number
+          - 'null'
+          format: double
+        vendorCode:
+          type:
+          - string
+          - 'null'
+        workCenter:
+          type:
+          - string
+          - 'null'
+        workCenterOrVendor:
+          type: string
+      additionalProperties: false
+  securitySchemes:
+    Bearer:
+      type: oauth2
+      description: OAuth 2.0 Client Credentials Flow with API Users issued from Integration Engine Management Console
+      flows:
+        clientCredentials:
+          tokenUrl: https://api-user.integrations.ecimanufacturing.com/oauth2/api-user/token
+          scopes:
+            openid: openid

@@ -1,0 +1,292 @@
+openapi: 3.2.0
+info:
+  title: APAR Commerce Integration Vendor Payment API
+  description: '# Documentation
+
+
+    ## Authentication
+
+    Pass an access token in the HTTP Authorization header of each request.'
+  contact:
+    name: ECI Support
+    url: https://www.ecisolutions.com/support/
+  version: v1
+security:
+- Bearer: []
+tags:
+- name: VendorPayment
+paths:
+  /api/v1/vendor-payment-methods:
+    get:
+      tags:
+      - VendorPayment
+      summary: Get a list of payment methods and their lead times
+      operationId: GetPaymentMethods
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/VendorPaymentMethodResponseListResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VendorPaymentMethodResponseListResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/VendorPaymentMethodResponseListResponse'
+  /api/v1/vendor-payments:
+    get:
+      tags:
+      - VendorPayment
+      summary: Get a list of payments
+      operationId: GetPayments
+      parameters:
+      - name: top
+        in: query
+        description: 'Maximum number of records to return. Default: 100. Max: 100.'
+        schema:
+          maximum: 100
+          minimum: 1
+          type: integer
+          format: int32
+          default: 100
+      - name: skip
+        in: query
+        description: 'The value from which to start taking records. Default: 0.'
+        schema:
+          maximum: 2147483647
+          minimum: 0
+          type: integer
+          format: int32
+          default: 0
+      - name: paymentDate
+        in: query
+        description: The Payment Date by which to search for the payment.
+        schema:
+          type: string
+          format: date-time
+      - name: createdDate
+        in: query
+        description: The Created Date by which to search for the payment.
+        schema:
+          type: string
+          format: date-time
+      - name: invoiceId
+        in: query
+        description: The Vendor Invoice ID by which to search for payments.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/VendorPaymentResponseListResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VendorPaymentResponseListResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/VendorPaymentResponseListResponse'
+  /api/v1/vendor-payments/{id}:
+    get:
+      tags:
+      - VendorPayment
+      summary: Get a vendor's payment record by payment id
+      operationId: GetPaymentById
+      parameters:
+      - name: id
+        in: path
+        description: The Payment Id by which to search for the vendor's payment.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/VendorPaymentResponseListResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VendorPaymentResponseListResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/VendorPaymentResponseListResponse'
+        '404':
+          description: Not Found
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+    delete:
+      tags:
+      - VendorPayment
+      summary: Delete a vendor payment by payment id
+      operationId: DeleteVendorPayment
+      parameters:
+      - name: id
+        in: path
+        description: The Vendor Payment Id
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: No Content
+components:
+  schemas:
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+        title:
+          type:
+          - string
+          - 'null'
+        status:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        detail:
+          type:
+          - string
+          - 'null'
+        instance:
+          type:
+          - string
+          - 'null'
+      additionalProperties: {}
+    VendorPaymentInvoice:
+      type: object
+      properties:
+        invoiceId:
+          type:
+          - string
+          - 'null'
+        amount:
+          type:
+          - number
+          - 'null'
+          format: double
+      additionalProperties: false
+    VendorPaymentMethodResponse:
+      type: object
+      properties:
+        paymentMethod:
+          type:
+          - string
+          - 'null'
+        leadTime:
+          type:
+          - integer
+          - 'null'
+          format: int32
+      additionalProperties: false
+    VendorPaymentResponse:
+      required:
+      - invoices
+      type: object
+      properties:
+        paymentId:
+          type:
+          - string
+          - 'null'
+        vendorId:
+          type:
+          - string
+          - 'null'
+        transactionNo:
+          type:
+          - string
+          - 'null'
+        paymentMethod:
+          type:
+          - string
+          - 'null'
+        paymentReferenceNo:
+          type:
+          - string
+          - 'null'
+        statusDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        status:
+          type:
+          - string
+          - 'null'
+        paymentDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        paymentInitiatedDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        totalAmount:
+          type:
+          - number
+          - 'null'
+          format: double
+        createdDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        invoices:
+          type: array
+          items:
+            $ref: '#/components/schemas/VendorPaymentInvoice'
+      additionalProperties: false
+    VendorPaymentResponseListResponse:
+      type: object
+      properties:
+        count:
+          type: integer
+          format: int32
+        data:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/VendorPaymentResponse'
+      additionalProperties: false
+    VendorPaymentMethodResponseListResponse:
+      type: object
+      properties:
+        count:
+          type: integer
+          format: int32
+        data:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/VendorPaymentMethodResponse'
+      additionalProperties: false
+  securitySchemes:
+    Bearer:
+      type: oauth2
+      description: OAuth 2.0 Client Credentials Flow with API Users issued from Integration Engine Management Console
+      flows:
+        clientCredentials:
+          tokenUrl: https://api-user.integrations.ecimanufacturing.com/oauth2/api-user/token
+          scopes:
+            openid: openid

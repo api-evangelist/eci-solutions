@@ -1,0 +1,300 @@
+openapi: 3.2.0
+info:
+  title: JobBOSS² Public Issuing Materials API
+  description: Provides a common API surface for accessing ECI ERP JobBOSS².
+  version: v1
+servers:
+- url: https://api-jb2.integrations.ecimanufacturing.com:443
+  description: API Host
+security:
+- Bearer: []
+tags:
+- name: Issuing Materials
+paths:
+  /api/v1/issuing-materials/bin-locations:
+    get:
+      tags:
+      - Issuing Materials
+      summary: Gets a list of parts with bin locations and quantity on hand
+      description: Returns inventory bin location records including part number, bin location, quantity on hand, cost, and related fields. Use the fields, sort, filter, skip, and take query parameters for customization. Filter by partNumber to get bin locations for a specific part.
+      parameters:
+      - name: fields
+        in: query
+        description: A comma separated list of fields to include in the result.
+        schema:
+          type: string
+      - name: sort
+        in: query
+        description: A comma separated list of fields to sort by.
+        schema:
+          type: string
+      - name: filters
+        in: query
+        description: Filters must be provided as query string parameters as defined in the Filter Expression section.
+        schema:
+          type: object
+          additionalProperties:
+            type: string
+        examples:
+          No filters: {}
+          Filter by Part Number:
+            value:
+              partNumber: PART001
+      - name: skip
+        in: query
+        description: The number of records at the start of the result set to skip over.
+        schema:
+          type: string
+      - name: take
+        in: query
+        description: The number of records to retrieve.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+      operationId: getApiV1IssuingMaterialsBinLocations
+      x-operation-id-source: derived
+  /api/v1/issuing-materials/job-numbers:
+    get:
+      tags:
+      - Issuing Materials
+      summary: Gets a list of job numbers
+      description: 'Returns job numbers from order line items with standard fields and filtering. By default returns: jobNumber, partNumber, partDescription, status, dueDate, orderNumber. Use the fields, sort, filter, skip, and take query parameters for customization.'
+      parameters:
+      - name: fields
+        in: query
+        description: A comma separated list of fields to include in the result.
+        schema:
+          type: string
+      - name: sort
+        in: query
+        description: A comma separated list of fields to sort by.
+        schema:
+          type: string
+      - name: filters
+        in: query
+        description: Filters must be provided as query string parameters as defined in the Filter Expression section.
+        schema:
+          type: object
+          additionalProperties:
+            type: string
+        examples:
+          No filters: {}
+          Filter by Status:
+            value:
+              status: Open
+      - name: skip
+        in: query
+        description: The number of records at the start of the result set to skip over.
+        schema:
+          type: string
+      - name: take
+        in: query
+        description: The number of records to retrieve.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+      operationId: getApiV1IssuingMaterialsJobNumbers
+      x-operation-id-source: derived
+  /api/v1/issuing-materials/routing-steps:
+    get:
+      tags:
+      - Issuing Materials
+      summary: Gets a list of routing steps for jobs
+      description: 'Returns routing steps from order routing records with standard fields and filtering. By default returns: jobNumber, stepNumber, operationCode, description, workCenter, status. Use the fields, sort, filter, skip, and take query parameters for customization. Filter by jobNumber to get routing steps for a specific job.'
+      parameters:
+      - name: fields
+        in: query
+        description: A comma separated list of fields to include in the result.
+        schema:
+          type: string
+      - name: sort
+        in: query
+        description: A comma separated list of fields to sort by.
+        schema:
+          type: string
+      - name: filters
+        in: query
+        description: Filters must be provided as query string parameters as defined in the Filter Expression section.
+        schema:
+          type: object
+          additionalProperties:
+            type: string
+        examples:
+          No filters: {}
+          Filter by Job Number:
+            value:
+              jobNumber: 1234-1
+      - name: skip
+        in: query
+        description: The number of records at the start of the result set to skip over.
+        schema:
+          type: string
+      - name: take
+        in: query
+        description: The number of records to retrieve.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+      operationId: getApiV1IssuingMaterialsRoutingSteps
+      x-operation-id-source: derived
+  /api/v1/issuing-materials/stock-to-job-transfer:
+    post:
+      tags:
+      - Issuing Materials
+      summary: Transfer stock materials to a job
+      description: Transfers inventory from stock bin locations to a specified job. Creates JobMaterial records, adjusts bin quantities, logs inventory transactions, and recreates JobReq records for any remaining unfulfilled quantities. Set allowClosedJobs to true to allow transfers to closed jobs.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StockToJobTransferCreate'
+            example:
+              jobNumber: string
+              postingEffectiveDate: '2026-03-17'
+              allowClosedJobs: false
+              materials:
+              - partNumber: string
+                quantityToMake: 0
+                stepNo: 0
+                bins:
+                - binLocationId: 0
+                  binLocation: string
+                  qty2Use: 0
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StockToJobTransferResultSuccessResponse'
+              example:
+                Data:
+                  jobNumber: string
+                  materials:
+                  - partNumber: string
+                    quantityRequested: 0
+                    quantityTransferred: 0
+                    quantityCapped: 0
+                    quantityRemainingToBuy: 0
+                  warnings: []
+      operationId: postApiV1IssuingMaterialsStockToJobTransfer
+      x-operation-id-source: derived
+components:
+  schemas:
+    StockToJobTransferResult:
+      type: object
+      properties:
+        jobNumber:
+          type:
+          - string
+          - 'null'
+        materials:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/StockToJobMaterialResultSchema'
+        warnings:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+      additionalProperties: false
+    StockToJobMaterialResultSchema:
+      type: object
+      properties:
+        partNumber:
+          type:
+          - string
+          - 'null'
+        quantityRequested:
+          type: number
+          format: double
+        quantityTransferred:
+          type: number
+          format: double
+        quantityCapped:
+          type: number
+          format: double
+        quantityRemainingToBuy:
+          type: number
+          format: double
+      additionalProperties: false
+    StockToJobBinCreate:
+      required:
+      - qty2Use
+      type: object
+      properties:
+        binLocationId:
+          type: integer
+          format: int32
+        binLocation:
+          type:
+          - string
+          - 'null'
+        qty2Use:
+          type: integer
+          format: int32
+      additionalProperties: false
+    StockToJobMaterialCreate:
+      required:
+      - bins
+      - partNumber
+      - quantityToMake
+      type: object
+      properties:
+        partNumber:
+          type: string
+        quantityToMake:
+          type: number
+          format: double
+        stepNo:
+          type:
+          - number
+          - 'null'
+          format: double
+        bins:
+          type: array
+          items:
+            $ref: '#/components/schemas/StockToJobBinCreate'
+      additionalProperties: false
+    StockToJobTransferCreate:
+      required:
+      - jobNumber
+      - materials
+      - postingEffectiveDate
+      type: object
+      properties:
+        jobNumber:
+          type: string
+        postingEffectiveDate:
+          type: string
+        allowClosedJobs:
+          type: boolean
+        materials:
+          type: array
+          items:
+            $ref: '#/components/schemas/StockToJobMaterialCreate'
+      additionalProperties: false
+    StockToJobTransferResultSuccessResponse:
+      type: object
+      properties:
+        Data:
+          $ref: '#/components/schemas/StockToJobTransferResult'
+      additionalProperties: false
+  securitySchemes:
+    Bearer:
+      type: oauth2
+      description: OAuth 2.0 Client Credentials Flow with API Users issued from Integration Engine Management Console
+      flows:
+        clientCredentials:
+          tokenUrl: https://api-user.integrations.ecimanufacturing.com/oauth2/api-user/token
+          scopes:
+            openid: openid

@@ -1,0 +1,375 @@
+openapi: 3.2.0
+info:
+  title: JobBOSS² Public AR Invoice Details API
+  description: Provides a common API surface for accessing ECI ERP JobBOSS².
+  version: v1
+servers:
+- url: https://api-jb2.integrations.ecimanufacturing.com:443
+  description: API Host
+security:
+- Bearer: []
+tags:
+- name: AR Invoice Details
+paths:
+  /api/v1/ar-invoice-details:
+    get:
+      tags:
+      - AR Invoice Details
+      summary: Gets a list of AR Invoice Details
+      description: 'By default an AR invoice details response will include only the fields: commissionPercent, contactName, deliveryTicketDate, deliveryTicketNumber, discountPercent, GLAccount1, inventoryItemNumber, invoiceNumber, isTaxable, jobNumber, lastModDate, lineTotal, lineTotalForeign, partDescription, partNumber, PONumber, productCode, quantityCancelled, quantityOrdered, quantityShipped, revision, salesAccount, salesAmount1, salesAmountForeign1, taxStatus, uniqueID, unit, unitPrice, unitPriceForeign, workCode. You may specify the exact fields to return using the fields parameter.'
+      parameters:
+      - name: fields
+        in: query
+        description: A comma separated list of fields to include in the result.
+        schema:
+          type: string
+      - name: sort
+        in: query
+        description: A comma separated list of field to sort by. See the <a href='#sort-expressions'>Sort Expressions</a> section for more information.
+        schema:
+          type: string
+      - name: filters
+        in: query
+        description: Filters must be provided as query string parameters as defined in the <a href='#filter-expressions'>Filter Expressions</a> section.
+        schema:
+          type: object
+          additionalProperties:
+            type: string
+        examples:
+          No filters: {}
+          Filter by Invoice Number:
+            value:
+              invoiceNumber: '4691'
+      - name: skip
+        in: query
+        description: The number of records at the start of the result set to skip over.
+        schema:
+          type: string
+      - name: take
+        in: query
+        description: The number of records to retrieve.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ARInvoiceDetailListSuccessResponse'
+              example:
+                Data:
+                - accountingID: string
+                  commissionPercent: 0
+                  contactName: string
+                  deliveryTicketDate: '2026-09-06T17:13:12.0000000+00:00'
+                  deliveryTicketNumber: string
+                  discountPercent: 0
+                  FOB: string
+                  GLAccount1: string
+                  GLAccount2: string
+                  GLAccount3: string
+                  GLAccount4: string
+                  GLAccount5: string
+                  inventoryItemNumber: 0
+                  invoiceNumber: string
+                  isTaxable: false
+                  jobNumber: string
+                  lastModDate: '2026-09-06T17:13:12.0000000+00:00'
+                  lastModUser: string
+                  lineTotal: 0
+                  lineTotalForeign: 0
+                  partDescription: string
+                  partNumber: string
+                  PONumber: string
+                  productCode: string
+                  quantityCancelled: 0
+                  quantityOrdered: 0
+                  quantityShipped: 0
+                  revision: string
+                  salesAccount: string
+                  salesAmount1: 0
+                  salesAmount2: 0
+                  salesAmount3: 0
+                  salesAmount4: 0
+                  salesAmount5: 0
+                  salesAmountForeign1: 0
+                  salesAmountForeign2: 0
+                  salesAmountForeign3: 0
+                  salesAmountForeign4: 0
+                  salesAmountForeign5: 0
+                  taxStatus: false
+                  uniqueID: 0
+                  unit: string
+                  unitPrice: 0
+                  unitPriceForeign: 0
+                  workCode: string
+      operationId: getApiV1ArInvoiceDetails
+      x-operation-id-source: derived
+components:
+  schemas:
+    ARInvoiceDetailListSuccessResponse:
+      type: object
+      properties:
+        Data:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ARInvoiceDetail'
+      additionalProperties: false
+    ARInvoiceDetail:
+      type: object
+      properties:
+        accountingID:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        commissionPercent:
+          type:
+          - number
+          - 'null'
+          format: float
+          readOnly: true
+        contactName:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        deliveryTicketDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        deliveryTicketNumber:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        discountPercent:
+          type:
+          - number
+          - 'null'
+          format: float
+          readOnly: true
+        FOB:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        GLAccount1:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        GLAccount2:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        GLAccount3:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        GLAccount4:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        GLAccount5:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        inventoryItemNumber:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          readOnly: true
+        invoiceNumber:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        isTaxable:
+          type: boolean
+          readOnly: true
+        jobNumber:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        lastModDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        lastModUser:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        lineTotal:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        lineTotalForeign:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        partDescription:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        partNumber:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        PONumber:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        productCode:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        quantityCancelled:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          readOnly: true
+        quantityOrdered:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          readOnly: true
+        quantityShipped:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          readOnly: true
+        revision:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        salesAccount:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        salesAmount1:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        salesAmount2:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        salesAmount3:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        salesAmount4:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        salesAmount5:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        salesAmountForeign1:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        salesAmountForeign2:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        salesAmountForeign3:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        salesAmountForeign4:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        salesAmountForeign5:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        taxStatus:
+          type: boolean
+          readOnly: true
+        uniqueID:
+          type: integer
+          format: int32
+          readOnly: true
+        unit:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        unitPrice:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        unitPriceForeign:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        workCode:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+      additionalProperties: false
+  securitySchemes:
+    Bearer:
+      type: oauth2
+      description: OAuth 2.0 Client Credentials Flow with API Users issued from Integration Engine Management Console
+      flows:
+        clientCredentials:
+          tokenUrl: https://api-user.integrations.ecimanufacturing.com/oauth2/api-user/token
+          scopes:
+            openid: openid

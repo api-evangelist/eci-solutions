@@ -1,0 +1,340 @@
+openapi: 3.2.0
+info:
+  title: ERP API v2.1 Part Operation API
+  description: Provides a common API surface for accessing ECI ERP products.
+  contact:
+    name: ECI Manufacturing Division Integration Team
+    url: https://www.ecisolutions.com/support/
+  version: 3.5.585+b1e45fd230
+servers:
+- url: https://api-erp.integrations.ecimanufacturing.com:443
+  description: Production
+security:
+- Bearer: []
+tags:
+- name: PartOperation
+paths:
+  /api/v2.1/part-operations:
+    get:
+      tags:
+      - PartOperation
+      summary: Get a list of PartOperations from the ERP system that match the given filters
+      description: 'Gets a list of PartOperation.
+
+
+        ## Supported ERPs
+
+        - M1
+
+        - JobBOSS²
+
+        - Macola
+
+        - Deacom
+
+        ## Resource Features
+
+        Feature |Supported |Notes
+
+        ------------|------------|------------
+
+        Filter Expressions|**Yes**|
+
+        Sort Expressions|**Yes**
+
+        Field Selection|**Yes**
+
+        Pagination|**Yes**
+
+        UniqueID|uniqueID|
+
+        ## Features by Field
+
+        Field |Filterable |Sortable |Supported ERPs
+
+        ------------|------------|------------|------------
+
+        partID|Yes|Yes|M1, JobBOSS², Macola, Deacom
+
+        partRevisionID|Yes|Yes|M1, JobBOSS², Macola, Deacom
+
+        partOperationSeq|Yes|Yes|M1, JobBOSS², Macola, Deacom
+
+        workCenterID|Yes|Yes|M1, JobBOSS², Macola, Deacom
+
+        processID|Yes|Yes|M1, JobBOSS², Macola, Deacom
+
+        shortDesc|Yes|Yes|M1, JobBOSS², Macola, Deacom
+
+        longDescText|Yes|Yes|M1, JobBOSS², Macola, Deacom
+
+        longDescFormatted|Yes|Yes|M1, JobBOSS², Macola, Deacom
+
+        outsideOperation|Yes|Yes|M1, JobBOSS², Macola, Deacom
+
+        estSetupHours|Yes|Yes|M1, JobBOSS², Macola, Deacom
+
+        estProdHours|Yes|Yes|M1, JobBOSS², Macola, Deacom
+
+        estQueueHours|Yes|Yes|M1, JobBOSS², Macola, Deacom
+
+        estMoveHours|Yes|Yes|M1, JobBOSS², Macola, Deacom
+
+        estQAHours|Yes|Yes|M1, JobBOSS², Macola, Deacom
+
+        vendorID|Yes|Yes|M1, JobBOSS², Macola, Deacom
+
+        estSetupTimeValue|No|Yes|JobBOSS²
+
+        estSetupTimeUnit|No|Yes|JobBOSS²
+
+        estProdTimeValue|No|Yes|JobBOSS²
+
+        estProdTimeUnit|No|Yes|JobBOSS²
+
+        uniqueID|Yes|Yes|M1, JobBOSS², Macola, Deacom
+
+        rowVersion|Yes|Yes|M1, JobBOSS², Macola, Deacom'
+      parameters:
+      - name: fields
+        in: query
+        description: A comma-separated list of fields to include in the result.
+        schema:
+          type: string
+      - name: sort
+        in: query
+        description: A comma-separated list of <a href='#sortexpr'>sort expressions</a>.
+        schema:
+          type: string
+      - name: take
+        in: query
+        description: Limit the number of results being returned
+        schema:
+          minimum: 0
+          type: integer
+      - name: skip
+        in: query
+        description: The number of results to skip. Combine with 'take' to fetch records in pages
+        schema:
+          minimum: 0
+          type: integer
+      - name: count
+        in: query
+        description: '<a href=''#countparam''>Data and count</a> response behavior '
+        schema:
+          maximum: 2
+          minimum: 0
+          type: integer
+      - name: filters
+        in: query
+        description: See <a href='#filterexpr'>Filter Expressions</a> for query string syntax. The Test UI and any generated code tool may expose filter parameters as a dictionary of name/value pairs, but if creating a raw HTTP request, they must be provided on the querystring as defined in the Filter Expression section.
+        style: form
+        schema:
+          type: object
+          additionalProperties:
+            type: string
+        examples:
+          Empty:
+            description: No filters applied
+          'Example #1':
+            description: A dictionary of name/value pairs that will be serialized as querystring parameters in the format ```name[operator]=value```
+            value:
+              partID[eq]: abc123
+              partRevisionID[eq]: abc123
+              partOperationSeq[gte]: 123
+              workCenterID[eq]: abc123
+              processID[eq]: abc123
+              shortDesc[eq]: abc123
+              longDescText[eq]: abc123
+              longDescFormatted[eq]: abc123
+              outsideOperation[eq]: abc123
+              estSetupHours[gte]: 123
+              estProdHours[gte]: 123
+              estQueueHours[gte]: 123
+              estMoveHours[gte]: 123
+              estQAHours[gte]: 123
+              vendorID[eq]: abc123
+              uniqueID[eq]: cc90686b-399e-4094-b431-fa462f84b0a8
+              rowVersion[gte]: 123
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/PartOperationListResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PartOperationListResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/PartOperationListResponse'
+      operationId: getApiV21PartOperations
+      x-operation-id-source: derived
+  /api/v2.1/part-operations/{id}:
+    get:
+      tags:
+      - PartOperation
+      summary: Get a PartOperation from the ERP system that match the given filters
+      description: 'Gets a PartOperation by unique ID.
+
+
+        ## Supported ERPs
+
+        - M1
+
+        - JobBOSS²
+
+        - Macola
+
+        - Deacom
+
+        ## Features by Field
+
+        Field |Supported ERPs
+
+        ------------|------------
+
+        partID||M1, JobBOSS², Macola, Deacom
+
+        partRevisionID||M1, JobBOSS², Macola, Deacom
+
+        partOperationSeq||M1, JobBOSS², Macola, Deacom
+
+        workCenterID||M1, JobBOSS², Macola, Deacom
+
+        processID||M1, JobBOSS², Macola, Deacom
+
+        shortDesc||M1, JobBOSS², Macola, Deacom
+
+        longDescText||M1, JobBOSS², Macola, Deacom
+
+        longDescFormatted||M1, JobBOSS², Macola, Deacom
+
+        outsideOperation||M1, JobBOSS², Macola, Deacom
+
+        estSetupHours||M1, JobBOSS², Macola, Deacom
+
+        estProdHours||M1, JobBOSS², Macola, Deacom
+
+        estQueueHours||M1, JobBOSS², Macola, Deacom
+
+        estMoveHours||M1, JobBOSS², Macola, Deacom
+
+        estQAHours||M1, JobBOSS², Macola, Deacom
+
+        vendorID||M1, JobBOSS², Macola, Deacom
+
+        estSetupTimeValue||JobBOSS²
+
+        estSetupTimeUnit||JobBOSS²
+
+        estProdTimeValue||JobBOSS²
+
+        estProdTimeUnit||JobBOSS²
+
+        uniqueID||M1, JobBOSS², Macola, Deacom
+
+        rowVersion||M1, JobBOSS², Macola, Deacom'
+      parameters:
+      - name: id
+        in: path
+        description: The ID of the PartOperation
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/PartOperation'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PartOperation'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/PartOperation'
+      operationId: getApiV21PartOperationsById
+      x-operation-id-source: derived
+components:
+  schemas:
+    PartOperation:
+      title: PartOperation
+      type: object
+      properties:
+        partID:
+          type: string
+        partRevisionID:
+          type: string
+        partOperationSeq:
+          type: integer
+          format: int32
+        workCenterID:
+          type: string
+        processID:
+          type: string
+        shortDesc:
+          type: string
+        longDescText:
+          type: string
+        longDescFormatted:
+          type: string
+        outsideOperation:
+          type: string
+        estSetupHours:
+          type: number
+          format: double
+        estProdHours:
+          type: number
+          format: double
+        estQueueHours:
+          type: number
+          format: double
+        estMoveHours:
+          type: number
+          format: double
+        estQAHours:
+          type: number
+          format: double
+        vendorID:
+          type: string
+        estSetupTimeValue:
+          type: number
+          format: double
+        estSetupTimeUnit:
+          type: string
+        estProdTimeValue:
+          type: number
+          format: double
+        estProdTimeUnit:
+          type: string
+        uniqueID:
+          type: string
+        rowVersion:
+          type: integer
+          format: int64
+    PartOperationListResponse:
+      type: object
+      properties:
+        data:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/PartOperation'
+          readOnly: true
+        resultCount:
+          type: integer
+          format: int32
+      additionalProperties: false
+  securitySchemes:
+    Bearer:
+      type: oauth2
+      description: OAuth 2.0 Client Credentials Flow with API Users issued from Integration Engine Management Console
+      flows:
+        clientCredentials:
+          tokenUrl: https://api-user.integrations.ecimanufacturing.com/oauth2/api-user/token
+          scopes:
+            openid: openid

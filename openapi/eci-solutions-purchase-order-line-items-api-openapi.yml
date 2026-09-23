@@ -1,0 +1,616 @@
+openapi: 3.2.0
+info:
+  title: JobBOSS² Public Purchase Order Line Items API
+  description: Provides a common API surface for accessing ECI ERP JobBOSS².
+  version: v1
+servers:
+- url: https://api-jb2.integrations.ecimanufacturing.com:443
+  description: API Host
+security:
+- Bearer: []
+tags:
+- name: Purchase Order Line Items
+paths:
+  /api/v1/purchase-order-line-items:
+    get:
+      tags:
+      - Purchase Order Line Items
+      summary: Gets a list of Purchase Order Line Items
+      description: 'By default a purchase order line item response will include only the fields: dateFinished, dueDate, itemNumber, lastModDate, outsideService, partDescription, partNumber, purchaseOrderNumber, quantityCanceled, quantityOrdered, quantityReceived, quantityRejected, revision, status, stepNumber, uniqueID, unit, unitCost, unitCostForeign. You may specify the exact fields to return using the fields parameter.'
+      parameters:
+      - name: fields
+        in: query
+        description: A comma separated list of fields to include in the result.
+        schema:
+          type: string
+      - name: sort
+        in: query
+        description: A comma separated list of field to sort by. See the <a href='#sort-expressions'>Sort Expressions</a> section for more information.
+        schema:
+          type: string
+      - name: filters
+        in: query
+        description: Filters must be provided as query string parameters as defined in the <a href='#filter-expressions'>Filter Expressions</a> section.
+        schema:
+          type: object
+          additionalProperties:
+            type: string
+        examples:
+          No filters: {}
+          Filter by Purchase Order:
+            value:
+              purchaseOrderNumber: '4969'
+      - name: skip
+        in: query
+        description: The number of records at the start of the result set to skip over.
+        schema:
+          type: string
+      - name: take
+        in: query
+        description: The number of records to retrieve.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PurchaseOrderLineItemListSuccessResponse'
+              example:
+                Data:
+                - certificationRequired: false
+                  comments: string
+                  dateFinished: '2026-09-06T17:13:12.0000000+00:00'
+                  dueDate: '2026-09-06T17:13:12.0000000+00:00'
+                  FOB: string
+                  GLCode: string
+                  gridDueDate: string
+                  isProcessed: false
+                  itemNumber: 0
+                  jobNumber: string
+                  jobNumber1: string
+                  jobNumber10: string
+                  jobNumber2: string
+                  jobNumber3: string
+                  jobNumber4: string
+                  jobNumber5: string
+                  jobNumber6: string
+                  jobNumber7: string
+                  jobNumber8: string
+                  jobNumber9: string
+                  lastModDate: '2026-09-06T17:13:12.0000000+00:00'
+                  lastModUser: string
+                  markupPercent: 0
+                  miscCharge: 0
+                  miscChargeForeign: 0
+                  miscDescription: string
+                  outsideService: false
+                  partDescription: string
+                  partNumber: string
+                  productCode: string
+                  purchaseOrderNumber: string
+                  quantityCanceled: 0
+                  quantityOrdered: 0
+                  quantityReceived: 0
+                  quantityRejected: 0
+                  quantityRequired1: 0
+                  quantityRequired10: 0
+                  quantityRequired2: 0
+                  quantityRequired3: 0
+                  quantityRequired4: 0
+                  quantityRequired5: 0
+                  quantityRequired6: 0
+                  quantityRequired7: 0
+                  quantityRequired8: 0
+                  quantityRequired9: 0
+                  revision: string
+                  status: string
+                  stepNumber: 0
+                  taxStatus: false
+                  uniqueID: 0
+                  unit: string
+                  unitCost: 0
+                  unitCostForeign: 0
+                  user_Currency1: 0
+                  user_Currency2: 0
+                  user_Date1: '2026-09-06T17:13:12.0000000+00:00'
+                  user_Date2: '2026-09-06T17:13:12.0000000+00:00'
+                  user_Memo1: string
+                  user_Number1: 0
+                  user_Number2: 0
+                  user_Number3: 0
+                  user_Number4: 0
+                  user_Text1: string
+                  user_Text2: string
+                  user_Text3: string
+                  user_Text4: string
+      operationId: getApiV1PurchaseOrderLineItems
+      x-operation-id-source: derived
+  /api/v1/purchase-order-line-items/{purchaseOrderNumber}/{partNumber}/{itemNumber}:
+    patch:
+      tags:
+      - Purchase Order Line Items
+      summary: Updates a Purchase Order Line Item
+      parameters:
+      - name: purchaseOrderNumber
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: partNumber
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: itemNumber
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PurchaseOrderLineItemUpdate'
+            example:
+              user_Currency1: 0
+              user_Currency2: 0
+              user_Date1: '2026-09-06T17:13:12.0000000+00:00'
+              user_Date2: '2026-09-06T17:13:12.0000000+00:00'
+              user_Memo1: string
+              user_Number1: 0
+              user_Number2: 0
+              user_Number3: 0
+              user_Number4: 0
+              user_Text1: string
+              user_Text2: string
+              user_Text3: string
+              user_Text4: string
+      responses:
+        '204':
+          description: Success
+      operationId: patchApiV1PurchaseOrderLineItemsByPurchaseOrderNumberByPartNumberByItemNumber
+      x-operation-id-source: derived
+components:
+  schemas:
+    PurchaseOrderLineItemListSuccessResponse:
+      type: object
+      properties:
+        Data:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/PurchaseOrderLineItem'
+      additionalProperties: false
+    PurchaseOrderLineItemUpdate:
+      type: object
+      properties:
+        user_Currency1:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Currency2:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Date1:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        user_Date2:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        user_Memo1:
+          type:
+          - string
+          - 'null'
+        user_Number1:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Number2:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Number3:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Number4:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Text1:
+          type:
+          - string
+          - 'null'
+        user_Text2:
+          type:
+          - string
+          - 'null'
+        user_Text3:
+          type:
+          - string
+          - 'null'
+        user_Text4:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    PurchaseOrderLineItem:
+      type: object
+      properties:
+        certificationRequired:
+          type: boolean
+          readOnly: true
+        comments:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        dateFinished:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        dueDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        FOB:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        GLCode:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        gridDueDate:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        isProcessed:
+          type: boolean
+          readOnly: true
+        itemNumber:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          readOnly: true
+        jobNumber:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        jobNumber1:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        jobNumber10:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        jobNumber2:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        jobNumber3:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        jobNumber4:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        jobNumber5:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        jobNumber6:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        jobNumber7:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        jobNumber8:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        jobNumber9:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        lastModDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        lastModUser:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        markupPercent:
+          type:
+          - number
+          - 'null'
+          format: float
+          readOnly: true
+        miscCharge:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        miscChargeForeign:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        miscDescription:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        outsideService:
+          type: boolean
+          readOnly: true
+        partDescription:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        partNumber:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        productCode:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        purchaseOrderNumber:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        quantityCanceled:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        quantityOrdered:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        quantityReceived:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        quantityRejected:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        quantityRequired1:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        quantityRequired10:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        quantityRequired2:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        quantityRequired3:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        quantityRequired4:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        quantityRequired5:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        quantityRequired6:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        quantityRequired7:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        quantityRequired8:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        quantityRequired9:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        revision:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        status:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        stepNumber:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          readOnly: true
+        taxStatus:
+          type: boolean
+          readOnly: true
+        uniqueID:
+          type: integer
+          format: int32
+          readOnly: true
+        unit:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        unitCost:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        unitCostForeign:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        user_Currency1:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        user_Currency2:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        user_Date1:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        user_Date2:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        user_Memo1:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        user_Number1:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        user_Number2:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        user_Number3:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        user_Number4:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        user_Text1:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        user_Text2:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        user_Text3:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        user_Text4:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+      additionalProperties: false
+  securitySchemes:
+    Bearer:
+      type: oauth2
+      description: OAuth 2.0 Client Credentials Flow with API Users issued from Integration Engine Management Console
+      flows:
+        clientCredentials:
+          tokenUrl: https://api-user.integrations.ecimanufacturing.com/oauth2/api-user/token
+          scopes:
+            openid: openid

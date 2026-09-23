@@ -1,0 +1,259 @@
+openapi: 3.2.0
+info:
+  title: JobBOSS² Public Tax Codes API
+  description: Provides a common API surface for accessing ECI ERP JobBOSS².
+  version: v1
+servers:
+- url: https://api-jb2.integrations.ecimanufacturing.com:443
+  description: API Host
+security:
+- Bearer: []
+tags:
+- name: Tax Codes
+paths:
+  /api/v1/tax-codes:
+    get:
+      tags:
+      - Tax Codes
+      summary: Gets a list of Tax Codes
+      description: 'By default an order response will include only the fields: accountingID, active, allAreTaxable, description, lastModDate, lastModUser, taxGLCode, taxAccount1, taxAccount10, taxAccount2, taxAccount3, taxAccount4, taxAccount5, taxAccount6, taxAccount7, taxAccount8, taxAccount9, taxCode, uniqueID, taxFactor. You may specify the exact fields to return using the fields parameter.'
+      parameters:
+      - name: fields
+        in: query
+        description: A comma separated list of fields to include in the result.
+        schema:
+          type: string
+      - name: sort
+        in: query
+        description: A comma separated list of field to sort by. See the <a href='#sort-expressions'>Sort Expressions</a> section for more information.
+        schema:
+          type: string
+      - name: filters
+        in: query
+        description: Filters must be provided as query string parameters as defined in the <a href='#filter-expressions'>Filter Expressions</a> section.
+        schema:
+          type: object
+          additionalProperties:
+            type: string
+        examples:
+          No filters: {}
+          Filter by GL Code:
+            value:
+              taxGLCode: '2280'
+      - name: skip
+        in: query
+        description: The number of records at the start of the result set to skip over.
+        schema:
+          type: string
+      - name: take
+        in: query
+        description: The number of records to retrieve.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaxCodeListSuccessResponse'
+              example:
+                Data:
+                - accountingID: string
+                  active: false
+                  allAreTaxable: false
+                  description: string
+                  lastModDate: '2026-09-06T17:13:13.0000000+00:00'
+                  lastModUser: string
+                  taxAccount1: string
+                  taxAccount10: string
+                  taxAccount2: string
+                  taxAccount3: string
+                  taxAccount4: string
+                  taxAccount5: string
+                  taxAccount6: string
+                  taxAccount7: string
+                  taxAccount8: string
+                  taxAccount9: string
+                  taxCode: string
+                  taxFactor: 0
+                  taxGLCode: string
+                  uniqueID: 0
+      operationId: getApiV1TaxCodes
+      x-operation-id-source: derived
+  /api/v1/tax-codes/{taxCode}:
+    get:
+      tags:
+      - Tax Codes
+      summary: Gets an Tax Code by tax code
+      description: 'By default an order response will include only the fields: accountingID, active, allAreTaxable, description, lastModDate, lastModUser, taxGLCode, taxAccount1, taxAccount10, taxAccount2, taxAccount3, taxAccount4, taxAccount5, taxAccount6, taxAccount7, taxAccount8, taxAccount9, taxCode, uniqueID, taxFactor. You may specify the exact fields to return using the fields parameter.'
+      parameters:
+      - name: taxCode
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: fields
+        in: query
+        description: A comma separated list of fields to include in the result.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaxCodeSuccessResponse'
+              example:
+                Data:
+                  accountingID: string
+                  active: false
+                  allAreTaxable: false
+                  description: string
+                  lastModDate: '2026-09-06T17:13:13.0000000+00:00'
+                  lastModUser: string
+                  taxAccount1: string
+                  taxAccount10: string
+                  taxAccount2: string
+                  taxAccount3: string
+                  taxAccount4: string
+                  taxAccount5: string
+                  taxAccount6: string
+                  taxAccount7: string
+                  taxAccount8: string
+                  taxAccount9: string
+                  taxCode: string
+                  taxFactor: 0
+                  taxGLCode: string
+                  uniqueID: 0
+      operationId: getApiV1TaxCodesByTaxCode
+      x-operation-id-source: derived
+components:
+  schemas:
+    TaxCode:
+      type: object
+      properties:
+        accountingID:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        active:
+          type: boolean
+          readOnly: true
+        allAreTaxable:
+          type: boolean
+          readOnly: true
+        description:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        lastModDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        lastModUser:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        taxAccount1:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        taxAccount10:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        taxAccount2:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        taxAccount3:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        taxAccount4:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        taxAccount5:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        taxAccount6:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        taxAccount7:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        taxAccount8:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        taxAccount9:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        taxCode:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        taxFactor:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        taxGLCode:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        uniqueID:
+          type: integer
+          format: int32
+          readOnly: true
+      additionalProperties: false
+    TaxCodeSuccessResponse:
+      type: object
+      properties:
+        Data:
+          $ref: '#/components/schemas/TaxCode'
+      additionalProperties: false
+    TaxCodeListSuccessResponse:
+      type: object
+      properties:
+        Data:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/TaxCode'
+      additionalProperties: false
+  securitySchemes:
+    Bearer:
+      type: oauth2
+      description: OAuth 2.0 Client Credentials Flow with API Users issued from Integration Engine Management Console
+      flows:
+        clientCredentials:
+          tokenUrl: https://api-user.integrations.ecimanufacturing.com/oauth2/api-user/token
+          scopes:
+            openid: openid

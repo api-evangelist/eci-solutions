@@ -1,0 +1,3285 @@
+openapi: 3.2.0
+info:
+  title: Eci Solutions Company API
+  version: '1.0'
+  description: 'Operations tagged Company across 2 of this provider''s published API definitions: eci-solutions-jobboss2-openapi.json, eci-solutions-management-openapi.json. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api-jb2.integrations.ecimanufacturing.com:443
+  description: API Host
+- url: https://api-user.integrations.ecimanufacturing.com:443
+  description: Production
+tags:
+- name: Company
+paths:
+  /api/v1/company:
+    get:
+      tags:
+      - Company
+      summary: Gets a company
+      description: By default a company response will include all fields. You may specify the exact fields to return using the fields parameter.
+      parameters:
+      - name: fields
+        in: query
+        description: A comma separated list of fields to include in the result.
+        schema:
+          type: string
+      - name: sort
+        in: query
+        description: A comma separated list of fields to sort by.
+        schema:
+          type: string
+      - name: filters
+        in: query
+        description: Filters must be provided as query string parameters as defined in the Filter Expression section.
+        schema:
+          type: object
+          additionalProperties:
+            type: string
+        examples:
+          No filters: {}
+          Filter by Company Code:
+            value:
+              companyCode: ABC
+      - name: skip
+        in: query
+        description: The number of records at the start of the result set to skip over.
+        schema:
+          type: string
+      - name: take
+        in: query
+        description: The number of records to retrieve.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompanyListSuccessResponse'
+              example:
+                Data:
+                - accountsPayableAccount: string
+                  accountsReceivableAccount: string
+                  billingDrivenBy: string
+                  billingRateDescription1: string
+                  billingRateDescription10: string
+                  billingRateDescription2: string
+                  billingRateDescription3: string
+                  billingRateDescription4: string
+                  billingRateDescription5: string
+                  billingRateDescription6: string
+                  billingRateDescription7: string
+                  billingRateDescription8: string
+                  billingRateDescription9: string
+                  cashDiscountAccount: string
+                  companyCode: string
+                  companyCountry: string
+                  companyDescription: string
+                  companyTimeZone: string
+                  currencyCode: string
+                  currentEarningsAccount: string
+                  freightAccount: string
+                  payrollRateDescription1: string
+                  payrollRateDescription10: string
+                  payrollRateDescription2: string
+                  payrollRateDescription3: string
+                  payrollRateDescription4: string
+                  payrollRateDescription5: string
+                  payrollRateDescription6: string
+                  payrollRateDescription7: string
+                  payrollRateDescription8: string
+                  payrollRateDescription9: string
+                  productCode: string
+                  purchaseDiscountAccount: string
+                  reportDateFormat: string
+                  retainedEarningsAccount: string
+                  useA4PaperSize: false
+                  workCode: string
+      security:
+      - Bearer: []
+      operationId: getApiV1Company
+      x-operation-id-source: derived
+    servers:
+    - url: https://api-jb2.integrations.ecimanufacturing.com:443
+      description: API Host
+  /api/companies:
+    get:
+      tags:
+      - Company
+      summary: List the Companies
+      description: 'Accessible By: Global Admin, Product Admin, Product Support User.\
+
+        Accessed From: User Mgmt UI.\
+
+        Description: List the Companies by optional filters.'
+      operationId: GetCompanies
+      parameters:
+      - name: q
+        in: query
+        description: Return only companies whose Company Name or Customer ID match this value (case insensitively)
+        schema:
+          type: string
+      - name: product_id
+        in: query
+        description: Return only companies assigned the specified Product ID, if provided
+        schema:
+          type: integer
+          format: int32
+      - name: is_active
+        in: query
+        description: Return only active companies (true), inactive companies (false), or both (no value)
+        schema:
+          type: boolean
+      - name: integration_id
+        in: query
+        description: Return only companies assigned the specified Integration ID, if provided
+        schema:
+          type: integer
+          format: int32
+      - name: customer_id
+        in: query
+        description: Return only company with the exact match of the specified CustomerId, if provided
+        schema:
+          type: string
+      - name: nexus_id
+        in: query
+        description: Return only companies assigned the specified NexusId, if provided
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/CompanyResponseIListAPIResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompanyResponseIListAPIResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/CompanyResponseIListAPIResponse'
+      security:
+      - oidc:
+        - openid
+      - Basic: []
+    post:
+      tags:
+      - Company
+      summary: Create a Company
+      description: 'Accessible By: Global Admin, Product Admin.\
+
+        Accessed From: User Mgmt UI, Payment Integration.\
+
+        Description: Create a Company.
+
+        Global Admin can add a Company assigned to any Product.
+
+        Product Admin may only add a Company assigned to one of the Products which they can administrate.
+
+        Company Id and Customer Id must be unique.'
+      operationId: CreateCompany
+      requestBody:
+        description: An object which contains all the required and optional fields to create a company. The companyName and customerId is optional if nexusId is provided
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/AddCompany'
+          text/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/AddCompany'
+          application/*+json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/AddCompany'
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/AddUpdateCompanyResponseModelAPIResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AddUpdateCompanyResponseModelAPIResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/AddUpdateCompanyResponseModelAPIResponse'
+      security:
+      - oidc:
+        - openid
+      - Basic: []
+    servers:
+    - url: https://api-user.integrations.ecimanufacturing.com:443
+      description: Production
+  /api/companies/{id}:
+    get:
+      tags:
+      - Company
+      summary: Get the details of a Company by Company Id
+      description: 'Accessible By: Global Admin, Product Admin, Product Support User.\
+
+        Accessed From: User Mgmt UI, Payment Integration.\
+
+        Description: Get the details of a Company by Company Id.'
+      operationId: GetCompanyDetailById
+      parameters:
+      - name: id
+        in: path
+        description: The Company Id
+        required: true
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/UserCompanyAPIResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserCompanyAPIResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/UserCompanyAPIResponse'
+      security:
+      - oidc:
+        - openid
+      - Basic: []
+    patch:
+      tags:
+      - Company
+      summary: Update a Company
+      description: 'Accessible By: Global Admin, Product Admin, Product Support User.\
+
+        Accessed From: User Mgmt UI.\
+
+        Description: Update a Company.
+
+        Product Admin and Product Support User may only update a Company assigned to one of the Products which they can administrate.
+
+        Company Id and Customer Id must be unique.'
+      operationId: UpdateCompany
+      parameters:
+      - name: id
+        in: path
+        description: Company Id
+        required: true
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: An object which contains all the required and optional fields to update a company.
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/UpdateCompany'
+          text/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/UpdateCompany'
+          application/*+json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/UpdateCompany'
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/AddUpdateCompanyResponseModelAPIResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AddUpdateCompanyResponseModelAPIResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/AddUpdateCompanyResponseModelAPIResponse'
+      security:
+      - oidc:
+        - openid
+      - Basic: []
+    delete:
+      tags:
+      - Company
+      summary: Delete a company
+      description: 'Accessible By: Global Admin.\
+
+        Accessed From: User Mgmt UI.\
+
+        Description: API is used to delete a company and their associated properties.'
+      operationId: DeleteCompany
+      parameters:
+      - name: id
+        in: path
+        description: The company id of the company to delete.
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: force
+        in: query
+        description: Whether to force deletion even when the company has associated API keys or active auth sessions
+        schema:
+          type: boolean
+          default: false
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/StringAPIResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StringAPIResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/StringAPIResponse'
+      security:
+      - oidc:
+        - openid
+      - Basic: []
+    servers:
+    - url: https://api-user.integrations.ecimanufacturing.com:443
+      description: Production
+  /api/companies/{id}/api-logs:
+    get:
+      tags:
+      - Company
+      summary: Get a list of API Logs
+      description: 'Accessible By: Global Admin, Product Admin, Product Support User, Company Manager.\
+
+        Accessed From: User Mgmt UI.\
+
+        Description: Get a list of API Logs for a Company.'
+      operationId: ApiLogsCompany
+      parameters:
+      - name: id
+        in: path
+        description: Company ID field is required
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: logType
+        in: query
+        description: ''
+        required: true
+        schema:
+          type: string
+      - name: duration
+        in: query
+        description: ''
+        schema:
+          type: integer
+          format: int32
+      - name: startDate
+        in: query
+        description: Set UTC startDate in format like {YYYY-MM-DDTHH:MM:SS}
+        schema:
+          type: string
+          format: date-time
+      - name: endDate
+        in: query
+        description: Set UTC endDate in format like {YYYY-MM-DDTHH:MM:SS}
+        schema:
+          type: string
+          format: date-time
+      - name: is_error
+        in: query
+        description: ''
+        schema:
+          type: boolean
+      - name: methodType
+        in: query
+        description: ''
+        schema:
+          type: string
+      - name: productName
+        in: query
+        description: ''
+        schema:
+          type: string
+      - name: secDuration
+        in: query
+        description: ''
+        schema:
+          type: string
+          default: ''
+      - name: system
+        in: query
+        description: ''
+        schema:
+          type: string
+      - name: traceId
+        in: query
+        description: ''
+        schema:
+          type: string
+      - name: integrationId
+        in: query
+        description: ''
+        schema:
+          type: integer
+          format: int32
+      - name: integrationName
+        in: query
+        description: ''
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/TraceMessageResponseListAPIResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TraceMessageResponseListAPIResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/TraceMessageResponseListAPIResponse'
+      security:
+      - oidc:
+        - openid
+      - Basic: []
+    servers:
+    - url: https://api-user.integrations.ecimanufacturing.com:443
+      description: Production
+  /api/companies/{id}/api-users:
+    get:
+      tags:
+      - Company
+      summary: List the API Credentials for a specific Company by Id
+      description: 'Accessible By: Global Admin, Product Admin, Product Support User, Company Manager.\
+
+        Accessed From: User Mgmt UI.\
+
+        Description: List the API Credentials for a specific Company by Id and optionally also for a specific Integration Id.'
+      operationId: ListCompanyApiUsers
+      parameters:
+      - name: id
+        in: path
+        description: Company Id
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: integrationId
+        in: query
+        description: Integration Id
+        schema:
+          type: integer
+          format: int32
+      - name: user_type
+        in: query
+        description: 'Filter by credential type: 1 = Person, 2 = System, 3 = GroupProfile, 4 = NexusUser. Omit to return all types.'
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/ApiCredentialUserType'
+      - name: is_active
+        in: query
+        description: Filter by active status. Omit to return both active and inactive.
+        schema:
+          type: boolean
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ApiUserIntegrationDetailResponseApiUserListResponseAPIResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiUserIntegrationDetailResponseApiUserListResponseAPIResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ApiUserIntegrationDetailResponseApiUserListResponseAPIResponse'
+      security:
+      - oidc:
+        - openid
+      - Basic: []
+    servers:
+    - url: https://api-user.integrations.ecimanufacturing.com:443
+      description: Production
+  /api/companies/{id}/applications:
+    get:
+      tags:
+      - Company
+      summary: Get the list of Application based on Company Id
+      description: 'Accessible By: Global Admin, Product Admin, Product Support User.\
+
+        Accessed From: User Mgmt UI.\
+
+        Description: Get the list of Application based on Company Id.'
+      operationId: ListApplicationsCompany
+      parameters:
+      - name: id
+        in: path
+        description: Company Id
+        required: true
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ApplicationResultIListAPIResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApplicationResultIListAPIResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ApplicationResultIListAPIResponse'
+      security:
+      - oidc:
+        - openid
+      - Basic: []
+    servers:
+    - url: https://api-user.integrations.ecimanufacturing.com:443
+      description: Production
+  /api/companies/{id}/auth-sessions:
+    get:
+      tags:
+      - Company
+      summary: Get the list of Auth Session based on Company Id
+      description: 'Accessible By: Global Admin, Product Admin, Product Support User.\
+
+        Accessed From: User Mgmt UI.\
+
+        Description: Get the list of Auth Session based on Company Id.'
+      operationId: ListAuthSessionsCompany
+      parameters:
+      - name: id
+        in: path
+        description: Company Id
+        required: true
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/AuthSessionResultIListAPIResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthSessionResultIListAPIResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/AuthSessionResultIListAPIResponse'
+      security:
+      - oidc:
+        - openid
+      - Basic: []
+    servers:
+    - url: https://api-user.integrations.ecimanufacturing.com:443
+      description: Production
+  /api/companies/{id}/company-managers:
+    get:
+      tags:
+      - Company
+      summary: Get the list of Company Manager based on Company Id
+      description: 'Accessible By: Global Admin, Product Admin, Product Support User.\
+
+        Accessed From: User Mgmt UI.\
+
+        Description: Get the list of Company Manager based on Company Id.'
+      operationId: ListCompanyManagers
+      parameters:
+      - name: id
+        in: path
+        description: Company Id
+        required: true
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ERPUserListResponseAPIResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ERPUserListResponseAPIResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ERPUserListResponseAPIResponse'
+      security:
+      - oidc:
+        - openid
+      - Basic: []
+    servers:
+    - url: https://api-user.integrations.ecimanufacturing.com:443
+      description: Production
+  /api/companies/{id}/external-connections:
+    get:
+      tags:
+      - Company
+      summary: List external connections
+      description: 'Accessible By: Global Admin, Product Admin, Product Support User.\
+
+        Accessed From: User Mgmt UI.\
+
+        Description: Returns a list of external connections associated with the specified company.'
+      operationId: ExternalConnectionsCompany
+      parameters:
+      - name: id
+        in: path
+        description: Company Id
+        required: true
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/FinancialCompanyResponseModelListAPIResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FinancialCompanyResponseModelListAPIResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/FinancialCompanyResponseModelListAPIResponse'
+      security:
+      - oidc:
+        - openid
+      - Basic: []
+    servers:
+    - url: https://api-user.integrations.ecimanufacturing.com:443
+      description: Production
+  /api/companies/{id}/integrations:
+    post:
+      tags:
+      - Company
+      summary: Create or enable a company integration
+      description: 'Accessible By: Global Admin and Product Admin.\
+
+        Accessed From: User Mgmt UI, Payment Integration.\
+
+        Description: Create or enable a company integration.'
+      operationId: AddCompanyIntegration
+      parameters:
+      - name: id
+        in: path
+        description: The Company Id
+        required: true
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: A model containing the Integration details needed to create the Company Integration.
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/AddCompanyIntegrationModel'
+          text/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/AddCompanyIntegrationModel'
+          application/*+json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/AddCompanyIntegrationModel'
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/CompanyIntegrationDetailResponseAPIResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompanyIntegrationDetailResponseAPIResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/CompanyIntegrationDetailResponseAPIResponse'
+        '400':
+          description: Bad Request
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/StringAPIResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StringAPIResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/StringAPIResponse'
+        '403':
+          description: Forbidden
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/StringAPIResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StringAPIResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/StringAPIResponse'
+        '404':
+          description: Not Found
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/StringAPIResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StringAPIResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/StringAPIResponse'
+        '409':
+          description: Conflict
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/StringAPIResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StringAPIResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/StringAPIResponse'
+      security:
+      - oidc:
+        - openid
+      - Basic: []
+    servers:
+    - url: https://api-user.integrations.ecimanufacturing.com:443
+      description: Production
+  /api/companies/{id}/integrations/{integrationId}:
+    get:
+      tags:
+      - Company
+      summary: Get the details and settings for a company's integration by integration ID
+      description: 'Accessible By: Global Admin, Product Admin, Product Support User, Company Manager.\
+
+        Description: Returns detailed information about a specific integration for a company,
+
+        including systems, properties, and external connections.'
+      operationId: GetIntegrationDetailCompany
+      parameters:
+      - name: id
+        in: path
+        description: Company ID
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: integrationId
+        in: path
+        description: Integration ID
+        required: true
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/CompanyIntegrationDetailResponseAPIResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompanyIntegrationDetailResponseAPIResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/CompanyIntegrationDetailResponseAPIResponse'
+        '400':
+          description: Bad Request
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/StringAPIResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StringAPIResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/StringAPIResponse'
+        '403':
+          description: Forbidden
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/StringAPIResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StringAPIResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/StringAPIResponse'
+        '404':
+          description: Not Found
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/StringAPIResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StringAPIResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/StringAPIResponse'
+      security:
+      - oidc:
+        - openid
+      - Basic: []
+    patch:
+      tags:
+      - Company
+      summary: Enable or disable a company integration
+      description: 'Accessible By: Global Admin, Product Admin, Product Support User.\
+
+        Accessed From: User Mgmt UI.\
+
+        Description: Enable or disable a company integration.'
+      operationId: UpdateCompanyIntegration
+      parameters:
+      - name: id
+        in: path
+        description: Company Id and is required
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: integrationId
+        in: path
+        description: Integration Id and is required
+        required: true
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: The only property isActive with a value of true to enable the integration or false to disable the integration.
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/UpdateCompanyIntegrationModel'
+          text/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/UpdateCompanyIntegrationModel'
+          application/*+json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/UpdateCompanyIntegrationModel'
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/StringAPIResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StringAPIResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/StringAPIResponse'
+      security:
+      - oidc:
+        - openid
+      - Basic: []
+    delete:
+      tags:
+      - Company
+      summary: Removes an integration from a company
+      description: 'Accessible By: Global Admin, Product Admin, Product Support User.\
+
+        Accessed From: User Mgmt UI.\
+
+        Description: Removes an integration from a company.'
+      operationId: DeleteCompanyIntegration
+      parameters:
+      - name: id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: integrationId
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/StringAPIResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StringAPIResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/StringAPIResponse'
+      security:
+      - oidc:
+        - openid
+      - Basic: []
+    servers:
+    - url: https://api-user.integrations.ecimanufacturing.com:443
+      description: Production
+  /api/companies/{id}/integrations/{integrationId}/external-connections:
+    get:
+      tags:
+      - Company
+      summary: List external connections
+      description: 'Accessible By: Company Manager.\
+
+        Accessed From: User Mgmt UI.\
+
+        Description: Returns external connections for a specific company integration.'
+      operationId: ListCompanies
+      parameters:
+      - name: id
+        in: path
+        description: Company Id
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: integrationId
+        in: path
+        description: Integration Id
+        required: true
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ExternalCompanyResponseIListAPIResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExternalCompanyResponseIListAPIResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ExternalCompanyResponseIListAPIResponse'
+      security:
+      - oidc:
+        - openid
+      - Basic: []
+    post:
+      tags:
+      - Company
+      summary: Create external connection
+      description: 'Accessible By: Company Manager.\
+
+        Accessed From: User Mgmt UI.\
+
+        Description: Validates and creates an external connection with API credentials.'
+      operationId: ValidateIntegrationCompany
+      parameters:
+      - name: id
+        in: path
+        description: Company Id
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: integrationId
+        in: path
+        description: Integration Id
+        required: true
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: An object which contains all the required and optional fields to create the external connection.
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/ValidateIntegrationRequestModel'
+          text/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/ValidateIntegrationRequestModel'
+          application/*+json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/ValidateIntegrationRequestModel'
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/StringObjectDictionaryAPIResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StringObjectDictionaryAPIResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/StringObjectDictionaryAPIResponse'
+      security:
+      - oidc:
+        - openid
+      - Basic: []
+    servers:
+    - url: https://api-user.integrations.ecimanufacturing.com:443
+      description: Production
+  /api/companies/{id}/integrations/{integrationId}/external-connections/{externalConnectionId}:
+    delete:
+      tags:
+      - Company
+      summary: Delete external connection
+      description: 'Accessible By: Company Manager.\
+
+        Accessed From: User Mgmt UI.\
+
+        Description: Deletes an external connection and its associated API credentials.'
+      operationId: RemoveCompany
+      parameters:
+      - name: id
+        in: path
+        description: Company Id
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: integrationId
+        in: path
+        description: Integration Id
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: externalConnectionId
+        in: path
+        description: External Connection Id
+        required: true
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '204':
+          description: No Content
+      security:
+      - oidc:
+        - openid
+      - Basic: []
+    servers:
+    - url: https://api-user.integrations.ecimanufacturing.com:443
+      description: Production
+  /api/companies/{id}/managers:
+    get:
+      tags:
+      - Company
+      summary: Get the details of Company Managers by Company Id
+      description: 'Accessible By: Global Admin, Product Admin, Product Support User.\
+
+        Accessed From: User Mgmt UI.\
+
+        Description: Get the details of Company Managers by Company Id.'
+      operationId: GetCompanyManagersDetailsById
+      parameters:
+      - name: id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/UserCompanyAPIResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserCompanyAPIResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/UserCompanyAPIResponse'
+      security:
+      - oidc:
+        - openid
+      - Basic: []
+    servers:
+    - url: https://api-user.integrations.ecimanufacturing.com:443
+      description: Production
+  /api/companies/{id}/properties:
+    get:
+      tags:
+      - Company
+      summary: Get Integration Properties Values
+      description: 'Gets a list of Integration Properties for a Company, including the values saved for those settings.
+
+
+        Accessible By: Global Admin, Product Admin, Product Support User and Company Manager.\
+
+        Accessed From: User Mgmt UI.'
+      operationId: GetApiSettingsCompany
+      parameters:
+      - name: id
+        in: path
+        description: Company Id
+        required: true
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/CompanyErpSettingsListAPIResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompanyErpSettingsListAPIResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/CompanyErpSettingsListAPIResponse'
+      security:
+      - oidc:
+        - openid
+      - Basic: []
+    servers:
+    - url: https://api-user.integrations.ecimanufacturing.com:443
+      description: Production
+  /api/companies/{id}/properties/{settingId}:
+    get:
+      tags:
+      - Company
+      summary: This API is used to get the decrypted value of property
+      description: 'Accessible By: Global Admin, Product Admin, Product Support User, Company Manager.\
+
+        Accessed From: User Mgmt UI.\
+
+        Description: API is used to get the decrypted vaue of property.'
+      operationId: GetErpSettingDecryptedValueCompany
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: settingId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: encryptedValue
+        in: query
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/StringAPIResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StringAPIResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/StringAPIResponse'
+      security:
+      - oidc:
+        - openid
+      - Basic: []
+    servers:
+    - url: https://api-user.integrations.ecimanufacturing.com:443
+      description: Production
+  /api/companies/{id}/properties/{settingId}/$value:
+    get:
+      tags:
+      - Company
+      summary: Get the decrypted value of master key property
+      description: 'Accessible By: Global Admin, Product Admin, Product Support User, Company Manager.\
+
+        Accessed From: User Mgmt UI.\
+
+        Description: API is used to get the decrypted vaue of property.'
+      operationId: GetErpSettingDecryptedValueByIdCompany
+      parameters:
+      - name: id
+        in: path
+        description: The Company Id
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: settingId
+        in: path
+        description: The master key setting id
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: encryptedValue
+        in: query
+        description: The master key setting value
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/StringAPIResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StringAPIResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/StringAPIResponse'
+      security:
+      - oidc:
+        - openid
+      - Basic: []
+    servers:
+    - url: https://api-user.integrations.ecimanufacturing.com:443
+      description: Production
+  /api/companies/{id}/summary:
+    get:
+      tags:
+      - Company
+      summary: Get company summary information including integrations
+      description: 'Accessible By: Global Admin, Product Admin, Product Support User, Company Manager, API Keys.\
+
+        Accessed From: User Mgmt UI.\
+
+        Description: Get summary information about a company including its integrations. Replaces the obsolete /api/Dashboard/users endpoint.'
+      operationId: GetCompanySummary
+      parameters:
+      - name: id
+        in: path
+        description: Company Id
+        required: true
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/CompanySummaryResponseAPIResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompanySummaryResponseAPIResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/CompanySummaryResponseAPIResponse'
+      security:
+      - oidc:
+        - openid
+      - Basic: []
+    servers:
+    - url: https://api-user.integrations.ecimanufacturing.com:443
+      description: Production
+  /api/companies/{id}/systems:
+    get:
+      tags:
+      - Company
+      summary: Get the list of systems and integrations for a specific Company by Company Id
+      description: 'Accessible By: Global Admin, Product Admin, Product Support User, Company Manager.\
+
+        Accessed From: User Mgmt UI.\
+
+        Description: Get the list of systems and integrations for a specific Company by Company Id.
+
+        If we pass the integration id then it return the system list of that integration only.'
+      operationId: ListCompanySystems
+      parameters:
+      - name: id
+        in: path
+        description: Company Id
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: integrationId
+        in: query
+        description: Integration Id to optionally filter the systems list
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ListCompanySystemResultIListAPIResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListCompanySystemResultIListAPIResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ListCompanySystemResultIListAPIResponse'
+      security:
+      - oidc:
+        - openid
+      - Basic: []
+    servers:
+    - url: https://api-user.integrations.ecimanufacturing.com:443
+      description: Production
+  /api/companies/activate:
+    post:
+      tags:
+      - Company
+      summary: Creates a new company using the given activation code and returns a company…
+      description: 'Accessible By: Everyone can use this api because it''s Anonymous.\
+
+        Accessed From: User Mgmt UI.\
+
+        Description: Creates a new company using the given activation code and returns a company manager API key to use for further requests.'
+      operationId: ActivateCompany
+      requestBody:
+        description: The companyName is optional if nexusId is provided
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/CompanyActivateRequest'
+          text/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/CompanyActivateRequest'
+          application/*+json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/CompanyActivateRequest'
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/CompanyActivateResponseAPIResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompanyActivateResponseAPIResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/CompanyActivateResponseAPIResponse'
+      security:
+      - oidc:
+        - openid
+      - Basic: []
+    servers:
+    - url: https://api-user.integrations.ecimanufacturing.com:443
+      description: Production
+components:
+  schemas:
+    Company:
+      type: object
+      properties:
+        accountsPayableAccount:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        accountsReceivableAccount:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        billingDrivenBy:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        billingRateDescription1:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        billingRateDescription10:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        billingRateDescription2:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        billingRateDescription3:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        billingRateDescription4:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        billingRateDescription5:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        billingRateDescription6:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        billingRateDescription7:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        billingRateDescription8:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        billingRateDescription9:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        cashDiscountAccount:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        companyCode:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        companyCountry:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        companyDescription:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        companyTimeZone:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        currencyCode:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        currentEarningsAccount:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        freightAccount:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        payrollRateDescription1:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        payrollRateDescription10:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        payrollRateDescription2:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        payrollRateDescription3:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        payrollRateDescription4:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        payrollRateDescription5:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        payrollRateDescription6:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        payrollRateDescription7:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        payrollRateDescription8:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        payrollRateDescription9:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        productCode:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        purchaseDiscountAccount:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        reportDateFormat:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        retainedEarningsAccount:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        useA4PaperSize:
+          type:
+          - boolean
+          - 'null'
+          readOnly: true
+        workCode:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+      additionalProperties: false
+    CompanyListSuccessResponse:
+      type: object
+      properties:
+        Data:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Company'
+      additionalProperties: false
+    ApplicationResultIListAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        result:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ApplicationResult'
+      additionalProperties: false
+    ERPUserListResponse:
+      type: object
+      properties:
+        erpUserList:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ERPUser'
+      additionalProperties: false
+    CompanyActivateResponse:
+      type: object
+      properties:
+        companyId:
+          type: integer
+          format: int32
+        secret:
+          type:
+          - string
+          - 'null'
+        clientId:
+          type: string
+          format: uuid
+        nexusOrganizationId:
+          type:
+          - integer
+          - 'null'
+          format: int32
+      additionalProperties: false
+    ApiUserIntegrationDetailResponseApiUserListResponse:
+      type: object
+      properties:
+        apiUserList:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ApiUserIntegrationDetailResponse'
+      additionalProperties: false
+    TraceMessageResponse:
+      type: object
+      properties:
+        traceIdentifier:
+          type:
+          - string
+          - 'null'
+        xRayTraceId:
+          type:
+          - string
+          - 'null'
+        traceId:
+          type:
+          - string
+          - 'null'
+        timeStamp:
+          type:
+          - string
+          - 'null'
+        productName:
+          type:
+          - string
+          - 'null'
+        httpMethod:
+          type:
+          - string
+          - 'null'
+        responseCode:
+          type:
+          - string
+          - 'null'
+        requestHost:
+          type:
+          - string
+          - 'null'
+        requestScheme:
+          type:
+          - string
+          - 'null'
+        requestQuery:
+          type:
+          - string
+          - 'null'
+        sourceAddress:
+          type:
+          - string
+          - 'null'
+        apiUserName:
+          type:
+          - string
+          - 'null'
+        requestId:
+          type:
+          - string
+          - 'null'
+        apiGwRequestId:
+          type:
+          - string
+          - 'null'
+        responseRequestId:
+          type:
+          - string
+          - 'null'
+        duration:
+          type:
+          - string
+          - 'null'
+        requestPath:
+          type:
+          - string
+          - 'null'
+        companyName:
+          type:
+          - string
+          - 'null'
+        companyId:
+          type:
+          - string
+          - 'null'
+        responseError:
+          type:
+          - string
+          - 'null'
+        system:
+          type:
+          - string
+          - 'null'
+        messageText:
+          type:
+          - string
+          - 'null'
+        logLevel:
+          type:
+          - string
+          - 'null'
+        spanId:
+          type:
+          - string
+          - 'null'
+        application:
+          type:
+          - string
+          - 'null'
+        eventId:
+          type:
+          - string
+          - 'null'
+        category:
+          type:
+          - string
+          - 'null'
+        elapsedMilliseconds:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type:
+          - string
+          - 'null'
+        parentId:
+          type:
+          - string
+          - 'null'
+        exceptionType:
+          type:
+          - string
+          - 'null'
+        stackTrace:
+          type:
+          - string
+          - 'null'
+        applicationVersion:
+          type:
+          - string
+          - 'null'
+        userName:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    CompanyActivateRequest:
+      required:
+      - code
+      - customerId
+      type: object
+      properties:
+        code:
+          minLength: 1
+          type: string
+        companyName:
+          maxLength: 150
+          minLength: 0
+          type:
+          - string
+          - 'null'
+        customerId:
+          minLength: 1
+          type: string
+        nexusOrganizationId:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        redirectUris:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+        isHosted:
+          type:
+          - boolean
+          - 'null'
+        properties:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ErpProperties'
+      additionalProperties: false
+    ErpApiSettings:
+      type: object
+      properties:
+        keyId:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        keyName:
+          type:
+          - string
+          - 'null'
+        isMultiple:
+          type:
+          - boolean
+          - 'null'
+        isRequired:
+          type:
+          - boolean
+          - 'null'
+        isCompanyHosted:
+          type:
+          - boolean
+          - 'null'
+        isCompanyOnPremises:
+          type:
+          - boolean
+          - 'null'
+        isConnectionSpecific:
+          type: boolean
+        minLength:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        maxLength:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        dataType:
+          type:
+          - string
+          - 'null'
+        eciIntegrationId:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        isSecret:
+          type:
+          - boolean
+          - 'null'
+        maskType:
+          type:
+          - string
+          - 'null'
+        displayName:
+          type:
+          - string
+          - 'null'
+        validationPattern:
+          type:
+          - string
+          - 'null'
+        validationPatternMessage:
+          type:
+          - string
+          - 'null'
+        defaultValue:
+          type:
+          - string
+          - 'null'
+        dropdownValues:
+          type:
+          - string
+          - 'null'
+        displayOrdinal:
+          type: integer
+          format: int32
+        listDropdownValues:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+        keyValues:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/IntegrationProperty'
+      additionalProperties: false
+    TraceMessageResponseListAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        result:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/TraceMessageResponse'
+      additionalProperties: false
+    ExternalCompanyResponseIListAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        result:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ExternalCompanyResponse'
+      additionalProperties: false
+    StringObjectDictionaryAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        result:
+          type:
+          - object
+          - 'null'
+          additionalProperties: {}
+      additionalProperties: false
+    ValidationError:
+      type: object
+      properties:
+        field:
+          type:
+          - string
+          - 'null'
+        message:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    CompanyErpSettingsListAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        result:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/CompanyErpSettings'
+      additionalProperties: false
+    ValidateIntegrationRequestModel:
+      required:
+      - additionalProperties
+      - systemId
+      type: object
+      properties:
+        systemId:
+          type: integer
+          format: int32
+        additionalProperties:
+          type: object
+          additionalProperties:
+            type:
+            - string
+            - 'null'
+      additionalProperties: false
+    ListCompanySystemResultIListAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        result:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ListCompanySystemResult'
+      additionalProperties: false
+    UserCompanySystemResponseModel:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        systemName:
+          type:
+          - string
+          - 'null'
+        integrationId:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        integrationName:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    FinancialCompanyResponseModelListAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        result:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/FinancialCompanyResponseModel'
+      additionalProperties: false
+    EciIntegrationList:
+      type: object
+      properties:
+        eciIntegrations:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/EciIntegrationResponse'
+      additionalProperties: false
+    ApiUserIntegrationDetailResponse:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+        username:
+          type:
+          - string
+          - 'null'
+        name:
+          type:
+          - string
+          - 'null'
+        email:
+          type:
+          - string
+          - 'null'
+        isEmailConfirmed:
+          type:
+          - string
+          - 'null'
+        isActive:
+          type: boolean
+        lastActivityDateTime:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        enablePasswordReset:
+          type: boolean
+        accountStatus:
+          type:
+          - string
+          - 'null'
+        accountVerifiedStatus:
+          type:
+          - string
+          - 'null'
+        enableResendVerification:
+          type: boolean
+        enableConfirmUser:
+          type: boolean
+        userType:
+          type: integer
+          description: 'Credential type: 1 = Person, 2 = System, 3 = GroupProfile, 4 = NexusUser.'
+          format: int32
+        expireType:
+          type: integer
+          format: int32
+        expireDateUtc:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        environment:
+          type:
+          - string
+          - 'null'
+        integrationIsActive:
+          type: boolean
+        companyIsActive:
+          type: boolean
+        financialCompany:
+          type:
+          - string
+          - 'null'
+        financialCompanyId:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        systemName:
+          type:
+          - string
+          - 'null'
+        integrationId:
+          type: integer
+          format: int32
+        productId:
+          type: integer
+          format: int32
+        integrationName:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    CompanySummaryResponse:
+      type: object
+      properties:
+        companyId:
+          type: integer
+          format: int32
+        companyName:
+          type:
+          - string
+          - 'null'
+        customerId:
+          type:
+          - string
+          - 'null'
+        nexusId:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        isActive:
+          type: boolean
+        productId:
+          type: integer
+          format: int32
+        productName:
+          type:
+          - string
+          - 'null'
+        createdDate:
+          type: string
+          format: date-time
+        lastActivityDateTime:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        integrations:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/IntegrationSummary'
+      additionalProperties: false
+    UserCompanySystem:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        productName:
+          type:
+          - string
+          - 'null'
+        eciIntegrationId:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        integrationName:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    ApplicationResult:
+      type: object
+      properties:
+        clientId:
+          type:
+          - string
+          - 'null'
+        roleId:
+          type: integer
+          format: int32
+        roleName:
+          type:
+          - string
+          - 'null'
+        integrationId:
+          type: integer
+          format: int32
+        integrationName:
+          type:
+          - string
+          - 'null'
+        redirectUris:
+          type:
+          - string
+          - 'null'
+        description:
+          type:
+          - string
+          - 'null'
+        lastUsedDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+      additionalProperties: false
+    EciIntegrationResponse:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        integrationName:
+          type:
+          - string
+          - 'null'
+        allowHostedConfigurations:
+          type:
+          - boolean
+          - 'null'
+        allowOnPremisesConfigurations:
+          type: boolean
+        enableCompanyManagerDashboard:
+          type: boolean
+        testConnectionUrl:
+          type:
+          - string
+          - 'null'
+        allowsTestConnection:
+          type: boolean
+        isHosted:
+          type:
+          - boolean
+          - 'null'
+        introductionText:
+          type:
+          - string
+          - 'null'
+        isActive:
+          type:
+          - boolean
+          - 'null'
+        isPublished:
+          type:
+          - boolean
+          - 'null'
+        ipRateLimitDefault:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        ipRateLimitDefaultPeriod:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        companyRateLimitDefault:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        companyRateLimitDefaultPeriod:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        userRateLimitDefault:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        userRateLimitDefaultPeriod:
+          type:
+          - integer
+          - 'null'
+          format: int32
+      additionalProperties: false
+    ERPUser:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+        name:
+          type:
+          - string
+          - 'null'
+        email:
+          type:
+          - string
+          - 'null'
+        companyName:
+          type:
+          - string
+          - 'null'
+        customerId:
+          type:
+          - string
+          - 'null'
+        productName:
+          type:
+          - string
+          - 'null'
+        emailConfirmed:
+          type:
+          - string
+          - 'null'
+        isActive:
+          type: boolean
+        companyIsActive:
+          type: boolean
+        lastLoginDateTime:
+          type:
+          - string
+          - 'null'
+          format: date-time
+      additionalProperties: false
+    MasterKeyProperty:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        description:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    IntegrationProperty:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        keyValue:
+          type:
+          - string
+          - 'null'
+        description:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    CompanyIntegrationDetailResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        name:
+          type:
+          - string
+          - 'null'
+        isActive:
+          type: boolean
+        isHosted:
+          type: boolean
+        allowTestConnection:
+          type: boolean
+        externalConnectionCount:
+          type: integer
+          format: int32
+        systems:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/IntegrationSystemSummary'
+        properties:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ErpApiSettings'
+      additionalProperties: false
+    UpdateCompanyIntegrationModel:
+      type: object
+      properties:
+        isActive:
+          type:
+          - boolean
+          - 'null'
+        erpProperties:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ErpProperties'
+      additionalProperties: false
+    UserCompanyAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        result:
+          allOf:
+          - $ref: '#/components/schemas/UserCompany'
+      additionalProperties: false
+    IntegrationProperties:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        keyValue:
+          type:
+          - string
+          - 'null'
+        description:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    AddUpdateCompanyResponseModel:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        companyName:
+          type:
+          - string
+          - 'null'
+        customerId:
+          type:
+          - string
+          - 'null'
+        isActive:
+          type: boolean
+        productId:
+          type: integer
+          format: int32
+        maxCompanyManagers:
+          type: integer
+          format: int32
+        nexusOrganizationId:
+          type:
+          - integer
+          - 'null'
+          format: int32
+      additionalProperties: false
+    ApiUserIntegrationDetailResponseApiUserListResponseAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        result:
+          allOf:
+          - $ref: '#/components/schemas/ApiUserIntegrationDetailResponseApiUserListResponse'
+      additionalProperties: false
+    CompanyActivateResponseAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        result:
+          allOf:
+          - $ref: '#/components/schemas/CompanyActivateResponse'
+      additionalProperties: false
+    FinancialCompanyResponseModel:
+      type: object
+      properties:
+        financialCompanyProductName:
+          type:
+          - string
+          - 'null'
+        systemName:
+          type:
+          - string
+          - 'null'
+        apiUsername:
+          type:
+          - string
+          - 'null'
+        environment:
+          type:
+          - string
+          - 'null'
+        createdDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        modifiedDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        tokenExpiresDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+      additionalProperties: false
+    AuthSessionResultIListAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        result:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/AuthSessionResult'
+      additionalProperties: false
+    ApiCredentialUserType:
+      enum:
+      - 1
+      - 2
+      - 3
+      - 4
+      type: integer
+      format: int32
+    CompanyResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        customerId:
+          type:
+          - string
+          - 'null'
+        companyName:
+          type:
+          - string
+          - 'null'
+        nexusId:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        productName:
+          type:
+          - string
+          - 'null'
+        integrationName:
+          type:
+          - string
+          - 'null'
+        lastActivityOn:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        createdOn:
+          type: string
+          format: date-time
+        isActive:
+          type: boolean
+        productId:
+          type: integer
+          format: int32
+      additionalProperties: false
+    CompanyIntegrationDetailResponseAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        result:
+          allOf:
+          - $ref: '#/components/schemas/CompanyIntegrationDetailResponse'
+      additionalProperties: false
+    ApiError:
+      type: object
+      properties:
+        isError:
+          type: boolean
+        exceptionMessage:
+          type:
+          - string
+          - 'null'
+        details:
+          type:
+          - string
+          - 'null'
+        referenceErrorCode:
+          type:
+          - string
+          - 'null'
+        referenceDocumentLink:
+          type:
+          - string
+          - 'null'
+        validationErrors:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ValidationError'
+      additionalProperties: false
+    ERPUserListResponseAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        result:
+          allOf:
+          - $ref: '#/components/schemas/ERPUserListResponse'
+      additionalProperties: false
+    UserCompany:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        companyName:
+          type:
+          - string
+          - 'null'
+        customerId:
+          type:
+          - string
+          - 'null'
+        nexusId:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        isActive:
+          type: boolean
+        companyProduct:
+          allOf:
+          - $ref: '#/components/schemas/EciProduct'
+        connectedIntegrations:
+          allOf:
+          - $ref: '#/components/schemas/EciIntegrationList'
+        unconnectedIntegrations:
+          allOf:
+          - $ref: '#/components/schemas/EciIntegrationList'
+        erpApiProperties:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ErpApiSettings'
+        system:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/UserCompanySystem'
+        systemResponse:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/UserCompanySystemResponseModel'
+        createdDate:
+          type: string
+          format: date-time
+        lastActivityDateTime:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        canCreateApiUser:
+          type: boolean
+        maxCompanyManagers:
+          type: integer
+          format: int32
+        currentCompanyManagers:
+          type: integer
+          format: int32
+      additionalProperties: false
+    AddCompanyIntegrationModel:
+      required:
+      - integrationId
+      type: object
+      properties:
+        integrationId:
+          type: integer
+          format: int32
+        isHosted:
+          type: boolean
+        erpProperties:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ErpProperties'
+      additionalProperties: false
+    CompanyResponseIListAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        result:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/CompanyResponse'
+      additionalProperties: false
+    ExternalCompanyResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        companyId:
+          type:
+          - string
+          - 'null'
+        companyName:
+          type:
+          - string
+          - 'null'
+        systemName:
+          type:
+          - string
+          - 'null'
+        environment:
+          type:
+          - string
+          - 'null'
+        systemId:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        credentialCount:
+          type: integer
+          format: int32
+        createDateTime:
+          type:
+          - string
+          - 'null'
+          format: date-time
+      additionalProperties: false
+    StringAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        result:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    ListCompanySystemResult:
+      type: object
+      properties:
+        systemId:
+          type: integer
+          format: int32
+        systemName:
+          type:
+          - string
+          - 'null'
+        integrationId:
+          type: integer
+          format: int32
+        integrationName:
+          type:
+          - string
+          - 'null'
+        isPublished:
+          type: boolean
+      additionalProperties: false
+    CompanySummaryResponseAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        result:
+          allOf:
+          - $ref: '#/components/schemas/CompanySummaryResponse'
+      additionalProperties: false
+    AddUpdateCompanyResponseModelAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        result:
+          allOf:
+          - $ref: '#/components/schemas/AddUpdateCompanyResponseModel'
+      additionalProperties: false
+    ErpProperties:
+      type: object
+      properties:
+        keyId:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        keyName:
+          type:
+          - string
+          - 'null'
+        keyValues:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/IntegrationProperties'
+      additionalProperties: false
+    IntegrationSystemSummary:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        name:
+          type:
+          - string
+          - 'null'
+        isActive:
+          type: boolean
+      additionalProperties: false
+    AddCompany:
+      required:
+      - productId
+      type: object
+      properties:
+        companyId:
+          type: integer
+          format: int32
+        companyName:
+          maxLength: 150
+          minLength: 0
+          type:
+          - string
+          - 'null'
+        customerId:
+          type:
+          - string
+          - 'null'
+        productId:
+          type: integer
+          format: int32
+        nexusOrganizationId:
+          type:
+          - integer
+          - 'null'
+          format: int32
+      additionalProperties: false
+    IntegrationSummary:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        integrationName:
+          type:
+          - string
+          - 'null'
+        allowHostedConfigurations:
+          type: boolean
+        allowOnPremisesConfigurations:
+          type: boolean
+        enableCompanyManagerDashboard:
+          type: boolean
+        introductionText:
+          type:
+          - string
+          - 'null'
+        isActive:
+          type: boolean
+        isHosted:
+          type: boolean
+        isPublished:
+          type: boolean
+      additionalProperties: false
+    CompanyErpSettings:
+      type: object
+      properties:
+        displayName:
+          type:
+          - string
+          - 'null'
+          description: The setting name that is displayed to a user when configuring the integration.
+        isRequired:
+          type: boolean
+          description: Indicates if the setting is required
+        isSecret:
+          type: boolean
+          description: Indicates if the setting is secret
+        isConnectionSpecific:
+          type: boolean
+          description: Indicates if the setting is connection specific
+        keyId:
+          type: integer
+          description: The unique identifier of the setting.
+          format: int32
+        key:
+          type:
+          - string
+          - 'null'
+          description: The setting name that is used by the integration.
+        keyName:
+          type:
+          - string
+          - 'null'
+          deprecated: true
+        eciIntegrationId:
+          type: integer
+          description: The Integration the setting belongs to.
+          format: int32
+        displayOrdinal:
+          type: integer
+          description: The display ordinal of the setting.
+          format: int32
+        keyValues:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/MasterKeyProperty'
+          description: A collection of values that are saved for the setting.
+      additionalProperties: false
+    UpdateCompany:
+      type: object
+      properties:
+        companyName:
+          maxLength: 150
+          minLength: 0
+          type:
+          - string
+          - 'null'
+        customerId:
+          type:
+          - string
+          - 'null'
+        isActive:
+          type:
+          - boolean
+          - 'null'
+        nexusId:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        maxCompanyManagers:
+          type:
+          - integer
+          - 'null'
+          format: int32
+      additionalProperties: false
+    EciProduct:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        productName:
+          type:
+          - string
+          - 'null'
+        displayname:
+          type:
+          - string
+          - 'null'
+        defaultNexusAlias:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    AuthSessionResult:
+      type: object
+      properties:
+        systemId:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        systemName:
+          type:
+          - string
+          - 'null'
+        financialCompanyId:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        financialCompanyName:
+          type:
+          - string
+          - 'null'
+        environment:
+          type:
+          - string
+          - 'null'
+        createdDate:
+          type: string
+          format: date-time
+        expiresDate:
+          type: string
+          format: date-time
+        createdById:
+          type:
+          - string
+          - 'null'
+        createdByName:
+          type:
+          - string
+          - 'null'
+        redirectUrl:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+  securitySchemes:
+    Bearer:
+      type: oauth2
+      description: OAuth 2.0 Client Credentials Flow with API Users issued from Integration Engine Management Console
+      flows:
+        clientCredentials:
+          tokenUrl: https://api-user.integrations.ecimanufacturing.com/oauth2/api-user/token
+          scopes:
+            openid: openid
+    oidc:
+      type: openIdConnect
+      description: Use id_token obtained from OpenID Connect flow.
+      openIdConnectUrl: https://cognito-idp.us-east-1.amazonaws.com/us-east-1_9IYBf4TpD/.well-known/openid-configuration
+      x-tokenName: id_token
+    Basic:
+      type: http
+      description: Username is ClientID, Password is Client Secret.
+      scheme: Basic
+x-refined-from:
+- eci-solutions-jobboss2-openapi.json
+- eci-solutions-management-openapi.json

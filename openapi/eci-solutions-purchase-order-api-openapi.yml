@@ -1,0 +1,348 @@
+openapi: 3.2.0
+info:
+  title: ERP API v2.1 Purchase Order API
+  description: Provides a common API surface for accessing ECI ERP products.
+  contact:
+    name: ECI Manufacturing Division Integration Team
+    url: https://www.ecisolutions.com/support/
+  version: 3.5.585+b1e45fd230
+servers:
+- url: https://api-erp.integrations.ecimanufacturing.com:443
+  description: Production
+security:
+- Bearer: []
+tags:
+- name: Purchase Order
+paths:
+  /api/v2.1/purchase-orders:
+    get:
+      tags:
+      - Purchase Order
+      summary: Get a list of PurchaseOrders from the ERP system that match the given filters
+      description: 'Gets a list of PurchaseOrder.
+
+
+        ## Supported ERPs
+
+        - M1
+
+        - JobBOSS²
+
+        - Deacom
+
+        ## Resource Features
+
+        Feature |Supported |Notes
+
+        ------------|------------|------------
+
+        Filter Expressions|**Yes**|
+
+        Sort Expressions|**Yes**
+
+        Field Selection|**Yes**
+
+        Pagination|**Yes**
+
+        UniqueID|uniqueID|
+
+        ## Features by Field
+
+        Field |Filterable |Sortable |Supported ERPs
+
+        ------------|------------|------------|------------
+
+        apInvoiceLocationID|No|Yes|M1, JobBOSS², Deacom
+
+        buyerEmployeeID|No|Yes|M1, JobBOSS², Deacom
+
+        currency|No|Yes|M1, JobBOSS², Deacom
+
+        orderDate|Yes|Yes|M1, JobBOSS², Deacom
+
+        plantID|Yes|Yes|M1, JobBOSS², Deacom
+
+        projectID|Yes|Yes|M1, JobBOSS², Deacom
+
+        purchaseOrderID|Yes|Yes|M1, JobBOSS², Deacom
+
+        supplierOrganizationID|Yes|Yes|M1, JobBOSS², Deacom
+
+        uniqueID|Yes|Yes|M1, JobBOSS², Deacom
+
+        rowVersion|Yes|Yes|M1, JobBOSS², Deacom
+
+        isClosed|Yes|Yes|M1, JobBOSS², Deacom'
+      parameters:
+      - name: fields
+        in: query
+        description: A comma-separated list of fields to include in the result.
+        schema:
+          type: string
+      - name: sort
+        in: query
+        description: A comma-separated list of <a href='#sortexpr'>sort expressions</a>.
+        schema:
+          type: string
+      - name: take
+        in: query
+        description: Limit the number of results being returned
+        schema:
+          minimum: 0
+          type: integer
+      - name: skip
+        in: query
+        description: The number of results to skip. Combine with 'take' to fetch records in pages
+        schema:
+          minimum: 0
+          type: integer
+      - name: count
+        in: query
+        description: '<a href=''#countparam''>Data and count</a> response behavior '
+        schema:
+          maximum: 2
+          minimum: 0
+          type: integer
+      - name: filters
+        in: query
+        description: See <a href='#filterexpr'>Filter Expressions</a> for query string syntax. The Test UI and any generated code tool may expose filter parameters as a dictionary of name/value pairs, but if creating a raw HTTP request, they must be provided on the querystring as defined in the Filter Expression section.
+        style: form
+        schema:
+          type: object
+          additionalProperties:
+            type: string
+        examples:
+          Empty:
+            description: No filters applied
+          'Example #1':
+            description: A dictionary of name/value pairs that will be serialized as querystring parameters in the format ```name[operator]=value```
+            value:
+              orderDate[gte]: '2020-09-25T00:00:00.0000000'
+              plantID[eq]: abc123
+              projectID[eq]: abc123
+              purchaseOrderID[eq]: abc123
+              supplierOrganizationID[eq]: abc123
+              uniqueID[eq]: cc90686b-399e-4094-b431-fa462f84b0a8
+              rowVersion[gte]: 123
+              isClosed[eq]: true
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/PurchaseOrderListResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PurchaseOrderListResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/PurchaseOrderListResponse'
+      operationId: getApiV21PurchaseOrders
+      x-operation-id-source: derived
+  /api/v2.1/purchase-orders/{id}:
+    get:
+      tags:
+      - Purchase Order
+      summary: Get an Purchaseorders from the ERP system that matches the given unique ID
+      description: 'Gets a PurchaseOrder by unique ID.
+
+
+        ## Supported ERPs
+
+        - M1
+
+        - JobBOSS²
+
+        - Deacom
+
+        ## Features by Field
+
+        Field |Supported ERPs
+
+        ------------|------------
+
+        apInvoiceLocationID||M1, JobBOSS², Deacom
+
+        buyerEmployeeID||M1, JobBOSS², Deacom
+
+        currency||M1, JobBOSS², Deacom
+
+        orderDate||M1, JobBOSS², Deacom
+
+        plantID||M1, JobBOSS², Deacom
+
+        projectID||M1, JobBOSS², Deacom
+
+        purchaseOrderID||M1, JobBOSS², Deacom
+
+        supplierOrganizationID||M1, JobBOSS², Deacom
+
+        uniqueID||M1, JobBOSS², Deacom
+
+        rowVersion||M1, JobBOSS², Deacom
+
+        isClosed||M1, JobBOSS², Deacom'
+      parameters:
+      - name: id
+        in: path
+        description: The ID of the PurchaseOrders
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/WorkCenter'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkCenter'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/WorkCenter'
+      operationId: getApiV21PurchaseOrdersById
+      x-operation-id-source: derived
+components:
+  schemas:
+    ShiftDay:
+      title: ShiftDay
+      type: object
+      properties:
+        shiftID:
+          type: number
+          format: float
+        shiftDay:
+          type: number
+          format: float
+        startTime:
+          type: string
+        endTime:
+          type: string
+        uniqueID:
+          type: string
+        rowVersion:
+          type: integer
+          format: int64
+    PurchaseOrderListResponse:
+      type: object
+      properties:
+        data:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/PurchaseOrder'
+          readOnly: true
+        resultCount:
+          type: integer
+          format: int32
+      additionalProperties: false
+    PurchaseOrder:
+      title: PurchaseOrder
+      type: object
+      properties:
+        apInvoiceLocationID:
+          type: string
+        buyerEmployeeID:
+          type: string
+        currency:
+          type: string
+        orderDate:
+          type: string
+          format: date
+        plantID:
+          type: string
+        projectID:
+          type: string
+        purchaseOrderID:
+          type: string
+        supplierOrganizationID:
+          type: string
+        uniqueID:
+          type: string
+        rowVersion:
+          type: integer
+          format: int64
+        isClosed:
+          type: boolean
+    Shift:
+      title: Shift
+      type: object
+      properties:
+        shiftID:
+          type: number
+          format: float
+        shortDesc:
+          type: string
+        inactiveDate:
+          type: string
+          format: date-time
+        uniqueID:
+          type: string
+        rowVersion:
+          type: integer
+          format: int64
+        shiftDays:
+          type: array
+          items:
+            $ref: '#/components/schemas/ShiftDay'
+    Department:
+      title: Department
+      type: object
+      properties:
+        deptID:
+          type: string
+        shortDesc:
+          type: string
+        uniqueID:
+          type: string
+        rowVersion:
+          type: integer
+          format: int64
+    WorkCenter:
+      title: WorkCenter
+      type: object
+      properties:
+        workCenterID:
+          type: string
+        shortDesc:
+          type: string
+        deptID:
+          type: string
+        overHeadRate:
+          type: string
+        quoteRate:
+          type: string
+        processID:
+          type: string
+        parentWorkCenterID:
+          type: string
+        shiftID:
+          type: string
+        uniqueID:
+          type: string
+        rowVersion:
+          type: integer
+          format: int64
+        laborRate:
+          type: string
+        departments:
+          type: array
+          items:
+            $ref: '#/components/schemas/Department'
+        shifts:
+          type: array
+          items:
+            $ref: '#/components/schemas/Shift'
+  securitySchemes:
+    Bearer:
+      type: oauth2
+      description: OAuth 2.0 Client Credentials Flow with API Users issued from Integration Engine Management Console
+      flows:
+        clientCredentials:
+          tokenUrl: https://api-user.integrations.ecimanufacturing.com/oauth2/api-user/token
+          scopes:
+            openid: openid

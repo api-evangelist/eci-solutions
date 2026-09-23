@@ -1,0 +1,485 @@
+openapi: 3.2.0
+info:
+  title: JobBOSS² Public Shipping Addresses API
+  description: Provides a common API surface for accessing ECI ERP JobBOSS².
+  version: v1
+servers:
+- url: https://api-jb2.integrations.ecimanufacturing.com:443
+  description: API Host
+security:
+- Bearer: []
+tags:
+- name: Shipping Addresses
+paths:
+  /api/v1/shipping-addresses:
+    get:
+      tags:
+      - Shipping Addresses
+      summary: Gets a list of Shipping Addresses
+      description: 'By default a Shipping response will include only the fields: customerCode, FOB, LastModDate, LastModUser, location, printCertification, shippingAddress1, shippingCity, shippingCountry, shippingCode, shippingContact, shippingFAX, shippingPhone, uniqueID, shipToName, shipVia, shippingState, shippingZipCode, territory. You may specify the exact fields to return using the fields parameter.'
+      parameters:
+      - name: fields
+        in: query
+        description: A comma separated list of fields to include in the result.
+        schema:
+          type: string
+      - name: sort
+        in: query
+        description: A comma separated list of field to sort by. See the <a href='#sort-expressions'>Sort Expressions</a> section for more information.
+        schema:
+          type: string
+      - name: filters
+        in: query
+        description: Filters must be provided as query string parameters as defined in the <a href='#filter-expressions'>Filter Expressions</a> section.
+        schema:
+          type: object
+          additionalProperties:
+            type: string
+        examples:
+          No filters: {}
+          Filter by Customer:
+            value:
+              customerCode: CARTER
+      - name: skip
+        in: query
+        description: The number of records at the start of the result set to skip over.
+        schema:
+          type: string
+      - name: take
+        in: query
+        description: The number of records to retrieve.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShippingAddressListSuccessResponse'
+              example:
+                Data:
+                - customerCode: string
+                  enteredDate: '2026-09-06T17:13:13.0000000+00:00'
+                  FOB: string
+                  lastModDate: '2026-09-06T17:13:13.0000000+00:00'
+                  lastModUser: string
+                  location: string
+                  printCertification: false
+                  revisedDate: '2026-09-06T17:13:13.0000000+00:00'
+                  shippingAddress1: string
+                  shippingCity: string
+                  shippingCode: string
+                  shippingContact: string
+                  shippingCountry: string
+                  shippingFAX: string
+                  shippingPhone: string
+                  shippingState: string
+                  shippingZipCode: string
+                  shipToName: string
+                  shipVia: string
+                  territory: string
+                  uniqueID: 0
+      operationId: getApiV1ShippingAddresses
+      x-operation-id-source: derived
+    post:
+      tags:
+      - Shipping Addresses
+      summary: Creates a Shipping Address
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ShippingAddressCreate'
+            example:
+              customerCode: string
+              location: string
+              printCertification: false
+              shippingAddress1: string
+              shippingCity: string
+              shippingCode: string
+              shippingContact: string
+              shippingCountry: string
+              shippingFAX: string
+              shippingPhone: string
+              shippingState: string
+              shippingZipCode: string
+              shipToName: string
+              shipVia: string
+              territory: string
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShippingAddressSuccessResponse'
+              example:
+                Data:
+                  customerCode: string
+                  enteredDate: '2026-09-06T17:13:13.0000000+00:00'
+                  FOB: string
+                  lastModDate: '2026-09-06T17:13:13.0000000+00:00'
+                  lastModUser: string
+                  location: string
+                  printCertification: false
+                  revisedDate: '2026-09-06T17:13:13.0000000+00:00'
+                  shippingAddress1: string
+                  shippingCity: string
+                  shippingCode: string
+                  shippingContact: string
+                  shippingCountry: string
+                  shippingFAX: string
+                  shippingPhone: string
+                  shippingState: string
+                  shippingZipCode: string
+                  shipToName: string
+                  shipVia: string
+                  territory: string
+                  uniqueID: 0
+      operationId: postApiV1ShippingAddresses
+      x-operation-id-source: derived
+  /api/v1/shipping-addresses/{customerCode}/{location}:
+    get:
+      tags:
+      - Shipping Addresses
+      summary: Gets a Shipping Address by customer code and location
+      description: 'By default a Shipping response will include only the fields: customerCode, FOB, LastModDate, LastModUser, location, printCertification, shippingAddress1, shippingCity, shippingCountry, shippingCode, shippingContact, shippingFAX, shippingPhone, uniqueID, shipToName, shipVia, shippingState, shippingZipCode, territory. You may specify the exact fields to return using the fields parameter.'
+      parameters:
+      - name: customerCode
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: location
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: fields
+        in: query
+        description: A comma separated list of fields to include in the result.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShippingAddressSuccessResponse'
+              example:
+                Data:
+                  customerCode: string
+                  enteredDate: '2026-09-06T17:13:13.0000000+00:00'
+                  FOB: string
+                  lastModDate: '2026-09-06T17:13:13.0000000+00:00'
+                  lastModUser: string
+                  location: string
+                  printCertification: false
+                  revisedDate: '2026-09-06T17:13:13.0000000+00:00'
+                  shippingAddress1: string
+                  shippingCity: string
+                  shippingCode: string
+                  shippingContact: string
+                  shippingCountry: string
+                  shippingFAX: string
+                  shippingPhone: string
+                  shippingState: string
+                  shippingZipCode: string
+                  shipToName: string
+                  shipVia: string
+                  territory: string
+                  uniqueID: 0
+      operationId: getApiV1ShippingAddressesByCustomerCodeByLocation
+      x-operation-id-source: derived
+    patch:
+      tags:
+      - Shipping Addresses
+      summary: Updates a Shipping Address
+      parameters:
+      - name: customerCode
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: location
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ShippingAddressUpdate'
+            example:
+              location: string
+              printCertification: false
+              shippingAddress1: string
+              shippingCity: string
+              shippingContact: string
+              shippingCountry: string
+              shippingFAX: string
+              shippingPhone: string
+              shippingState: string
+              shippingZipCode: string
+              shipToName: string
+              shipVia: string
+              territory: string
+      responses:
+        '204':
+          description: Success
+      operationId: patchApiV1ShippingAddressesByCustomerCodeByLocation
+      x-operation-id-source: derived
+components:
+  schemas:
+    ShippingAddress:
+      type: object
+      properties:
+        customerCode:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        enteredDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        FOB:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        lastModDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        lastModUser:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        location:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        printCertification:
+          type: boolean
+          readOnly: true
+        revisedDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        shippingAddress1:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        shippingCity:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        shippingCode:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        shippingContact:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        shippingCountry:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        shippingFAX:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        shippingPhone:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        shippingState:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        shippingZipCode:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        shipToName:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        shipVia:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        territory:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        uniqueID:
+          type: integer
+          format: int32
+          readOnly: true
+      additionalProperties: false
+    ShippingAddressCreate:
+      required:
+      - customerCode
+      - location
+      type: object
+      properties:
+        customerCode:
+          type: string
+        location:
+          type: string
+        printCertification:
+          type: boolean
+        shippingAddress1:
+          type:
+          - string
+          - 'null'
+        shippingCity:
+          type:
+          - string
+          - 'null'
+        shippingCode:
+          type:
+          - string
+          - 'null'
+        shippingContact:
+          type:
+          - string
+          - 'null'
+        shippingCountry:
+          type:
+          - string
+          - 'null'
+        shippingFAX:
+          type:
+          - string
+          - 'null'
+        shippingPhone:
+          type:
+          - string
+          - 'null'
+        shippingState:
+          type:
+          - string
+          - 'null'
+        shippingZipCode:
+          type:
+          - string
+          - 'null'
+        shipToName:
+          type:
+          - string
+          - 'null'
+        shipVia:
+          type:
+          - string
+          - 'null'
+        territory:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    ShippingAddressSuccessResponse:
+      type: object
+      properties:
+        Data:
+          $ref: '#/components/schemas/ShippingAddress'
+      additionalProperties: false
+    ShippingAddressUpdate:
+      type: object
+      properties:
+        location:
+          type:
+          - string
+          - 'null'
+        printCertification:
+          type: boolean
+        shippingAddress1:
+          type:
+          - string
+          - 'null'
+        shippingCity:
+          type:
+          - string
+          - 'null'
+        shippingContact:
+          type:
+          - string
+          - 'null'
+        shippingCountry:
+          type:
+          - string
+          - 'null'
+        shippingFAX:
+          type:
+          - string
+          - 'null'
+        shippingPhone:
+          type:
+          - string
+          - 'null'
+        shippingState:
+          type:
+          - string
+          - 'null'
+        shippingZipCode:
+          type:
+          - string
+          - 'null'
+        shipToName:
+          type:
+          - string
+          - 'null'
+        shipVia:
+          type:
+          - string
+          - 'null'
+        territory:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    ShippingAddressListSuccessResponse:
+      type: object
+      properties:
+        Data:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ShippingAddress'
+      additionalProperties: false
+  securitySchemes:
+    Bearer:
+      type: oauth2
+      description: OAuth 2.0 Client Credentials Flow with API Users issued from Integration Engine Management Console
+      flows:
+        clientCredentials:
+          tokenUrl: https://api-user.integrations.ecimanufacturing.com/oauth2/api-user/token
+          scopes:
+            openid: openid

@@ -1,0 +1,1261 @@
+openapi: 3.2.0
+info:
+  title: M1 Public BOM/ORGANIZATION API
+  description: '## Developer Notes for the M1 Public API (ERP resource):
+
+
+    ### Hosted Environment
+
+
+    If you are using the public API for a hosted M1 customer, you must connect to the public API using the Integration Engine.'
+  contact:
+    name: ECI Software Solutions - M1
+    url: https://www.ecisolutions.com/manufacturers-and-job-shops/m1
+  version: v1
+servers:
+- url: https://api-m1.integrations.ecimanufacturing.com
+  description: API Host
+security:
+- oauth2: []
+tags:
+- name: BOM/ORGANIZATION
+paths:
+  /api/BOM/Organization/GetAllOrganizations/{pageSize}/{pageNumber}:
+    get:
+      tags:
+      - BOM/ORGANIZATION
+      summary: Returns all existing organizations with pagination
+      operationId: BomOrganization_GetAllOrganizationsAsync
+      parameters:
+      - name: pageSize
+        in: path
+        description: The required size of the pagination. By default 1000.
+        required: true
+        style: simple
+        schema:
+          type: integer
+          format: int32
+      - name: pageNumber
+        in: path
+        description: The required number of page from pagination. By default 0, which is the first page
+        required: true
+        style: simple
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BomOrganizationDto'
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BomOrganizationDto'
+            application/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BomOrganizationDto'
+            text/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BomOrganizationDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+  /api/BOM/Organization/GetOrganization/{organizationId}:
+    get:
+      tags:
+      - BOM/ORGANIZATION
+      summary: Returns organization for a given organization id
+      operationId: BomOrganization_GetOrganizationAsync
+      parameters:
+      - name: organizationId
+        in: path
+        description: The organization id as a string
+        required: true
+        style: simple
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/BomOrganizationDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BomOrganizationDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/BomOrganizationDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/BomOrganizationDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+  /api/BOM/Organization/GetAllOrganizationContacts/{pageSize}/{pageNumber}:
+    get:
+      tags:
+      - BOM/ORGANIZATION
+      summary: Returns all existing OrganizationContacts with pagination
+      operationId: BOMOrganizationContacts_GetAllOrganizationContactAsync
+      parameters:
+      - name: pageSize
+        in: path
+        description: The required size of the pagination. By default 1000.
+        required: true
+        style: simple
+        schema:
+          type: integer
+          format: int32
+      - name: pageNumber
+        in: path
+        description: The required number of page from pagination. By default 0, which is the first page.
+        required: true
+        style: simple
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CTMOrganizationContactDto'
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CTMOrganizationContactDto'
+            application/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CTMOrganizationContactDto'
+            text/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CTMOrganizationContactDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+  /api/BOM/Organization/GetOrganizationContact/{organizationId}/{locationId}/{contactId}:
+    get:
+      tags:
+      - BOM/ORGANIZATION
+      summary: Returns OrganizationContact for a given Organization id, Location id and…
+      description: This endpoint retrieves a OrganizationContact based on Organization Id, Location Id and its identifier.
+      operationId: BOMOrganizationContacts_GetOrganizationContactAsync
+      parameters:
+      - name: organizationId
+        in: path
+        description: The Organization id as a string
+        required: true
+        style: simple
+        schema:
+          type: string
+      - name: locationId
+        in: path
+        description: The Location id as a string
+        required: true
+        style: simple
+        schema:
+          type: string
+      - name: contactId
+        in: path
+        description: The Contact id as a string
+        required: true
+        style: simple
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/CTMOrganizationContactDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CTMOrganizationContactDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/CTMOrganizationContactDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/CTMOrganizationContactDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+  /api/BOM/Organization/PostOrganizationContact:
+    post:
+      tags:
+      - BOM/ORGANIZATION
+      summary: Posts a new OrganizationContact
+      operationId: BOMOrganizationContacts_PostOrganizationContactAsync
+      requestBody:
+        description: The OrganizationContact data to be posted.
+        content:
+          text/xml:
+            schema:
+              $ref: '#/components/schemas/BOMOrganizationContactDto'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/BOMOrganizationContactDto'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/BOMOrganizationContactDto'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BOMOrganizationContactDto'
+        required: true
+        x-bodyName: organizationContact
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+  /api/BOM/Organization/GetAllOrganizationLocations/{pageSize}/{pageNumber}:
+    get:
+      tags:
+      - BOM/ORGANIZATION
+      summary: Returns all existing OrganizationLocations with pagination
+      operationId: BOMOrganizationLocations_GetAllOrganizationLocationAsync
+      parameters:
+      - name: pageSize
+        in: path
+        description: The required size of the pagination. By default 1000.
+        required: true
+        style: simple
+        schema:
+          type: integer
+          format: int32
+      - name: pageNumber
+        in: path
+        description: The required number of page from pagination. By default 0, which is the first page.
+        required: true
+        style: simple
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CTMOrganizationLocationDto'
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CTMOrganizationLocationDto'
+            application/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CTMOrganizationLocationDto'
+            text/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CTMOrganizationLocationDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+  /api/BOM/Organization/GetOrganizationLocation/{organizationId}/{organizationLocationId}:
+    get:
+      tags:
+      - BOM/ORGANIZATION
+      summary: Returns OrganizationLocation for a given Organization Id and…
+      description: This endpoint retrieves a OrganizationLocation based on Organization Id and its identifier.
+      operationId: BOMOrganizationLocations_GetOrganizationLocationAsync
+      parameters:
+      - name: organizationId
+        in: path
+        description: The Organization id as a string
+        required: true
+        style: simple
+        schema:
+          type: string
+      - name: organizationLocationId
+        in: path
+        description: The OrganizationLocation id as a string
+        required: true
+        style: simple
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/CTMOrganizationLocationDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CTMOrganizationLocationDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/CTMOrganizationLocationDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/CTMOrganizationLocationDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+  /api/BOM/Organization/PostOrganizationLocation:
+    post:
+      tags:
+      - BOM/ORGANIZATION
+      summary: Posts a new OrganizationLocation
+      operationId: BOMOrganizationLocations_PostOrganizationLocationAsync
+      requestBody:
+        description: The OrganizationLocation data to be posted.
+        content:
+          text/xml:
+            schema:
+              $ref: '#/components/schemas/BOMOrganizationLocationDto'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/BOMOrganizationLocationDto'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/BOMOrganizationLocationDto'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BOMOrganizationLocationDto'
+        required: true
+        x-bodyName: organizationLocation
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+components:
+  schemas:
+    CTMOrganizationLocationDto:
+      required:
+      - organizationID
+      - locationID
+      - name
+      type: object
+      properties:
+        organizationID:
+          type: string
+        locationID:
+          type: string
+        name:
+          type: string
+        addressLine1:
+          type: string
+        addressLine2:
+          type: string
+        addressLine3:
+          type: string
+        city:
+          type: string
+        county:
+          type: string
+        state:
+          type: string
+        postCode:
+          type: string
+        country:
+          type: string
+        phoneNumber:
+          type: string
+        emailAddress:
+          type: string
+        quoteLocation:
+          type: boolean
+        quoteContactID:
+          type: string
+        shipLocation:
+          type: boolean
+        shipContactID:
+          type: string
+        arInvoiceLocation:
+          type: boolean
+        arInvoiceContactID:
+          type: string
+        purchaseLocation:
+          type: boolean
+        purchaseContactID:
+          type: string
+        apInvoiceLocation:
+          type: boolean
+        apInvoiceContactID:
+          type: string
+        customerTaxable:
+          type: boolean
+        customerTaxCodeID:
+          type: string
+        customerSecondTaxCodeID:
+          type: string
+        customerShippingMethodID:
+          type: string
+        customerShipPaymentTypeID:
+          type: string
+        taxExemptNumber:
+          type: string
+        nonTaxReasonID:
+          type: string
+        customerPaymentTermID:
+          type: string
+        currencyRateID:
+          type: string
+        supplierPaymentTermID:
+          type: string
+        supplierShippingMethodID:
+          type: string
+        inactive:
+          type: boolean
+        inactiveDate:
+          type: string
+          format: date-time
+        customerShippingCarrier:
+          type: string
+        upsAcctNumber:
+          type: string
+        upsWsBillingOption:
+          type: string
+        ups3rdPartyOrganizationID:
+          type: string
+        ups3rdPartyLocationID:
+          type: string
+        residentialAddress:
+          type: boolean
+        fedExAccountNumber:
+          type: string
+        fedEx3rdPartyOrganizationID:
+          type: string
+        fedExBillingOption:
+          type: string
+        creditCheckForLocation:
+          type: boolean
+        customerCreditLimit:
+          type: number
+          format: double
+        creditHold:
+          type: boolean
+        countryCode:
+          type: string
+        createdDate:
+          type: string
+          format: date-time
+        createdBy:
+          type: string
+        avalaraUseCodes:
+          type: string
+        uniqueID:
+          type: string
+          format: uuid
+          example: 00000000-0000-0000-0000-000000000000
+        rowVersion:
+          type: string
+          format: byte
+    CTMOrganizationContactDto:
+      required:
+      - organizationID
+      - contactID
+      - name
+      type: object
+      properties:
+        organizationID:
+          type: string
+        locationID:
+          type: string
+        contactID:
+          type: string
+        name:
+          type: string
+        phoneNumber:
+          type: string
+        mobileNumber:
+          type: string
+        emailAddress:
+          type: string
+        correspondenceMethod:
+          type: string
+        inactive:
+          type: boolean
+        inactiveDate:
+          type: string
+          format: date-time
+        easyorderenabled:
+          type: boolean
+        createdbyeasyorder:
+          type: boolean
+        eoffirstname:
+          type: string
+        eoinitials:
+          type: string
+        eoprefix:
+          type: string
+        eosurname:
+          type: string
+        eopassword:
+          type: string
+        eouserrole:
+          type: string
+        eodefsupervisor:
+          type: string
+        eosubsupervisor:
+          type: string
+        eocustomergroup:
+          type: string
+        eomultishipaddress:
+          type: string
+        eoreceiveorderconfirmation:
+          type: string
+        eoeditshippingaddress:
+          type: boolean
+        eoreceiveemails:
+          type: boolean
+        eohtmlmail:
+          type: boolean
+        eoreminderofopenorders:
+          type: boolean
+        eoorderauthorisationmessage:
+          type: boolean
+        eoauthorisationrequest:
+          type: boolean
+        eomaynotcreordtemp:
+          type: boolean
+        createdby:
+          type: string
+        createdDate:
+          type: string
+          format: date-time
+        uniqueID:
+          type: string
+          format: uuid
+          example: 00000000-0000-0000-0000-000000000000
+        rowVersion:
+          type: string
+          format: byte
+    APIResponseMessageDto:
+      type: object
+      properties:
+        description:
+          type: string
+        status:
+          type: string
+        payloadID:
+          type: string
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+          readOnly: true
+        warnings:
+          type: array
+          items:
+            $ref: '#/components/schemas/Warning'
+          readOnly: true
+    BomOrganizationDto:
+      type: object
+      properties:
+        organizationID:
+          type: string
+        name:
+          type: string
+    BOMOrganizationContactDto:
+      required:
+      - organizationID
+      - contactID
+      - name
+      type: object
+      properties:
+        organizationID:
+          type: string
+        locationID:
+          type: string
+        contactID:
+          type: string
+        name:
+          type: string
+        phoneNumber:
+          type: string
+        mobileNumber:
+          type: string
+        emailAddress:
+          type: string
+        inactive:
+          type: boolean
+        inactiveDate:
+          type: string
+          format: date-time
+        easyorderenabled:
+          type: boolean
+        createdbyeasyorder:
+          type: boolean
+        eofirstname:
+          type: string
+        eoinitials:
+          type: string
+        eoprefix:
+          type: string
+        eosurname:
+          type: string
+        eopassword:
+          type: string
+        eouserrole:
+          type: string
+        eodefsupervisor:
+          type: string
+        eosubsupervisor:
+          type: string
+        eocustomergroup:
+          type: string
+        eomultishipaddress:
+          type: string
+        eoreceiveorderconfirmation:
+          type: string
+        eoeditshippingaddress:
+          type: boolean
+        eoreceiveemails:
+          type: boolean
+        eohtmlmail:
+          type: boolean
+        eoreminderofopenorders:
+          type: boolean
+        eoorderauthorisationmessage:
+          type: boolean
+        eoauthorisationrequest:
+          type: boolean
+        eomaynotcreordtemp:
+          type: boolean
+    Error:
+      type: object
+      properties:
+        innerText:
+          type: string
+    BOMOrganizationLocationDto:
+      required:
+      - organizationID
+      - locationID
+      - name
+      type: object
+      properties:
+        organizationID:
+          type: string
+        locationID:
+          type: string
+        name:
+          type: string
+        addressLine1:
+          type: string
+        addressLine2:
+          type: string
+        addressLine3:
+          type: string
+        city:
+          type: string
+        county:
+          type: string
+        state:
+          type: string
+        postCode:
+          type: string
+        country:
+          type: string
+        phoneNumber:
+          type: string
+        emailAddress:
+          type: string
+        quoteLocation:
+          type: boolean
+        shipLocation:
+          type: boolean
+        arInvoiceLocation:
+          type: boolean
+        customerTaxable:
+          type: boolean
+        customerTaxCodeID:
+          type: string
+        customerSecondTaxCodeID:
+          type: string
+        customerShippingMethodID:
+          type: string
+        customerShipPaymentTypeID:
+          type: string
+        customerShippingCarrier:
+          type: string
+        upsAcctNumber:
+          type: string
+        fedExAccountNumber:
+          type: string
+        countryCode:
+          type: string
+    Warning:
+      type: object
+      properties:
+        innerText:
+          type: string
+  securitySchemes:
+    oauth2:
+      type: oauth2
+      description: OAuth 2.0 Client Credentials Flow with API Users issued from Integration Engine Management Console
+      flows:
+        clientCredentials:
+          tokenUrl: https://api-user.integrations.ecimanufacturing.com/oauth2/api-user/token
+          scopes:
+            openid: openid

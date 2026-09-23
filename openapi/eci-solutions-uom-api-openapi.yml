@@ -1,0 +1,146 @@
+openapi: 3.2.0
+info:
+  title: Shipping Uom API
+  description: Shipping Service API which provides integration with shipping services for shipping rates, purchasing labels, and tracking shipments.
+  version: 1.3.6+a49f73049e
+security:
+- Bearer: []
+tags:
+- name: UOM
+paths:
+  /api/v1/units:
+    get:
+      tags:
+      - UOM
+      summary: Get Units of Measure
+      description: Returns a flat list of all supported units of measure with their types (weight or dimension).
+      operationId: GetUnitsOfMeasure
+      parameters:
+      - name: type
+        in: query
+        schema:
+          $ref: '#/components/schemas/UomType'
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/UnitOfMeasureModelListResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnitOfMeasureModelListResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/UnitOfMeasureModelListResponse'
+  /api/v1/units/{id}/conversions/{targetId}:
+    post:
+      tags:
+      - UOM
+      summary: Convert a value from one unit to another
+      description: Returns the converted value.
+      operationId: ConvertValue
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: targetId
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConversionModel'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/ConversionModel'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/ConversionModel'
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ConversionModel'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConversionModel'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ConversionModel'
+components:
+  schemas:
+    UomType:
+      enum:
+      - Weight
+      - Dimension
+      type: string
+      description: Defines the type of Unit of Measure
+    UnitOfMeasureModelListResponse:
+      type: object
+      properties:
+        value:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/UnitOfMeasureModel'
+      additionalProperties: false
+    UnitOfMeasureModel:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: The ID of the unit of measure
+        displayName:
+          type:
+          - string
+          - 'null'
+          description: The human -readable name or code of the unit of measure
+        type:
+          $ref: '#/components/schemas/UomType'
+        aliases:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: A list of supported aliases for the unit of measure
+        standardUnit:
+          type:
+          - string
+          - 'null'
+          description: The standard unit ID for this unit of measure, if applicable
+        standardFactor:
+          type:
+          - number
+          - 'null'
+          description: The standard conversion factor for this unit of measure, if applicable
+          format: double
+      additionalProperties: false
+      description: Represents a unit of measure with its type (weight or dimension)
+    ConversionModel:
+      type: object
+      properties:
+        value:
+          type: number
+          format: double
+      additionalProperties: false
+  securitySchemes:
+    Bearer:
+      type: oauth2
+      description: OAuth 2.0 Client Credentials Flow with API Users issued from Integration Engine Management Console
+      flows:
+        clientCredentials:
+          tokenUrl: https://api-user.integrations.ecimanufacturing.com/oauth2/api-user/token
+          scopes:
+            openid: openid

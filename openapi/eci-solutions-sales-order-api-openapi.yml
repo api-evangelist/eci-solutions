@@ -1,0 +1,543 @@
+openapi: 3.2.0
+info:
+  title: ERP API v2.1 Sales Order API
+  description: Provides a common API surface for accessing ECI ERP products.
+  contact:
+    name: ECI Manufacturing Division Integration Team
+    url: https://www.ecisolutions.com/support/
+  version: 3.5.585+b1e45fd230
+servers:
+- url: https://api-erp.integrations.ecimanufacturing.com:443
+  description: Production
+security:
+- Bearer: []
+tags:
+- name: Sales Order
+paths:
+  /api/v2.1/sales-orders:
+    post:
+      tags:
+      - Sales Order
+      summary: Create a new SalesOrder in the ERP system
+      description: '## Supported ERPs
+
+        - JobBOSS²'
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SalesOrderCreateModel'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/SalesOrderCreateModel'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/SalesOrderCreateModel'
+      responses:
+        '201':
+          description: Created
+      operationId: postApiV21SalesOrders
+      x-operation-id-source: derived
+    get:
+      tags:
+      - Sales Order
+      summary: Get a list of SalesOrders from the ERP system that match the given filters
+      description: 'Gets a list of SalesOrder.
+
+
+        ## Supported ERPs
+
+        - M1
+
+        - Macola
+
+        - JobBOSS²
+
+        - Deacom
+
+        ## Resource Features
+
+        Feature |Supported |Notes
+
+        ------------|------------|------------
+
+        Filter Expressions|**Yes**|
+
+        Sort Expressions|**Yes**
+
+        Field Selection|**Yes**
+
+        Pagination|**Yes**
+
+        UniqueID|uniqueID|
+
+        ## Features by Field
+
+        Field |Filterable |Sortable |Supported ERPs
+
+        ------------|------------|------------|------------
+
+        uniqueID|Yes|Yes|M1, Macola, JobBOSS², Deacom
+
+        rowVersion|Yes|Yes|M1, Macola, JobBOSS², Deacom
+
+        salesOrderID|Yes|Yes|M1, Macola, JobBOSS², Deacom
+
+        customerID|Yes|Yes|M1, Macola, JobBOSS², Deacom
+
+        orderDate|Yes|Yes|M1, Macola, JobBOSS², Deacom
+
+        plantID|No|Yes|M1, Macola, JobBOSS², Deacom
+
+        projectID|No|Yes|M1, Macola, JobBOSS², Deacom
+
+        salesOrderType|No|Yes|Macola
+
+        totalSalesAmount|No|Yes|Macola
+
+        status|No|Yes|Macola
+
+        originalOrderType|No|Yes|Macola
+
+        quoteID|No|Yes|Macola
+
+        closedDate|Yes|Yes|Macola'
+      parameters:
+      - name: fields
+        in: query
+        description: A comma-separated list of fields to include in the result.
+        schema:
+          type: string
+      - name: sort
+        in: query
+        description: A comma-separated list of <a href='#sortexpr'>sort expressions</a>.
+        schema:
+          type: string
+      - name: take
+        in: query
+        description: Limit the number of results being returned
+        schema:
+          minimum: 0
+          type: integer
+      - name: skip
+        in: query
+        description: The number of results to skip. Combine with 'take' to fetch records in pages
+        schema:
+          minimum: 0
+          type: integer
+      - name: count
+        in: query
+        description: '<a href=''#countparam''>Data and count</a> response behavior '
+        schema:
+          maximum: 2
+          minimum: 0
+          type: integer
+      - name: filters
+        in: query
+        description: See <a href='#filterexpr'>Filter Expressions</a> for query string syntax. The Test UI and any generated code tool may expose filter parameters as a dictionary of name/value pairs, but if creating a raw HTTP request, they must be provided on the querystring as defined in the Filter Expression section.
+        style: form
+        schema:
+          type: object
+          additionalProperties:
+            type: string
+        examples:
+          Empty:
+            description: No filters applied
+          'Example #1':
+            description: A dictionary of name/value pairs that will be serialized as querystring parameters in the format ```name[operator]=value```
+            value:
+              uniqueID[eq]: cc90686b-399e-4094-b431-fa462f84b0a8
+              rowVersion[gte]: 123
+              salesOrderID[eq]: abc123
+              customerID[eq]: abc123
+              orderDate[gte]: '2020-09-25T00:00:00.0000000'
+              closedDate[gte]: '2020-09-25T00:00:00.0000000'
+      - name: expand
+        in: query
+        description: '### Supported Expansions
+
+          An expansion expression containing a comma separater list of relationships to expand.
+
+          Name        |Value       |Description
+
+          ------------|------------|-----------
+
+          customer|Organizations|The Customer Organization record.
+
+          plant|Plants|The Plant record.
+
+          project|Projects|The Project record for this Sales Order.
+
+          '
+        schema:
+          type: string
+      - name: convertToUTC
+        in: query
+        description: Convert suppported date/time values to UTC before returning the data.
+        schema:
+          type: boolean
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/SalesOrderListResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SalesOrderListResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/SalesOrderListResponse'
+      operationId: getApiV21SalesOrders
+      x-operation-id-source: derived
+  /api/v2.1/sales-orders/{id}:
+    get:
+      tags:
+      - Sales Order
+      summary: Get a SalesOrder from the ERP system that match the given filters
+      description: 'Gets a SalesOrder by unique ID.
+
+
+        ## Supported ERPs
+
+        - M1
+
+        - Macola
+
+        - JobBOSS²
+
+        - Deacom
+
+        ## Features by Field
+
+        Field |Supported ERPs
+
+        ------------|------------
+
+        uniqueID||M1, Macola, JobBOSS², Deacom
+
+        rowVersion||M1, Macola, JobBOSS², Deacom
+
+        salesOrderID||M1, Macola, JobBOSS², Deacom
+
+        customerID||M1, Macola, JobBOSS², Deacom
+
+        orderDate||M1, Macola, JobBOSS², Deacom
+
+        plantID||M1, Macola, JobBOSS², Deacom
+
+        projectID||M1, Macola, JobBOSS², Deacom
+
+        salesOrderType||Macola
+
+        totalSalesAmount||Macola
+
+        status||Macola
+
+        originalOrderType||Macola
+
+        quoteID||Macola
+
+        closedDate||Macola'
+      parameters:
+      - name: id
+        in: path
+        description: The ID of the SalesOrder
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/SalesOrder'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SalesOrder'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/SalesOrder'
+      operationId: getApiV21SalesOrdersById
+      x-operation-id-source: derived
+components:
+  schemas:
+    Plant:
+      title: Plant
+      type: object
+      properties:
+        plantID:
+          type: string
+        name:
+          type: string
+        uniqueID:
+          type: string
+        rowVersion:
+          type: integer
+          format: int64
+    SalesOrderCreateModel:
+      required:
+      - customerID
+      type: object
+      properties:
+        customerID:
+          minLength: 1
+          type: string
+        customerPONumber:
+          type:
+          - string
+          - 'null'
+        currencyCode:
+          type:
+          - string
+          - 'null'
+        comments:
+          type:
+          - string
+          - 'null'
+        orderDate:
+          type:
+          - string
+          - 'null'
+          format: date
+        contactID:
+          type:
+          - string
+          - 'null'
+        salesAccountID:
+          type:
+          - string
+          - 'null'
+        paymentTermID:
+          type:
+          - string
+          - 'null'
+        plantID:
+          type:
+          - string
+          - 'null'
+        shipToLocationID:
+          type:
+          - string
+          - 'null'
+        shipMethodID:
+          type:
+          - string
+          - 'null'
+        requestedShipDate:
+          type:
+          - string
+          - 'null'
+          format: date
+        lines:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/SalesOrderLineCreateModel'
+      additionalProperties: false
+    Organization:
+      title: Organization
+      type: object
+      properties:
+        uniqueID:
+          type: string
+        rowVersion:
+          type: integer
+          format: int64
+        name:
+          type: string
+        organizationID:
+          type: string
+        country:
+          type: string
+        isActive:
+          type: boolean
+        organizationTypes:
+          type: array
+          items:
+            type: integer
+            format: int32
+        phoneNumber:
+          type: string
+        customerPaymentTermID:
+          type: string
+        customerTaxCodeID:
+          type: string
+        supplierPaymentTermID:
+          type: string
+        supplierTaxCodeID:
+          type: string
+        currencyCode:
+          type: string
+        websiteUrl:
+          type: string
+        comments:
+          type: string
+        salesAccountID:
+          type: string
+        leadTimeDays:
+          type: integer
+          format: int32
+        minimumOrderAmount:
+          type: number
+          format: double
+        customerStatus:
+          type: integer
+        supplierStatus:
+          type: integer
+    SalesOrderListResponse:
+      type: object
+      properties:
+        data:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/SalesOrder'
+          readOnly: true
+        resultCount:
+          type: integer
+          format: int32
+      additionalProperties: false
+    SalesOrderLineCreateModel:
+      type: object
+      properties:
+        salesOrderID:
+          type:
+          - string
+          - 'null'
+        partID:
+          type:
+          - string
+          - 'null'
+        partRevisionID:
+          type:
+          - string
+          - 'null'
+        partGroupID:
+          type:
+          - string
+          - 'null'
+          description: Should this be able to be specified???
+        quantityOrdered:
+          type:
+          - number
+          - 'null'
+          format: double
+        saleUom:
+          type:
+          - string
+          - 'null'
+        baseUnitPrice:
+          type:
+          - number
+          - 'null'
+          format: double
+        foreignUnitPrice:
+          type:
+          - number
+          - 'null'
+          format: double
+        quoteID:
+          type:
+          - string
+          - 'null'
+        quoteLineID:
+          type:
+          - string
+          - 'null'
+        dueDate:
+          type:
+          - string
+          - 'null'
+          format: date
+      additionalProperties: false
+    Project:
+      title: Project
+      type: object
+      properties:
+        uniqueID:
+          type: string
+        rowVersion:
+          type: integer
+          format: int64
+        projectID:
+          type: string
+        customerID:
+          type: string
+        locationID:
+          type: string
+        contactID:
+          type: string
+        dueDate:
+          type: string
+          format: date
+        projectDate:
+          type: string
+          format: date
+        closedDate:
+          type: string
+          format: date
+        shortDescription:
+          type: string
+        longDescription:
+          type: string
+        statusCode:
+          type: string
+        isClosed:
+          type: boolean
+        customer:
+          $ref: '#/components/schemas/Organization'
+    SalesOrder:
+      title: SalesOrder
+      type: object
+      properties:
+        uniqueID:
+          type: string
+        rowVersion:
+          type: integer
+          format: int64
+        salesOrderID:
+          type: string
+        customerID:
+          type: string
+        orderDate:
+          type: string
+          format: date
+        plantID:
+          type: string
+        projectID:
+          type: string
+        salesOrderType:
+          type: string
+        totalSalesAmount:
+          type: number
+          format: double
+        status:
+          type: string
+        originalOrderType:
+          type: string
+        quoteID:
+          type: string
+        closedDate:
+          type: string
+          format: date
+        customer:
+          $ref: '#/components/schemas/Organization'
+        plant:
+          $ref: '#/components/schemas/Plant'
+        project:
+          $ref: '#/components/schemas/Project'
+  securitySchemes:
+    Bearer:
+      type: oauth2
+      description: OAuth 2.0 Client Credentials Flow with API Users issued from Integration Engine Management Console
+      flows:
+        clientCredentials:
+          tokenUrl: https://api-user.integrations.ecimanufacturing.com/oauth2/api-user/token
+          scopes:
+            openid: openid

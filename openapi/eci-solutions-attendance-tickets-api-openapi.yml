@@ -1,0 +1,244 @@
+openapi: 3.2.0
+info:
+  title: JobBOSS² Public Attendance Tickets API
+  description: Provides a common API surface for accessing ECI ERP JobBOSS².
+  version: v1
+servers:
+- url: https://api-jb2.integrations.ecimanufacturing.com:443
+  description: API Host
+security:
+- Bearer: []
+tags:
+- name: Attendance Tickets
+paths:
+  /api/v1/attendance-tickets:
+    get:
+      tags:
+      - Attendance Tickets
+      summary: Gets a list of Attendance Tickets
+      description: 'By default an attendance ticket response will include only the fields: employeeCode, employeeName, enteredBy, enteredDate, isExported, lastModDate, lastModUser, searchDate, ticketDate, uniqueID. You may specify the exact fields to return using the fields parameter.'
+      parameters:
+      - name: fields
+        in: query
+        description: A comma separated list of fields to include in the result.
+        schema:
+          type: string
+      - name: sort
+        in: query
+        description: A comma separated list of field to sort by. See the <a href='#sort-expressions'>Sort Expressions</a> section for more information.
+        schema:
+          type: string
+      - name: filters
+        in: query
+        description: Filters must be provided as query string parameters as defined in the <a href='#filter-expressions'>Filter Expressions</a> section.
+        schema:
+          type: object
+          additionalProperties:
+            type: string
+        examples:
+          No filters: {}
+          Filter by Employee:
+            value:
+              employeeCode: '101'
+      - name: skip
+        in: query
+        description: The number of records at the start of the result set to skip over.
+        schema:
+          type: string
+      - name: take
+        in: query
+        description: The number of records to retrieve.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TimeAndAttendanceListSuccessResponse'
+              example:
+                Data:
+                - employeeCode: 0
+                  employeeName: string
+                  enteredBy: string
+                  enteredDate: '2026-09-06T17:13:13.0000000+00:00'
+                  isExported: false
+                  lastModDate: '2026-09-06T17:13:13.0000000+00:00'
+                  lastModUser: string
+                  searchDate: 0
+                  ticketDate: '2026-09-06T17:13:13.0000000+00:00'
+                  uniqueID: 0
+      operationId: getApiV1AttendanceTickets
+      x-operation-id-source: derived
+    post:
+      tags:
+      - Attendance Tickets
+      summary: Creates an Attendance Ticket
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AttendanceTicketCreate'
+            example:
+              employeeCode: 0
+              ticketDate: '2026-09-06T17:13:13.0000000+00:00'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TimeAndAttendance'
+              example:
+                employeeCode: 0
+                employeeName: string
+                enteredBy: string
+                enteredDate: '2026-09-06T17:13:13.0000000+00:00'
+                isExported: false
+                lastModDate: '2026-09-06T17:13:13.0000000+00:00'
+                lastModUser: string
+                searchDate: 0
+                ticketDate: '2026-09-06T17:13:13.0000000+00:00'
+                uniqueID: 0
+      operationId: postApiV1AttendanceTickets
+      x-operation-id-source: derived
+  /api/v1/attendance-tickets/{ticketDate}/employees/{employeeCode}:
+    get:
+      tags:
+      - Attendance Tickets
+      summary: Gets an Attendance Ticket by its unique ID
+      description: 'By default an attendance ticket response will include only the fields: employeeCode, employeeName, enteredBy, enteredDate, isExported, lastModDate, lastModUser, searchDate, ticketDate, uniqueID. You may specify the exact fields to return using the fields parameter.'
+      parameters:
+      - name: ticketDate
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: employeeCode
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: fields
+        in: query
+        description: A comma separated list of fields to include in the result.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TimeAndAttendanceSuccessResponse'
+              example:
+                Data:
+                  employeeCode: 0
+                  employeeName: string
+                  enteredBy: string
+                  enteredDate: '2026-09-06T17:13:13.0000000+00:00'
+                  isExported: false
+                  lastModDate: '2026-09-06T17:13:13.0000000+00:00'
+                  lastModUser: string
+                  searchDate: 0
+                  ticketDate: '2026-09-06T17:13:13.0000000+00:00'
+                  uniqueID: 0
+      operationId: getApiV1AttendanceTicketsByTicketDateEmployeesByEmployeeCode
+      x-operation-id-source: derived
+components:
+  schemas:
+    TimeAndAttendance:
+      type: object
+      properties:
+        employeeCode:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          readOnly: true
+        employeeName:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        enteredBy:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        enteredDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        isExported:
+          type: boolean
+          readOnly: true
+        lastModDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        lastModUser:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        searchDate:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          readOnly: true
+        ticketDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        uniqueID:
+          type: integer
+          format: int32
+          readOnly: true
+      additionalProperties: false
+    AttendanceTicketCreate:
+      required:
+      - employeeCode
+      - ticketDate
+      type: object
+      properties:
+        employeeCode:
+          type: integer
+          format: int32
+        ticketDate:
+          type: string
+          format: date-time
+      additionalProperties: false
+    TimeAndAttendanceSuccessResponse:
+      type: object
+      properties:
+        Data:
+          $ref: '#/components/schemas/TimeAndAttendance'
+      additionalProperties: false
+    TimeAndAttendanceListSuccessResponse:
+      type: object
+      properties:
+        Data:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/TimeAndAttendance'
+      additionalProperties: false
+  securitySchemes:
+    Bearer:
+      type: oauth2
+      description: OAuth 2.0 Client Credentials Flow with API Users issued from Integration Engine Management Console
+      flows:
+        clientCredentials:
+          tokenUrl: https://api-user.integrations.ecimanufacturing.com/oauth2/api-user/token
+          scopes:
+            openid: openid

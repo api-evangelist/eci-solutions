@@ -1,0 +1,165 @@
+openapi: 3.2.0
+info:
+  title: JobBOSS² Public AP Checks API
+  description: Provides a common API surface for accessing ECI ERP JobBOSS².
+  version: v1
+servers:
+- url: https://api-jb2.integrations.ecimanufacturing.com:443
+  description: API Host
+security:
+- Bearer: []
+tags:
+- name: AP Checks
+paths:
+  /api/v1/ap-checks:
+    get:
+      tags:
+      - AP Checks
+      summary: Gets a list of AP Checks
+      parameters:
+      - name: fields
+        in: query
+        description: A comma separated list of fields to include in the result.
+        schema:
+          type: string
+      - name: sort
+        in: query
+        description: A comma separated list of field to sort by.
+        schema:
+          type: string
+      - name: filters
+        in: query
+        description: Filters as query string parameters
+        schema:
+          type: object
+          additionalProperties:
+            type: string
+      - name: skip
+        in: query
+        description: The number of records to skip.
+        schema:
+          type: string
+      - name: take
+        in: query
+        description: The number of records to retrieve.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+      operationId: getApiV1ApChecks
+      x-operation-id-source: derived
+    post:
+      tags:
+      - AP Checks
+      summary: Creates a new AP Check
+      requestBody:
+        content:
+          application/json-patch+json:
+            schema: {}
+          application/json:
+            schema: {}
+          text/json:
+            schema: {}
+          application/*+json:
+            schema: {}
+      responses:
+        '200':
+          description: Check created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ObjectSuccessResponse'
+        '400':
+          description: Invalid request data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                Error:
+                  Title: Internal Server Error
+                  Status: 500
+                  Detail: Internal Server Error
+                  TraceId: 21b68bf3-57a4-4012-9562-58c154c63908
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                Error:
+                  Title: Internal Server Error
+                  Status: 500
+                  Detail: Internal Server Error
+                  TraceId: 6ccd7c18-189a-48d2-ab44-888d0488261b
+      operationId: postApiV1ApChecks
+      x-operation-id-source: derived
+  /api/v1/ap-checks/{checkNumber}:
+    get:
+      tags:
+      - AP Checks
+      summary: Gets a single AP Check by check number
+      parameters:
+      - name: checkNumber
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '404':
+          description: Check not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                Error:
+                  Title: Internal Server Error
+                  Status: 500
+                  Detail: Internal Server Error
+                  TraceId: 45de8eec-9710-44af-b8b9-8e6d5abb002a
+      operationId: getApiV1ApChecksByCheckNumber
+      x-operation-id-source: derived
+components:
+  schemas:
+    ObjectSuccessResponse:
+      type: object
+      properties:
+        Data: {}
+      additionalProperties: false
+    ErrorSchema:
+      type: object
+      properties:
+        Title:
+          type:
+          - string
+          - 'null'
+        Status:
+          type: integer
+          format: int32
+        Detail:
+          type:
+          - string
+          - 'null'
+        TraceId:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    ErrorResponse:
+      type: object
+      properties:
+        Error:
+          $ref: '#/components/schemas/ErrorSchema'
+      additionalProperties: false
+  securitySchemes:
+    Bearer:
+      type: oauth2
+      description: OAuth 2.0 Client Credentials Flow with API Users issued from Integration Engine Management Console
+      flows:
+        clientCredentials:
+          tokenUrl: https://api-user.integrations.ecimanufacturing.com/oauth2/api-user/token
+          scopes:
+            openid: openid

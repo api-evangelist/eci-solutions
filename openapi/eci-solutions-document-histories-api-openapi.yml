@@ -1,0 +1,155 @@
+openapi: 3.2.0
+info:
+  title: JobBOSS² Public Document Histories API
+  description: Provides a common API surface for accessing ECI ERP JobBOSS².
+  version: v1
+servers:
+- url: https://api-jb2.integrations.ecimanufacturing.com:443
+  description: API Host
+security:
+- Bearer: []
+tags:
+- name: Document Histories
+paths:
+  /api/v1/document-histories:
+    get:
+      tags:
+      - Document Histories
+      summary: Gets a list of Document Histories
+      description: 'By default a document history response will include only the fields: comments, documentNumber, fileLocation, repositoryID, revision, revisionDate, spunOffFile, uniqueID, updatedJobs, updatedParts, userID. You may specify the exact fields to return using the fields parameter.'
+      parameters:
+      - name: fields
+        in: query
+        description: A comma separated list of fields to include in the result.
+        schema:
+          type: string
+      - name: sort
+        in: query
+        description: A comma separated list of field to sort by. See the <a href='#sort-expressions'>Sort Expressions</a> section for more information.
+        schema:
+          type: string
+      - name: filters
+        in: query
+        description: Filters must be provided as query string parameters as defined in the <a href='#filter-expressions'>Filter Expressions</a> section.
+        schema:
+          type: object
+          additionalProperties:
+            type: string
+        examples:
+          No filters: {}
+          Filter by Document Number:
+            value:
+              documentNumber: '1002'
+      - name: skip
+        in: query
+        description: The number of records at the start of the result set to skip over.
+        schema:
+          type: string
+      - name: take
+        in: query
+        description: The number of records to retrieve.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DocumentControlHistoryListSuccessResponse'
+              example:
+                Data:
+                - comments: string
+                  documentNumber: string
+                  fileLocation: string
+                  repositoryID: 0
+                  revision: string
+                  revisionDate: '2026-09-06T17:13:12.0000000+00:00'
+                  spunOffFile: string
+                  uniqueID: 0
+                  updatedJobs: string
+                  updatedParts: string
+                  userID: string
+      operationId: getApiV1DocumentHistories
+      x-operation-id-source: derived
+components:
+  schemas:
+    DocumentControlHistory:
+      type: object
+      properties:
+        comments:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        documentNumber:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        fileLocation:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        repositoryID:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          readOnly: true
+        revision:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        revisionDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        spunOffFile:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        uniqueID:
+          type: integer
+          format: int32
+          readOnly: true
+        updatedJobs:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        updatedParts:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        userID:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+      additionalProperties: false
+    DocumentControlHistoryListSuccessResponse:
+      type: object
+      properties:
+        Data:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/DocumentControlHistory'
+      additionalProperties: false
+  securitySchemes:
+    Bearer:
+      type: oauth2
+      description: OAuth 2.0 Client Credentials Flow with API Users issued from Integration Engine Management Console
+      flows:
+        clientCredentials:
+          tokenUrl: https://api-user.integrations.ecimanufacturing.com/oauth2/api-user/token
+          scopes:
+            openid: openid

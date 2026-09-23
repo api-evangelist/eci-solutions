@@ -1,0 +1,487 @@
+openapi: 3.2.0
+info:
+  title: JobBOSS² Public Attendance Ticket Details API
+  description: Provides a common API surface for accessing ECI ERP JobBOSS².
+  version: v1
+servers:
+- url: https://api-jb2.integrations.ecimanufacturing.com:443
+  description: API Host
+security:
+- Bearer: []
+tags:
+- name: Attendance Ticket Details
+paths:
+  /api/v1/attendance-ticket-details:
+    get:
+      tags:
+      - Attendance Ticket Details
+      summary: Gets a list of Attendance Ticket Details
+      description: 'By default an Attendance Ticket Detail item response will include only the fields: accountingID, actualClockInDate, actualClockInTime, actualClockOutDate, actualClockOutTime, adjustedClockInDate, adjustedClockInTime, adjustedClockOutDate, adjustedClockOutTime, attendanceCode, clockOutDate, comments, createdBy, deviceNumber, employeeCode, employeeName, GLCode, isHoliday, isOvertime, lastModDate, lastModUser, OTCalcFlag, payRateCode, payRollRate, searchDate, shift, ticketDate, totalActualTime, totalAdjustedTime, uniqueID'
+      parameters:
+      - name: fields
+        in: query
+        description: A comma separated list of fields to include in the result.
+        schema:
+          type: string
+      - name: sort
+        in: query
+        description: A comma separated list of field to sort by. See the <a href='#sort-expressions'>Sort Expressions</a> section for more information.
+        schema:
+          type: string
+      - name: filters
+        in: query
+        description: Filters must be provided as query string parameters as defined in the <a href='#filter-expressions'>Filter Expressions</a> section.
+        schema:
+          type: object
+          additionalProperties:
+            type: string
+        examples:
+          No filters: {}
+          Filter by Employee:
+            value:
+              employeeCode: '101'
+      - name: skip
+        in: query
+        description: The number of records at the start of the result set to skip over.
+        schema:
+          type: string
+      - name: take
+        in: query
+        description: The number of records to retrieve.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TimeAndAttendanceDetailListSuccessResponse'
+              example:
+                Data:
+                - accountingID: string
+                  actualClockInDate: string
+                  actualClockInTime: string
+                  actualClockOutDate: string
+                  actualClockOutTime: string
+                  adjustedClockInDate: string
+                  adjustedClockInTime: string
+                  adjustedClockOutDate: string
+                  adjustedClockOutTime: string
+                  attendanceCode: 0
+                  clockOutDate: '2026-09-06T17:13:13.0000000+00:00'
+                  comments: string
+                  createdBy: string
+                  deviceNumber: 0
+                  employeeCode: 0
+                  employeeName: string
+                  GLCode: string
+                  isHoliday: false
+                  isOvertime: false
+                  lastModDate: '2026-09-06T17:13:13.0000000+00:00'
+                  lastModUser: string
+                  OTCalcFlag: string
+                  payRateCode: 0
+                  payRollRate: 0
+                  searchDate: 0
+                  shift: 0
+                  ticketDate: '2026-09-06T17:13:13.0000000+00:00'
+                  totalActualTime: 0
+                  totalAdjustedTime: 0
+                  uniqueID: 0
+      operationId: getApiV1AttendanceTicketDetails
+      x-operation-id-source: derived
+  /api/v1/attendance-ticket-details/{id}:
+    patch:
+      tags:
+      - Attendance Ticket Details
+      summary: Updates an Attendance Ticket Detail
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TimeAndAttendanceDetailUpdate'
+            example:
+              actualClockInTime: string
+              actualClockOutTime: string
+              adjustedClockInTime: string
+              adjustedClockOutTime: string
+              attendanceCode: 0
+              clockOutDate: '2026-09-06T17:13:13.0000000+00:00'
+              comments: string
+              GLCode: string
+              isHoliday: false
+              isOvertime: false
+              payRateCode: 0
+              shift: 0
+      responses:
+        '204':
+          description: Success
+      operationId: patchApiV1AttendanceTicketDetailsById
+      x-operation-id-source: derived
+  /api/v1/attendance-tickets/{ticketDate}/employees/{employeeCode}/attendance-ticket-details:
+    post:
+      tags:
+      - Attendance Ticket Details
+      summary: Creates an Attendance Ticket Detail
+      parameters:
+      - name: ticketDate
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: employeeCode
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TimeAndAttendanceDetailCreate'
+            example:
+              actualClockInTime: string
+              actualClockOutTime: string
+              adjustedClockInTime: string
+              adjustedClockOutTime: string
+              attendanceCode: 0
+              clockOutDate: '2026-09-06T17:13:13.0000000+00:00'
+              comments: string
+              GLCode: string
+              isHoliday: false
+              isOvertime: false
+              payRateCode: 0
+              shift: 0
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TimeAndAttendanceDetail'
+              example:
+                accountingID: string
+                actualClockInDate: string
+                actualClockInTime: string
+                actualClockOutDate: string
+                actualClockOutTime: string
+                adjustedClockInDate: string
+                adjustedClockInTime: string
+                adjustedClockOutDate: string
+                adjustedClockOutTime: string
+                attendanceCode: 0
+                clockOutDate: '2026-09-06T17:13:13.0000000+00:00'
+                comments: string
+                createdBy: string
+                deviceNumber: 0
+                employeeCode: 0
+                employeeName: string
+                GLCode: string
+                isHoliday: false
+                isOvertime: false
+                lastModDate: '2026-09-06T17:13:13.0000000+00:00'
+                lastModUser: string
+                OTCalcFlag: string
+                payRateCode: 0
+                payRollRate: 0
+                searchDate: 0
+                shift: 0
+                ticketDate: '2026-09-06T17:13:13.0000000+00:00'
+                totalActualTime: 0
+                totalAdjustedTime: 0
+                uniqueID: 0
+      operationId: postApiV1AttendanceTicketsByTicketDateEmployeesByEmployeeCodeAttendanceTicketDetails
+      x-operation-id-source: derived
+components:
+  schemas:
+    TimeAndAttendanceDetailUpdate:
+      type: object
+      properties:
+        actualClockInTime:
+          type:
+          - string
+          - 'null'
+        actualClockOutTime:
+          type:
+          - string
+          - 'null'
+        adjustedClockInTime:
+          type:
+          - string
+          - 'null'
+        adjustedClockOutTime:
+          type:
+          - string
+          - 'null'
+        attendanceCode:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        clockOutDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        comments:
+          type:
+          - string
+          - 'null'
+        GLCode:
+          type:
+          - string
+          - 'null'
+        isHoliday:
+          type: boolean
+        isOvertime:
+          type: boolean
+        payRateCode:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        shift:
+          type:
+          - integer
+          - 'null'
+          format: int32
+      additionalProperties: false
+    TimeAndAttendanceDetail:
+      type: object
+      properties:
+        accountingID:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        actualClockInDate:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        actualClockInTime:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        actualClockOutDate:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        actualClockOutTime:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        adjustedClockInDate:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        adjustedClockInTime:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        adjustedClockOutDate:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        adjustedClockOutTime:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        attendanceCode:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          readOnly: true
+        clockOutDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        comments:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        createdBy:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        deviceNumber:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          readOnly: true
+        employeeCode:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          readOnly: true
+        employeeName:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        GLCode:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        isHoliday:
+          type: boolean
+          readOnly: true
+        isOvertime:
+          type: boolean
+          readOnly: true
+        lastModDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        lastModUser:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        OTCalcFlag:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        payRateCode:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          readOnly: true
+        payRollRate:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        searchDate:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          readOnly: true
+        shift:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          readOnly: true
+        ticketDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        totalActualTime:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        totalAdjustedTime:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        uniqueID:
+          type: integer
+          format: int32
+          readOnly: true
+      additionalProperties: false
+    TimeAndAttendanceDetailListSuccessResponse:
+      type: object
+      properties:
+        Data:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/TimeAndAttendanceDetail'
+      additionalProperties: false
+    TimeAndAttendanceDetailCreate:
+      type: object
+      properties:
+        actualClockInTime:
+          type:
+          - string
+          - 'null'
+        actualClockOutTime:
+          type:
+          - string
+          - 'null'
+        adjustedClockInTime:
+          type:
+          - string
+          - 'null'
+        adjustedClockOutTime:
+          type:
+          - string
+          - 'null'
+        attendanceCode:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        clockOutDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        comments:
+          type:
+          - string
+          - 'null'
+        GLCode:
+          type:
+          - string
+          - 'null'
+        isHoliday:
+          type: boolean
+        isOvertime:
+          type: boolean
+        payRateCode:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        shift:
+          type:
+          - integer
+          - 'null'
+          format: int32
+      additionalProperties: false
+  securitySchemes:
+    Bearer:
+      type: oauth2
+      description: OAuth 2.0 Client Credentials Flow with API Users issued from Integration Engine Management Console
+      flows:
+        clientCredentials:
+          tokenUrl: https://api-user.integrations.ecimanufacturing.com/oauth2/api-user/token
+          scopes:
+            openid: openid

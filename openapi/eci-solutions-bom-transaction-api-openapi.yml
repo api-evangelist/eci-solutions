@@ -1,0 +1,1520 @@
+openapi: 3.2.0
+info:
+  title: M1 Public BOM/TRANSACTION API
+  description: '## Developer Notes for the M1 Public API (ERP resource):
+
+
+    ### Hosted Environment
+
+
+    If you are using the public API for a hosted M1 customer, you must connect to the public API using the Integration Engine.'
+  contact:
+    name: ECI Software Solutions - M1
+    url: https://www.ecisolutions.com/manufacturers-and-job-shops/m1
+  version: v1
+servers:
+- url: https://api-m1.integrations.ecimanufacturing.com
+  description: API Host
+security:
+- oauth2: []
+tags:
+- name: BOM/TRANSACTION
+paths:
+  /api/BOM/Transaction/MaterialIssueLine/GetAllMaterialIssueLines/{pageSize}/{pageNumber}:
+    get:
+      tags:
+      - BOM/TRANSACTION
+      summary: Returns all existing MaterialIssueLines with pagination
+      operationId: BOMMaterialIssueLines_GetAllMaterialIssueLineAsync
+      parameters:
+      - name: pageSize
+        in: path
+        description: The required size of the pagination. By default 1000.
+        required: true
+        style: simple
+        schema:
+          type: integer
+          format: int32
+      - name: pageNumber
+        in: path
+        description: The required number of page from pagination. By default 0, which is the first page.
+        required: true
+        style: simple
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMMaterialIssueLineDto'
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMMaterialIssueLineDto'
+            application/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMMaterialIssueLineDto'
+            text/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMMaterialIssueLineDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+  /api/BOM/Transaction/MaterialIssueLine/GetMaterialIssueLines/{materialIssueId}:
+    get:
+      tags:
+      - BOM/TRANSACTION
+      summary: Returns material issue lines for a given M1 material issue id.
+      operationId: BOMMaterialIssueLines_GetMaterialIssueLinesAsync
+      parameters:
+      - name: materialIssueId
+        in: path
+        description: The M1 material issue Id or GUID of the material issue as a string
+        required: true
+        style: simple
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/CTMBOMMaterialIssueLineDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CTMBOMMaterialIssueLineDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/CTMBOMMaterialIssueLineDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/CTMBOMMaterialIssueLineDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+  /api/BOM/Transaction/MaterialIssue/GetAllMaterialIssues/{pageSize}/{pageNumber}:
+    get:
+      tags:
+      - BOM/TRANSACTION
+      summary: Returns all existing MaterialIssues with pagination
+      operationId: BOMMaterialIssues_GetAllMaterialIssuesAsync
+      parameters:
+      - name: pageSize
+        in: path
+        description: The required size of the pagination. By default 1000.
+        required: true
+        style: simple
+        schema:
+          type: integer
+          format: int32
+      - name: pageNumber
+        in: path
+        description: The required number of page from pagination. By default 0, which is the first page.
+        required: true
+        style: simple
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMMaterialIssueDto'
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMMaterialIssueDto'
+            application/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMMaterialIssueDto'
+            text/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMMaterialIssueDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+  /api/BOM/Transaction/MaterialIssue/GetMaterialIssue/{materialIssueId}:
+    get:
+      tags:
+      - BOM/TRANSACTION
+      summary: Returns material issue for a given M1 material issue id.
+      operationId: BOMMaterialIssues_GetMaterialIssueAsync
+      parameters:
+      - name: materialIssueId
+        in: path
+        description: The M1 material issue Id or GUID of the material issue as a string
+        required: true
+        style: simple
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/BOMMaterialIssueDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BOMMaterialIssueDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/BOMMaterialIssueDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/BOMMaterialIssueDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+  /api/BOM/Transaction/MfgReceipt/GetAllMfgReceipts/{pageSize}/{pageNumber}:
+    get:
+      tags:
+      - BOM/TRANSACTION
+      summary: Returns all existing MfgReceipts with pagination
+      operationId: BOMMfgReceipts_GetAllMfgReceiptAsync
+      parameters:
+      - name: pageSize
+        in: path
+        description: The required size of the pagination. By default 1000.
+        required: true
+        style: simple
+        schema:
+          type: integer
+          format: int32
+      - name: pageNumber
+        in: path
+        description: The required number of page from pagination. By default 0, which is the first page.
+        required: true
+        style: simple
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMMfgReceiptDto'
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMMfgReceiptDto'
+            application/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMMfgReceiptDto'
+            text/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMMfgReceiptDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+  /api/BOM/Transaction/MfgReceipt/GetMfgReceipt/{mfgReceiptId}:
+    get:
+      tags:
+      - BOM/TRANSACTION
+      summary: Returns mfg receipt for a given mfg receipt id
+      description: This endpoint retrieves a mfg receipt based on its identifier.
+      operationId: BOMMfgReceipts_GetMfgReceiptAsync
+      parameters:
+      - name: mfgReceiptId
+        in: path
+        description: The mfg receipt id as a string
+        required: true
+        style: simple
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/BOMMfgReceiptDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BOMMfgReceiptDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/BOMMfgReceiptDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/BOMMfgReceiptDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+  /api/BOM/Transaction/Receipt/GetAllReceipts/{pageSize}/{pageNumber}:
+    get:
+      tags:
+      - BOM/TRANSACTION
+      summary: Retrieves all M1 receipts with pagination support
+      description: This endpoint returns a paginated list of all receipts. Pagination is supported via the pageSize and pageNumber parameters.
+      operationId: BOMReceipt_GetAllReceiptsAsync
+      parameters:
+      - name: pageSize
+        in: path
+        description: 'The number of receipts to return per page (default: 1000).'
+        required: true
+        style: simple
+        schema:
+          type: integer
+          format: int32
+      - name: pageNumber
+        in: path
+        description: 'The page number to retrieve (default: 0).'
+        required: true
+        style: simple
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMReceiptDto'
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMReceiptDto'
+            application/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMReceiptDto'
+            text/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMReceiptDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+  /api/BOM/Transaction/Receipt/GetReceipt/{receiptId}:
+    get:
+      tags:
+      - BOM/TRANSACTION
+      summary: Returns receipt for a given receipt id
+      description: This endpoint retrieves a receipt based on its identifier.
+      operationId: BOMReceipt_GetReceiptAsync
+      parameters:
+      - name: receiptId
+        in: path
+        description: The receipt id as a string
+        required: true
+        style: simple
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/BOMReceiptDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BOMReceiptDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/BOMReceiptDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/BOMReceiptDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+  /api/BOM/Transaction/ReceiptLine/GetAllReceiptLines/{pageSize}/{pageNumber}:
+    get:
+      tags:
+      - BOM/TRANSACTION
+      summary: Retrieves all M1 receipt lines with pagination support
+      description: This endpoint returns a paginated list of all receipt lines. Pagination is supported via the pageSize and pageNumber parameters.
+      operationId: BOMReceiptLine_GetAllReceiptLinesAsync
+      parameters:
+      - name: pageSize
+        in: path
+        description: 'The number of receipt lines to return per page (default: 1000).'
+        required: true
+        style: simple
+        schema:
+          type: integer
+          format: int32
+      - name: pageNumber
+        in: path
+        description: 'The page number to retrieve (default: 0).'
+        required: true
+        style: simple
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMReceiptLineDto'
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMReceiptLineDto'
+            application/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMReceiptLineDto'
+            text/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMReceiptLineDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+  /api/BOM/Transaction/ReceiptLine/GetReceiptLine/{receiptId}:
+    get:
+      tags:
+      - BOM/TRANSACTION
+      summary: Returns all receipt lines for a given receipt id
+      description: This endpoint retrieves all receipt lines based on receipt identifier.
+      operationId: BOMReceiptLine_GetReceiptAsync
+      parameters:
+      - name: receiptId
+        in: path
+        description: The receipt id as a string
+        required: true
+        style: simple
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/BOMReceiptLineDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BOMReceiptLineDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/BOMReceiptLineDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/BOMReceiptLineDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+components:
+  schemas:
+    APIResponseMessageDto:
+      type: object
+      properties:
+        description:
+          type: string
+        status:
+          type: string
+        payloadID:
+          type: string
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+          readOnly: true
+        warnings:
+          type: array
+          items:
+            $ref: '#/components/schemas/Warning'
+          readOnly: true
+    BOMMaterialIssueLineDto:
+      required:
+      - materialIssueID
+      - materialIssueLineID
+      - issueType
+      - partID
+      - partRevisionID
+      - partWarehouseLocationID
+      - partBinID
+      type: object
+      properties:
+        materialIssueID:
+          type: string
+        materialIssueLineID:
+          type: integer
+          format: int32
+        issueType:
+          type: integer
+          format: int32
+        jobID:
+          type: string
+        jobAssemblyID:
+          type: integer
+          format: int32
+        createJobSeq:
+          type: boolean
+        jobMaterialID:
+          type: integer
+          format: int32
+        jobType:
+          type: integer
+          format: int32
+        estimatedQuantity:
+          type: number
+          format: double
+        uniqueID:
+          type: string
+          format: uuid
+          example: 00000000-0000-0000-0000-000000000000
+        jobOpenQuantity:
+          type: number
+          format: double
+        issueComplete:
+          type: boolean
+        partID:
+          type: string
+        partRevisionID:
+          type: string
+        partWarehouseLocationID:
+          type: string
+        partBinID:
+          type: string
+        invIssueQuantity:
+          type: number
+          format: double
+        invScrapQuantity:
+          type: number
+          format: double
+        reference:
+          type: string
+        heatLot:
+          type: string
+        miscIssueReasonID:
+          type: string
+        projectID:
+          type: string
+        projectAreaID:
+          type: string
+        jobMatScrapQuantity:
+          type: number
+          format: double
+        jobAsmScrapQuantity:
+          type: number
+          format: double
+        jobAsmIssueQuantity:
+          type: number
+          format: double
+        jobMatIssueQuantity:
+          type: number
+          format: double
+        jobMatReturnScrapQuantity:
+          type: number
+          format: double
+        jobMatReturnIssueQuantity:
+          type: number
+          format: double
+        reverseMaterialIssueID:
+          type: string
+        reverseMaterialIssueLineID:
+          type: integer
+          format: int32
+        reversed:
+          type: boolean
+        kitPart:
+          type: boolean
+        posted:
+          type: boolean
+        longDescriptionText:
+          type: string
+        rowVersion:
+          type: string
+          format: byte
+        plantID:
+          type: string
+        quantityAllocated:
+          type: number
+          format: double
+        quantityOnHand:
+          type: number
+          format: double
+        createdBy:
+          type: string
+        createdDate:
+          type: string
+          format: date-time
+    Warning:
+      type: object
+      properties:
+        innerText:
+          type: string
+    BOMMfgReceiptDto:
+      required:
+      - receiptType
+      - receiptDate
+      - partID
+      - partRevisionID
+      - partWarehouseLocationID
+      - partBinID
+      type: object
+      properties:
+        mfgReceiptID:
+          type: string
+        receiptType:
+          type: integer
+          format: int32
+        receiptDate:
+          type: string
+          format: date-time
+        partID:
+          type: string
+        partRevisionID:
+          type: string
+        partWarehouseLocationID:
+          type: string
+        partBinID:
+          type: string
+        posted:
+          type: boolean
+        postedDate:
+          type: string
+          format: date-time
+        createdBy:
+          type: string
+        createdDate:
+          type: string
+          format: date-time
+        uniqueID:
+          type: string
+          format: uuid
+          example: 00000000-0000-0000-0000-000000000000
+        rowVersion:
+          type: string
+          format: byte
+        projectID:
+          type: string
+        projectAreaID:
+          type: string
+        miscInvQuantityReceived:
+          type: number
+          format: double
+        inventoryQuantityReceived:
+          type: number
+          format: double
+        jobOprQuantityReceived:
+          type: number
+          format: double
+        jobAsmQuantityReceived:
+          type: number
+          format: double
+        jobMatQuantityReceived:
+          type: number
+          format: double
+        reference:
+          type: string
+        heatLot:
+          type: string
+    BOMReceiptLineDto:
+      type: object
+      properties:
+        receiptLineID:
+          type: integer
+          format: int32
+        receiptID:
+          type: string
+        purchaseOrderID:
+          type: string
+        purchaseOrderLineID:
+          type: integer
+          format: int32
+        jobID:
+          type: string
+        jobAssemblyID:
+          type: integer
+          format: int32
+        jobType:
+          type: integer
+          format: int32
+        jobMaterialID:
+          type: integer
+          format: int32
+        jobOperationID:
+          type: integer
+          format: int32
+        partID:
+          type: string
+        partRevisionID:
+          type: string
+        orgPartID:
+          type: string
+        orgPartShortDescription:
+          type: string
+        description:
+          type: string
+        partWarehouseLocationID:
+          type: string
+        partBinID:
+          type: string
+        purchaseQuantityReceived:
+          type: number
+          format: double
+        purchaseUnitOfMeasure:
+          type: string
+        purchaseUnitCost:
+          type: number
+          format: double
+        setupCharge:
+          type: number
+          format: double
+        conversionFactor:
+          type: number
+          format: double
+        inventoryUnitOfMeasure:
+          type: string
+        inventoryUnitCost:
+          type: number
+          format: double
+        poReceivedComplete:
+          type: boolean
+        jobReceivedComplete:
+          type: boolean
+        requiresInspection:
+          type: boolean
+        reference:
+          type: string
+        heatLot:
+          type: string
+        projectID:
+          type: string
+        projectAreaID:
+          type: string
+        closed:
+          type: boolean
+        postedToGl:
+          type: boolean
+        reversed:
+          type: boolean
+        reverseReceiptID:
+          type: string
+        reverseReceiptLineID:
+          type: integer
+          format: int32
+        jobOprQuantityReceived:
+          type: number
+          format: double
+        jobMatQuantityReceived:
+          type: number
+          format: double
+        uniqueID:
+          type: string
+          format: uuid
+          example: 00000000-0000-0000-0000-000000000000
+        createdBy:
+          type: string
+        createdDate:
+          type: string
+          format: date-time
+        rowVersion:
+          type: string
+          format: byte
+    BOMReceiptDto:
+      required:
+      - receiptID
+      - receiptDate
+      - supplierOrganizationID
+      type: object
+      properties:
+        receiptID:
+          type: string
+        receiptDate:
+          type: string
+          format: date-time
+        plantDepartmentID:
+          type: string
+        plantID:
+          type: string
+        deliveryDocket:
+          type: string
+        supplierOrganizationID:
+          type: string
+        purchaseLocationID:
+          type: string
+        apInvoiceLocationID:
+          type: string
+        apInvoiceContactID:
+          type: string
+        shippingMethodID:
+          type: string
+        receiptSubtotal:
+          type: number
+          format: double
+        freightCharge:
+          type: number
+          format: double
+        receiptTotal:
+          type: number
+          format: double
+        projectID:
+          type: string
+        currencyRateID:
+          type: string
+        exchangeRate:
+          type: number
+          format: double
+        nestlinkProcessed:
+          type: boolean
+        customRate:
+          type: boolean
+        reversalEntry:
+          type: boolean
+        reversed:
+          type: boolean
+        postedToGl:
+          type: boolean
+        postedDate:
+          type: string
+          format: date-time
+        closed:
+          type: boolean
+        closedDate:
+          type: string
+          format: date-time
+        createdBy:
+          type: string
+        createdDate:
+          type: string
+          format: date-time
+        uniqueID:
+          type: string
+          format: uuid
+          example: 00000000-0000-0000-0000-000000000000
+        rowVersion:
+          type: string
+          format: byte
+    Error:
+      type: object
+      properties:
+        innerText:
+          type: string
+    BOMMaterialIssueDto:
+      type: object
+      properties:
+        materialIssueID:
+          type: string
+        materialIssueDate:
+          type: string
+          format: date-time
+        createdDate:
+          type: string
+          format: date-time
+        createdBy:
+          type: string
+        postedDate:
+          type: string
+          format: date-time
+        posted:
+          type: boolean
+        reversalEntry:
+          type: boolean
+        reversed:
+          type: boolean
+        uniqueID:
+          type: string
+          format: uuid
+          example: 00000000-0000-0000-0000-000000000000
+        rowVersion:
+          type: string
+          format: byte
+    CTMBOMMaterialIssueLineDto:
+      required:
+      - materialIssue
+      type: object
+      properties:
+        materialIssue:
+          $ref: '#/components/schemas/BOMMaterialIssueDto'
+        materialIssueLines:
+          type: array
+          items:
+            $ref: '#/components/schemas/BOMMaterialIssueLineDto'
+  securitySchemes:
+    oauth2:
+      type: oauth2
+      description: OAuth 2.0 Client Credentials Flow with API Users issued from Integration Engine Management Console
+      flows:
+        clientCredentials:
+          tokenUrl: https://api-user.integrations.ecimanufacturing.com/oauth2/api-user/token
+          scopes:
+            openid: openid

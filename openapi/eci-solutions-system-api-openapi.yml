@@ -1,0 +1,291 @@
+openapi: 3.2.0
+info:
+  title: MFG Integration Management System API
+  description: Provides APIs for managing ECI MFG Integration Engine Configurations.
+  contact:
+    name: ECI Manufacturing Integration Team
+    url: https://www.ecisolutions.com/support/
+  version: 2.22.273+b02c1dfd00
+servers:
+- url: https://api-user.integrations.ecimanufacturing.com:443
+  description: Production
+security:
+- oidc:
+  - openid
+- Basic: []
+tags:
+- name: System
+paths:
+  /api/exceptions:
+    get:
+      tags:
+      - System
+      summary: This API is used to show 500 exception to show error banner on Dev Environment
+      description: 'Accessible By: Global Admin, Product Admin, Product Support User, Company Manager.\
+
+        Accessed From: User Mgmt UI.\
+
+        Description: This API is used to show 500 exception to show error banner on Dev Environment.'
+      operationId: GetExceptionSystem
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/StringAPIResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StringAPIResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/StringAPIResponse'
+  /api/System/me:
+    get:
+      tags:
+      - System
+      summary: Get current user or application profile information
+      description: 'Accessible By: Global Admin, Product Admin, Product Support User, Company Manager, API Keys.\
+
+        Accessed From: User Mgmt UI.\
+
+        Description: Returns profile information for the currently authenticated user or application (API key).
+
+        For users, returns user details from Users table. For API keys, returns application details from Applications table.
+
+        Company object is null for global admins, product admins, and product support users.
+
+        Products array contains all active products for global admins, assigned products for product admins/support,
+
+        and the company''s product for company managers.'
+      operationId: MeSystem
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/SystemMeResponseAPIResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SystemMeResponseAPIResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/SystemMeResponseAPIResponse'
+        '404':
+          description: Not Found
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/StringAPIResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StringAPIResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/StringAPIResponse'
+  /api/System/SystemInfo:
+    get:
+      tags:
+      - System
+      summary: This API is used to get the information of system
+      description: 'Description: It doesn''t used bearer token for authentication.'
+      operationId: SystemInfo
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                type: string
+  /api/System/UserInfo:
+    get:
+      tags:
+      - System
+      summary: This API is used to get the details of user which is logged in
+      description: 'Accessed From: Payment Integration.\
+
+        Description: Using Bearer token it return the details like Name, UserId, Role, Email of the Authenticate user.'
+      operationId: UserInfoSystem
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                type: string
+components:
+  schemas:
+    ApiError:
+      type: object
+      properties:
+        isError:
+          type: boolean
+        exceptionMessage:
+          type:
+          - string
+          - 'null'
+        details:
+          type:
+          - string
+          - 'null'
+        referenceErrorCode:
+          type:
+          - string
+          - 'null'
+        referenceDocumentLink:
+          type:
+          - string
+          - 'null'
+        validationErrors:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ValidationError'
+      additionalProperties: false
+    CompanyProfileInfo:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        companyName:
+          type:
+          - string
+          - 'null'
+        customerId:
+          type:
+          - string
+          - 'null'
+        nexusId:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        isActive:
+          type: boolean
+        createdDate:
+          type: string
+          format: date-time
+        lastActivityDateTime:
+          type:
+          - string
+          - 'null'
+          format: date-time
+      additionalProperties: false
+    SystemMeResponseAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        result:
+          allOf:
+          - $ref: '#/components/schemas/SystemMeResponse'
+      additionalProperties: false
+    StringAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        result:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    ValidationError:
+      type: object
+      properties:
+        field:
+          type:
+          - string
+          - 'null'
+        message:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    ProductInfo:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        productName:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    SystemMeResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        firstName:
+          type:
+          - string
+          - 'null'
+        lastName:
+          type:
+          - string
+          - 'null'
+        email:
+          type:
+          - string
+          - 'null'
+        roleId:
+          type: integer
+          format: int32
+        roleName:
+          type:
+          - string
+          - 'null'
+        company:
+          allOf:
+          - $ref: '#/components/schemas/CompanyProfileInfo'
+        products:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ProductInfo'
+        redirectUris:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+  securitySchemes:
+    oidc:
+      type: openIdConnect
+      description: Use id_token obtained from OpenID Connect flow.
+      openIdConnectUrl: https://cognito-idp.us-east-1.amazonaws.com/us-east-1_9IYBf4TpD/.well-known/openid-configuration
+      x-tokenName: id_token
+    Basic:
+      type: http
+      description: Username is ClientID, Password is Client Secret.
+      scheme: Basic

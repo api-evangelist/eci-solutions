@@ -1,0 +1,2948 @@
+openapi: 3.2.0
+info:
+  title: M1 Public BOM/PART API
+  description: '## Developer Notes for the M1 Public API (ERP resource):
+
+
+    ### Hosted Environment
+
+
+    If you are using the public API for a hosted M1 customer, you must connect to the public API using the Integration Engine.'
+  contact:
+    name: ECI Software Solutions - M1
+    url: https://www.ecisolutions.com/manufacturers-and-job-shops/m1
+  version: v1
+servers:
+- url: https://api-m1.integrations.ecimanufacturing.com
+  description: API Host
+security:
+- oauth2: []
+tags:
+- name: BOM/PART
+paths:
+  /api/BOM/Part/GetParts/{partId}:
+    get:
+      tags:
+      - BOM/PART
+      summary: Returns part details for a given M1 part id or GUID.
+      operationId: BOMPart_GetPartsByIdAsync
+      parameters:
+      - name: partId
+        in: path
+        description: The M1 Part Id or GUID of the part as a string
+        required: true
+        style: simple
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/BOMPartDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BOMPartDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/BOMPartDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/BOMPartDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+  /api/BOM/Part/GetAllParts/{pageSize}/{pageNumber}:
+    get:
+      tags:
+      - BOM/PART
+      summary: Returns all existing parts with pagination
+      operationId: BOMPart_GetAllPartsAsync
+      parameters:
+      - name: pageSize
+        in: path
+        description: The required size of the pagination. By default 1000.
+        required: true
+        style: simple
+        schema:
+          type: integer
+          format: int32
+      - name: pageNumber
+        in: path
+        description: The required number of page from pagination. By default 0, which is the first page
+        required: true
+        style: simple
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/BOMPartDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BOMPartDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/BOMPartDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/BOMPartDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+  /api/BOM/Part/PostParts:
+    post:
+      tags:
+      - BOM/PART
+      summary: Creates a part with the required attributes
+      operationId: BOMPart_PostPartAsync
+      requestBody:
+        description: The part object as BOMPartDto with the incoming data.
+        content:
+          text/xml:
+            schema:
+              $ref: '#/components/schemas/BOMPartDto'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/BOMPartDto'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/BOMPartDto'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BOMPartDto'
+        required: true
+        x-bodyName: part
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+  /api/BOM/Part/GetPartRevisions/{partId}:
+    get:
+      tags:
+      - BOM/PART
+      summary: Returns part and part revision details for a given M1 part id or GUID.
+      operationId: BOMPart_GetPartRevisionsAsync
+      parameters:
+      - name: partId
+        in: path
+        description: The M1 Part Id or GUID of the part as a string
+        required: true
+        style: simple
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/CTMBOMPartRevisionDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CTMBOMPartRevisionDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/CTMBOMPartRevisionDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/CTMBOMPartRevisionDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+  /api/BOM/Part/PostPartRevisions:
+    post:
+      tags:
+      - BOM/PART
+      summary: Creates a part and relevant part revisions based on input parameter
+      operationId: BOMPart_PostPartRevisionsAsync
+      requestBody:
+        description: The part revision object as CTMBOMPartRevisionDto
+        content:
+          text/xml:
+            schema:
+              $ref: '#/components/schemas/CTMBOMPartRevisionDto'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/CTMBOMPartRevisionDto'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/CTMBOMPartRevisionDto'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CTMBOMPartRevisionDto'
+        required: true
+        x-bodyName: partRevision
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+  /api/BOM/Part/GetPartAssembly/{methodId}/{methodRevisionId}/{methodAssemblyId}:
+    get:
+      tags:
+      - BOM/PART
+      summary: Returns part and part assembly details for a given M1 method id, method…
+      operationId: BOMPart_GetPartAssemblyAsync
+      parameters:
+      - name: methodId
+        in: path
+        description: The part method id as string
+        required: true
+        style: simple
+        schema:
+          type: string
+      - name: methodRevisionId
+        in: path
+        description: The part method revision id as string. If wants to pass BLANK revision id, use underscore ("_") character instead
+        required: true
+        style: simple
+        schema:
+          type: string
+      - name: methodAssemblyId
+        in: path
+        description: The part method assembly id as integer
+        required: true
+        style: simple
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/CTMBOMPartRevisionDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CTMBOMPartRevisionDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/CTMBOMPartRevisionDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/CTMBOMPartRevisionDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+  /api/BOM/Part/GetPartAssembly/{methodAsmGuid}:
+    get:
+      tags:
+      - BOM/PART
+      summary: Returns part and part assembly details for a given M1 method assembly GUID
+      operationId: BOMPart_GetPartAssemblyAsync
+      parameters:
+      - name: methodAsmGuid
+        in: path
+        required: true
+        style: simple
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/CTMBOMPartRevisionDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CTMBOMPartRevisionDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/CTMBOMPartRevisionDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/CTMBOMPartRevisionDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+  /api/BOM/Part/PostPartAssembly:
+    post:
+      tags:
+      - BOM/PART
+      summary: Creates a part assembly based on input parameter
+      operationId: BOMPart_PostPartAssemblyAsync
+      requestBody:
+        description: The part assembly object as BOMPartAssembly
+        content:
+          text/xml:
+            schema:
+              $ref: '#/components/schemas/BOMPartAssemblyDto'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/BOMPartAssemblyDto'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/BOMPartAssemblyDto'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BOMPartAssemblyDto'
+        required: true
+        x-bodyName: partAssembly
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+  /api/BOM/Part/DeletePartAssembly/{methodId}/{methodRevisionId}/{methodAssemblyId}:
+    delete:
+      tags:
+      - BOM/PART
+      summary: Deletes a part assembly for method id, method revision id and method assembly…
+      operationId: BOMPart_DeletePartAssemblyAsync
+      parameters:
+      - name: methodId
+        in: path
+        description: The part method id as string
+        required: true
+        style: simple
+        schema:
+          type: string
+      - name: methodRevisionId
+        in: path
+        description: The part method revision id as string. If wants to pass BLANK revision id, use underscore ("_") character instead
+        required: true
+        style: simple
+        schema:
+          type: string
+      - name: methodAssemblyId
+        in: path
+        description: The part method assembly id as integer
+        required: true
+        style: simple
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+  /api/BOM/Part/DeletePartAssembly/{methodAsmGuid}:
+    delete:
+      tags:
+      - BOM/PART
+      summary: Deletes a part assembly for method assembly GUID.
+      operationId: BOMPart_DeletePartAssemblyAsync
+      parameters:
+      - name: methodAsmGuid
+        in: path
+        description: The methodAsmGuid as a string
+        required: true
+        style: simple
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+  /api/BOM/Part/PostPartOperation:
+    post:
+      tags:
+      - BOM/PART
+      summary: Creates a part operation based on input parameter
+      operationId: BOMPart_PostPartOperationAsync
+      requestBody:
+        description: The part operation as BOMPartAssembly
+        content:
+          text/xml:
+            schema:
+              $ref: '#/components/schemas/BOMPartOperationDto'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/BOMPartOperationDto'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/BOMPartOperationDto'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BOMPartOperationDto'
+        required: true
+        x-bodyName: partOperation
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+  /api/BOM/Part/DeletePartOperation/{methodId}/{methodRevisionId}/{methodAssemblyId}/{methodOperationId}:
+    delete:
+      tags:
+      - BOM/PART
+      summary: Deletes a part operation for method id, method revision id, method assembly id…
+      operationId: BOMPart_DeletePartOperationAsync
+      parameters:
+      - name: methodId
+        in: path
+        description: The part method id as string
+        required: true
+        style: simple
+        schema:
+          type: string
+      - name: methodRevisionId
+        in: path
+        description: The part method revision id as string. If wants to pass BLANK revision id, use underscore ("_") character instead
+        required: true
+        style: simple
+        schema:
+          type: string
+      - name: methodAssemblyId
+        in: path
+        description: The part method assembly id as integer
+        required: true
+        style: simple
+        schema:
+          type: integer
+          format: int32
+      - name: methodOperationId
+        in: path
+        description: The part method operation id as integer
+        required: true
+        style: simple
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+  /api/BOM/Part/DeletePartOperation/{methodOperationGuid}:
+    delete:
+      tags:
+      - BOM/PART
+      summary: Deletes a part operation for method operation GUID.
+      operationId: BOMPart_DeletePartOperationAsync
+      parameters:
+      - name: methodOperationGuid
+        in: path
+        description: The methodOperationGuid as a string
+        required: true
+        style: simple
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+  /api/BOM/Part/GetPartMaterial/{methodId}/{methodRevisionId}/{methodAssemblyId}:
+    get:
+      tags:
+      - BOM/PART
+      summary: 'Returns all part materials for the given combination of identifiers: methodId…'
+      operationId: BOMPart_GetPartMaterialAsync
+      parameters:
+      - name: methodId
+        in: path
+        description: The M1 Part Method Id
+        required: true
+        style: simple
+        schema:
+          type: string
+      - name: methodRevisionId
+        in: path
+        description: The M1 Part Method Revision Id. If wants to pass BLANK revision id, use underscore ("_") character instead.
+        required: true
+        style: simple
+        schema:
+          type: string
+      - name: methodAssemblyId
+        in: path
+        description: The M1 Part Method Assembly Id.
+        required: true
+        style: simple
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMPartMaterialDto'
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMPartMaterialDto'
+            application/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMPartMaterialDto'
+            text/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMPartMaterialDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+  /api/BOM/Part/GetPartMaterial/{methodMaterialGuid}:
+    get:
+      tags:
+      - BOM/PART
+      summary: Returns part material for method material GUID.
+      operationId: BOMPart_GetPartMaterialAsync
+      parameters:
+      - name: methodMaterialGuid
+        in: path
+        description: The methodMaterialGuid as a string
+        required: true
+        style: simple
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMPartMaterialDto'
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMPartMaterialDto'
+            application/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMPartMaterialDto'
+            text/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMPartMaterialDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+  /api/BOM/Part/PostPartMaterial:
+    post:
+      tags:
+      - BOM/PART
+      summary: Creates a part material based on input parameter
+      operationId: BOMPart_PostPartMaterialAsync
+      requestBody:
+        description: The part material as BOMPartMaterialDto
+        content:
+          text/xml:
+            schema:
+              $ref: '#/components/schemas/BOMPartMaterialDto'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/BOMPartMaterialDto'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/BOMPartMaterialDto'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BOMPartMaterialDto'
+        required: true
+        x-bodyName: partMaterial
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/BOMResponseMessageDto_BOMPartMaterialDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BOMResponseMessageDto_BOMPartMaterialDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/BOMResponseMessageDto_BOMPartMaterialDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/BOMResponseMessageDto_BOMPartMaterialDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+  /api/BOM/Part/DeletePartMaterial/{methodId}/{methodRevisionId}/{methodAssemblyId}/{methodMaterialId}:
+    delete:
+      tags:
+      - BOM/PART
+      summary: Deletes a part material for method id, method revision id, method assembly id…
+      operationId: BOMPart_DeletePartMaterialAsync
+      parameters:
+      - name: methodId
+        in: path
+        description: The part method id as string
+        required: true
+        style: simple
+        schema:
+          type: string
+      - name: methodRevisionId
+        in: path
+        description: The part method revision id as string. If wants to pass BLANK revision id, use underscore ("_") character instead
+        required: true
+        style: simple
+        schema:
+          type: string
+      - name: methodAssemblyId
+        in: path
+        description: The part method assembly id as integer
+        required: true
+        style: simple
+        schema:
+          type: integer
+          format: int32
+      - name: methodMaterialId
+        in: path
+        description: The part method material id as integer
+        required: true
+        style: simple
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+  /api/BOM/Part/DeletePartMaterial/{methodMaterialGuid}:
+    delete:
+      tags:
+      - BOM/PART
+      summary: Deletes a part material for method material GUID.
+      operationId: BOMPart_DeletePartMaterialAsync
+      parameters:
+      - name: methodMaterialGuid
+        in: path
+        description: The methodMaterialGuid as a string
+        required: true
+        style: simple
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+  /api/BOM/Part/GetPartMethodBOM/{partId}/{partRevisionId}/{partAssemblyId}:
+    get:
+      tags:
+      - BOM/PART
+      summary: Returns part method BOM details for a given M1 part,revision and assembly.
+      operationId: BOMPart_GetPartMethodBomAsync
+      parameters:
+      - name: partId
+        in: path
+        description: The M1 Part Id as a string
+        required: true
+        style: simple
+        schema:
+          type: string
+      - name: partRevisionId
+        in: path
+        description: The part revision id as string. If wants to pass BLANK revision id, use underscore ("_") character instead
+        required: true
+        style: simple
+        schema:
+          type: string
+      - name: partAssemblyId
+        in: path
+        description: The part assembly id as integer
+        required: true
+        style: simple
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/CTMBOMPartMethodDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CTMBOMPartMethodDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/CTMBOMPartMethodDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/CTMBOMPartMethodDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+  /api/BOM/Part/GetPartMethodBOM/{partAssemblyGuid}:
+    get:
+      tags:
+      - BOM/PART
+      summary: Returns part method BOM details for a given part assembly guid.
+      operationId: BOMPart_GetPartMethodBomAsync
+      parameters:
+      - name: partAssemblyGuid
+        in: path
+        description: The partAssemblyGuid as a string
+        required: true
+        style: simple
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/CTMBOMPartMethodDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CTMBOMPartMethodDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/CTMBOMPartMethodDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/CTMBOMPartMethodDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+  /api/BOM/Part/GetPartMethodGUIDs/{partId}:
+    get:
+      tags:
+      - BOM/PART
+      summary: Returns part method GUIDs for a given part.
+      operationId: BOMPart_GetPartMethodGuidsAsync
+      parameters:
+      - name: partId
+        in: path
+        description: The partId or section of partId as string
+        required: true
+        style: simple
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/CTMBOMPartMethodGuidsDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CTMBOMPartMethodGuidsDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/CTMBOMPartMethodGuidsDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/CTMBOMPartMethodGuidsDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+  /api/BOM/Part/GetPartBinDetails/{partId}:
+    get:
+      tags:
+      - BOM/PART
+      summary: Returns part and part bin details for a given M1 part id or GUID.
+      operationId: BOMPartBinDetail_GetPartBinDetailsAsync
+      parameters:
+      - name: partId
+        in: path
+        description: The M1 Part Id or GUID of the part as a string
+        required: true
+        style: simple
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/BOMPartBinDetailDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BOMPartBinDetailDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/BOMPartBinDetailDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/BOMPartBinDetailDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+  /api/BOM/Part/GetAllPartBinDetails/{pageSize}/{pageNumber}:
+    get:
+      tags:
+      - BOM/PART
+      summary: Returns all existing part bin details with pagination
+      operationId: BOMPartBinDetail_GetAllPartBinDetailsAsync
+      parameters:
+      - name: pageSize
+        in: path
+        description: The required size of the pagination. By default 1000.
+        required: true
+        style: simple
+        schema:
+          type: integer
+          format: int32
+      - name: pageNumber
+        in: path
+        description: The required number of page from pagination. By default 0, which is the first page
+        required: true
+        style: simple
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMPartBinDetailDto'
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMPartBinDetailDto'
+            application/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMPartBinDetailDto'
+            text/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMPartBinDetailDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+components:
+  schemas:
+    CTMBOMPartRevisionDto:
+      required:
+      - part
+      type: object
+      properties:
+        part:
+          $ref: '#/components/schemas/BOMPartDto'
+        partRevisions:
+          type: array
+          items:
+            $ref: '#/components/schemas/BOMPartRevisionDto'
+    BOMPartMaterialDto:
+      required:
+      - methodID
+      - methodAssemblyID
+      - methodMaterialID
+      - partID
+      - partShortDescription
+      type: object
+      properties:
+        methodID:
+          type: string
+        methodRevisionID:
+          type: string
+        methodAssemblyID:
+          type: integer
+          format: int32
+        methodMaterialID:
+          type: integer
+          format: int32
+        partID:
+          type: string
+        partRevisionID:
+          type: string
+        relatedPartOperationID:
+          type: integer
+          format: int32
+        partShortDescription:
+          type: string
+        unitOfMeasure:
+          type: string
+        estimatedUnitCost:
+          type: number
+          format: double
+        leadTime:
+          type: integer
+          format: int32
+        supplierOrganizationID:
+          type: string
+        purchaseLocationID:
+          type: string
+        quantityPerParent:
+          type: number
+          format: double
+        manualPart:
+          type: boolean
+        partLongDescription:
+          type: string
+        backflush:
+          type: boolean
+        scrapQuantity:
+          type: number
+          format: double
+        scrapPercent:
+          type: number
+          format: double
+    CTMBOMPartMethodDto:
+      type: object
+      properties:
+        part:
+          $ref: '#/components/schemas/BOMPartDto'
+        partRevision:
+          $ref: '#/components/schemas/BOMPartRevisionDto'
+        partAssemblies:
+          type: array
+          items:
+            $ref: '#/components/schemas/BOMPartMethodAssemblyDto'
+    BOMPartDto:
+      required:
+      - partID
+      - shortDescription
+      - partType
+      type: object
+      properties:
+        partID:
+          type: string
+        shortDescription:
+          type: string
+        partType:
+          type: integer
+          format: int32
+        partClassID:
+          type: string
+        partGroupID:
+          type: string
+        longDescription:
+          type: string
+        deliveryType:
+          type: integer
+          format: int32
+        buyForInventory:
+          type: boolean
+        nonStockedItem:
+          type: boolean
+    CTMBOMPartMethodGuidsDto:
+      type: object
+      properties:
+        partMethodGuids:
+          type: array
+          items:
+            $ref: '#/components/schemas/CTMBOMPartMethodGuidDto'
+    Warning:
+      type: object
+      properties:
+        innerText:
+          type: string
+    BOMPartAssemblyDto:
+      required:
+      - methodID
+      - methodAssemblyID
+      - level
+      - useMethod
+      - parentAssemblyID
+      - partID
+      - partShortDescription
+      type: object
+      properties:
+        methodID:
+          type: string
+        methodRevisionID:
+          type: string
+        methodAssemblyID:
+          type: integer
+          format: int32
+        level:
+          type: integer
+          format: int32
+        useMethod:
+          type: boolean
+        parentAssemblyID:
+          type: integer
+          format: int32
+        partID:
+          type: string
+        partRevisionID:
+          type: string
+        partShortDescription:
+          type: string
+        unitOfMeasure:
+          type: string
+        quantityPerParent:
+          type: number
+          format: double
+        overlapOperationID:
+          type: integer
+          format: int32
+        partLongDescription:
+          type: string
+    CTMBOMPartAssemblyGuidDto:
+      type: object
+      properties:
+        assemblyId:
+          type: integer
+          format: int32
+        assemblyGuid:
+          type: string
+        partMaterialGuids:
+          type: array
+          items:
+            $ref: '#/components/schemas/CTMBOMPartMaterialGuidDto'
+        partOperationGuids:
+          type: array
+          items:
+            $ref: '#/components/schemas/CTMBOMPartOperationGuidDto'
+    CTMBOMPartMaterialGuidDto:
+      type: object
+      properties:
+        materialId:
+          type: integer
+          format: int32
+        materialGuid:
+          type: string
+    CTMBOMPartOperationGuidDto:
+      type: object
+      properties:
+        operationId:
+          type: integer
+          format: int32
+        operationGuid:
+          type: string
+    CTMBOMPartRevisionGuidDto:
+      type: object
+      properties:
+        revisionId:
+          type: string
+        revisionGuid:
+          type: string
+        partAssemblyGuids:
+          type: array
+          items:
+            $ref: '#/components/schemas/CTMBOMPartAssemblyGuidDto'
+    BOMResponseMessageDto_BOMPartMaterialDto:
+      type: object
+      properties:
+        responseInfo:
+          $ref: '#/components/schemas/APIResponseMessageDto'
+        returnObject:
+          $ref: '#/components/schemas/BOMPartMaterialDto'
+    BOMPartMethodAssemblyDto:
+      type: object
+      properties:
+        assembly:
+          $ref: '#/components/schemas/BOMPartAssemblyDto'
+        operations:
+          type: array
+          items:
+            $ref: '#/components/schemas/BOMPartOperationDto'
+        materials:
+          type: array
+          items:
+            $ref: '#/components/schemas/BOMPartMaterialDto'
+    BOMPartRevisionDto:
+      required:
+      - partID
+      - shortDescription
+      type: object
+      properties:
+        partID:
+          type: string
+        partRevisionID:
+          type: string
+        shortDescription:
+          type: string
+        inventoryUnitOfMeasure:
+          type: string
+        purchaseUnitOfMeasure:
+          type: string
+        supplierOrganizationID:
+          type: string
+        conversionFactor:
+          type: number
+          format: double
+        effectiveStartDate:
+          type: string
+          format: date-time
+        leadTime:
+          type: integer
+          format: int32
+        effectiveEndDate:
+          type: string
+          format: date-time
+        purchaseLocationID:
+          type: string
+        averageLaborCost:
+          type: number
+          format: double
+        averageOverheadCost:
+          type: number
+          format: double
+        averageMaterialCost:
+          type: number
+          format: double
+        averageSubcontractCost:
+          type: number
+          format: double
+        lastLaborCost:
+          type: number
+          format: double
+        lastOverheadCost:
+          type: number
+          format: double
+        lastMaterialCost:
+          type: number
+          format: double
+        lastSubcontractCost:
+          type: number
+          format: double
+        standardLaborCost:
+          type: number
+          format: double
+        standardOverheadCost:
+          type: number
+          format: double
+        standardMaterialCost:
+          type: number
+          format: double
+        standardSubcontractCost:
+          type: number
+          format: double
+        averageDutyCost:
+          type: number
+          format: double
+        averageFreightCost:
+          type: number
+          format: double
+        averageMiscCost:
+          type: number
+          format: double
+        lastDutyCost:
+          type: number
+          format: double
+        lastFreightCost:
+          type: number
+          format: double
+        lastMiscCost:
+          type: number
+          format: double
+        standardDutyCost:
+          type: number
+          format: double
+        standardFreightCost:
+          type: number
+          format: double
+        standardMiscCost:
+          type: number
+          format: double
+        longDescription:
+          type: string
+        lastTransactionDate:
+          type: string
+          format: date-time
+        manufacturingLotSize:
+          type: number
+          format: double
+        inactive:
+          type: boolean
+        lastReceiptDate:
+          type: string
+          format: date-time
+        requiresInspection:
+          type: boolean
+        expenseSplitPercentTotal:
+          type: number
+          format: double
+        weight:
+          type: number
+          format: double
+        weightUnitOfMeasure:
+          type: string
+        createdBy:
+          type: string
+        createdDate:
+          type: string
+          format: date-time
+        averageUnitCost:
+          type: number
+          format: double
+        standardUnitCost:
+          type: number
+          format: double
+        lastUnitCost:
+          type: number
+          format: double
+        sheetSizeX:
+          type: number
+          format: double
+        sheetSizeY:
+          type: number
+          format: double
+        barLength:
+          type: number
+          format: double
+        thickness:
+          type: number
+          format: double
+    APIResponseMessageDto:
+      type: object
+      properties:
+        description:
+          type: string
+        status:
+          type: string
+        payloadID:
+          type: string
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+          readOnly: true
+        warnings:
+          type: array
+          items:
+            $ref: '#/components/schemas/Warning'
+          readOnly: true
+    BOMPartOperationDto:
+      required:
+      - methodID
+      - methodAssemblyID
+      - methodOperationID
+      - operationType
+      - workCenterID
+      - processID
+      - processShortDescription
+      - standardFactor
+      - machineType
+      - quantityPerAssembly
+      type: object
+      properties:
+        methodID:
+          type: string
+        methodRevisionID:
+          type: string
+        methodAssemblyID:
+          type: integer
+          format: int32
+        methodOperationID:
+          type: integer
+          format: int32
+        operationType:
+          type: integer
+          format: int32
+        workCenterID:
+          type: string
+        processID:
+          type: string
+        processShortDescription:
+          type: string
+        productionStandard:
+          type: number
+          format: double
+        standardFactor:
+          type: string
+        machinesToSchedule:
+          type: integer
+          format: int32
+        machineType:
+          type: integer
+          format: int32
+        quantityPerAssembly:
+          type: number
+          format: double
+    CTMBOMPartMethodGuidDto:
+      type: object
+      properties:
+        partId:
+          type: string
+        partGuid:
+          type: string
+        partRevisionGuids:
+          type: array
+          items:
+            $ref: '#/components/schemas/CTMBOMPartRevisionGuidDto'
+    BOMPartBinDetailDto:
+      required:
+      - partID
+      type: object
+      properties:
+        partID:
+          type: string
+        partRevisionID:
+          type: string
+        partBinID:
+          type: string
+        partBinDetailID:
+          type: integer
+          format: int32
+        transactionDate:
+          type: string
+          format: date-time
+        quantityType:
+          type: integer
+          format: int32
+        originalQuantity:
+          type: number
+          format: double
+        remainingQuantity:
+          type: number
+          format: double
+        unitCost:
+          type: number
+          format: double
+        sourceTableName:
+          type: string
+        createdBy:
+          type: string
+        createdDate:
+          type: string
+          format: date-time
+        uniqueID:
+          type: string
+          format: uuid
+          example: 00000000-0000-0000-0000-000000000000
+        rowVersion:
+          type: string
+          format: byte
+        warehouseID:
+          type: string
+    Error:
+      type: object
+      properties:
+        innerText:
+          type: string
+  securitySchemes:
+    oauth2:
+      type: oauth2
+      description: OAuth 2.0 Client Credentials Flow with API Users issued from Integration Engine Management Console
+      flows:
+        clientCredentials:
+          tokenUrl: https://api-user.integrations.ecimanufacturing.com/oauth2/api-user/token
+          scopes:
+            openid: openid

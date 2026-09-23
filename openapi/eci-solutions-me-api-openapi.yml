@@ -1,0 +1,1470 @@
+openapi: 3.2.0
+info:
+  title: Office Integration Me API
+  description: 'This service provides APIs to enable building a single integration
+
+    to access Drive, Email, and Calendar features in different productivity suites.'
+  version: v1
+security:
+- Bearer: []
+tags:
+- name: Me
+paths:
+  /api/v1/me/calendar/events:
+    get:
+      tags:
+      - Me
+      summary: Get calendar events
+      description: 'Gets calendar events from the connected user''s personal calendar, optionally filtered by the start and end date.
+
+        - For Microsoft 365, gets events from the connected user’s Outlook Calendar.'
+      operationId: GetCalendarEvents
+      parameters:
+      - name: start_date
+        in: query
+        description: The start date of the events to retrieve
+        schema:
+          type: string
+      - name: end_date
+        in: query
+        description: The end date of the events to retrieve
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/CalendarEventResponseListResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CalendarEventResponseListResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/CalendarEventResponseListResponse'
+        '401':
+          description: Unauthorized
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+    post:
+      tags:
+      - Me
+      summary: Create a calendar event
+      description: 'Creates a new calendar event in the connected user''s personal calendar.
+
+        - For Microsoft 365, creates a new event in the connected user’s Outlook Calendar.'
+      operationId: CreateCalendarEvent
+      requestBody:
+        description: The request containing the details of the calendar event to be created.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCalendarEventRequest'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/CreateCalendarEventRequest'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/CreateCalendarEventRequest'
+      responses:
+        '201':
+          description: Created
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/CalendarEventResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CalendarEventResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/CalendarEventResponse'
+        '400':
+          description: Bad Request
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+  /api/v1/me/calendar/events/{eventId}:
+    get:
+      tags:
+      - Me
+      summary: Get a calendar event by Id
+      description: 'Gets a calendar event from the connected user''s personal calendar by its Id.
+
+        - For Microsoft 365, gets an event from the connected user’s Outlook Calendar by Id.'
+      operationId: GetCalendarEventById
+      parameters:
+      - name: eventId
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/CalendarEventResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CalendarEventResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/CalendarEventResponse'
+        '404':
+          description: Not Found
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+    patch:
+      tags:
+      - Me
+      summary: Updates a calendar event
+      description: 'Updates an existing calendar event in the connected user''s personal calendar.
+
+        - For Microsoft 365, updates an event in the connected user’s Outlook Calendar.'
+      operationId: UpdateCalendarEvent
+      parameters:
+      - name: eventId
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateCalendarEventRequest'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/UpdateCalendarEventRequest'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/UpdateCalendarEventRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/CalendarEventResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CalendarEventResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/CalendarEventResponse'
+        '400':
+          description: Bad Request
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+    delete:
+      tags:
+      - Me
+      summary: Deletes a calendar event
+      description: 'Deletes a calendar event from the connected user''s personal calendar.
+
+        - For Microsoft 365, deletes an event from the connected user’s Outlook Calendar.'
+      operationId: DeleteCalendarEvent
+      parameters:
+      - name: eventId
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: No Content
+        '400':
+          description: Bad Request
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '404':
+          description: Not Found
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+  /api/v1/me/drive:
+    get:
+      tags:
+      - Me
+      summary: Get user's drive
+      description: 'Gets the user''s personal drive.
+
+        - For Microsoft 365, returns the user''s personal drive.'
+      operationId: GetCurrentUserDrive
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/DriveResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DriveResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/DriveResponse'
+        '401':
+          description: Unauthorized
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+  /api/v1/me/drive/items:
+    get:
+      tags:
+      - Me
+      summary: Get user's drive items
+      description: 'Gets a list of items in the user''s drive, optionally filtered by the search criteria if provided.
+
+        - For Microsoft 365, returns a list of items in the user''s drive.'
+      operationId: GetCurrentUserDriveItems
+      parameters:
+      - name: search
+        in: query
+        description: Search query
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/DriveItemResponseListResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DriveItemResponseListResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/DriveItemResponseListResponse'
+        '401':
+          description: Unauthorized
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+  /api/v1/me/drive/recent:
+    get:
+      tags:
+      - Me
+      summary: Get recent files
+      description: 'Gets a list of files that the user has recently accessed, sorted by most recently accessed first.
+
+        - For Microsoft 365, returns a list of recently accessed files.'
+      operationId: GetCurrentUserRecentFiles
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/DriveItemResponseListResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DriveItemResponseListResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/DriveItemResponseListResponse'
+        '401':
+          description: Unauthorized
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+  /api/v1/me/mail:
+    post:
+      tags:
+      - Me
+      summary: Send Mail
+      description: 'Sends an email message using the connected mail account.
+
+        - For Microsoft 365, sends an email from the connected user''s Outlook mailbox.'
+      operationId: SendMail
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SendMailRequest'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/SendMailRequest'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/SendMailRequest'
+      responses:
+        '202':
+          description: Accepted
+        '403':
+          description: Forbidden
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '400':
+          description: Bad Request
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+  /api/v1/me/mail/{folder}/messages:
+    get:
+      tags:
+      - Me
+      summary: Get mail messages
+      description: 'Gets a list of mail messages in the specified folder.
+
+
+        - For Microsoft 365, returns a list of messages in the specified folder.
+
+
+        If no parameters are specified, the default is to return the most recent 25 messages in the folder, oldest to newest.'
+      operationId: GetMailFolderMessages
+      parameters:
+      - name: folder
+        in: path
+        description: The folder to get messages from
+        required: true
+        schema:
+          $ref: '#/components/schemas/Folder'
+      - name: top
+        in: query
+        description: Limit the number of results. The default value is 25 if not specified.
+        schema:
+          type: integer
+          format: int32
+          default: 25
+      - name: since
+        in: query
+        description: Limit the results to messages received since the given date. Default is last 3 days.
+        schema:
+          type: string
+          format: date-time
+      - name: before
+        in: query
+        description: Limit the results to messages received before the given date.
+        schema:
+          type: string
+          format: date-time
+      - name: next_page_token
+        in: query
+        description: The next page token from a previous request. If this value is provided, all other parameters will be ignored.
+        schema:
+          type: string
+      - name: sort_order
+        in: query
+        description: Indicates the sort order for mail items. Default is oldest first.
+        schema:
+          $ref: '#/components/schemas/MailSortOrder'
+      - name: response
+        in: query
+        description: ''
+        schema:
+          $ref: '#/components/schemas/MailResponseType'
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/MailItemResponseListResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MailItemResponseListResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/MailItemResponseListResponse'
+        '401':
+          description: Unauthorized
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+  /api/v1/me/mail/{folder}/messages/{messageId}:
+    get:
+      tags:
+      - Me
+      summary: Get Message
+      description: 'Gets a mail message by ID.
+
+
+        - For Microsoft 365, returns a list of messages in the specified folder.
+
+
+        If no parameters are specified, the default is to return the most recent 25 messages in the folder.'
+      operationId: GetMailMessageById
+      parameters:
+      - name: folder
+        in: path
+        description: The folder to get messages from
+        required: true
+        schema:
+          $ref: '#/components/schemas/Folder'
+      - name: messageId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/MailItemResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MailItemResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/MailItemResponse'
+        '404':
+          description: Not Found
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+  /api/v1/me/mail/{folder}/messages/{messageId}/attachments:
+    get:
+      tags:
+      - Me
+      summary: Get Message Attachments
+      description: 'Gets a list of attachments for a specific message.
+
+        - For Microsoft 365, returns a list of attachments for a message.'
+      operationId: GetMessageAttachments
+      parameters:
+      - name: folder
+        in: path
+        description: The folder to get messages from
+        required: true
+        schema:
+          $ref: '#/components/schemas/Folder'
+      - name: messageId
+        in: path
+        description: The message id to get attachments from
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/GetMailAttachmentModelListResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetMailAttachmentModelListResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/GetMailAttachmentModelListResponse'
+        '401':
+          description: Unauthorized
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '404':
+          description: Not Found
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+  /api/v1/me/mail/{folder}/messages/{messageId}/attachments/{attachmentId}:
+    get:
+      tags:
+      - Me
+      summary: Get Message Attachment
+      description: 'Gets a message attachment by ID
+
+        - For Microsoft 365, gets the message attachment including it''s contents.'
+      operationId: GetMessageAttachment
+      parameters:
+      - name: folder
+        in: path
+        description: The folder to get messages from
+        required: true
+        schema:
+          $ref: '#/components/schemas/Folder'
+      - name: messageId
+        in: path
+        description: The message id to get attachments from
+        required: true
+        schema:
+          type: string
+      - name: attachmentId
+        in: path
+        description: The attachment id to download
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/GetMailAttachmentModel'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetMailAttachmentModel'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/GetMailAttachmentModel'
+        '404':
+          description: Not Found
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '401':
+          description: Unauthorized
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+  /api/v1/me/mail/{folder}/messages/{messageId}/attachments/{attachmentId}/contentBytes/$value:
+    get:
+      tags:
+      - Me
+      summary: Download Message Attachment
+      description: 'Downloads a specific attachment from a message.
+
+        - For Microsoft 365, downloads an attachment from a message.'
+      operationId: DownloadMessageAttachment
+      parameters:
+      - name: folder
+        in: path
+        description: The folder to get messages from
+        required: true
+        schema:
+          $ref: '#/components/schemas/Folder'
+      - name: messageId
+        in: path
+        description: The message id to get attachments from
+        required: true
+        schema:
+          type: string
+      - name: attachmentId
+        in: path
+        description: The attachment id to download
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
+                format: binary
+            application/json:
+              schema:
+                type: string
+                format: binary
+            text/json:
+              schema:
+                type: string
+                format: binary
+        '401':
+          description: Unauthorized
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '404':
+          description: Not Found
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+  /api/v1/me/mail/{folder}/messages/$delta:
+    get:
+      tags:
+      - Me
+      summary: Get Messages with Memory
+      description: 'Gets a list of mail messages, and provides a nextPageToken in the response
+
+        that can be used to fetch messages that have only changed since the previous request.
+
+
+        Each subsequent request will generate a new nextPageToken in the response that can be used
+
+        to make a subsequent request. Only the ''top'' parameter can be specified in subsequent requests
+
+        combined with next_page_token.
+
+
+        - For Microsoft 365, returns a list of messages in the specified folder, or messages that have arrived since the previous request.
+
+
+        If no parameters are specified, the default is to return the most recent 25 messages in the folder, oldest to newest.'
+      operationId: GetMailFolderMessagesWithMemory
+      parameters:
+      - name: folder
+        in: path
+        description: The folder to get messages from
+        required: true
+        schema:
+          $ref: '#/components/schemas/Folder'
+      - name: top
+        in: query
+        description: Limit the number of results. The default value is 25 if not specified.
+        schema:
+          type: integer
+          format: int32
+          default: 25
+      - name: since
+        in: query
+        description: Limit the results to messages received since the given date. Default is last 3 days if not specified.
+        schema:
+          type: string
+          format: date-time
+      - name: before
+        in: query
+        description: Limit the results to messages received before the given date.
+        schema:
+          type: string
+          format: date-time
+      - name: next_page_token
+        in: query
+        description: The next page token from a previous request. If this value is provided, all other parameters will be ignored.
+        schema:
+          type: string
+      - name: sort_order
+        in: query
+        description: Indicates the sort order for mail items. Default is oldest first.
+        schema:
+          $ref: '#/components/schemas/MailSortOrder'
+      - name: response
+        in: query
+        description: ''
+        schema:
+          $ref: '#/components/schemas/MailResponseType'
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/MailItemResponseListResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MailItemResponseListResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/MailItemResponseListResponse'
+        '401':
+          description: Unauthorized
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+  /api/v1/me/mail/Drafts/messages:
+    post:
+      tags:
+      - Me
+      summary: Create a draft mail message without sending it
+      description: Creates a draft mail message in the user's Drafts folder. The message will not be sent.
+      operationId: CreateDraftMailMessage
+      requestBody:
+        description: The mail message to save as a draft.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SendMailRequest'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/SendMailRequest'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/SendMailRequest'
+      responses:
+        '201':
+          description: Created
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/DraftMailItemResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DraftMailItemResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/DraftMailItemResponse'
+        '400':
+          description: Bad Request
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+components:
+  schemas:
+    UpdateCalendarEventRequest:
+      type: object
+      properties:
+        subject:
+          type:
+          - string
+          - 'null'
+          description: The subject of the calendar event.
+        body:
+          type:
+          - string
+          - 'null'
+          description: The body or description of the calendar event.
+        start:
+          type:
+          - string
+          - 'null'
+          description: The start date and time of the calendar event.
+          format: date-time
+        end:
+          type:
+          - string
+          - 'null'
+          description: The end date and time of the calendar event.
+          format: date-time
+        location:
+          type:
+          - string
+          - 'null'
+          description: The location of the calendar event.
+        attendeesEmails:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: The email addresses of the attendees.
+      additionalProperties: false
+      description: Request to update a calendar event.
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+        title:
+          type:
+          - string
+          - 'null'
+        status:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        detail:
+          type:
+          - string
+          - 'null'
+        instance:
+          type:
+          - string
+          - 'null'
+      additionalProperties: {}
+    EmailAddress:
+      type: object
+      properties:
+        address:
+          type:
+          - string
+          - 'null'
+          description: Email address.
+        name:
+          type:
+          - string
+          - 'null'
+          description: User name.
+      additionalProperties: false
+      description: Email address class.
+    Attendee:
+      type: object
+      properties:
+        address:
+          type:
+          - string
+          - 'null'
+          description: Email address.
+        name:
+          type:
+          - string
+          - 'null'
+          description: User name.
+        status:
+          $ref: '#/components/schemas/ResponseType'
+      additionalProperties: false
+      description: Represents an attendee in a calendar event.
+    SendMailRequest:
+      required:
+      - toRecipients
+      type: object
+      properties:
+        subject:
+          type:
+          - string
+          - 'null'
+          description: Gets or sets the subject of the email.
+        body:
+          type:
+          - string
+          - 'null'
+          description: Gets or sets the body content of the email.
+        bodyType:
+          $ref: '#/components/schemas/BodyType'
+        toRecipients:
+          type: array
+          items:
+            $ref: '#/components/schemas/EmailAddress'
+          description: Gets or sets the collection of email addresses to send the email to.
+        ccRecipients:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/EmailAddress'
+          description: Gets or sets the collection of email addresses to send a carbon copy (CC) of the email to.
+        bccRecipients:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/EmailAddress'
+          description: Gets or sets the collection of email addresses to send a blind carbon copy (BCC) of the email to.
+        attachments:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/CreateMailAttachmentModel'
+          description: Gets or sets the collection of attachments to include in the email.
+        replyToMessageId:
+          type:
+          - string
+          - 'null'
+          description: If specified, the email will be sent as a reply to the message with this ID.
+      additionalProperties: false
+      description: Represents a request to send an email.
+    DriveItemResponseListResponse:
+      type: object
+      properties:
+        value:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/DriveItemResponse'
+          description: Response value, containing a list of T items
+        nextPageToken:
+          type:
+          - string
+          - 'null'
+          description: The next page token
+      additionalProperties: false
+      description: Response for a list of T items
+    CalendarEventResponseListResponse:
+      type: object
+      properties:
+        value:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/CalendarEventResponse'
+          description: Response value, containing a list of T items
+        nextPageToken:
+          type:
+          - string
+          - 'null'
+          description: The next page token
+      additionalProperties: false
+      description: Response for a list of T items
+    CreateCalendarEventRequest:
+      type: object
+      properties:
+        subject:
+          type:
+          - string
+          - 'null'
+          description: The subject of the calendar event.
+        body:
+          type:
+          - string
+          - 'null'
+          description: The body or description of the calendar event.
+        start:
+          type: string
+          description: The start date and time of the calendar event.
+          format: date-time
+        end:
+          type: string
+          description: The end date and time of the calendar event.
+          format: date-time
+        location:
+          type:
+          - string
+          - 'null'
+          description: The location of the calendar event.
+        attendeesEmails:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: The email addresses of the attendees.
+      additionalProperties: false
+      description: Request to create a calendar event.
+    DriveResponse:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: The ID of the drive
+        name:
+          type:
+          - string
+          - 'null'
+          description: The name of the drive
+        provider:
+          type:
+          - string
+          - 'null'
+          description: The provider of the drive
+        providerType:
+          type:
+          - string
+          - 'null'
+          description: The provider type of the drive
+        createdDate:
+          type:
+          - string
+          - 'null'
+          description: The created date of the drive
+          format: date-time
+        webUrl:
+          type:
+          - string
+          - 'null'
+          description: The WebUrl of the drive
+      additionalProperties: false
+      description: Custom Drive object
+    MailResponseType:
+      enum:
+      - Full
+      - Minimal
+      type: string
+      description: Indicates the options for what data to return in mail item responses.
+    MailItemResponseListResponse:
+      type: object
+      properties:
+        value:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/MailItemResponse'
+          description: Response value, containing a list of T items
+        nextPageToken:
+          type:
+          - string
+          - 'null'
+          description: The next page token
+      additionalProperties: false
+      description: Response for a list of T items
+    CreateMailAttachmentModel:
+      type: object
+      properties:
+        name:
+          type:
+          - string
+          - 'null'
+          description: Represents the name of the attachment.
+        contentBytes:
+          type:
+          - string
+          - 'null'
+          description: Represents the content of the attachment as a Base64 encoded byte array.
+          format: byte
+        attachmentType:
+          $ref: '#/components/schemas/AttachmentType'
+      additionalProperties: false
+      description: Represents a model for an email attachment.
+    DraftMailItemResponse:
+      type: object
+      properties:
+        from:
+          $ref: '#/components/schemas/EmailAddress'
+        recipients:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/EmailAddress'
+          description: List of recipients.
+        ccRecipients:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/EmailAddress'
+          description: List with copy recipients.
+        sentDate:
+          type:
+          - string
+          - 'null'
+          description: Sent date time.
+          format: date-time
+        receivedDate:
+          type:
+          - string
+          - 'null'
+          description: The date/time the message was received by the underlying mail system.
+          format: date-time
+        subject:
+          type:
+          - string
+          - 'null'
+          description: Mail subject.
+        body:
+          type:
+          - string
+          - 'null'
+          description: Mail body.
+        bodyType:
+          $ref: '#/components/schemas/BodyType'
+        conversationId:
+          type:
+          - string
+          - 'null'
+          description: The conversation ID for the email thread.
+        hasAttachments:
+          type:
+          - boolean
+          - 'null'
+          description: Indicates if the message has attachments
+        id:
+          type:
+          - string
+          - 'null'
+          description: Represents the unique identifier of the draft email.
+      additionalProperties: false
+      description: Represents a response for a draft email.
+    CalendarEventResponse:
+      type: object
+      properties:
+        subject:
+          type:
+          - string
+          - 'null'
+          description: The subject of the event.
+        body:
+          type:
+          - string
+          - 'null'
+          description: The body or description of the event.
+        organizer:
+          $ref: '#/components/schemas/EmailAddress'
+        attendees:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Attendee'
+          description: The collection of attendees for the event.
+        start:
+          type:
+          - string
+          - 'null'
+          description: The start date and time of the event.
+          format: date-time
+        end:
+          type:
+          - string
+          - 'null'
+          description: The end date and time of the event.
+          format: date-time
+        location:
+          type:
+          - string
+          - 'null'
+          description: The location of the event.
+        id:
+          type:
+          - string
+          - 'null'
+          description: The Id of the event.
+        bodyPreview:
+          type:
+          - string
+          - 'null'
+          description: The BodyPreview of the event.
+      additionalProperties: false
+      description: Response for calendar events.
+    AttachmentType:
+      enum:
+      - File
+      type: string
+      description: Represents the type of attachment in an email.
+    MailSortOrder:
+      enum:
+      - NewestFirst
+      - OldestFirst
+      type: string
+      description: Indicates the sort order for mail items.
+    ResponseType:
+      enum:
+      - None
+      - Organizer
+      - TentativelyAccepted
+      - Accepted
+      - Declined
+      - NotResponded
+      type: string
+      description: Represents the response type of a calendar event.
+    GetMailAttachmentModelListResponse:
+      type: object
+      properties:
+        value:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/GetMailAttachmentModel'
+          description: Response value, containing a list of T items
+        nextPageToken:
+          type:
+          - string
+          - 'null'
+          description: The next page token
+      additionalProperties: false
+      description: Response for a list of T items
+    GetMailAttachmentModel:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: Gets or sets the unique identifier of the attachment.
+        name:
+          type:
+          - string
+          - 'null'
+          description: Represents the name of the attachment.
+        contentType:
+          type:
+          - string
+          - 'null'
+          description: Gets or sets the MIME type of the attachment.
+        contentBytes:
+          type:
+          - string
+          - 'null'
+          description: Represents the content of the attachment as a Base64 encoded byte array.
+          format: byte
+        size:
+          type:
+          - integer
+          - 'null'
+          description: Gets or sets the size of the attachment in bytes.
+          format: int64
+        contentId:
+          type:
+          - string
+          - 'null'
+          description: The Content ID for inline attachments that are part of the message body
+        lastModifiedDateTime:
+          type:
+          - string
+          - 'null'
+          description: The date/time the attachment was last modified.
+          format: date-time
+        isInline:
+          type:
+          - boolean
+          - 'null'
+          description: Gets a value that indicates if the attachment is inline (part of the message body) or not.
+      additionalProperties: false
+      description: Represents a model for an email attachment, including its metadata.
+    MailItemResponse:
+      type: object
+      properties:
+        from:
+          $ref: '#/components/schemas/EmailAddress'
+        recipients:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/EmailAddress'
+          description: List of recipients.
+        ccRecipients:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/EmailAddress'
+          description: List with copy recipients.
+        sentDate:
+          type:
+          - string
+          - 'null'
+          description: Sent date time.
+          format: date-time
+        receivedDate:
+          type:
+          - string
+          - 'null'
+          description: The date/time the message was received by the underlying mail system.
+          format: date-time
+        subject:
+          type:
+          - string
+          - 'null'
+          description: Mail subject.
+        body:
+          type:
+          - string
+          - 'null'
+          description: Mail body.
+        bodyType:
+          $ref: '#/components/schemas/BodyType'
+        conversationId:
+          type:
+          - string
+          - 'null'
+          description: The conversation ID for the email thread.
+        hasAttachments:
+          type:
+          - boolean
+          - 'null'
+          description: Indicates if the message has attachments
+        id:
+          type:
+          - string
+          - 'null'
+          description: Mail id.
+        bodyPreview:
+          type:
+          - string
+          - 'null'
+          description: Mail body preview.
+      additionalProperties: false
+      description: Representing a email message.
+    Folder:
+      enum:
+      - Inbox
+      - SentItems
+      - Drafts
+      - DeletedItems
+      - JunkEmail
+      - Outbox
+      - Archive
+      type: string
+      description: Represents the main folders in a mail system.
+    DriveItemResponse:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: Gets or sets the unique identifier of the drive item.
+        driveId:
+          type:
+          - string
+          - 'null'
+          description: Gets or sets the unique identifier of the drive.
+        name:
+          type:
+          - string
+          - 'null'
+          description: Gets or sets the name of the drive item.
+        itemType:
+          type:
+          - string
+          - 'null'
+          description: Gets or sets the type of the item. This can be null.
+        providerType:
+          type:
+          - string
+          - 'null'
+          description: Gets or sets the type of the provider. This can be null.
+        createdDate:
+          type:
+          - string
+          - 'null'
+          description: Gets or sets the date and time when the drive item was created.
+          format: date-time
+        webUrl:
+          type:
+          - string
+          - 'null'
+          description: Gets or sets the web URL of the drive item. This can be null.
+      additionalProperties: false
+      description: Response for the GetDriveItemsRequest, representing a drive item
+    BodyType:
+      enum:
+      - Html
+      - Text
+      - RichText
+      type: string
+      description: Mail body type.
+  securitySchemes:
+    Bearer:
+      type: oauth2
+      description: OAuth 2.0 Client Credentials Flow with API Users issued from Integration Engine Management Console
+      flows:
+        clientCredentials:
+          tokenUrl: https://api-user.integrations.ecimanufacturing.com/oauth2/api-user/token
+          scopes:
+            openid: openid

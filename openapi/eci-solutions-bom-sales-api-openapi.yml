@@ -1,0 +1,3492 @@
+openapi: 3.2.0
+info:
+  title: M1 Public BOM/SALES API
+  description: '## Developer Notes for the M1 Public API (ERP resource):
+
+
+    ### Hosted Environment
+
+
+    If you are using the public API for a hosted M1 customer, you must connect to the public API using the Integration Engine.'
+  contact:
+    name: ECI Software Solutions - M1
+    url: https://www.ecisolutions.com/manufacturers-and-job-shops/m1
+  version: v1
+servers:
+- url: https://api-m1.integrations.ecimanufacturing.com
+  description: API Host
+security:
+- oauth2: []
+tags:
+- name: BOM/SALES
+paths:
+  /api/BOM/Sales/GetAllQuoteAssemblies/{pageSize}/{pageNumber}:
+    get:
+      tags:
+      - BOM/SALES
+      summary: Returns all existing QuoteAssemblies with pagination
+      operationId: BOMQuoteAssemblies_GetAllQuoteAssemblyAsync
+      parameters:
+      - name: pageSize
+        in: path
+        description: The required size of the pagination. By default 1000.
+        required: true
+        style: simple
+        schema:
+          type: integer
+          format: int32
+      - name: pageNumber
+        in: path
+        description: The required number of page from pagination. By default 0, which is the first page.
+        required: true
+        style: simple
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMQuoteAssemblyDto'
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMQuoteAssemblyDto'
+            application/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMQuoteAssemblyDto'
+            text/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMQuoteAssemblyDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+  /api/BOM/Sales/GetQuoteAssemblies/{quoteId}:
+    get:
+      tags:
+      - BOM/SALES
+      summary: Returns QuoteAssemblies for a given Quote id
+      description: This endpoint retrieves a list of QuoteAssemblies based on Quote identifier.
+      operationId: BOMQuoteAssemblies_GetQuoteAssemblyAsync
+      parameters:
+      - name: quoteId
+        in: path
+        description: The Quote id as a string
+        required: true
+        style: simple
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMQuoteAssemblyDto'
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMQuoteAssemblyDto'
+            application/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMQuoteAssemblyDto'
+            text/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMQuoteAssemblyDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+  /api/BOM/Sales/GetQuoteAssemblies/{quoteId}/{quoteLineId}:
+    get:
+      tags:
+      - BOM/SALES
+      summary: Returns QuoteAssemblies for a given Quote id and Quote Line id
+      description: This endpoint retrieves a list of QuoteAssemblies based on Quote and QuoteLine identifier.
+      operationId: BOMQuoteAssemblies_GetQuoteAssemblyAsync
+      parameters:
+      - name: quoteId
+        in: path
+        description: The Quote id as a string
+        required: true
+        style: simple
+        schema:
+          type: string
+      - name: quoteLineId
+        in: path
+        description: The QuoteLine id as a string
+        required: true
+        style: simple
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMQuoteAssemblyDto'
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMQuoteAssemblyDto'
+            application/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMQuoteAssemblyDto'
+            text/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMQuoteAssemblyDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+  /api/BOM/Sales/PostQuoteAssembly:
+    post:
+      tags:
+      - BOM/SALES
+      summary: Posts a new QuoteAssembly
+      operationId: BOMQuoteAssemblies_PostQuoteAssemblyAsync
+      requestBody:
+        description: The QuoteAssembly data to be posted.
+        content:
+          text/xml:
+            schema:
+              $ref: '#/components/schemas/BOMCreateQuoteAssemblyDto'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/BOMCreateQuoteAssemblyDto'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/BOMCreateQuoteAssemblyDto'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BOMCreateQuoteAssemblyDto'
+        required: true
+        x-bodyName: quoteAssembly
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+  /api/BOM/Sales/GetAllQuoteLines/{pageSize}/{pageNumber}:
+    get:
+      tags:
+      - BOM/SALES
+      summary: Returns all existing QuoteLines with pagination
+      operationId: BOMQuoteLines_GetAllQuoteLineAsync
+      parameters:
+      - name: pageSize
+        in: path
+        description: The required size of the pagination. By default 1000.
+        required: true
+        style: simple
+        schema:
+          type: integer
+          format: int32
+      - name: pageNumber
+        in: path
+        description: The required number of page from pagination. By default 0, which is the first page.
+        required: true
+        style: simple
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMQuoteLineDto'
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMQuoteLineDto'
+            application/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMQuoteLineDto'
+            text/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMQuoteLineDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+  /api/BOM/Sales/GetQuoteLines/{quoteId}:
+    get:
+      tags:
+      - BOM/SALES
+      summary: Returns quote and quote lines details for a given M1 quote id or GUID.
+      operationId: BOMQuoteLines_GetQuoteLinesAsync
+      parameters:
+      - name: quoteId
+        in: path
+        description: The M1 Quote Id or GUID of the quote as a string
+        required: true
+        style: simple
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/CTMBOMQuoteLineDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CTMBOMQuoteLineDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/CTMBOMQuoteLineDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/CTMBOMQuoteLineDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+  /api/BOM/Sales/GetQuoteLine/{quoteId}/{quoteLineId}:
+    get:
+      tags:
+      - BOM/SALES
+      summary: Returns QuoteLine for a given Quote id and QuoteLine Id
+      description: This endpoint retrieves a QuoteLine identified by the Quote identifier and its own unique identifier.
+      operationId: BOMQuoteLines_GetQuoteLineAsync
+      parameters:
+      - name: quoteId
+        in: path
+        description: The Quote id as a string
+        required: true
+        style: simple
+        schema:
+          type: string
+      - name: quoteLineId
+        in: path
+        description: The QuoteLine id as a string
+        required: true
+        style: simple
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/BOMQuoteLineDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BOMQuoteLineDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/BOMQuoteLineDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/BOMQuoteLineDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+  /api/BOM/Sales/PostQuoteLine:
+    post:
+      tags:
+      - BOM/SALES
+      summary: Posts a new QuoteLine
+      operationId: BOMQuoteLines_PostQuoteLineAsync
+      requestBody:
+        description: The QuoteLine data to be posted.
+        content:
+          text/xml:
+            schema:
+              $ref: '#/components/schemas/BOMCreateQuoteLineDto'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/BOMCreateQuoteLineDto'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/BOMCreateQuoteLineDto'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BOMCreateQuoteLineDto'
+        required: true
+        x-bodyName: quoteLine
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+  /api/BOM/Sales/GetAllQuoteMaterials/{pageSize}/{pageNumber}:
+    get:
+      tags:
+      - BOM/SALES
+      summary: Returns all existing QuoteMaterials with pagination
+      operationId: BOMQuoteMaterials_GetAllQuoteMaterialAsync
+      parameters:
+      - name: pageSize
+        in: path
+        description: The required size of the pagination. By default 1000.
+        required: true
+        style: simple
+        schema:
+          type: integer
+          format: int32
+      - name: pageNumber
+        in: path
+        description: The required number of page from pagination. By default 0, which is the first page.
+        required: true
+        style: simple
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMQuoteMaterialDto'
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMQuoteMaterialDto'
+            application/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMQuoteMaterialDto'
+            text/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMQuoteMaterialDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+  /api/BOM/Sales/GetQuoteMaterials/{quoteId}:
+    get:
+      tags:
+      - BOM/SALES
+      summary: Returns a list of QuoteMaterial for a given Quote id
+      description: This endpoint retrieves QuoteMaterials based on Quote identifier.
+      operationId: BOMQuoteMaterials_GetQuoteMaterialAsync
+      parameters:
+      - name: quoteId
+        in: path
+        description: The Quote id as a string
+        required: true
+        style: simple
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMQuoteMaterialDto'
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMQuoteMaterialDto'
+            application/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMQuoteMaterialDto'
+            text/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMQuoteMaterialDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+  /api/BOM/Sales/GetQuoteMaterials/{quoteId}/{quoteLineId}:
+    get:
+      tags:
+      - BOM/SALES
+      summary: Returns a list of QuoteMaterial for a given QuoteId and QuoteLineId
+      description: This endpoint retrieves QuoteMaterials based on QuoteId and QuoteLineId.
+      operationId: BOMQuoteMaterials_GetQuoteMaterialAsync
+      parameters:
+      - name: quoteId
+        in: path
+        description: The Quote id as a string
+        required: true
+        style: simple
+        schema:
+          type: string
+      - name: quoteLineId
+        in: path
+        description: The QuoteLine id as a string
+        required: true
+        style: simple
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMQuoteMaterialDto'
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMQuoteMaterialDto'
+            application/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMQuoteMaterialDto'
+            text/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMQuoteMaterialDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+  /api/BOM/Sales/GetQuoteMaterials/{quoteId}/{quoteLineId}/{quoteAssemblyId}:
+    get:
+      tags:
+      - BOM/SALES
+      summary: Returns a list of QuoteMaterial for a given QuoteId, QuoteLineId and…
+      description: This endpoint retrieves QuoteMaterials based on QuoteId, QuoteLineId and QuoteAssemblyId.
+      operationId: BOMQuoteMaterials_GetQuoteMaterialAsync
+      parameters:
+      - name: quoteId
+        in: path
+        description: The Quote id as a string
+        required: true
+        style: simple
+        schema:
+          type: string
+      - name: quoteLineId
+        in: path
+        description: The QuoteLine id as a string
+        required: true
+        style: simple
+        schema:
+          type: string
+      - name: quoteAssemblyId
+        in: path
+        description: The QuoteAssembly id as a string
+        required: true
+        style: simple
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMQuoteMaterialDto'
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMQuoteMaterialDto'
+            application/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMQuoteMaterialDto'
+            text/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMQuoteMaterialDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+  /api/BOM/Sales/PostQuoteMaterial:
+    post:
+      tags:
+      - BOM/SALES
+      summary: Posts a new QuoteMaterial
+      operationId: BOMQuoteMaterials_PostQuoteMaterialAsync
+      requestBody:
+        description: The QuoteMaterial data to be posted.
+        content:
+          text/xml:
+            schema:
+              $ref: '#/components/schemas/BOMCreateQuoteMaterialDto'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/BOMCreateQuoteMaterialDto'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/BOMCreateQuoteMaterialDto'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BOMCreateQuoteMaterialDto'
+        required: true
+        x-bodyName: quoteMaterial
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+  /api/BOM/Sales/GetAllQuoteOperations/{pageSize}/{pageNumber}:
+    get:
+      tags:
+      - BOM/SALES
+      summary: Returns all existing QuoteOperations with pagination
+      operationId: BOMQuoteOperations_GetAllQuoteOperationAsync
+      parameters:
+      - name: pageSize
+        in: path
+        description: The required size of the pagination. By default 1000.
+        required: true
+        style: simple
+        schema:
+          type: integer
+          format: int32
+      - name: pageNumber
+        in: path
+        description: The required number of page from pagination. By default 0, which is the first page.
+        required: true
+        style: simple
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMQuoteOperationDto'
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMQuoteOperationDto'
+            application/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMQuoteOperationDto'
+            text/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMQuoteOperationDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+  /api/BOM/Sales/GetQuoteOperations/{quoteId}:
+    get:
+      tags:
+      - BOM/SALES
+      summary: Returns a list of QuoteOperations for a given Quote id
+      description: This endpoint retrieves a list of QuoteOperations based on Quote identifier.
+      operationId: BOMQuoteOperations_GetQuoteOperationsAsync
+      parameters:
+      - name: quoteId
+        in: path
+        description: The Quote id as a string
+        required: true
+        style: simple
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMQuoteOperationDto'
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMQuoteOperationDto'
+            application/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMQuoteOperationDto'
+            text/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMQuoteOperationDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+  /api/BOM/Sales/GetQuoteOperations/{quoteId}/{quoteLineId}:
+    get:
+      tags:
+      - BOM/SALES
+      summary: Returns QuoteOperation for a given Quote and QuoteLine id
+      description: This endpoint retrieves a list of QuoteOperations based on Quote and QuoteLine identifiers.
+      operationId: BOMQuoteOperations_GetQuoteOperationsAsync
+      parameters:
+      - name: quoteId
+        in: path
+        description: The Quote id as a string
+        required: true
+        style: simple
+        schema:
+          type: string
+      - name: quoteLineId
+        in: path
+        description: The QuoteLine id as a string
+        required: true
+        style: simple
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMQuoteOperationDto'
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMQuoteOperationDto'
+            application/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMQuoteOperationDto'
+            text/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMQuoteOperationDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+  /api/BOM/Sales/GetQuoteOperations/{quoteId}/{quoteLineId}/{quoteAssemblyId}:
+    get:
+      tags:
+      - BOM/SALES
+      summary: Returns QuoteOperation for a given Quote, QuoteLine, and QuoteAssembly id
+      description: This endpoint retrieves a list of QuoteOperations based on Quote, QuoteLine and QuoteAssembly identifiers.
+      operationId: BOMQuoteOperations_GetQuoteOperationsAsync
+      parameters:
+      - name: quoteId
+        in: path
+        description: The Quote id as a string
+        required: true
+        style: simple
+        schema:
+          type: string
+      - name: quoteLineId
+        in: path
+        description: The QuoteLine id as a string
+        required: true
+        style: simple
+        schema:
+          type: string
+      - name: quoteAssemblyId
+        in: path
+        description: The QuoteAssembly id as a string
+        required: true
+        style: simple
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMQuoteOperationDto'
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMQuoteOperationDto'
+            application/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMQuoteOperationDto'
+            text/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMQuoteOperationDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+  /api/BOM/Sales/GetAllQuoteQuantities/{pageSize}/{pageNumber}:
+    get:
+      tags:
+      - BOM/SALES
+      summary: Returns all existing QuoteQuantities with pagination
+      operationId: BOMQuoteQuantities_GetAllQuoteQuantityAsync
+      parameters:
+      - name: pageSize
+        in: path
+        description: The required size of the pagination. By default 1000.
+        required: true
+        style: simple
+        schema:
+          type: integer
+          format: int32
+      - name: pageNumber
+        in: path
+        description: The required number of page from pagination. By default 0, which is the first page.
+        required: true
+        style: simple
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMQuoteQuantityDto'
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMQuoteQuantityDto'
+            application/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMQuoteQuantityDto'
+            text/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMQuoteQuantityDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+  /api/BOM/Sales/GetQuoteQuantities/{quoteId}:
+    get:
+      tags:
+      - BOM/SALES
+      summary: Returns QuoteQuantities for a given Quote Id
+      description: Returns all existing QuoteQuantities for a QuoteId.
+      operationId: BOMQuoteQuantities_GetQuoteQuantityAsync
+      parameters:
+      - name: quoteId
+        in: path
+        description: The Quote id as a string
+        required: true
+        style: simple
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMQuoteQuantityDto'
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMQuoteQuantityDto'
+            application/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMQuoteQuantityDto'
+            text/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMQuoteQuantityDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+  /api/BOM/Sales/GetQuoteQuantities/{quoteId}/{quoteLineId}:
+    get:
+      tags:
+      - BOM/SALES
+      summary: Returns QuoteQuantities for a given Quote Id and Quote Line Id
+      description: Returns all existing QuoteQuantities for a QuoteId and Quote Line Id.
+      operationId: BOMQuoteQuantities_GetQuoteQuantityAsync
+      parameters:
+      - name: quoteId
+        in: path
+        description: The Quote id as a string
+        required: true
+        style: simple
+        schema:
+          type: string
+      - name: quoteLineId
+        in: path
+        description: The Quote Line id as a string
+        required: true
+        style: simple
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMQuoteQuantityDto'
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMQuoteQuantityDto'
+            application/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMQuoteQuantityDto'
+            text/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMQuoteQuantityDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+  /api/BOM/Sales/GetAllQuotes/{pageSize}/{pageNumber}:
+    get:
+      tags:
+      - BOM/SALES
+      summary: Returns all existing Quotes with pagination
+      operationId: BOMQuotes_GetAllQuoteAsync
+      parameters:
+      - name: pageSize
+        in: path
+        description: The required size of the pagination. By default 1000.
+        required: true
+        style: simple
+        schema:
+          type: integer
+          format: int32
+      - name: pageNumber
+        in: path
+        description: The required number of page from pagination. By default 0, which is the first page.
+        required: true
+        style: simple
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMQuoteDto'
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMQuoteDto'
+            application/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMQuoteDto'
+            text/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMQuoteDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+  /api/BOM/Sales/GetQuote/{quoteId}:
+    get:
+      tags:
+      - BOM/SALES
+      summary: Returns Quote for a given Quote id
+      description: This endpoint retrieves a Quote based on its identifier.
+      operationId: BOMQuotes_GetQuoteAsync
+      parameters:
+      - name: quoteId
+        in: path
+        description: The Quote id as a string
+        required: true
+        style: simple
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/BOMQuoteDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BOMQuoteDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/BOMQuoteDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/BOMQuoteDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+  /api/BOM/Sales/PostQuote:
+    post:
+      tags:
+      - BOM/SALES
+      summary: Posts a new Quote
+      operationId: BOMQuotes_PostQuoteAsync
+      requestBody:
+        description: The Quote data to be posted.
+        content:
+          text/xml:
+            schema:
+              $ref: '#/components/schemas/BOMCreateQuoteDto'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/BOMCreateQuoteDto'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/BOMCreateQuoteDto'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BOMCreateQuoteDto'
+        required: true
+        x-bodyName: quote
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+  /api/BOM/Sales/GetAllSalesOrders/{pageSize}/{pageNumber}:
+    get:
+      tags:
+      - BOM/SALES
+      summary: Returns all existing SalesOrders with pagination
+      operationId: BOMSalesOrders_GetAllSalesOrderAsync
+      parameters:
+      - name: pageSize
+        in: path
+        description: The required size of the pagination. By default 1000.
+        required: true
+        style: simple
+        schema:
+          type: integer
+          format: int32
+      - name: pageNumber
+        in: path
+        description: The required number of page from pagination. By default 0, which is the first page.
+        required: true
+        style: simple
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMSalesOrderDto'
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMSalesOrderDto'
+            application/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMSalesOrderDto'
+            text/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BOMSalesOrderDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+  /api/BOM/Sales/GetSalesOrder/{salesOrderId}:
+    get:
+      tags:
+      - BOM/SALES
+      summary: Returns SalesOrder for a given SalesOrder id
+      description: This endpoint retrieves a SalesOrder based on its identifier.
+      operationId: BOMSalesOrders_GetSalesOrderAsync
+      parameters:
+      - name: salesOrderId
+        in: path
+        description: The SalesOrder id as a string
+        required: true
+        style: simple
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/BOMSalesOrderDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BOMSalesOrderDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/BOMSalesOrderDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/BOMSalesOrderDto'
+        '400':
+          description: BadRequest
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+        '401':
+          description: Unauthorized
+          content:
+            text/json: {}
+            application/json: {}
+            application/xml: {}
+            text/xml: {}
+        '404':
+          description: NotFound
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '415':
+          description: UnsupportedMediaType
+          content:
+            text/json:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+            text/xml:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            text/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/APIResponseMessageDto'
+components:
+  schemas:
+    BOMSalesOrderDto:
+      required:
+      - salesOrderID
+      - customerOrganizationID
+      - shipOrganizationID
+      - orderDate
+      - status
+      type: object
+      properties:
+        salesOrderID:
+          type: string
+        customerOrganizationID:
+          type: string
+        shipOrganizationID:
+          type: string
+        customerPo:
+          type: string
+        plantID:
+          type: string
+        plantDepartmentID:
+          type: string
+        shipLocationID:
+          type: string
+        shipContactID:
+          type: string
+        arInvoiceLocationID:
+          type: string
+        arInvoiceContactID:
+          type: string
+        paymentTermID:
+          type: string
+        currencyRateID:
+          type: string
+        exchangeRate:
+          type: number
+          format: double
+        fullOrderSubtotalBase:
+          type: number
+          format: double
+        requestedShipDate:
+          type: string
+          format: date-time
+        orderDate:
+          type: string
+          format: date-time
+        orderTotalBase:
+          type: number
+          format: double
+        orderTotalForeign:
+          type: number
+          format: double
+        status:
+          type: integer
+          format: int32
+        customRate:
+          type: boolean
+        closed:
+          type: boolean
+        closedDate:
+          type: string
+          format: date-time
+        freightAmountBase:
+          type: number
+          format: double
+        freightAmountForeign:
+          type: number
+          format: double
+        freightTaxAmountBase:
+          type: number
+          format: double
+        freightTaxAmountForeign:
+          type: number
+          format: double
+        freightTaxCodeID:
+          type: string
+        freightTotalBase:
+          type: number
+          format: double
+        freightTotalForeign:
+          type: number
+          format: double
+        orderSubtotalBase:
+          type: number
+          format: double
+        orderSubTotalForeign:
+          type: number
+          format: double
+        orderTaxAmountBase:
+          type: number
+          format: double
+        orderTaxAmountForeign:
+          type: number
+          format: double
+        shippingMethodID:
+          type: string
+        shippingPaymentTypeID:
+          type: string
+        totalOrderWeight:
+          type: number
+          format: double
+    APIResponseMessageDto:
+      type: object
+      properties:
+        description:
+          type: string
+        status:
+          type: string
+        payloadID:
+          type: string
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+          readOnly: true
+        warnings:
+          type: array
+          items:
+            $ref: '#/components/schemas/Warning'
+          readOnly: true
+    BOMQuoteQuantityDto:
+      required:
+      - quoteID
+      - quoteLineID
+      - quoteQuantityID
+      - quoteQuantity
+      - quoteMarkupType
+      type: object
+      properties:
+        quoteID:
+          type: string
+        quoteLineID:
+          type: integer
+          format: int32
+        quoteQuantityID:
+          type: integer
+          format: int32
+        quoteQuantity:
+          type: number
+          format: double
+        scrapPercent:
+          type: number
+          format: double
+        totalRunQuantity:
+          type: number
+          format: double
+        quoteMarkupType:
+          type: integer
+          format: int32
+        purchaseToOrder:
+          type: boolean
+        setupHours:
+          type: number
+          format: double
+        productionHours:
+          type: number
+          format: double
+        materialCost:
+          type: number
+          format: double
+        materialMarkupPercent:
+          type: number
+          format: double
+        materialPrice:
+          type: number
+          format: double
+        subcontractPrice:
+          type: number
+          format: double
+        laborCost:
+          type: number
+          format: double
+        laborMarkupPercent:
+          type: number
+          format: double
+        laborPrice:
+          type: number
+          format: double
+        overheadCost:
+          type: number
+          format: double
+        overheadMarkupPercent:
+          type: number
+          format: double
+        overheadPrice:
+          type: number
+          format: double
+        quotingPrice:
+          type: number
+          format: double
+        purchaseUnitCostBase:
+          type: number
+          format: double
+        purchaseToOrderCost:
+          type: number
+          format: double
+        purToOrderMarkupPercent:
+          type: number
+          format: double
+        purchaseToOrderPrice:
+          type: number
+          format: double
+        additionalCostAmount:
+          type: number
+          format: double
+        additionalMarkupPercent:
+          type: number
+          format: double
+        additionalCostPrice:
+          type: number
+          format: double
+        totalCost:
+          type: number
+          format: double
+        totalPrice:
+          type: number
+          format: double
+        totalUnitCost:
+          type: number
+          format: double
+        totalMarkupPercent:
+          type: number
+          format: double
+        totalUnitPrice:
+          type: number
+          format: double
+        calculatedUnitPrice:
+          type: number
+          format: double
+        fullRevisedUnitPriceForeign:
+          type: number
+          format: double
+        discountPercent:
+          type: number
+          format: double
+        unitDiscountForeign:
+          type: number
+          format: double
+        revisedUnitPriceForeign:
+          type: number
+          format: double
+        additionalChargeForeign:
+          type: number
+          format: double
+        additionalChargeDescription:
+          type: string
+        leadTime:
+          type: string
+        closed:
+          type: boolean
+        createdBy:
+          type: string
+        createdDate:
+          type: string
+          format: date-time
+        uniqueID:
+          type: string
+          format: uuid
+          example: 00000000-0000-0000-0000-000000000000
+        rowVersion:
+          type: string
+          format: byte
+    BOMQuoteLineDto:
+      required:
+      - quoteID
+      - quoteLineID
+      - partID
+      - partRevisionID
+      - partShortDescription
+      - quoteMarkupType
+      type: object
+      properties:
+        quoteID:
+          type: string
+        quoteLineID:
+          type: integer
+          format: int32
+        partID:
+          type: string
+        partRevisionID:
+          type: string
+        unitOfMeasure:
+          type: string
+        partGroupID:
+          type: string
+        partShortDescription:
+          type: string
+        orgPartShortDescription:
+          type: string
+        resolutionReasonID:
+          type: string
+        quoteMarkupType:
+          type: integer
+          format: int32
+        purchaseToOrder:
+          type: boolean
+        purchaseUnitCostForeign:
+          type: number
+          format: double
+        supplierOrganizationID:
+          type: string
+        purchaseLocationID:
+          type: string
+        firm:
+          type: boolean
+        projectID:
+          type: string
+        projectAreaID:
+          type: string
+        closed:
+          type: boolean
+        createdBy:
+          type: string
+        createdDate:
+          type: string
+          format: date-time
+        uniqueID:
+          type: string
+          format: uuid
+          example: 00000000-0000-0000-0000-000000000000
+        rowVersion:
+          type: string
+          format: byte
+    BOMQuoteOperationDto:
+      required:
+      - quoteID
+      - quoteLineID
+      - quoteAssemblyID
+      - quoteOperationID
+      - operationType
+      - workCenterID
+      - processID
+      - processShortDescription
+      - quantityPerAssembly
+      - standardFactor
+      type: object
+      properties:
+        quoteID:
+          type: string
+        quoteLineID:
+          type: integer
+          format: int32
+        quoteAssemblyID:
+          type: integer
+          format: int32
+        quoteOperationID:
+          type: integer
+          format: int32
+        operationType:
+          type: integer
+          format: int32
+        workCenterID:
+          type: string
+        processID:
+          type: string
+        processShortDescription:
+          type: string
+        processLongDescriptionRtf:
+          type: string
+        processLongDescriptionText:
+          type: string
+        quantityPerAssembly:
+          type: number
+          format: double
+        queueTime:
+          type: number
+          format: double
+        setupHours:
+          type: number
+          format: double
+        moveTime:
+          type: number
+          format: double
+        quotingRate:
+          type: number
+          format: double
+        setupRate:
+          type: number
+          format: double
+        productionRate:
+          type: number
+          format: double
+        overheadRate:
+          type: number
+          format: double
+        partID:
+          type: string
+        partRevisionID:
+          type: string
+        unitOfMeasure:
+          type: string
+        supplierOrganizationID:
+          type: string
+        standardFactor:
+          type: string
+        productionStandard:
+          type: number
+          format: double
+        closed:
+          type: boolean
+        createdBy:
+          type: string
+        createdDate:
+          type: string
+          format: date-time
+        uniqueID:
+          type: string
+          format: uuid
+          example: 00000000-0000-0000-0000-000000000000
+        rowVersion:
+          type: string
+          format: byte
+    BOMQuoteAssemblyDto:
+      required:
+      - quoteID
+      - quoteLineID
+      - quoteAssemblyID
+      - level
+      - partID
+      - partRevisionID
+      - partShortDescription
+      - quantityPerParent
+      type: object
+      properties:
+        quoteID:
+          type: string
+        quoteLineID:
+          type: integer
+          format: int32
+        quoteAssemblyID:
+          type: integer
+          format: int32
+        parentAssemblyID:
+          type: integer
+          format: int32
+        level:
+          type: integer
+          format: int32
+        sourceMethodID:
+          type: string
+        sourceRevisionID:
+          type: string
+        partID:
+          type: string
+        partRevisionID:
+          type: string
+        unitOfMeasure:
+          type: string
+        partShortDescription:
+          type: string
+        quantityPerParent:
+          type: number
+          format: double
+        closed:
+          type: boolean
+        pullAllFromStock:
+          type: boolean
+        createdBy:
+          type: string
+        createdDate:
+          type: string
+          format: date-time
+        uniqueID:
+          type: string
+          format: uuid
+          example: 00000000-0000-0000-0000-000000000000
+        rowVersion:
+          type: string
+          format: byte
+    CTMBOMQuoteLineDto:
+      required:
+      - quote
+      type: object
+      properties:
+        quote:
+          $ref: '#/components/schemas/BOMQuoteDto'
+        quoteLines:
+          type: array
+          items:
+            $ref: '#/components/schemas/BOMQuoteLineDto'
+    Warning:
+      type: object
+      properties:
+        innerText:
+          type: string
+    BOMCreateQuoteMaterialDto:
+      required:
+      - quoteID
+      - quoteLineID
+      - quoteMaterialID
+      - partID
+      - unitOfMeasure
+      type: object
+      properties:
+        quoteID:
+          type: string
+        quoteLineID:
+          type: integer
+          format: int32
+        quoteAssemblyID:
+          type: integer
+          format: int32
+        quoteMaterialID:
+          type: integer
+          format: int32
+        partID:
+          type: string
+        partRevisionID:
+          type: string
+        unitOfMeasure:
+          type: string
+        quantityPerAssembly:
+          type: number
+          format: double
+        supplierOrganizationID:
+          type: string
+        purchaseLocationID:
+          type: string
+    BOMQuoteMaterialDto:
+      required:
+      - quoteID
+      - quoteLineID
+      - quoteMaterialID
+      - partID
+      - partRevisionID
+      - partWarehouseLocationID
+      - partBinID
+      - partShortDescription
+      type: object
+      properties:
+        quoteID:
+          type: string
+        quoteLineID:
+          type: integer
+          format: int32
+        quoteAssemblyID:
+          type: integer
+          format: int32
+        quoteMaterialID:
+          type: integer
+          format: int32
+        partID:
+          type: string
+        partRevisionID:
+          type: string
+        partWarehouseLocationID:
+          type: string
+        partBinID:
+          type: string
+        unitOfMeasure:
+          type: string
+        partShortDescription:
+          type: string
+        quantityPerAssembly:
+          type: number
+          format: double
+        scrapPercent:
+          type: number
+          format: double
+        scrapQuantity:
+          type: number
+          format: double
+        estimatedUnitCost:
+          type: number
+          format: double
+        supplierOrganizationID:
+          type: string
+        purchaseLocationID:
+          type: string
+        leadTime:
+          type: integer
+          format: int32
+        minimumCharge:
+          type: number
+          format: double
+        createdBy:
+          type: string
+        createdDate:
+          type: string
+          format: date-time
+        closed:
+          type: boolean
+        uniqueID:
+          type: string
+          format: uuid
+          example: 00000000-0000-0000-0000-000000000000
+        rowVersion:
+          type: string
+          format: byte
+    BOMQuoteDto:
+      required:
+      - quoteID
+      - customerOrganizationID
+      - quoterEmployeeID
+      - dueDate
+      type: object
+      properties:
+        quoteID:
+          type: string
+        customerOrganizationID:
+          type: string
+        plantID:
+          type: string
+        quoterEmployeeID:
+          type: string
+        quoteDate:
+          type: string
+          format: date-time
+        dueDate:
+          type: string
+          format: date-time
+        expirationDate:
+          type: string
+          format: date-time
+        projectID:
+          type: string
+        closed:
+          type: boolean
+        closedDate:
+          type: string
+          format: date-time
+        paymentTermID:
+          type: string
+        shippingMethodID:
+          type: string
+        createdBy:
+          type: string
+        createdDate:
+          type: string
+          format: date-time
+        uniqueID:
+          type: string
+          format: uuid
+          example: 00000000-0000-0000-0000-000000000000
+        rowVersion:
+          type: string
+          format: byte
+    BOMCreateQuoteAssemblyDto:
+      required:
+      - quoteID
+      - quoteLineID
+      - quoteAssemblyID
+      - parentAssemblyID
+      - level
+      - partID
+      - unitOfMeasure
+      - quantityPerParent
+      type: object
+      properties:
+        quoteID:
+          type: string
+        quoteLineID:
+          type: integer
+          format: int32
+        quoteAssemblyID:
+          type: integer
+          format: int32
+        parentAssemblyID:
+          type: integer
+          format: int32
+        level:
+          type: integer
+          format: int32
+        partID:
+          type: string
+        partRevisionID:
+          type: string
+        unitOfMeasure:
+          type: string
+        quantityPerParent:
+          type: number
+          format: double
+        pullAllFromStock:
+          type: boolean
+    Error:
+      type: object
+      properties:
+        innerText:
+          type: string
+    BOMCreateQuoteLineDto:
+      required:
+      - quoteID
+      - quoteLineID
+      - partID
+      - unitOfMeasure
+      type: object
+      properties:
+        quoteID:
+          type: string
+        quoteLineID:
+          type: integer
+          format: int32
+        partID:
+          type: string
+        partRevisionID:
+          type: string
+        unitOfMeasure:
+          type: string
+        supplierOrganizationID:
+          type: string
+        purchaseLocationID:
+          type: string
+        purchaseUnitCostBase:
+          type: number
+          format: double
+        firm:
+          type: boolean
+    BOMCreateQuoteDto:
+      required:
+      - quoteID
+      - customerOrganizationID
+      - shipOrganizationID
+      type: object
+      properties:
+        quoteID:
+          type: string
+        customerOrganizationID:
+          type: string
+        shipOrganizationID:
+          type: string
+        quoterEmployeeID:
+          type: string
+        currencyRateID:
+          type: string
+  securitySchemes:
+    oauth2:
+      type: oauth2
+      description: OAuth 2.0 Client Credentials Flow with API Users issued from Integration Engine Management Console
+      flows:
+        clientCredentials:
+          tokenUrl: https://api-user.integrations.ecimanufacturing.com/oauth2/api-user/token
+          scopes:
+            openid: openid

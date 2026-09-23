@@ -1,0 +1,267 @@
+openapi: 3.2.0
+info:
+  title: APAR Commerce Integration Customer Payment API
+  description: '# Documentation
+
+
+    ## Authentication
+
+    Pass an access token in the HTTP Authorization header of each request.'
+  contact:
+    name: ECI Support
+    url: https://www.ecisolutions.com/support/
+  version: v1
+security:
+- Bearer: []
+tags:
+- name: CustomerPayment
+paths:
+  /api/v1/customer-payments:
+    get:
+      tags:
+      - CustomerPayment
+      summary: Get a list of customer payments
+      operationId: GetCustomerPayments
+      parameters:
+      - name: top
+        in: query
+        description: 'Maximum number of records to return. Default: 100. Max: 100.'
+        schema:
+          maximum: 100
+          minimum: 1
+          type: integer
+          format: int32
+          default: 100
+      - name: skip
+        in: query
+        description: 'The value from which to start taking records. Default: 0.'
+        schema:
+          maximum: 2147483647
+          minimum: 0
+          type: integer
+          format: int32
+          default: 0
+      - name: paymentDate
+        in: query
+        description: The Payment Date by which to search for the payments. Results will include payments on or after the provided date.
+        schema:
+          type: string
+          format: date-time
+      - name: invoiceId
+        in: query
+        description: The Customer Invoice ID for which to search for payments.
+        schema:
+          type: string
+      - name: salesOrderId
+        in: query
+        description: The Customer Sales Order ID for which to search for payments.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/CustomerPaymentResponseListResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerPaymentResponseListResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/CustomerPaymentResponseListResponse'
+  /api/v1/customer-payments/{id}:
+    get:
+      tags:
+      - CustomerPayment
+      summary: Get a customer's payment record by payment id
+      operationId: GetCustomerPaymentById
+      parameters:
+      - name: id
+        in: path
+        description: The Payment Id by which to search for the customer's payment.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/CustomerPaymentResponseListResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerPaymentResponseListResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/CustomerPaymentResponseListResponse'
+        '404':
+          description: Not Found
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+components:
+  schemas:
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+        title:
+          type:
+          - string
+          - 'null'
+        status:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        detail:
+          type:
+          - string
+          - 'null'
+        instance:
+          type:
+          - string
+          - 'null'
+      additionalProperties: {}
+    CustomerPaymentSalesOrder:
+      type: object
+      properties:
+        documentNo:
+          type:
+          - string
+          - 'null'
+        amount:
+          type:
+          - number
+          - 'null'
+          format: double
+        salesOrderId:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    CustomerPaymentInvoice:
+      type: object
+      properties:
+        documentNo:
+          type:
+          - string
+          - 'null'
+        amount:
+          type:
+          - number
+          - 'null'
+          format: double
+        invoiceId:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    CustomerPaymentResponseListResponse:
+      type: object
+      properties:
+        count:
+          type: integer
+          format: int32
+        data:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/CustomerPaymentResponse'
+      additionalProperties: false
+    CustomerPaymentResponse:
+      type: object
+      properties:
+        paymentId:
+          type:
+          - string
+          - 'null'
+        externalCustomerId:
+          type:
+          - string
+          - 'null'
+        transactionNo:
+          type:
+          - string
+          - 'null'
+        paymentMethod:
+          type:
+          - string
+          - 'null'
+        totalAmount:
+          type:
+          - number
+          - 'null'
+          format: double
+        paymentDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        createdDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        surchargeAmount:
+          type:
+          - number
+          - 'null'
+          format: double
+        preAuthDetails:
+          $ref: '#/components/schemas/CustomerPaymentPreAuthDetails'
+        invoices:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/CustomerPaymentInvoice'
+        salesOrders:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/CustomerPaymentSalesOrder'
+      additionalProperties: false
+    CustomerPaymentPreAuthDetails:
+      type: object
+      properties:
+        acctLast4:
+          type:
+          - string
+          - 'null'
+        acctPaymentNetwork:
+          type:
+          - string
+          - 'null'
+        acctExpireMonth:
+          type:
+          - string
+          - 'null'
+        acctExpireYear:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+  securitySchemes:
+    Bearer:
+      type: oauth2
+      description: OAuth 2.0 Client Credentials Flow with API Users issued from Integration Engine Management Console
+      flows:
+        clientCredentials:
+          tokenUrl: https://api-user.integrations.ecimanufacturing.com/oauth2/api-user/token
+          scopes:
+            openid: openid

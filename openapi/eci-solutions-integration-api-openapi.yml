@@ -1,0 +1,1945 @@
+openapi: 3.2.0
+info:
+  title: MFG Management Integration API
+  description: Provides APIs for managing ECI MFG Integration Engine Configurations.
+  contact:
+    name: ECI Manufacturing Integration Team
+    url: https://www.ecisolutions.com/support/
+  version: 2.22.273+b02c1dfd00
+servers:
+- url: https://api-user.integrations.ecimanufacturing.com:443
+  description: Production
+security:
+- oidc:
+  - openid
+- Basic: []
+tags:
+- name: Integration
+paths:
+  /api/integrations:
+    get:
+      tags:
+      - Integration
+      summary: List Integrations
+      description: 'This API is used to get integration list by productList and name filter. Results are ordered by IntegrationName
+
+
+        Accessible By: Global Admin, Product Admin, Product Support User.\
+
+        Accessed From: User Mgmt UI.\
+
+
+        Description: This API is used to get integration list by productList and name filter.'
+      operationId: IntegrationList
+      parameters:
+      - name: q
+        in: query
+        description: Filter on integration name (contains)
+        schema:
+          type: string
+      - name: product_ids
+        in: query
+        description: ''
+        schema:
+          type: array
+          items:
+            type: integer
+            format: int32
+      - name: expand_systems
+        in: query
+        description: Return a list of systems for this integration
+        schema:
+          type: boolean
+          default: false
+      - name: expand_products
+        in: query
+        description: Return a list of products that are valid on each integration. This value is true if unspecified
+        schema:
+          type: boolean
+          default: true
+      - name: top
+        in: query
+        description: Use with skip to peform paging.
+        schema:
+          type: integer
+          format: int32
+          default: 250
+      - name: skip
+        in: query
+        description: Skip rows
+        schema:
+          type: integer
+          format: int32
+      - name: is_published
+        in: query
+        description: Filter on the published status
+        schema:
+          type: boolean
+      - name: ids
+        in: query
+        description: One or more IDs to return results
+        schema:
+          type: array
+          items:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/IntegrationResponseModelListAPIResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IntegrationResponseModelListAPIResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/IntegrationResponseModelListAPIResponse'
+    post:
+      tags:
+      - Integration
+      summary: This API is used to create new integration
+      description: 'Accessible By: Global Admin.\
+
+        Accessed From: User Mgmt UI.\
+
+        Description: This API is used to create new integration.'
+      operationId: Integration
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/AddIntegration'
+          text/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/AddIntegration'
+          application/*+json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/AddIntegration'
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/EciIntegrationResponseAPIResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EciIntegrationResponseAPIResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/EciIntegrationResponseAPIResponse'
+  /api/integrations/{id}:
+    get:
+      tags:
+      - Integration
+      summary: Get integration details
+      description: 'Accessible By: Global Admin, Product Admin, Product Support User.\
+
+        Accessed From: User Mgmt UI, Payment Integration.\
+
+        Description: This API is used to get integration detail by integration id.'
+      operationId: IntegrationById
+      parameters:
+      - name: id
+        in: path
+        description: Integration id
+        required: true
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/IntegrationsDetailsResponseModelAPIResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IntegrationsDetailsResponseModelAPIResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/IntegrationsDetailsResponseModelAPIResponse'
+    patch:
+      tags:
+      - Integration
+      summary: Update the details of integration
+      description: 'Accessible By: Global Admin.\
+
+        Accessed From: User Mgmt UI.\
+
+        Description: This API is used to update the details of integration detail by integration id.'
+      operationId: EditIntegration
+      parameters:
+      - name: id
+        in: path
+        description: Integration id to update details.
+        required: true
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: Model containing the active status property to set.
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/UpdateIntegration'
+          text/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/UpdateIntegration'
+          application/*+json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/UpdateIntegration'
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/EciIntegrationResponseAPIResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EciIntegrationResponseAPIResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/EciIntegrationResponseAPIResponse'
+    delete:
+      tags:
+      - Integration
+      summary: This API is used to delete the integration by integration id
+      description: 'Accessible By: Global Admin.\
+
+        Accessed From: User Mgmt UI. \
+
+        Description: This API is used to delete the integration by integration id.'
+      operationId: DeleteIntegration
+      parameters:
+      - name: id
+        in: path
+        description: delete only if integration id is given and exist.
+        required: true
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/StringAPIResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StringAPIResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/StringAPIResponse'
+  /api/integrations/{id}/companies/count:
+    get:
+      tags:
+      - Integration
+      summary: Get counts of integrations
+      description: 'Accessible By: Global Admin.\
+
+        Accessed From: User Mgmt UI.\
+
+        Description: This API is used to get counts of integration which we are using in created companies.'
+      operationId: CompanyIntegrationCount
+      parameters:
+      - name: id
+        in: path
+        description: Integration id
+        required: true
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/StringAPIResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StringAPIResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/StringAPIResponse'
+  /api/integrations/{id}/systems:
+    get:
+      tags:
+      - Integration
+      summary: This API is used to get the systems by integration id
+      description: 'Accessible By: Global Admin, Product Admin, Product Support User.\
+
+        Accessed From: User Mgmt UI.\
+
+        Description: This API is used to get the systems by integration id.'
+      operationId: SystemByIntegrationId
+      parameters:
+      - name: id
+        in: path
+        description: Integration id to get list of system
+        required: true
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/SystemDetailResponseModelIListAPIResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SystemDetailResponseModelIListAPIResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/SystemDetailResponseModelIListAPIResponse'
+    post:
+      tags:
+      - Integration
+      summary: This API is used to create the system detail
+      description: 'Accessible By: Global Admin.\
+
+        Accessed From: User Mgmt UI.\
+
+        Description: This API is used to create the system detail.'
+      operationId: AddSystemIntegration
+      parameters:
+      - name: id
+        in: path
+        description: integration id
+        required: true
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: model to save system
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/SystemRequestModel'
+          text/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/SystemRequestModel'
+          application/*+json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/SystemRequestModel'
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/SystemDetailResponseModelAPIResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SystemDetailResponseModelAPIResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/SystemDetailResponseModelAPIResponse'
+  /api/integrations/{id}/systems/{systemId}:
+    patch:
+      tags:
+      - Integration
+      summary: This API is used to edit the system detail
+      description: 'Accessible By: Global Admin.\
+
+        Accessed From: User Mgmt UI.\
+
+        Description: This API is used to edit the system detail.'
+      operationId: EditSystemIntegration
+      parameters:
+      - name: id
+        in: path
+        description: integration id
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: systemId
+        in: path
+        description: system Id
+        required: true
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: model to save or update system
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/SystemRequestModel'
+          text/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/SystemRequestModel'
+          application/*+json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/SystemRequestModel'
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/SystemDetailResponseModelAPIResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SystemDetailResponseModelAPIResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/SystemDetailResponseModelAPIResponse'
+    delete:
+      tags:
+      - Integration
+      summary: This API is used to delete system by system id
+      description: 'Accessible By: Global Admin, Product Admin, Product Support User.\
+
+        Accessed From: User Mgmt UI.\
+
+        Description: Check the system if it is used in any API Credential detail then we can''t delete the system.'
+      operationId: DeleteSystemByIdIntegration
+      parameters:
+      - name: id
+        in: path
+        description: integration id to delete
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: systemId
+        in: path
+        description: system id to delete
+        required: true
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/StringAPIResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StringAPIResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/StringAPIResponse'
+  /api/integrations/{integrationId}/products:
+    post:
+      tags:
+      - Integration
+      operationId: AddProductsIntegration
+      parameters:
+      - name: integrationId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/IntegrationProductRequestModel'
+          text/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/IntegrationProductRequestModel'
+          application/*+json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/IntegrationProductRequestModel'
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/EciIntegrationProductResponseModelAPIResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EciIntegrationProductResponseModelAPIResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/EciIntegrationProductResponseModelAPIResponse'
+      summary: Add products integration
+      x-summary-source: derived
+  /api/integrations/{integrationId}/products/{productId}:
+    patch:
+      tags:
+      - Integration
+      operationId: UpdateIntgrationProductDetailIntegration
+      parameters:
+      - name: integrationId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: productId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/UpdateIntegrationProductsDetail'
+          text/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/UpdateIntegrationProductsDetail'
+          application/*+json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/UpdateIntegrationProductsDetail'
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/EciIntegrationProductResponseModelAPIResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EciIntegrationProductResponseModelAPIResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/EciIntegrationProductResponseModelAPIResponse'
+      summary: Update intgration product detail integration
+      x-summary-source: derived
+    delete:
+      tags:
+      - Integration
+      operationId: DeleteIntgrationProductsIntegration
+      parameters:
+      - name: integrationId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: productId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/StringAPIResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StringAPIResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/StringAPIResponse'
+      summary: Delete intgration products integration
+      x-summary-source: derived
+  /api/integrations/imported-file:
+    post:
+      tags:
+      - Integration
+      summary: This API is used to import integration
+      description: 'Accessible By: Global Admin.\
+
+        Accessed From: User Mgmt UI.\
+
+        Description: This API is used to import integration.'
+      operationId: IntegrationImport
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/AddIntegrationRequestModel'
+          text/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/AddIntegrationRequestModel'
+          application/*+json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/AddIntegrationRequestModel'
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/IntegrationsDetailsResponseModelAPIResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IntegrationsDetailsResponseModelAPIResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/IntegrationsDetailsResponseModelAPIResponse'
+  /api/integrations/systems:
+    get:
+      tags:
+      - Integration
+      summary: This API returns the System listing
+      description: 'Accessible By: Global Admin, Product Admin, Product Support User, Company Manager.\
+
+        Accessed From: User Mgmt UI.\
+
+        Description: This API returns the System listing.
+
+        It returns all the active system list.'
+      operationId: SystemsIntegration
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ListCompanySystemResultIEnumerableAPIResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListCompanySystemResultIEnumerableAPIResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ListCompanySystemResultIEnumerableAPIResponse'
+components:
+  schemas:
+    SystemDetailResponseModelIListAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        result:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/SystemDetailResponseModel'
+      additionalProperties: false
+    IntegrationsDetailsResponseModel:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        integrationName:
+          type:
+          - string
+          - 'null'
+        allowHostedConfigurations:
+          type: boolean
+        introductionText:
+          type:
+          - string
+          - 'null'
+        isPublished:
+          type: boolean
+        ipRateLimitDefault:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        ipRateLimitDefaultPeriod:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        companyRateLimitDefault:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        companyRateLimitDefaultPeriod:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        userRateLimitDefault:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        userRateLimitDefaultPeriod:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        allowOnPremisesConfigurations:
+          type: boolean
+        enableCompanyManagerDashboard:
+          type: boolean
+        testConnectionUrl:
+          type:
+          - string
+          - 'null'
+        masterKeys:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/IntegrationMasterKeyDetail'
+        products:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/EciIntegrationProductResponseModel'
+        systems:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/SystemsDataModel'
+        applications:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ApplicationDataModel'
+        authSessions:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/AuthSessionDataModel'
+      additionalProperties: false
+    SystemsDataModel:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        systemName:
+          type:
+          - string
+          - 'null'
+        isActive:
+          type: boolean
+        canBeCreatedByAdmin:
+          type: boolean
+        vendorName:
+          type:
+          - string
+          - 'null'
+        vendorUrl:
+          type:
+          - string
+          - 'null'
+        vendorLogoUrl:
+          type:
+          - string
+          - 'null'
+        vendorLogoThumbmailUrl:
+          type:
+          - string
+          - 'null'
+        title:
+          type:
+          - string
+          - 'null'
+        shortDescription:
+          type:
+          - string
+          - 'null'
+        longDescription:
+          type:
+          - string
+          - 'null'
+        isPublic:
+          type: boolean
+        maxConnectionCount:
+          type: integer
+          format: int32
+      additionalProperties: false
+    MasterKeyProductsResponseModel:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        productName:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    EciIntegrationProductResponseModelAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        result:
+          allOf:
+          - $ref: '#/components/schemas/EciIntegrationProductResponseModel'
+      additionalProperties: false
+    ValidationError:
+      type: object
+      properties:
+        field:
+          type:
+          - string
+          - 'null'
+        message:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    SystemRequestModel:
+      type: object
+      properties:
+        integrationName:
+          type:
+          - string
+          - 'null'
+        systemName:
+          maxLength: 25
+          type:
+          - string
+          - 'null'
+        isActive:
+          type:
+          - boolean
+          - 'null'
+        canBeCreatedByAdmin:
+          type:
+          - boolean
+          - 'null'
+        vendorName:
+          type:
+          - string
+          - 'null'
+        vendorUrl:
+          type:
+          - string
+          - 'null'
+        vendorLogoUrl:
+          type:
+          - string
+          - 'null'
+        vendorLogoThumbmailUrl:
+          type:
+          - string
+          - 'null'
+        title:
+          type:
+          - string
+          - 'null'
+        shortDescription:
+          type:
+          - string
+          - 'null'
+        longDescription:
+          type:
+          - string
+          - 'null'
+        isPublic:
+          type:
+          - boolean
+          - 'null'
+        maxConnectionCount:
+          type:
+          - integer
+          - 'null'
+          format: int32
+      additionalProperties: false
+    EciIntegrationResponseAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        result:
+          allOf:
+          - $ref: '#/components/schemas/EciIntegrationResponse'
+      additionalProperties: false
+    SystemImportRequestModel:
+      required:
+      - systemName
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        systemName:
+          maxLength: 25
+          minLength: 1
+          type: string
+        isActive:
+          type: boolean
+        canBeCreatedByAdmin:
+          type: boolean
+        vendorName:
+          type:
+          - string
+          - 'null'
+        vendorUrl:
+          type:
+          - string
+          - 'null'
+        vendorLogoUrl:
+          type:
+          - string
+          - 'null'
+        vendorLogoThumbmailUrl:
+          type:
+          - string
+          - 'null'
+        title:
+          type:
+          - string
+          - 'null'
+        shortDescription:
+          type:
+          - string
+          - 'null'
+        longDescription:
+          type:
+          - string
+          - 'null'
+        isPublic:
+          type: boolean
+        maxConnectionCount:
+          type: integer
+          format: int32
+      additionalProperties: false
+    IntegrationMasterKeyDetail:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        key:
+          type:
+          - string
+          - 'null'
+        isRequired:
+          type: boolean
+        defaultValue:
+          type:
+          - string
+          - 'null'
+        isMultiple:
+          type: boolean
+        eciIntegrationId:
+          type: integer
+          format: int32
+        isCompanyHosted:
+          type:
+          - boolean
+          - 'null'
+        isCompanyOnPremises:
+          type:
+          - boolean
+          - 'null'
+        createdDate:
+          type: string
+          format: date-time
+        modifiedDate:
+          type: string
+          format: date-time
+        minLength:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        maxLength:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        dataType:
+          type:
+          - string
+          - 'null'
+        isSecret:
+          type: boolean
+        maskType:
+          type:
+          - string
+          - 'null'
+        displayName:
+          type:
+          - string
+          - 'null'
+        hostingEnvironment:
+          type: integer
+          format: int32
+        validationPattern:
+          type:
+          - string
+          - 'null'
+        validationPatternMessage:
+          type:
+          - string
+          - 'null'
+        dropdownValues:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+        isUpdateableOnConnection:
+          type: boolean
+        displayOrdinal:
+          type: integer
+          format: int32
+        validationExpression:
+          type:
+          - string
+          - 'null'
+        isVisibleOnConnection:
+          type: boolean
+        isReadOnly:
+          type: boolean
+        description:
+          type:
+          - string
+          - 'null'
+        isConnectionSpecific:
+          type: boolean
+        products:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/MasterKeyProductsResponseModel'
+        systemId:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        systemName:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    ProductsResponseModel:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        productName:
+          type:
+          - string
+          - 'null'
+        displayname:
+          type:
+          - string
+          - 'null'
+        shortDescription:
+          type:
+          - string
+          - 'null'
+        longDescription:
+          type:
+          - string
+          - 'null'
+        maxConnectionCount:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        isPublic:
+          type:
+          - boolean
+          - 'null'
+      additionalProperties: false
+    SystemDetailResponseModel:
+      type: object
+      properties:
+        integrationName:
+          type:
+          - string
+          - 'null'
+        systemName:
+          maxLength: 25
+          type:
+          - string
+          - 'null'
+        isActive:
+          type:
+          - boolean
+          - 'null'
+        canBeCreatedByAdmin:
+          type:
+          - boolean
+          - 'null'
+        vendorName:
+          type:
+          - string
+          - 'null'
+        vendorUrl:
+          type:
+          - string
+          - 'null'
+        vendorLogoUrl:
+          type:
+          - string
+          - 'null'
+        vendorLogoThumbmailUrl:
+          type:
+          - string
+          - 'null'
+        title:
+          type:
+          - string
+          - 'null'
+        shortDescription:
+          type:
+          - string
+          - 'null'
+        longDescription:
+          type:
+          - string
+          - 'null'
+        isPublic:
+          type:
+          - boolean
+          - 'null'
+        maxConnectionCount:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        id:
+          type: integer
+          format: int32
+        eciIntegrationId:
+          type: integer
+          format: int32
+      additionalProperties: false
+    MasterKeysImportRequestModel:
+      required:
+      - dataType
+      - displayName
+      - environment
+      - key
+      - products
+      type: object
+      properties:
+        key:
+          maxLength: 25
+          minLength: 1
+          type: string
+        systemId:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        dataType:
+          minLength: 1
+          type: string
+        maskType:
+          type:
+          - string
+          - 'null'
+        displayName:
+          maxLength: 100
+          minLength: 1
+          type: string
+        products:
+          type: array
+          items:
+            type: string
+        isRequired:
+          type: boolean
+        defaultValue:
+          type:
+          - string
+          - 'null'
+        isMultiple:
+          type: boolean
+        environment:
+          minLength: 1
+          type: string
+        minLength:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        maxLength:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        isSecret:
+          type: boolean
+        validationPattern:
+          maxLength: 250
+          type:
+          - string
+          - 'null'
+        validationPatternMessage:
+          type:
+          - string
+          - 'null'
+        dropdownValues:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+        isConnectionSpecific:
+          type: boolean
+        isUpdateableOnConnection:
+          type: boolean
+        displayOrdinal:
+          type: integer
+          format: int32
+        validationExpression:
+          type:
+          - string
+          - 'null'
+        isVisibleOnConnection:
+          type: boolean
+        isReadOnly:
+          type: boolean
+        description:
+          maxLength: 100
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    AddIntegration:
+      required:
+      - allowHostedConfigurations
+      - integrationName
+      type: object
+      properties:
+        integrationName:
+          maxLength: 50
+          minLength: 1
+          type: string
+        allowHostedConfigurations:
+          type: boolean
+        allowOnPremisesConfigurations:
+          type: boolean
+        enableCompanyManagerDashboard:
+          type: boolean
+        introductionText:
+          type:
+          - string
+          - 'null'
+        testConnectionUrl:
+          type:
+          - string
+          - 'null'
+        isPublished:
+          type: boolean
+        ipRateLimitDefault:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        ipRateLimitDefaultPeriod:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        companyRateLimitDefault:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        companyRateLimitDefaultPeriod:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        userRateLimitDefault:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        userRateLimitDefaultPeriod:
+          type:
+          - integer
+          - 'null'
+          format: int32
+      additionalProperties: false
+    AddIntegrationRequestModel:
+      required:
+      - allowHostedConfigurations
+      - integrationName
+      - integrationProductRequestModel
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        integrationName:
+          maxLength: 50
+          minLength: 1
+          type: string
+        allowHostedConfigurations:
+          type: boolean
+        allowOnPremisesConfigurations:
+          type: boolean
+        enableCompanyManagerDashboard:
+          type: boolean
+        introductionText:
+          type:
+          - string
+          - 'null'
+        testConnectionUrl:
+          type:
+          - string
+          - 'null'
+        integrationProductRequestModel:
+          type: array
+          items:
+            $ref: '#/components/schemas/IntegrationProductRequestModel'
+        isPublished:
+          type: boolean
+        ipRateLimitDefault:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        ipRateLimitDefaultPeriod:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        companyRateLimitDefault:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        companyRateLimitDefaultPeriod:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        userRateLimitDefault:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        userRateLimitDefaultPeriod:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        masterKeys:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/MasterKeysImportRequestModel'
+        systems:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/SystemImportRequestModel'
+      additionalProperties: false
+    SystemResponseModel:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        productName:
+          type:
+          - string
+          - 'null'
+        eciIntegrationId:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        vendorName:
+          type:
+          - string
+          - 'null'
+        vendorUrl:
+          type:
+          - string
+          - 'null'
+        vendorLogoUrl:
+          type:
+          - string
+          - 'null'
+        vendorLogoThumbmailUrl:
+          type:
+          - string
+          - 'null'
+        title:
+          type:
+          - string
+          - 'null'
+        shortDescription:
+          type:
+          - string
+          - 'null'
+        longDescription:
+          type:
+          - string
+          - 'null'
+        maxConnectionCount:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        isPublic:
+          type:
+          - boolean
+          - 'null'
+      additionalProperties: false
+    EciIntegrationResponse:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        integrationName:
+          type:
+          - string
+          - 'null'
+        allowHostedConfigurations:
+          type:
+          - boolean
+          - 'null'
+        allowOnPremisesConfigurations:
+          type: boolean
+        enableCompanyManagerDashboard:
+          type: boolean
+        testConnectionUrl:
+          type:
+          - string
+          - 'null'
+        allowsTestConnection:
+          type: boolean
+        isHosted:
+          type:
+          - boolean
+          - 'null'
+        introductionText:
+          type:
+          - string
+          - 'null'
+        isActive:
+          type:
+          - boolean
+          - 'null'
+        isPublished:
+          type:
+          - boolean
+          - 'null'
+        ipRateLimitDefault:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        ipRateLimitDefaultPeriod:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        companyRateLimitDefault:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        companyRateLimitDefaultPeriod:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        userRateLimitDefault:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        userRateLimitDefaultPeriod:
+          type:
+          - integer
+          - 'null'
+          format: int32
+      additionalProperties: false
+    SystemDetailResponseModelAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        result:
+          allOf:
+          - $ref: '#/components/schemas/SystemDetailResponseModel'
+      additionalProperties: false
+    IntegrationProductRequestModel:
+      type: object
+      properties:
+        productId:
+          type: integer
+          format: int32
+        shortDescription:
+          maxLength: 150
+          minLength: 0
+          type:
+          - string
+          - 'null'
+        longDescription:
+          type:
+          - string
+          - 'null'
+        ispublic:
+          type: boolean
+      additionalProperties: false
+    UpdateIntegration:
+      type: object
+      properties:
+        integrationName:
+          maxLength: 50
+          type:
+          - string
+          - 'null'
+        allowHostedConfigurations:
+          type:
+          - boolean
+          - 'null'
+        allowOnPremisesConfigurations:
+          type:
+          - boolean
+          - 'null'
+        enableCompanyManagerDashboard:
+          type:
+          - boolean
+          - 'null'
+        introductionText:
+          type:
+          - string
+          - 'null'
+        testConnectionUrl:
+          type:
+          - string
+          - 'null'
+        isPublished:
+          type:
+          - boolean
+          - 'null'
+        ipRateLimitDefault:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        ipRateLimitDefaultPeriod:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        companyRateLimitDefault:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        companyRateLimitDefaultPeriod:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        userRateLimitDefault:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        userRateLimitDefaultPeriod:
+          type:
+          - integer
+          - 'null'
+          format: int32
+      additionalProperties: false
+    ApplicationDataModel:
+      type: object
+      properties:
+        clientId:
+          type:
+          - string
+          - 'null'
+        roleId:
+          type: integer
+          format: int32
+        roleName:
+          type:
+          - string
+          - 'null'
+        integrationId:
+          type: integer
+          format: int32
+        integrationName:
+          type:
+          - string
+          - 'null'
+        redirectUris:
+          type:
+          - string
+          - 'null'
+        description:
+          type:
+          - string
+          - 'null'
+        lastUsedDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+      additionalProperties: false
+    ListCompanySystemResultIEnumerableAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        result:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ListCompanySystemResult'
+      additionalProperties: false
+    IntegrationResponseModelListAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        result:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/IntegrationResponseModel'
+      additionalProperties: false
+    EciIntegrationProductResponseModel:
+      type: object
+      properties:
+        integrationId:
+          type: integer
+          format: int32
+        productId:
+          type: integer
+          format: int32
+        integrationName:
+          type:
+          - string
+          - 'null'
+        productName:
+          type:
+          - string
+          - 'null'
+        displayName:
+          type:
+          - string
+          - 'null'
+        shortDescription:
+          type:
+          - string
+          - 'null'
+        longDescription:
+          type:
+          - string
+          - 'null'
+        isPublic:
+          type: boolean
+      additionalProperties: false
+    ApiError:
+      type: object
+      properties:
+        isError:
+          type: boolean
+        exceptionMessage:
+          type:
+          - string
+          - 'null'
+        details:
+          type:
+          - string
+          - 'null'
+        referenceErrorCode:
+          type:
+          - string
+          - 'null'
+        referenceDocumentLink:
+          type:
+          - string
+          - 'null'
+        validationErrors:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ValidationError'
+      additionalProperties: false
+    UpdateIntegrationProductsDetail:
+      type: object
+      properties:
+        shortDescription:
+          type:
+          - string
+          - 'null'
+        longDescription:
+          type:
+          - string
+          - 'null'
+        isPublic:
+          type: boolean
+      additionalProperties: false
+    StringAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        result:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    ListCompanySystemResult:
+      type: object
+      properties:
+        systemId:
+          type: integer
+          format: int32
+        systemName:
+          type:
+          - string
+          - 'null'
+        integrationId:
+          type: integer
+          format: int32
+        integrationName:
+          type:
+          - string
+          - 'null'
+        isPublished:
+          type: boolean
+      additionalProperties: false
+    IntegrationResponseModel:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        integrationName:
+          type:
+          - string
+          - 'null'
+        introductionText:
+          type:
+          - string
+          - 'null'
+        allowHostedConfigurations:
+          type:
+          - boolean
+          - 'null'
+        allowOnPremisesConfigurations:
+          type: boolean
+        enableCompanyManagerDashboard:
+          type: boolean
+        testConnectionUrl:
+          type:
+          - string
+          - 'null'
+        isPublished:
+          type:
+          - boolean
+          - 'null'
+        products:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ProductsResponseModel'
+        systems:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/SystemResponseModel'
+      additionalProperties: false
+    AuthSessionDataModel:
+      type: object
+      properties:
+        systemId:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        systemName:
+          type:
+          - string
+          - 'null'
+        financialCompanyId:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        financialCompanyName:
+          type:
+          - string
+          - 'null'
+        environment:
+          type:
+          - string
+          - 'null'
+        createdDate:
+          type: string
+          format: date-time
+        expiresDate:
+          type: string
+          format: date-time
+        createdById:
+          type:
+          - string
+          - 'null'
+        createdByName:
+          type:
+          - string
+          - 'null'
+        redirectUrl:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    IntegrationsDetailsResponseModelAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        result:
+          allOf:
+          - $ref: '#/components/schemas/IntegrationsDetailsResponseModel'
+      additionalProperties: false
+  securitySchemes:
+    oidc:
+      type: openIdConnect
+      description: Use id_token obtained from OpenID Connect flow.
+      openIdConnectUrl: https://cognito-idp.us-east-1.amazonaws.com/us-east-1_9IYBf4TpD/.well-known/openid-configuration
+      x-tokenName: id_token
+    Basic:
+      type: http
+      description: Username is ClientID, Password is Client Secret.
+      scheme: Basic

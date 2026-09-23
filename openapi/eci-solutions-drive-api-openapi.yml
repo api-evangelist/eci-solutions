@@ -1,0 +1,246 @@
+openapi: 3.2.0
+info:
+  title: Office Integration Drive API
+  description: 'This service provides APIs to enable building a single integration
+
+    to access Drive, Email, and Calendar features in different productivity suites.'
+  version: v1
+security:
+- Bearer: []
+tags:
+- name: Drive
+paths:
+  /api/v1/drives:
+    get:
+      tags:
+      - Drive
+      summary: Get drives
+      description: 'Gets a list of drives available from the backing storage provider.
+
+        - For Microsoft 365, returns a list of all OneDrive, Sharepoint, and Team Site drives.'
+      operationId: GetDrives
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/GetDrivesResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetDrivesResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/GetDrivesResponse'
+        '401':
+          description: Unauthorized
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+  /api/v1/drives/{id}/items:
+    get:
+      tags:
+      - Drive
+      summary: Get drive items
+      description: 'Gets a list of items in the drive, optionally filtered by the search criteria if provided.
+
+        - For Microsoft 365, returns a list of items in the selected drive.'
+      operationId: GetDriveItems
+      parameters:
+      - name: id
+        in: path
+        description: Drive id
+        required: true
+        schema:
+          type: string
+      - name: search
+        in: query
+        description: Search query
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/DriveItemResponseListResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DriveItemResponseListResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/DriveItemResponseListResponse'
+        '400':
+          description: Bad Request
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '401':
+          description: Unauthorized
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+components:
+  schemas:
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+        title:
+          type:
+          - string
+          - 'null'
+        status:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        detail:
+          type:
+          - string
+          - 'null'
+        instance:
+          type:
+          - string
+          - 'null'
+      additionalProperties: {}
+    DriveResponse:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: The ID of the drive
+        name:
+          type:
+          - string
+          - 'null'
+          description: The name of the drive
+        provider:
+          type:
+          - string
+          - 'null'
+          description: The provider of the drive
+        providerType:
+          type:
+          - string
+          - 'null'
+          description: The provider type of the drive
+        createdDate:
+          type:
+          - string
+          - 'null'
+          description: The created date of the drive
+          format: date-time
+        webUrl:
+          type:
+          - string
+          - 'null'
+          description: The WebUrl of the drive
+      additionalProperties: false
+      description: Custom Drive object
+    GetDrivesResponse:
+      type: object
+      properties:
+        value:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/DriveResponse'
+          description: Response value, containing a list of drives
+      additionalProperties: false
+      description: Reponse for the GetDrivesRequest
+    DriveItemResponse:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: Gets or sets the unique identifier of the drive item.
+        driveId:
+          type:
+          - string
+          - 'null'
+          description: Gets or sets the unique identifier of the drive.
+        name:
+          type:
+          - string
+          - 'null'
+          description: Gets or sets the name of the drive item.
+        itemType:
+          type:
+          - string
+          - 'null'
+          description: Gets or sets the type of the item. This can be null.
+        providerType:
+          type:
+          - string
+          - 'null'
+          description: Gets or sets the type of the provider. This can be null.
+        createdDate:
+          type:
+          - string
+          - 'null'
+          description: Gets or sets the date and time when the drive item was created.
+          format: date-time
+        webUrl:
+          type:
+          - string
+          - 'null'
+          description: Gets or sets the web URL of the drive item. This can be null.
+      additionalProperties: false
+      description: Response for the GetDriveItemsRequest, representing a drive item
+    DriveItemResponseListResponse:
+      type: object
+      properties:
+        value:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/DriveItemResponse'
+          description: Response value, containing a list of T items
+        nextPageToken:
+          type:
+          - string
+          - 'null'
+          description: The next page token
+      additionalProperties: false
+      description: Response for a list of T items
+  securitySchemes:
+    Bearer:
+      type: oauth2
+      description: OAuth 2.0 Client Credentials Flow with API Users issued from Integration Engine Management Console
+      flows:
+        clientCredentials:
+          tokenUrl: https://api-user.integrations.ecimanufacturing.com/oauth2/api-user/token
+          scopes:
+            openid: openid

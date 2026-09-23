@@ -1,0 +1,1379 @@
+openapi: 3.2.0
+info:
+  title: MFG Integration Management Connection API
+  description: Provides APIs for managing ECI MFG Integration Engine Configurations.
+  contact:
+    name: ECI Manufacturing Integration Team
+    url: https://www.ecisolutions.com/support/
+  version: 2.22.273+b02c1dfd00
+servers:
+- url: https://api-user.integrations.ecimanufacturing.com:443
+  description: Production
+security:
+- oidc:
+  - openid
+- Basic: []
+tags:
+- name: Connection
+paths:
+  /api/connections:
+    get:
+      tags:
+      - Connection
+      summary: Get a connection for the given credentials
+      description: 'Accessible By: API Key.\
+
+        Accessed From: User Mgmt UI.\
+
+        Description: Get a connection for the given credential clientId, including its financial company details if applicable.'
+      operationId: GetConnection
+      parameters:
+      - name: client_id
+        in: query
+        description: API credential clientId for the connection to get.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ConnectionResponseModelAPIResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConnectionResponseModelAPIResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ConnectionResponseModelAPIResponse'
+    delete:
+      tags:
+      - Connection
+      summary: This API is used to remove a connection for the given credentials
+      description: 'Accessible By: API Key.\
+
+        Accessed From: User Mgmt UI.\
+
+        Description: Removes a connection for the given credential clientId, including its financial company details if applicable.'
+      operationId: DeleteConnection
+      parameters:
+      - name: client_id
+        in: query
+        description: API credential clientId for the connection to remove.
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: No Content
+  /api/connections/{externalConnectionId}:
+    put:
+      tags:
+      - Connection
+      summary: Update an existing connection configuration
+      description: Used by MYOB, Nuvei, and AFAS SB connection flows because they require multi-step configuration. Updates additional properties for the connection after user input.
+      operationId: UpdateExternalCompanyDetailConnection
+      parameters:
+      - name: externalConnectionId
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: {}
+          text/json:
+            schema:
+              type: object
+              additionalProperties: {}
+          application/*+json:
+            schema:
+              type: object
+              additionalProperties: {}
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/StringObjectDictionaryAPIResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StringObjectDictionaryAPIResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/StringObjectDictionaryAPIResponse'
+    delete:
+      tags:
+      - Connection
+      summary: Remove External Connection
+      description: 'This API is used to remove an external connection. This will also remove any associated API credentials.
+
+        Used when a connection flow is cancelled to clean up partially configured connections.
+
+        Accessible By: Any authorized user/system or during an unexpired auth session.\
+
+        Accessed From: User Mgmt UI.\
+
+        Description: This API is used to remove Financial company.'
+      operationId: FinancialCompanyConnection
+      parameters:
+      - name: externalConnectionId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/StringAPIResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StringAPIResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/StringAPIResponse'
+  /api/connections/{externalConnectionId}/external-data:
+    get:
+      tags:
+      - Connection
+      summary: Get data from the externally connected system for the purposes of displaying to…
+      operationId: GetPostValidateDetailConnection
+      parameters:
+      - name: externalConnectionId
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: clientId
+        in: query
+        description: ''
+        schema:
+          type: string
+      - name: clientSecret
+        in: query
+        description: ''
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/StringObjectDictionaryAPIResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StringObjectDictionaryAPIResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/StringObjectDictionaryAPIResponse'
+  /api/connections/auth:
+    post:
+      tags:
+      - Connection
+      summary: Generates access and refresh tokens and saves them along with selected…
+      description: 'Accessible By: Everyone can use this API because it''s Anonymous.\
+
+        Accessed From: User Mgmt UI.\
+
+        Description: Generates access and refresh tokens and saves them along with selected financial company.'
+      operationId: SaveAuth
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/AuthRequest'
+          text/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/AuthRequest'
+          application/*+json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/AuthRequest'
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ValidateFinancialKeysResponseAPIResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidateFinancialKeysResponseAPIResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ValidateFinancialKeysResponseAPIResponse'
+  /api/connections/complete:
+    post:
+      tags:
+      - Connection
+      summary: Validates incoming code and creates API Credential
+      description: 'Accessible By: API Key.\
+
+        Accessed From: User Mgmt UI.\
+
+        Description: Validates incoming code and creates API Credential.'
+      operationId: CompleteConnection
+      requestBody:
+        description: code
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/CompleteConnectionRequest'
+          text/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/CompleteConnectionRequest'
+          application/*+json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/CompleteConnectionRequest'
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/CompleteConnectionResponseAPIResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompleteConnectionResponseAPIResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/CompleteConnectionResponseAPIResponse'
+  /api/connections/initiate:
+    post:
+      tags:
+      - Connection
+      summary: Initiate Connection
+      description: 'Initiate connection with systems like QBO/XERO/MYOB without having to login as company manager.
+
+
+        Accessible By: API Key.\
+
+        Accessed From: User Mgmt UI.\
+
+        Description: Initiate connection with systems like QBO/XERO/MYOB without having to login as company manager.
+
+
+        The company can be identified by one of the following (mutually exclusive):
+
+
+        CompanyId: The local UserManagement Company ID (existing behavior).
+
+
+        NexusOrganizationId: A Nexus Organization ID. The system will find or create
+
+        a Company mapped to this organization.
+
+
+        NexusApplicationDeploymentId: A Nexus Application Deployment ID. The system will
+
+        resolve the Organization from the deployment''s subscription, then find or create a Company.'
+      operationId: InitiateConnection
+      requestBody:
+        description: Contains necessary parameters to connect with one of the systems from QBO/XERO/MYOB.
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/InitiateConnectionRequest'
+          text/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/InitiateConnectionRequest'
+          application/*+json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/InitiateConnectionRequest'
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/InitiateConnectionResponseAPIResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InitiateConnectionResponseAPIResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/InitiateConnectionResponseAPIResponse'
+  /api/connections/initiate-update:
+    post:
+      tags:
+      - Connection
+      summary: Initiate Connection Update
+      description: 'Initiate connection update flow so that existing configuration can be changed. This method returns a URL
+
+        that the user should be redirected to in order to complete the update operation.'
+      operationId: InitiateUpdateConnection
+      requestBody:
+        description: Contains necessary parameters to connect with one of the systems from QBO/XERO/MYOB.
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/InitiateUpdateConnectionRequest'
+          text/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/InitiateUpdateConnectionRequest'
+          application/*+json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/InitiateUpdateConnectionRequest'
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/InitiateConnectionResponseAPIResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InitiateConnectionResponseAPIResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/InitiateConnectionResponseAPIResponse'
+  /api/connections/sessions/{sessionId}:
+    get:
+      tags:
+      - Connection
+      summary: Gets the connection session parameters
+      operationId: GetSessionParameters
+      parameters:
+      - name: sessionId
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ConnectionSessionModelAPIResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConnectionSessionModelAPIResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ConnectionSessionModelAPIResponse'
+    patch:
+      tags:
+      - Connection
+      summary: Update Session
+      description: 'Updates the session with new information. The response may include additional validations
+
+        indicating fields that need to be met.'
+      operationId: UpdateSession
+      parameters:
+      - name: sessionId
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/UpdateSessionModel'
+          text/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/UpdateSessionModel'
+          application/*+json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/UpdateSessionModel'
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ConnectionSessionModelAPIResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConnectionSessionModelAPIResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ConnectionSessionModelAPIResponse'
+        '400':
+          description: Bad Request
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+  /api/connections/sessions/{sessionId}/challenges/{challengeId}:
+    put:
+      tags:
+      - Connection
+      summary: Update challenge
+      description: Updates a challenge with information from the external system or user. This may complete the challenge.
+      operationId: UpdateChallenge
+      parameters:
+      - name: sessionId
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+      - name: challengeId
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: code
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/UpdateChallengeRequest'
+          text/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/UpdateChallengeRequest'
+          application/*+json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/UpdateChallengeRequest'
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ConnectionSessionModelAPIResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConnectionSessionModelAPIResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ConnectionSessionModelAPIResponse'
+  /api/connections/sessions/{sessionId}/js-module:
+    get:
+      tags:
+      - Connection
+      summary: Get Connection Module
+      description: 'This API returns a javascript module that is used to enhance the connection
+
+        user interface. This module is loaded by the user interface and is used to
+
+        provide validation and custom behaviors.'
+      operationId: GetSessionModule
+      parameters:
+      - name: sessionId
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            text/javascript:
+              schema:
+                type: string
+                format: binary
+  /api/connections/update:
+    patch:
+      tags:
+      - Connection
+      summary: Validates incoming session ID and updates the auth session system ID for the…
+      description: 'Accessible By: Everyone can use this api because it''s Anonymous.\
+
+        Accessed From: User Mgmt UI.\
+
+        Description: Validates incoming session ID and updates the auth session system ID for the requested system.'
+      operationId: UpdateConnectionSystem
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/UpdateConnectionSystemRequest'
+          text/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/UpdateConnectionSystemRequest'
+          application/*+json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/UpdateConnectionSystemRequest'
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/StringAPIResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StringAPIResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/StringAPIResponse'
+  /api/connections/validate/{sessionId}:
+    post:
+      tags:
+      - Connection
+      summary: Validates incoming session id and generates redirect url for requested system
+      description: 'Accessible By: Everyone can use this API because it''s Anonymous.
+
+        Accessed From: User Mgmt UI.\
+
+        Description: Validates incoming session id and generates redirect url for requested system.'
+      operationId: ValidateConnection
+      parameters:
+      - name: sessionId
+        in: path
+        description: session id
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/ValidateConnectionRequest'
+          text/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/ValidateConnectionRequest'
+          application/*+json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/ValidateConnectionRequest'
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ValidateFinancialKeysResponseAPIResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidateFinancialKeysResponseAPIResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ValidateFinancialKeysResponseAPIResponse'
+components:
+  schemas:
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+        title:
+          type:
+          - string
+          - 'null'
+        status:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        detail:
+          type:
+          - string
+          - 'null'
+        instance:
+          type:
+          - string
+          - 'null'
+      additionalProperties: {}
+    InitiateUpdateConnectionRequest:
+      required:
+      - clientId
+      - redirectUri
+      - state
+      type: object
+      properties:
+        clientId:
+          minLength: 1
+          type: string
+        redirectUri:
+          minLength: 1
+          type: string
+        state:
+          minLength: 10
+          type: string
+      additionalProperties: false
+    StringObjectDictionaryAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        result:
+          type:
+          - object
+          - 'null'
+          additionalProperties: {}
+      additionalProperties: false
+    ValidationError:
+      type: object
+      properties:
+        field:
+          type:
+          - string
+          - 'null'
+        message:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    ConnectionMasterKeyModel:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        displayName:
+          type:
+          - string
+          - 'null'
+        description:
+          type:
+          - string
+          - 'null'
+        displayOrdinal:
+          type: integer
+          format: int32
+        key:
+          type:
+          - string
+          - 'null'
+        dataType:
+          type:
+          - string
+          - 'null'
+        isRequired:
+          type: boolean
+        isUpdateable:
+          type: boolean
+        defaultValue:
+          type:
+          - string
+          - 'null'
+        minLength:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        maxLength:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        isSecret:
+          type: boolean
+        validationPattern:
+          type:
+          - string
+          - 'null'
+        validationPatternMessage:
+          type:
+          - string
+          - 'null'
+        dropdownValues:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+      additionalProperties: false
+    UpdateChallengeRequest:
+      type: object
+      properties:
+        properties:
+          type:
+          - object
+          - 'null'
+          additionalProperties:
+            type: string
+      additionalProperties: false
+    ConnectionResponseModelAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        result:
+          allOf:
+          - $ref: '#/components/schemas/ConnectionResponseModel'
+      additionalProperties: false
+    ValidateConnectionRequest:
+      type: object
+      properties:
+        clientId:
+          type:
+          - string
+          - 'null'
+        clientSecret:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    ConnectionPartnerBrandModel:
+      type: object
+      properties:
+        displayName:
+          type:
+          - string
+          - 'null'
+        logoUrl:
+          type:
+          - string
+          - 'null'
+        terms:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    ConnectionBrandModel:
+      type: object
+      properties:
+        title:
+          type:
+          - string
+          - 'null'
+        shortDescription:
+          type:
+          - string
+          - 'null'
+        longDescription:
+          type:
+          - string
+          - 'null'
+        vendorName:
+          type:
+          - string
+          - 'null'
+        vendorUrl:
+          type:
+          - string
+          - 'null'
+        vendorLogoUrl:
+          type:
+          - string
+          - 'null'
+        vendorLogoThumbmailUrl:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    ConnectionChallengeItem:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: The unique id of the challenge. This information is only used for the connection manager to identify the challenge.
+        type:
+          type:
+          - string
+          - 'null'
+          description: The type of the challenge
+          readOnly: true
+        redirectUrl:
+          type:
+          - string
+          - 'null'
+          description: The redirectUrl for a redirection challenge.
+      additionalProperties: false
+    UpdateConnectionSystemRequest:
+      required:
+      - systemId
+      type: object
+      properties:
+        systemId:
+          type: integer
+          format: int32
+        environment:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    AuthRequest:
+      required:
+      - code
+      type: object
+      properties:
+        code:
+          minLength: 1
+          type: string
+        realmId:
+          type:
+          - string
+          - 'null'
+        redirectUrl:
+          type:
+          - string
+          - 'null'
+        apMerchantId:
+          type:
+          - string
+          - 'null'
+        arMerchantId:
+          type:
+          - string
+          - 'null'
+        codeVerifier:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    InitiateConnectionResponseAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        result:
+          allOf:
+          - $ref: '#/components/schemas/InitiateConnectionResponse'
+      additionalProperties: false
+    ValidateFinancialKeysResponse:
+      type: object
+      properties:
+        url:
+          type:
+          - string
+          - 'null'
+        sessionId:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    CompleteConnectionRequest:
+      required:
+      - code
+      type: object
+      properties:
+        code:
+          minLength: 1
+          type: string
+      additionalProperties: false
+    ConnectionSessionModel:
+      type: object
+      properties:
+        sessionId:
+          type:
+          - string
+          - 'null'
+        state:
+          type:
+          - string
+          - 'null'
+        systemId:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        redirectUrl:
+          type:
+          - string
+          - 'null'
+        cancelUrl:
+          type:
+          - string
+          - 'null'
+        validationResults:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ConnectionValidationItem'
+        challenge:
+          allOf:
+          - $ref: '#/components/schemas/ConnectionChallengeItem'
+        isValid:
+          type: boolean
+          description: Whether the session is valid and ready for finalization.
+        authorizationCode:
+          type:
+          - string
+          - 'null'
+          description: This will only be included when the request is to finalize the session.
+        authorizationUrl:
+          type:
+          - string
+          - 'null'
+          description: This will only be included when the request is to finalize the session.
+        sessionType:
+          allOf:
+          - $ref: '#/components/schemas/AuthSessionType'
+        properties:
+          type:
+          - object
+          - 'null'
+          additionalProperties:
+            type: string
+          description: 'The properties for the integration. This is only returned
+
+            when the session type is Update, and only non-secret values
+
+            are returned.'
+        masterKeys:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ConnectionMasterKeyModel'
+          description: 'Master keys defines the properties that need to be set for
+
+            this connection.'
+        brand:
+          allOf:
+          - $ref: '#/components/schemas/ConnectionBrandModel'
+          description: The connection system brand information. Only returned on get parameters calls.
+        partnerBrand:
+          allOf:
+          - $ref: '#/components/schemas/ConnectionPartnerBrandModel'
+          description: The partner application brand information.
+      additionalProperties: false
+    UpdateSessionModel:
+      type: object
+      properties:
+        properties:
+          type:
+          - object
+          - 'null'
+          additionalProperties:
+            type: string
+          description: The properties that are being updated. This payload varies by the type of integration/system.
+        finalize:
+          type:
+          - boolean
+          - 'null'
+          description: 'If the session is being requested to be finalized or not.
+
+            Finallized sessions can no longer be modified. An authorization code will be generated
+
+            and returned in the response this one time. It will not be stored or available to return again.'
+      additionalProperties: false
+    AuthSessionType:
+      enum:
+      - Connect
+      - Update
+      type: string
+    InitiateConnectionResponse:
+      type: object
+      properties:
+        sessionId:
+          type:
+          - string
+          - 'null'
+        url:
+          type:
+          - string
+          - 'null'
+        companyId:
+          type: integer
+          format: int32
+        clientId:
+          type:
+          - string
+          - 'null'
+          description: 'Pre-provisioned API credential client ID (username).
+
+            Populated for partner-initiated connections. Null for standard direct connections
+
+            (credentials generated at completion) and for the Nexus user_token flow.'
+      additionalProperties: false
+    InitiateConnectionRequest:
+      required:
+      - redirectUri
+      - state
+      type: object
+      properties:
+        companyId:
+          type:
+          - integer
+          - 'null'
+          description: 'Optional value if NexusOrganizationId or NexusApplicationDeploymentId is provided.
+
+            Not used on the Nexus user_token path (Company is resolved from the token).'
+          format: int32
+        nexusOrganizationId:
+          type:
+          - integer
+          - 'null'
+          description: 'Optional value if CompanyId or NexusApplicationDeploymentId is provided.
+
+            Not used on the Nexus user_token path (Company is resolved from the token).'
+          format: int32
+        nexusApplicationDeploymentId:
+          type:
+          - integer
+          - 'null'
+          description: 'Optional value if CompanyId or NexusOrganizationId is provided.
+
+            Not used on the Nexus user_token path (Company is resolved from the token).'
+          format: int32
+        state:
+          minLength: 10
+          type: string
+          description: 'Caller-supplied opaque string stored in the auth session and echoed back as the
+
+            `state` query parameter on every final redirect to UserManagement.Models.RequestModel.InitiateConnectionRequest.RedirectUri
+
+            — success (`?code=…&state=…`) and error (`?error=…&state=…`).
+
+            Provides CSRF protection; must be at least 10 characters.'
+        integrationId:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        systemId:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        redirectUri:
+          minLength: 1
+          type: string
+          description: 'Callback URL the browser is redirected to after the OAuth flow completes.
+
+            Success redirects append `?code={authCode}&state={state}`;
+
+            error/cancellation redirects append `?error={reason}&state={state}`.
+
+            Validated against the application''s registered redirect URIs.'
+        userToken:
+          type:
+          - string
+          - 'null'
+          description: 'A Nexus STS access token. When provided, the connection is initiated as a Nexus User
+
+            connection: Company/Product are resolved from the token''s claims, no Application API key
+
+            is required, and no Cognito account or secret is created.'
+        environment:
+          type:
+          - string
+          - 'null'
+        partnerApplicationId:
+          type:
+          - string
+          - 'null'
+          description: Optional Partner Application ID for connections that will be completed by a partner application.
+          format: uuid
+        propertyIds:
+          type:
+          - array
+          - 'null'
+          items:
+            type: integer
+            format: int32
+          description: 'Integration Property IDs that will be used for this connection.
+
+            All required properties for the integration must be included.'
+      additionalProperties: false
+    ApiError:
+      type: object
+      properties:
+        isError:
+          type: boolean
+        exceptionMessage:
+          type:
+          - string
+          - 'null'
+        details:
+          type:
+          - string
+          - 'null'
+        referenceErrorCode:
+          type:
+          - string
+          - 'null'
+        referenceDocumentLink:
+          type:
+          - string
+          - 'null'
+        validationErrors:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ValidationError'
+      additionalProperties: false
+    CompleteConnectionResponseAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        result:
+          allOf:
+          - $ref: '#/components/schemas/CompleteConnectionResponse'
+      additionalProperties: false
+    ValidateFinancialKeysResponseAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        result:
+          allOf:
+          - $ref: '#/components/schemas/ValidateFinancialKeysResponse'
+      additionalProperties: false
+    ConnectionValidationItem:
+      type: object
+      properties:
+        key:
+          type:
+          - string
+          - 'null'
+        message:
+          type:
+          - string
+          - 'null'
+        type:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    CompleteConnectionResponse:
+      type: object
+      properties:
+        clientId:
+          type:
+          - string
+          - 'null'
+        secret:
+          type:
+          - string
+          - 'null'
+        apiUserId:
+          type:
+          - string
+          - 'null'
+          format: uuid
+        companyId:
+          type: integer
+          format: int32
+        systemId:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        systemName:
+          type:
+          - string
+          - 'null'
+        integrationId:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        integrationName:
+          type:
+          - string
+          - 'null'
+        productId:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        productName:
+          type:
+          - string
+          - 'null'
+        externalName:
+          type:
+          - string
+          - 'null'
+        externalConnectionId:
+          type: integer
+          format: int32
+        properties:
+          type:
+          - object
+          - 'null'
+          additionalProperties:
+            type: string
+      additionalProperties: false
+    StringAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        result:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    ConnectionResponseModel:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        financialProductCompanyName:
+          type:
+          - string
+          - 'null'
+        companyId:
+          type: integer
+          format: int32
+        companyName:
+          type:
+          - string
+          - 'null'
+        systemId:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        systemName:
+          type:
+          - string
+          - 'null'
+        useEciKey:
+          type: boolean
+        environment:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    ConnectionSessionModelAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        result:
+          allOf:
+          - $ref: '#/components/schemas/ConnectionSessionModel'
+      additionalProperties: false
+  securitySchemes:
+    oidc:
+      type: openIdConnect
+      description: Use id_token obtained from OpenID Connect flow.
+      openIdConnectUrl: https://cognito-idp.us-east-1.amazonaws.com/us-east-1_9IYBf4TpD/.well-known/openid-configuration
+      x-tokenName: id_token
+    Basic:
+      type: http
+      description: Username is ClientID, Password is Client Secret.
+      scheme: Basic

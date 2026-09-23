@@ -1,0 +1,207 @@
+openapi: 3.2.0
+info:
+  title: Lasso Registrant Notes API
+  description: 'Overview
+
+
+    Use this API to manage Registrant, Project, and Inventory data within Lasso CRM.'
+  version: 1.0.39
+servers:
+- url: https://api.lassocrm.com/v1
+  description: Production endpoint
+tags:
+- name: Registrant Notes
+paths:
+  /registrants/{registrantId}/notes:
+    parameters:
+    - in: path
+      name: registrantId
+      required: true
+      schema:
+        type: string
+    post:
+      tags:
+      - Registrant Notes
+      operationId: post_registrants_notes
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegistrantNoteWrite'
+      security:
+      - JwtAuthorizer: []
+      responses:
+        201:
+          description: Note successfully created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegistrantNoteRead'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+      summary: Post registrants notes
+      x-summary-source: derived
+  /registrants/{registrantId}/notes/{noteId}:
+    parameters:
+    - in: path
+      name: registrantId
+      required: true
+      schema:
+        type: string
+    - in: path
+      name: noteId
+      schema:
+        type: string
+      required: true
+    delete:
+      tags:
+      - Registrant Notes
+      operationId: delete_registrants_notes_by_id
+      security:
+      - JwtAuthorizer: []
+      responses:
+        204:
+          description: Note successfully deleted
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+      summary: Delete registrants notes by id
+      x-summary-source: derived
+components:
+  responses:
+    BadRequest:
+      description: 'The request could not be processed due to invalid input:
+
+        - Is the request payload malformed?
+
+        - Are all required fields present?
+
+        - Are field values of the expected type (ie, number format, date format)?
+
+        - Are field values within the expected constraints (ie, greater than max size of string)?
+
+        - Are query params of the expected format?
+
+
+        Check the body model for more documentation on field constraints and limits.
+
+        '
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/StandardError'
+    Unauthorized:
+      description: The request has not been fulfilled because it lacks valid authentication credentials
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/StandardError'
+    InternalServerError:
+      description: Receiving a 5xx response indicates an error on Lasso's end. Please contact us to report the problem
+    NotFound:
+      description: The specified resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/StandardError'
+    Forbidden:
+      description: The provided authentication credentials does not have sufficient privileges to access this resource
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/StandardError'
+  schemas:
+    RegistrantNoteRead:
+      type: object
+      title: Note Read
+      description: Contains a free-form text field
+      properties:
+        noteId:
+          type: string
+          example: 123
+        note:
+          type: string
+          example: Offer a $10.000 credit
+        createdBy:
+          $ref: '#/components/schemas/Creator'
+        _links:
+          $ref: '#/components/schemas/RegistrantNoteLinks'
+    RegistrantNoteLinks:
+      type: object
+      properties:
+        delete:
+          type: string
+          example: /registrants/123/notes/123
+    StandardError:
+      type: object
+      title: Standard Error
+      description: A standard error response format.
+      properties:
+        errorCode:
+          type: integer
+          example: 4xx
+        error:
+          type: string
+          description: A summary of the error
+          example: A summary of the error
+        errorMessage:
+          type: string
+          description: Details of the error
+          example: Details of the error
+    Creator:
+      type: object
+      title: Creator
+      description: 'Determines the user that created this entity based on an ordered set of Heuristics:
+
+        - if creator is null or empty, then default to user: Lasso Autobot
+
+        - if userId is provided, then lookup user by id, respond with 400 level error if specified user does not exist
+
+        - if user first and last name are provided, then lookup user by name, otherwise default to user: Lasso Autobot
+
+        '
+      properties:
+        firstName:
+          type: string
+          example: John
+        lastName:
+          type: string
+          example: Smith
+        userId:
+          type: string
+          example: 123
+    RegistrantNoteWrite:
+      type: object
+      title: Note Write
+      description: 'Contains a free-form text field.
+
+
+        Limitations: 4-byte UTF-8 characters are not supported and will be stripped during write.
+
+        This means that some emoticons and foreign language characters are unsupported.
+
+        '
+      properties:
+        note:
+          type: string
+          example: Offer a $10.000 credit
+        createdBy:
+          $ref: '#/components/schemas/Creator'
+        _links:
+          $ref: '#/components/schemas/RegistrantNoteLinks'
+  securitySchemes:
+    JwtAuthorizer:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

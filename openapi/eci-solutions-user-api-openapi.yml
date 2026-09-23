@@ -1,0 +1,908 @@
+openapi: 3.2.0
+info:
+  title: MFG Integration Management User API
+  description: Provides APIs for managing ECI MFG Integration Engine Configurations.
+  contact:
+    name: ECI Manufacturing Integration Team
+    url: https://www.ecisolutions.com/support/
+  version: 2.22.273+b02c1dfd00
+servers:
+- url: https://api-user.integrations.ecimanufacturing.com:443
+  description: Production
+security:
+- oidc:
+  - openid
+- Basic: []
+tags:
+- name: User
+paths:
+  /api/User:
+    post:
+      tags:
+      - User
+      summary: Create a new User
+      description: 'Accessible By: Global Admin, Product Admin, Product Support User.\
+
+        Accessed From: User Mgmt UI.\
+
+        Description: Create a new User.
+
+        Can be used to create Admin or Company Managers.
+
+        After successful registration, the user will receive a verification mail to confirm their email only when we create user for local provider.\
+
+        Global Admin may create any kind of User.
+
+        Product Admin may create Product Admin or Product Support Users for their assigned products
+
+        or Company Managers for companies associated with one of their assigned products.\
+
+        Product Support Users may create Company Managers for companies associated with one of their assigned products.
+
+        Company Id is required if creating a Company Manager.
+
+        Product Ids are required if creating a Product Admin or Product Support User.'
+      operationId: RegisterUser
+      requestBody:
+        description: An object containing all properties with which to create the new User.
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/RegisterUser'
+          text/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/RegisterUser'
+          application/*+json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/RegisterUser'
+      responses:
+        '200':
+          description: Success
+  /api/User/{email}/login-provider:
+    get:
+      tags:
+      - User
+      operationId: GetLoginProviderUser
+      parameters:
+      - name: email
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/LoginProviderResponseAPIResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginProviderResponseAPIResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/LoginProviderResponseAPIResponse'
+      summary: Get login provider user
+      x-summary-source: derived
+  /api/User/{id}:
+    get:
+      tags:
+      - User
+      summary: Get User details by Id
+      description: 'Accessible By: Global Admin, Product Admin, Product Support User.\
+
+        Accessed From: User Mgmt UI.\
+
+        Description: Get User details by Id.'
+      operationId: GetUserById
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ERPUserResponseModelAPIResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ERPUserResponseModelAPIResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ERPUserResponseModelAPIResponse'
+    patch:
+      tags:
+      - User
+      summary: Updates the Active status, First name, Last name and Product list of the…
+      description: 'Accessible By: Global Admin, Product Admin, Product Support User.\
+
+        Accessed From: User Mgmt UI.\
+
+        Description: Updates the Active status, First name, Last name and Product list of the specified User.'
+      operationId: AdminUpdateUser
+      parameters:
+      - name: id
+        in: path
+        description: Username/email of the user whose detail needs to be updated.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        description: This is an object which contains details of actioned user's firstname ,lastname , status and thier role and their products.
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/UpdateAdmins'
+          text/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/UpdateAdmins'
+          application/*+json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/UpdateAdmins'
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ERPUserResponseModelAPIResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ERPUserResponseModelAPIResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ERPUserResponseModelAPIResponse'
+    delete:
+      tags:
+      - User
+      summary: Delete a User by Id
+      description: 'Accessible By: Global Admin, Product Admin, Product Support User.\
+
+        Accessed From: User Mgmt UI.\
+
+        Description: Delete a User by Id.
+
+        Delete the User from the database and identity store.'
+      operationId: DeleteUser
+      parameters:
+      - name: id
+        in: path
+        description: The Id of the user to delete.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/StringAPIResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StringAPIResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/StringAPIResponse'
+  /api/User/me:
+    get:
+      tags:
+      - User
+      summary: Gets id, name, and role of logged in user
+      description: 'Accessible By: Global Admin, Product Admin, Product Support User, Company Manager.\
+
+        Accessed From: User Mgmt UI.\
+
+        Description: Gets id, name, and role of logged in user.'
+      operationId: MeUser
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/UserMeResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserMeResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/UserMeResponse'
+    patch:
+      tags:
+      - User
+      summary: Updates First name and/or Last name of the logged in user in both database and…
+      description: 'Accessible By: Global Admin, Product Admin, Product Support Users, Company Managers.\
+
+        Accessed From: User Mgmt UI.\
+
+        Description: Updates First name and/or Last name of the logged in user in both database and cognito.'
+      operationId: MeUser
+      requestBody:
+        description: This is an object which contains details of logged in user to update the first or last name.
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/UpdateUserProfile'
+          text/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/UpdateUserProfile'
+          application/*+json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/UpdateUserProfile'
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/UpdateUserProfileAPIResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateUserProfileAPIResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/UpdateUserProfileAPIResponse'
+  /api/User/providers:
+    get:
+      tags:
+      - User
+      summary: Gets the list of authentication providers available for admin users
+      description: 'Accessible By: Everyone can use this API because it''s Anonymous.\
+
+        Accessed From: User Mgmt UI.\
+
+        Description: Gets the list of authentication providers available for admin users.'
+      operationId: GetSsoProvidersUser
+      parameters:
+      - name: client_id
+        in: query
+        description: ''
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SsoProvider'
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SsoProvider'
+            text/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SsoProvider'
+  /api/User/providers/{name}:
+    get:
+      tags:
+      - User
+      summary: Gets an authentication provider by name
+      description: 'Accessible By: Global Admin, Product Admin, Product Support User.\
+
+        Accessed From: User Mgmt UI.\
+
+        Description: Gets an authentication provider by name.'
+      operationId: GetSsoProviderUser
+      parameters:
+      - name: name
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/SsoProvider'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SsoProvider'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/SsoProvider'
+        '404':
+          description: Not Found
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+  /api/User/RegisterUserFromCognito:
+    post:
+      tags:
+      - User
+      summary: Create a new User
+      description: 'Accessible By: Global Admin, Product Admin, Product Support User.\
+
+        Accessed From: User Mgmt UI.\
+
+        Description: Create a new User.
+
+        Can be used to create Admin or Company Managers.
+
+        After successful registration, the user will receive a verification mail to confirm their email.\
+
+        Global Admin may create any kind of User.
+
+        Product Admin may create Product Admin or Product Support Users for their assigned products
+
+        or Company Managers for companies associated with one of their assigned products.
+
+        Product Support Users may create Company Managers for companies associated with one of their assigned products.\
+
+        Company Id is required if creating a Company Manager.
+
+        Product Ids are required if creating a Product Admin or Product Support User.'
+      operationId: RegisterUserFromCognito
+      requestBody:
+        description: An object containing all properties with which to create the new User.
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/RegisterUser'
+          text/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/RegisterUser'
+          application/*+json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/RegisterUser'
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ERPUserResponseModelAPIResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ERPUserResponseModelAPIResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ERPUserResponseModelAPIResponse'
+  /api/users:
+    get:
+      tags:
+      - User
+      summary: Get the list of Users matching the specified filter criteria
+      description: 'Accessible By: Global Admin, Product Admin, Product Support User.\
+
+        Accessed From: User Mgmt UI.\
+
+        Description: Get the list of Users matching the specified filter criteria.'
+      operationId: ListUsers
+      parameters:
+      - name: q
+        in: query
+        schema:
+          type: string
+      - name: provider_name
+        in: query
+        schema:
+          type: string
+      - name: role_id
+        in: query
+        schema:
+          type: integer
+          format: int32
+      - name: company_id
+        in: query
+        schema:
+          type: integer
+          format: int32
+      - name: is_active
+        in: query
+        schema:
+          type: boolean
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ERPUserResponseModelIListAPIResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ERPUserResponseModelIListAPIResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ERPUserResponseModelIListAPIResponse'
+components:
+  schemas:
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+        title:
+          type:
+          - string
+          - 'null'
+        status:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        detail:
+          type:
+          - string
+          - 'null'
+        instance:
+          type:
+          - string
+          - 'null'
+      additionalProperties: {}
+    SsoProvider:
+      type: object
+      properties:
+        name:
+          type:
+          - string
+          - 'null'
+        description:
+          type:
+          - string
+          - 'null'
+        identifiers:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+      additionalProperties: false
+    ApiError:
+      type: object
+      properties:
+        isError:
+          type: boolean
+        exceptionMessage:
+          type:
+          - string
+          - 'null'
+        details:
+          type:
+          - string
+          - 'null'
+        referenceErrorCode:
+          type:
+          - string
+          - 'null'
+        referenceDocumentLink:
+          type:
+          - string
+          - 'null'
+        validationErrors:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ValidationError'
+      additionalProperties: false
+    UpdateUserProfile:
+      type: object
+      properties:
+        firstName:
+          type:
+          - string
+          - 'null'
+        lastName:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    LoginProviderResponseAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        result:
+          allOf:
+          - $ref: '#/components/schemas/LoginProviderResponse'
+      additionalProperties: false
+    ERPUserResponseModel:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        firstName:
+          type:
+          - string
+          - 'null'
+        lastName:
+          type:
+          - string
+          - 'null'
+        email:
+          type:
+          - string
+          - 'null'
+        companyName:
+          type:
+          - string
+          - 'null'
+        companyId:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        customerId:
+          type:
+          - string
+          - 'null'
+        productId:
+          type: integer
+          format: int32
+        productName:
+          type:
+          - string
+          - 'null'
+        emailConfirmed:
+          type:
+          - string
+          - 'null'
+        lastLoginDateTime:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        isActive:
+          type: boolean
+        companyIsActive:
+          type:
+          - boolean
+          - 'null'
+        integrations:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/EciIntegrationResponse'
+        products:
+          type:
+          - string
+          - 'null'
+        productIds:
+          type:
+          - string
+          - 'null'
+        roleName:
+          type:
+          - string
+          - 'null'
+        roleId:
+          type: integer
+          format: int32
+        providerName:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    UpdateUserProfileAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        result:
+          allOf:
+          - $ref: '#/components/schemas/UpdateUserProfile'
+      additionalProperties: false
+    ERPUserResponseModelIListAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        result:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ERPUserResponseModel'
+      additionalProperties: false
+    StringAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        result:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    ValidationError:
+      type: object
+      properties:
+        field:
+          type:
+          - string
+          - 'null'
+        message:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    RegisterUser:
+      required:
+      - email
+      - roleId
+      type: object
+      properties:
+        email:
+          minLength: 1
+          pattern: .*@.*
+          type: string
+        firstName:
+          type:
+          - string
+          - 'null'
+        lastName:
+          type:
+          - string
+          - 'null'
+        companyId:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        roleId:
+          type: integer
+          format: int32
+        products:
+          type:
+          - array
+          - 'null'
+          items:
+            type: integer
+            format: int32
+        providerName:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    UserMeResponse:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+        name:
+          type:
+          - string
+          - 'null'
+        roleId:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        email:
+          type:
+          - string
+          - 'null'
+        sub:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    ERPUserResponseModelAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        result:
+          allOf:
+          - $ref: '#/components/schemas/ERPUserResponseModel'
+      additionalProperties: false
+    LoginProviderResponse:
+      type: object
+      properties:
+        provider:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    UpdateAdmins:
+      type: object
+      properties:
+        firstName:
+          type:
+          - string
+          - 'null'
+        lastName:
+          type:
+          - string
+          - 'null'
+        products:
+          type:
+          - array
+          - 'null'
+          items:
+            type: integer
+            format: int32
+        isActive:
+          type:
+          - boolean
+          - 'null'
+        providerName:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    EciIntegrationResponse:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        integrationName:
+          type:
+          - string
+          - 'null'
+        allowHostedConfigurations:
+          type:
+          - boolean
+          - 'null'
+        allowOnPremisesConfigurations:
+          type: boolean
+        enableCompanyManagerDashboard:
+          type: boolean
+        testConnectionUrl:
+          type:
+          - string
+          - 'null'
+        allowsTestConnection:
+          type: boolean
+        isHosted:
+          type:
+          - boolean
+          - 'null'
+        introductionText:
+          type:
+          - string
+          - 'null'
+        isActive:
+          type:
+          - boolean
+          - 'null'
+        isPublished:
+          type:
+          - boolean
+          - 'null'
+        ipRateLimitDefault:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        ipRateLimitDefaultPeriod:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        companyRateLimitDefault:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        companyRateLimitDefaultPeriod:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        userRateLimitDefault:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        userRateLimitDefaultPeriod:
+          type:
+          - integer
+          - 'null'
+          format: int32
+      additionalProperties: false
+  securitySchemes:
+    oidc:
+      type: openIdConnect
+      description: Use id_token obtained from OpenID Connect flow.
+      openIdConnectUrl: https://cognito-idp.us-east-1.amazonaws.com/us-east-1_9IYBf4TpD/.well-known/openid-configuration
+      x-tokenName: id_token
+    Basic:
+      type: http
+      description: Username is ClientID, Password is Client Secret.
+      scheme: Basic

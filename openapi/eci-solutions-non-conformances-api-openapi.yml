@@ -1,0 +1,380 @@
+openapi: 3.2.0
+info:
+  title: JobBOSS² Public Non Conformances API
+  description: Provides a common API surface for accessing ECI ERP JobBOSS².
+  version: v1
+servers:
+- url: https://api-jb2.integrations.ecimanufacturing.com:443
+  description: API Host
+security:
+- Bearer: []
+tags:
+- name: Non Conformances
+paths:
+  /api/v1/non-conformances:
+    get:
+      tags:
+      - Non Conformances
+      summary: Gets a list of Non-Conformances
+      description: 'By default a non-conformance response will include only the fields: comment, correctiveActionNumber, customerCode, customerPONumber, department, disposition, employeeCode, enterBy, enterDate, inspectedBy, jobNumber, lastModDate, lastModUser, lotNumber, ncDescription, ncPrinted, ncCode, ncDate, ncNumber, uniqueID, orderNumber, other, partDescription, partNumber, poNumber, processDate, quantityReturned, quantity, reasonCode, responsibleMgr, returnItemNumber, returnNumber, returnType, status, vendorCode, vendorRMANumber. You may specify the exact fields to return using the fields parameter.'
+      parameters:
+      - name: fields
+        in: query
+        description: A comma separated list of fields to include in the result.
+        schema:
+          type: string
+      - name: sort
+        in: query
+        description: A comma separated list of field to sort by. See the <a href='#sort-expressions'>Sort Expressions</a> section for more information.
+        schema:
+          type: string
+      - name: filters
+        in: query
+        description: Filters must be provided as query string parameters as defined in the <a href='#filter-expressions'>Filter Expressions</a> section.
+        schema:
+          type: object
+          additionalProperties:
+            type: string
+        examples:
+          No filters: {}
+          Filter by Number:
+            value:
+              ncNumber: '1000'
+      - name: skip
+        in: query
+        description: The number of records at the start of the result set to skip over.
+        schema:
+          type: string
+      - name: take
+        in: query
+        description: The number of records to retrieve.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NonConformanceListSuccessResponse'
+              example:
+                Data:
+                - comment: string
+                  correctiveActionNumber: string
+                  customerCode: string
+                  customerPONumber: string
+                  department: string
+                  disposition: string
+                  employeeCode: string
+                  enterBy: string
+                  enterDate: '2026-09-06T17:13:12.0000000+00:00'
+                  inspectedBy: string
+                  jobNumber: string
+                  lastModDate: '2026-09-06T17:13:12.0000000+00:00'
+                  lastModUser: string
+                  lotNumber: string
+                  ncCode: string
+                  ncDate: '2026-09-06T17:13:12.0000000+00:00'
+                  ncDescription: string
+                  ncNumber: string
+                  ncPrinted: string
+                  orderNumber: string
+                  other: string
+                  partDescription: string
+                  partNumber: string
+                  poNumber: string
+                  processDate: '2026-09-06T17:13:12.0000000+00:00'
+                  quantity: 0
+                  quantityReturned: 0
+                  reasonCode: string
+                  responsibleMgr: string
+                  returnItemNumber: 0
+                  returnNumber: string
+                  returnType: string
+                  status: string
+                  uniqueID: 0
+                  vendorCode: string
+                  vendorRMANumber: string
+      operationId: getApiV1NonConformances
+      x-operation-id-source: derived
+  /api/v1/non-conformances/{ncNumber}:
+    get:
+      tags:
+      - Non Conformances
+      summary: Gets Non-Conformance by number
+      description: 'By default a non-conformance response will include only the fields: comment, correctiveActionNumber, customerCode, customerPONumber, department, disposition, employeeCode, enterBy, enterDate, inspectedBy, jobNumber, lastModDate, lastModUser, lotNumber, ncDescription, ncPrinted, ncCode, ncDate, ncNumber, uniqueID, orderNumber, other, partDescription, partNumber, poNumber, processDate, quantityReturned, quantity, reasonCode, responsibleMgr, returnItemNumber, returnNumber, returnType, status, vendorCode, vendorRMANumber. You may specify the exact fields to return using the fields parameter.'
+      parameters:
+      - name: ncNumber
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: fields
+        in: query
+        description: A comma separated list of fields to include in the result.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NonConformanceSuccessResponse'
+              example:
+                Data:
+                  comment: string
+                  correctiveActionNumber: string
+                  customerCode: string
+                  customerPONumber: string
+                  department: string
+                  disposition: string
+                  employeeCode: string
+                  enterBy: string
+                  enterDate: '2026-09-06T17:13:12.0000000+00:00'
+                  inspectedBy: string
+                  jobNumber: string
+                  lastModDate: '2026-09-06T17:13:12.0000000+00:00'
+                  lastModUser: string
+                  lotNumber: string
+                  ncCode: string
+                  ncDate: '2026-09-06T17:13:12.0000000+00:00'
+                  ncDescription: string
+                  ncNumber: string
+                  ncPrinted: string
+                  orderNumber: string
+                  other: string
+                  partDescription: string
+                  partNumber: string
+                  poNumber: string
+                  processDate: '2026-09-06T17:13:12.0000000+00:00'
+                  quantity: 0
+                  quantityReturned: 0
+                  reasonCode: string
+                  responsibleMgr: string
+                  returnItemNumber: 0
+                  returnNumber: string
+                  returnType: string
+                  status: string
+                  uniqueID: 0
+                  vendorCode: string
+                  vendorRMANumber: string
+      operationId: getApiV1NonConformancesByNcNumber
+      x-operation-id-source: derived
+components:
+  schemas:
+    NonConformance:
+      type: object
+      properties:
+        comment:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        correctiveActionNumber:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        customerCode:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        customerPONumber:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        department:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        disposition:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        employeeCode:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        enterBy:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        enterDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        inspectedBy:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        jobNumber:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        lastModDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        lastModUser:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        lotNumber:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        ncCode:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        ncDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        ncDescription:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        ncNumber:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        ncPrinted:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        orderNumber:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        other:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        partDescription:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        partNumber:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        poNumber:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        processDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        quantity:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          readOnly: true
+        quantityReturned:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          readOnly: true
+        reasonCode:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        responsibleMgr:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        returnItemNumber:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          readOnly: true
+        returnNumber:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        returnType:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        status:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        uniqueID:
+          type: integer
+          format: int32
+          readOnly: true
+        vendorCode:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        vendorRMANumber:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+      additionalProperties: false
+    NonConformanceListSuccessResponse:
+      type: object
+      properties:
+        Data:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/NonConformance'
+      additionalProperties: false
+    NonConformanceSuccessResponse:
+      type: object
+      properties:
+        Data:
+          $ref: '#/components/schemas/NonConformance'
+      additionalProperties: false
+  securitySchemes:
+    Bearer:
+      type: oauth2
+      description: OAuth 2.0 Client Credentials Flow with API Users issued from Integration Engine Management Console
+      flows:
+        clientCredentials:
+          tokenUrl: https://api-user.integrations.ecimanufacturing.com/oauth2/api-user/token
+          scopes:
+            openid: openid

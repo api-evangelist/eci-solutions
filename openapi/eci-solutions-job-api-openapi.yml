@@ -1,0 +1,793 @@
+openapi: 3.2.0
+info:
+  title: ERP API v2.1 Job API
+  description: Provides a common API surface for accessing ECI ERP products.
+  contact:
+    name: ECI Manufacturing Division Integration Team
+    url: https://www.ecisolutions.com/support/
+  version: 3.5.585+b1e45fd230
+servers:
+- url: https://api-erp.integrations.ecimanufacturing.com:443
+  description: Production
+security:
+- Bearer: []
+tags:
+- name: Job
+paths:
+  /api/v2.1/jobs:
+    get:
+      tags:
+      - Job
+      summary: Get a list of Jobs from the ERP system that match the given filters
+      description: 'Gets a list of Job.
+
+
+        ## Supported ERPs
+
+        - M1
+
+        - JobBOSS²
+
+        - Macola
+
+        - Deacom
+
+        ## Resource Features
+
+        Feature |Supported |Notes
+
+        ------------|------------|------------
+
+        Filter Expressions|**Yes**|
+
+        Sort Expressions|**Yes**
+
+        Field Selection|**Yes**
+
+        Pagination|**Yes**
+
+        UniqueID|uniqueID|
+
+        ## Features by Field
+
+        Field |Filterable |Sortable |Supported ERPs
+
+        ------------|------------|------------|------------
+
+        jobID|Yes|Yes|M1, JobBOSS², Macola, Deacom
+
+        customerID|No|Yes|M1, JobBOSS², Macola, Deacom
+
+        partID|Yes|Yes|M1, JobBOSS², Macola, Deacom
+
+        partRevisionID|Yes|Yes|M1, JobBOSS², Macola, Deacom
+
+        orderQty|No|Yes|M1, JobBOSS², Macola, Deacom
+
+        prodQty|No|Yes|M1, JobBOSS², Macola, Deacom
+
+        schedStartDate|No|Yes|M1, JobBOSS², Macola, Deacom
+
+        schedEndDate|No|Yes|M1, JobBOSS², Macola, Deacom
+
+        estLeadTime|No|Yes|M1, JobBOSS², Macola, Deacom
+
+        actStartDate|No|Yes|M1, JobBOSS², Macola, Deacom
+
+        actEndDate|No|Yes|M1, JobBOSS², Macola, Deacom
+
+        dueDate|No|Yes|M1, JobBOSS², Macola, Deacom
+
+        status|Yes|Yes|M1, JobBOSS², Macola, Deacom
+
+        uniqueID|Yes|Yes|M1, JobBOSS², Macola, Deacom
+
+        rowVersion|Yes|Yes|M1, JobBOSS², Macola, Deacom
+
+        jobCost|No|Yes|M1, JobBOSS², Macola, Deacom
+
+        jobCostForeign|No|Yes|M1, JobBOSS², Macola, Deacom
+
+        plantID|Yes|Yes|M1, JobBOSS², Macola, Deacom
+
+        jobDate|Yes|Yes|M1, JobBOSS², Macola, Deacom
+
+        partWarehouseID|Yes|Yes|M1, JobBOSS², Macola, Deacom
+
+        partBinID|Yes|Yes|M1, JobBOSS², Macola, Deacom
+
+        partShortDesc|No|Yes|M1, JobBOSS², Macola, Deacom
+
+        inventoryQty|No|Yes|M1, JobBOSS², Macola, Deacom
+
+        isPlanningComplete|Yes|Yes|M1, JobBOSS², Macola, Deacom
+
+        isScheduleComplete|Yes|Yes|M1, JobBOSS², Macola, Deacom
+
+        isReleasedToFloor|Yes|Yes|M1, JobBOSS², Macola, Deacom
+
+        isOnHold|Yes|Yes|M1, JobBOSS², Macola, Deacom
+
+        completedDate|No|Yes|M1, JobBOSS², Macola, Deacom
+
+        quantityCompleted|No|Yes|M1, JobBOSS², Macola, Deacom
+
+        quantityShipped|No|Yes|M1, JobBOSS², Macola, Deacom
+
+        quantityRcvdToInventory|No|Yes|M1, JobBOSS², Macola, Deacom
+
+        projectID|Yes|Yes|M1, JobBOSS², Macola, Deacom
+
+        projectAreaID|Yes|Yes|M1, JobBOSS², Macola, Deacom
+
+        isClosed|Yes|Yes|M1, JobBOSS², Macola, Deacom
+
+        closedDate|Yes|Yes|M1, JobBOSS², Macola, Deacom
+
+        jobPriorityID|Yes|Yes|M1, JobBOSS², Macola, Deacom
+
+        unitOfMeasure|No|Yes|M1, JobBOSS², Macola, Deacom
+
+        plannerEmployeeID|No|Yes|M1, JobBOSS², Macola, Deacom
+
+        parentJobID|Yes|Yes|JobBOSS²
+
+        shortDesc|No|Yes|Deacom
+
+        childJobID|No|Yes|Deacom
+
+        jobType|Yes|Yes|Deacom'
+      parameters:
+      - name: fields
+        in: query
+        description: A comma-separated list of fields to include in the result.
+        schema:
+          type: string
+      - name: sort
+        in: query
+        description: A comma-separated list of <a href='#sortexpr'>sort expressions</a>.
+        schema:
+          type: string
+      - name: take
+        in: query
+        description: Limit the number of results being returned
+        schema:
+          minimum: 0
+          type: integer
+      - name: skip
+        in: query
+        description: The number of results to skip. Combine with 'take' to fetch records in pages
+        schema:
+          minimum: 0
+          type: integer
+      - name: count
+        in: query
+        description: '<a href=''#countparam''>Data and count</a> response behavior '
+        schema:
+          maximum: 2
+          minimum: 0
+          type: integer
+      - name: filters
+        in: query
+        description: See <a href='#filterexpr'>Filter Expressions</a> for query string syntax. The Test UI and any generated code tool may expose filter parameters as a dictionary of name/value pairs, but if creating a raw HTTP request, they must be provided on the querystring as defined in the Filter Expression section.
+        style: form
+        schema:
+          type: object
+          additionalProperties:
+            type: string
+        examples:
+          Empty:
+            description: No filters applied
+          'Example #1':
+            description: A dictionary of name/value pairs that will be serialized as querystring parameters in the format ```name[operator]=value```
+            value:
+              jobID[eq]: abc123
+              partID[eq]: abc123
+              partRevisionID[eq]: abc123
+              status[eq]: abc123
+              uniqueID[eq]: cc90686b-399e-4094-b431-fa462f84b0a8
+              rowVersion[gte]: 123
+              plantID[eq]: abc123
+              jobDate[gte]: '2020-09-25T04:03:00.0000000'
+              partWarehouseID[eq]: abc123
+              partBinID[eq]: abc123
+              isPlanningComplete[eq]: true
+              isScheduleComplete[eq]: true
+              isReleasedToFloor[eq]: true
+              isOnHold[eq]: true
+              projectID[eq]: abc123
+              projectAreaID[eq]: abc123
+              isClosed[eq]: true
+              closedDate[gte]: '2020-09-25T04:03:00.0000000'
+              jobPriorityID[eq]: abc123
+              parentJobID[eq]: abc123
+              jobType[eq]: abc123
+      - name: expand
+        in: query
+        description: '### Supported Expansions
+
+          An expansion expression containing a comma separater list of relationships to expand.
+
+          Name        |Value       |Description
+
+          ------------|------------|-----------
+
+          jobOperations|JobOperations[]|
+
+          '
+        schema:
+          type: string
+      - name: convertToUTC
+        in: query
+        description: Convert suppported date/time values to UTC before returning the data.
+        schema:
+          type: boolean
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/JobListResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JobListResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/JobListResponse'
+      operationId: getApiV21Jobs
+      x-operation-id-source: derived
+  /api/v2.1/jobs/{id}:
+    get:
+      tags:
+      - Job
+      summary: Get a Job from the ERP system that matches the given unique ID
+      description: 'Gets a Job by unique ID.
+
+
+        ## Supported ERPs
+
+        - M1
+
+        - JobBOSS²
+
+        - Macola
+
+        - Deacom
+
+        ## Features by Field
+
+        Field |Supported ERPs
+
+        ------------|------------
+
+        jobID||M1, JobBOSS², Macola, Deacom
+
+        customerID||M1, JobBOSS², Macola, Deacom
+
+        partID||M1, JobBOSS², Macola, Deacom
+
+        partRevisionID||M1, JobBOSS², Macola, Deacom
+
+        orderQty||M1, JobBOSS², Macola, Deacom
+
+        prodQty||M1, JobBOSS², Macola, Deacom
+
+        schedStartDate||M1, JobBOSS², Macola, Deacom
+
+        schedEndDate||M1, JobBOSS², Macola, Deacom
+
+        estLeadTime||M1, JobBOSS², Macola, Deacom
+
+        actStartDate||M1, JobBOSS², Macola, Deacom
+
+        actEndDate||M1, JobBOSS², Macola, Deacom
+
+        dueDate||M1, JobBOSS², Macola, Deacom
+
+        status||M1, JobBOSS², Macola, Deacom
+
+        uniqueID||M1, JobBOSS², Macola, Deacom
+
+        rowVersion||M1, JobBOSS², Macola, Deacom
+
+        jobCost||M1, JobBOSS², Macola, Deacom
+
+        jobCostForeign||M1, JobBOSS², Macola, Deacom
+
+        plantID||M1, JobBOSS², Macola, Deacom
+
+        jobDate||M1, JobBOSS², Macola, Deacom
+
+        partWarehouseID||M1, JobBOSS², Macola, Deacom
+
+        partBinID||M1, JobBOSS², Macola, Deacom
+
+        partShortDesc||M1, JobBOSS², Macola, Deacom
+
+        inventoryQty||M1, JobBOSS², Macola, Deacom
+
+        isPlanningComplete||M1, JobBOSS², Macola, Deacom
+
+        isScheduleComplete||M1, JobBOSS², Macola, Deacom
+
+        isReleasedToFloor||M1, JobBOSS², Macola, Deacom
+
+        isOnHold||M1, JobBOSS², Macola, Deacom
+
+        completedDate||M1, JobBOSS², Macola, Deacom
+
+        quantityCompleted||M1, JobBOSS², Macola, Deacom
+
+        quantityShipped||M1, JobBOSS², Macola, Deacom
+
+        quantityRcvdToInventory||M1, JobBOSS², Macola, Deacom
+
+        projectID||M1, JobBOSS², Macola, Deacom
+
+        projectAreaID||M1, JobBOSS², Macola, Deacom
+
+        isClosed||M1, JobBOSS², Macola, Deacom
+
+        closedDate||M1, JobBOSS², Macola, Deacom
+
+        jobPriorityID||M1, JobBOSS², Macola, Deacom
+
+        unitOfMeasure||M1, JobBOSS², Macola, Deacom
+
+        plannerEmployeeID||M1, JobBOSS², Macola, Deacom
+
+        parentJobID||JobBOSS²
+
+        shortDesc||Deacom
+
+        childJobID||Deacom
+
+        jobType||Deacom'
+      parameters:
+      - name: id
+        in: path
+        description: The ID of the job
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Job'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Job'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/Job'
+      operationId: getApiV21JobsById
+      x-operation-id-source: derived
+    patch:
+      tags:
+      - Job
+      summary: Update a job and its job operations in the ERP system
+      parameters:
+      - name: id
+        in: path
+        description: The ID of the job
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JobUpdateModel'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/JobUpdateModel'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/JobUpdateModel'
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Job'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Job'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/Job'
+      operationId: patchApiV21JobsById
+      x-operation-id-source: derived
+  /api/v2.1/jobs/{uniqueID}/part-production:
+    post:
+      tags:
+      - Job
+      summary: Register parts produced for a job
+      description: '## Supported ERPs
+
+        - Deacom'
+      parameters:
+      - name: uniqueID
+        in: path
+        description: The ID of the job
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JobPartProduction'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/JobPartProduction'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/JobPartProduction'
+      responses:
+        '200':
+          description: Success
+      operationId: postApiV21JobsByUniqueIDPartProduction
+      x-operation-id-source: derived
+components:
+  schemas:
+    Job:
+      title: Job
+      type: object
+      properties:
+        jobID:
+          type: string
+        customerID:
+          type: string
+        partID:
+          type: string
+        partRevisionID:
+          type: string
+        orderQty:
+          type: number
+          format: double
+        prodQty:
+          type: number
+          format: double
+        schedStartDate:
+          type: string
+          format: date-time
+        schedEndDate:
+          type: string
+          format: date-time
+        estLeadTime:
+          type: number
+          format: double
+        actStartDate:
+          type: string
+          format: date-time
+        actEndDate:
+          type: string
+          format: date-time
+        dueDate:
+          type: string
+          format: date-time
+        status:
+          type: string
+        uniqueID:
+          type: string
+        rowVersion:
+          type: integer
+          format: int64
+        jobCost:
+          type: number
+          format: double
+        jobCostForeign:
+          type: number
+          format: double
+        plantID:
+          type: string
+        jobDate:
+          type: string
+          format: date-time
+        partWarehouseID:
+          type: string
+        partBinID:
+          type: string
+        partShortDesc:
+          type: string
+        inventoryQty:
+          type: number
+          format: double
+        isPlanningComplete:
+          type: boolean
+        isScheduleComplete:
+          type: boolean
+        isReleasedToFloor:
+          type: boolean
+        isOnHold:
+          type: boolean
+        completedDate:
+          type: string
+          format: date-time
+        quantityCompleted:
+          type: number
+          format: double
+        quantityShipped:
+          type: number
+          format: double
+        quantityRcvdToInventory:
+          type: number
+          format: double
+        projectID:
+          type: string
+        projectAreaID:
+          type: string
+        isClosed:
+          type: boolean
+        closedDate:
+          type: string
+          format: date-time
+        jobPriorityID:
+          type: string
+        unitOfMeasure:
+          type: string
+        plannerEmployeeID:
+          type: string
+        parentJobID:
+          type: string
+        shortDesc:
+          type: string
+        childJobID:
+          type: string
+        jobType:
+          type: string
+        jobOperations:
+          type: array
+          items:
+            $ref: '#/components/schemas/JobOperation'
+    JobListResponse:
+      type: object
+      properties:
+        data:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Job'
+          readOnly: true
+        resultCount:
+          type: integer
+          format: int32
+      additionalProperties: false
+    JobUpdateModel:
+      type: object
+      properties:
+        schedStartDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        schedEndDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        jobOperations:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/JobOperationUpdateModelData'
+      additionalProperties: false
+    JobPartProduction:
+      required:
+      - partID
+      - quantityProduced
+      type: object
+      properties:
+        partID:
+          minLength: 1
+          type: string
+        quantityProduced:
+          maximum: 2147483647
+          minimum: 1
+          type: number
+          format: double
+        productionDate:
+          type:
+          - string
+          - 'null'
+          format: date
+        partBinID:
+          type:
+          - string
+          - 'null'
+        shiftID:
+          type:
+          - string
+          - 'null'
+        printDestinationID:
+          type:
+          - string
+          - 'null'
+        lotNumber:
+          type:
+          - string
+          - 'null'
+        lotExpirationDate:
+          type:
+          - string
+          - 'null'
+          format: date
+        lotAttributes:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+        serialNumbers:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+        catchWeights:
+          type:
+          - array
+          - 'null'
+          items:
+            type: number
+            format: double
+      additionalProperties: false
+    JobOperationUpdateModelData:
+      type: object
+      properties:
+        uniqueID:
+          type:
+          - string
+          - 'null'
+        workCenterID:
+          type:
+          - string
+          - 'null'
+        schedStartDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        schedEndDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+      additionalProperties: false
+    JobOperation:
+      title: JobOperation
+      type: object
+      properties:
+        jobID:
+          type: string
+        jobAssembly:
+          type: string
+        jobOperationSeq:
+          type: integer
+          format: int32
+        status:
+          type: string
+        workCenterID:
+          type: string
+        processID:
+          type: string
+        shortDesc:
+          type: string
+        longDescText:
+          type: string
+        longDescFormatted:
+          type: string
+        outsideOperation:
+          type: string
+        partID:
+          type: string
+        partRevisionID:
+          type: string
+        schedStartDate:
+          type: string
+          format: date-time
+        schedEndDate:
+          type: string
+          format: date-time
+        actStartDate:
+          type: string
+          format: date-time
+        actEndDate:
+          type: string
+          format: date-time
+        estSetupHours:
+          type: number
+          format: double
+        estProdHours:
+          type: number
+          format: double
+        estQueueHours:
+          type: number
+          format: double
+        estMoveHours:
+          type: number
+          format: double
+        estQAHours:
+          type: number
+          format: double
+        actSetupHours:
+          type: number
+          format: double
+        actualProdHours:
+          type: number
+          format: double
+        actQAHours:
+          type: number
+          format: double
+        vendorID:
+          type: string
+        estSetupTimeValue:
+          type: number
+          format: double
+        estSetupTimeUnit:
+          type: string
+        estProdTimeValue:
+          type: number
+          format: double
+        estProdTimeUnit:
+          type: string
+        uniqueID:
+          type: string
+        rowVersion:
+          type: integer
+          format: int64
+        operationQty:
+          type: number
+          format: double
+        quantityComplete:
+          type: number
+          format: double
+        isSetupComplete:
+          type: boolean
+        plantID:
+          type: string
+        purchaseOrderID:
+          type: string
+        supplierOrganizationID:
+          type: string
+        purchaseLocationID:
+          type: string
+        RFQID:
+          type: string
+        defaultEmployeeID:
+          type: string
+        defaultEmployeeID2:
+          type: string
+        defaultEmployeeID3:
+          type: string
+        isUnattended:
+          type: boolean
+        jobType:
+          type: string
+        supplierLeadTime:
+          type: integer
+          format: int32
+        jobIsClosed:
+          type: boolean
+        jobClosedDate:
+          type: string
+          format: date-time
+  securitySchemes:
+    Bearer:
+      type: oauth2
+      description: OAuth 2.0 Client Credentials Flow with API Users issued from Integration Engine Management Console
+      flows:
+        clientCredentials:
+          tokenUrl: https://api-user.integrations.ecimanufacturing.com/oauth2/api-user/token
+          scopes:
+            openid: openid

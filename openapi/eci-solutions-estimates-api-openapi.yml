@@ -1,0 +1,1958 @@
+openapi: 3.2.0
+info:
+  title: JobBOSS² Public Estimates API
+  description: Provides a common API surface for accessing ECI ERP JobBOSS².
+  version: v1
+servers:
+- url: https://api-jb2.integrations.ecimanufacturing.com:443
+  description: API Host
+security:
+- Bearer: []
+tags:
+- name: Estimates
+paths:
+  /api/v1/estimates:
+    get:
+      tags:
+      - Estimates
+      summary: Gets a list of Estimates
+      description: 'By default an estimate response will include only the fields: active, alternatePartNumber, calculationMethod, comments, customerCode, description, GLCode, leadTime, partNumber, productCode, purchaseFactor, purchasingGLCode, purchasingUnit, quantityOnHandBinLocation, revision, stockingCost, uniqueID, vendorCode1. You may specify the exact fields to return using the fields parameter.'
+      parameters:
+      - name: fields
+        in: query
+        description: A comma separated list of fields to include in the result.
+        schema:
+          type: string
+      - name: sort
+        in: query
+        description: A comma separated list of field to sort by. See the <a href='#sort-expressions'>Sort Expressions</a> section for more information.
+        schema:
+          type: string
+      - name: filters
+        in: query
+        description: Filters must be provided as query string parameters as defined in the <a href='#filter-expressions'>Filter Expressions</a> section.
+        schema:
+          type: object
+          additionalProperties:
+            type: string
+        examples:
+          No filters: {}
+          Filter by Product Code:
+            value:
+              productCode: JOBSHOP
+      - name: skip
+        in: query
+        description: The number of records at the start of the result set to skip over.
+        schema:
+          type: string
+      - name: take
+        in: query
+        description: The number of records to retrieve.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EstimateListSuccessResponse'
+              example:
+                Data:
+                - accountingID: string
+                  active: false
+                  alternatePartNumber: string
+                  billingRate: 0
+                  bin1Lot: string
+                  bin2Lot: string
+                  bin3Lot: string
+                  bin4Lot: string
+                  bin5Lot: string
+                  binLocation1: string
+                  binLocation2: string
+                  binLocation3: string
+                  binLocation4: string
+                  binLocation5: string
+                  binQuantity1: 0
+                  binQuantity2: 0
+                  binQuantity3: 0
+                  binQuantity4: 0
+                  binQuantity5: 0
+                  calculationMethod: string
+                  comments: string
+                  commissionPercent: 0
+                  customerCode: string
+                  defaultBinLocation: string
+                  description: string
+                  drawingFileName: string
+                  drawingNumber: string
+                  enteredBy: string
+                  enteredDate: '2026-09-06T17:13:12.0000000+00:00'
+                  GLCode: string
+                  imageRepositoryID: 0
+                  inspectCustomerReturns: false
+                  inspectInternalRejections: false
+                  inspectOrders: false
+                  inspectReceivers: false
+                  isTaxable: false
+                  lastDeliveryTicketDate: '2026-09-06T17:13:12.0000000+00:00'
+                  lastDeliveryTicketNumber: string
+                  lastDeliveryTicketQuantity: 0
+                  lastJobDate: '2026-09-06T17:13:12.0000000+00:00'
+                  lastJobDateFinished: '2026-09-06T17:13:12.0000000+00:00'
+                  lastJobNumber: string
+                  lastJobPrice: 0
+                  lastJobQuantity: 0
+                  lastJobQuoteNumber: string
+                  lastModDate: '2026-09-06T17:13:12.0000000+00:00'
+                  lastModUser: string
+                  lastPriceChange: '2026-09-06T17:13:12.0000000+00:00'
+                  lastPurchaseOrderCost: 0
+                  lastPurchaseOrderDate: '2026-09-06T17:13:12.0000000+00:00'
+                  lastPurchaseOrderNumber: string
+                  lastPurchaseOrderQuantity: 0
+                  leadTime: 0
+                  lockPrice: false
+                  markup1: 0
+                  markup2: 0
+                  markup3: 0
+                  markup4: 0
+                  markup5: 0
+                  markup6: 0
+                  markup7: 0
+                  markup8: 0
+                  markupPercent: 0
+                  matchQuantityBreaks: false
+                  miscCharge: 0
+                  miscDescription: string
+                  partNumber: string
+                  partWeight: 0
+                  price1: 0
+                  price2: 0
+                  price3: 0
+                  price4: 0
+                  price5: 0
+                  price6: 0
+                  price7: 0
+                  price8: 0
+                  pricingUnit: string
+                  printed: false
+                  productCode: string
+                  purchaseCost1: 0
+                  purchaseCost2: 0
+                  purchaseCost3: 0
+                  purchaseCost4: 0
+                  purchaseCost5: 0
+                  purchaseCost6: 0
+                  purchaseCost7: 0
+                  purchaseCost8: 0
+                  purchaseFactor: 0
+                  purchaseQuantity1: 0
+                  purchaseQuantity2: 0
+                  purchaseQuantity3: 0
+                  purchaseQuantity4: 0
+                  purchaseQuantity5: 0
+                  purchaseQuantity6: 0
+                  purchaseQuantity7: 0
+                  purchaseQuantity8: 0
+                  purchasingGLCode: string
+                  purchasingUnit: string
+                  QBItemType: string
+                  quantity1: 0
+                  quantity2: 0
+                  quantity3: 0
+                  quantity4: 0
+                  quantity5: 0
+                  quantity6: 0
+                  quantity7: 0
+                  quantity8: 0
+                  quantityOnHand: string
+                  quantityOnOrder: 0
+                  quantityOutside: 0
+                  reOrderLevel: 0
+                  reOrderQuantity: 0
+                  revisedDate: '2026-09-06T17:13:12.0000000+00:00'
+                  revision: string
+                  revisionDate: '2026-09-06T17:13:12.0000000+00:00'
+                  routeDate: '2026-09-06T17:13:12.0000000+00:00'
+                  routeEmployee: string
+                  stockingCost: 0
+                  stockUnit: string
+                  uniqueID: 0
+                  useDefaultQuantities: false
+                  user_Currency1: 0
+                  user_Currency2: 0
+                  user_Date1: '2026-09-06T17:13:12.0000000+00:00'
+                  user_Date2: '2026-09-06T17:13:12.0000000+00:00'
+                  user_Memo1: string
+                  user_Number1: 0
+                  user_Number2: 0
+                  user_Number3: 0
+                  user_Number4: 0
+                  user_Text1: string
+                  user_Text2: string
+                  user_Text3: string
+                  user_Text4: string
+                  vendorCode1: string
+                  vendorCode2: string
+                  vendorCode3: string
+      operationId: getApiV1Estimates
+      x-operation-id-source: derived
+    post:
+      tags:
+      - Estimates
+      summary: Creates an Estimate
+      description: '**Quantity breaks** *Note: If you set ''useDefaultQuantities'' flag to true the new estimate will use the default quantity breaks from company maintenance and if it is false the new estimate will ignore the default quantity breaks values so all quantities that are not in the request will be 0.'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EstimateCreate'
+            example:
+              active: false
+              alternatePartNumber: string
+              calculationMethod: string
+              customerCode: string
+              description: string
+              GLCode: string
+              leadTime: 0
+              lockPrice: false
+              markup1: 0
+              markup2: 0
+              markup3: 0
+              markup4: 0
+              markup5: 0
+              markup6: 0
+              markup7: 0
+              markup8: 0
+              partNumber: string
+              partWeight: 0
+              price1: 0
+              price2: 0
+              price3: 0
+              price4: 0
+              price5: 0
+              price6: 0
+              price7: 0
+              price8: 0
+              pricingUnit: string
+              productCode: string
+              purchaseCost1: 0
+              purchaseCost2: 0
+              purchaseCost3: 0
+              purchaseCost4: 0
+              purchaseCost5: 0
+              purchaseCost6: 0
+              purchaseCost7: 0
+              purchaseCost8: 0
+              purchaseFactor: 0
+              purchaseQuantity1: 0
+              purchaseQuantity2: 0
+              purchaseQuantity3: 0
+              purchaseQuantity4: 0
+              purchaseQuantity5: 0
+              purchaseQuantity6: 0
+              purchaseQuantity7: 0
+              purchaseQuantity8: 0
+              purchasingGLCode: string
+              purchasingUnit: string
+              quantity1: 0
+              quantity2: 0
+              quantity3: 0
+              quantity4: 0
+              quantity5: 0
+              quantity6: 0
+              quantity7: 0
+              quantity8: 0
+              revision: string
+              revisionDate: '2026-09-06T17:13:12.0000000+00:00'
+              useDefaultQuantities: false
+              user_Currency1: 0
+              user_Currency2: 0
+              user_Date1: '2026-09-06T17:13:12.0000000+00:00'
+              user_Date2: '2026-09-06T17:13:12.0000000+00:00'
+              user_Memo1: string
+              user_Number1: 0
+              user_Number2: 0
+              user_Number3: 0
+              user_Number4: 0
+              user_Text1: string
+              user_Text2: string
+              user_Text3: string
+              user_Text4: string
+              vendorCode1: string
+              materials:
+              - description: string
+                materialDetailID: string
+                partWeight: 0
+                quantity: 0
+                stepNumber: 0
+                subPartNumber: string
+                unit: string
+                unitCost: 0
+                unitPrice: 0
+                vendor: string
+              routings:
+              - cycleTime: 0
+                cycleUnit: string
+                description: string
+                operatorCode: string
+                setupTime: 0
+                stepNumber: 0
+                timeUnit: string
+                vendorCode: string
+                workCenter: string
+                workOrVendor: string
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Estimate'
+              example:
+                accountingID: string
+                active: false
+                alternatePartNumber: string
+                billingRate: 0
+                bin1Lot: string
+                bin2Lot: string
+                bin3Lot: string
+                bin4Lot: string
+                bin5Lot: string
+                binLocation1: string
+                binLocation2: string
+                binLocation3: string
+                binLocation4: string
+                binLocation5: string
+                binQuantity1: 0
+                binQuantity2: 0
+                binQuantity3: 0
+                binQuantity4: 0
+                binQuantity5: 0
+                calculationMethod: string
+                comments: string
+                commissionPercent: 0
+                customerCode: string
+                defaultBinLocation: string
+                description: string
+                drawingFileName: string
+                drawingNumber: string
+                enteredBy: string
+                enteredDate: '2026-09-06T17:13:12.0000000+00:00'
+                GLCode: string
+                imageRepositoryID: 0
+                inspectCustomerReturns: false
+                inspectInternalRejections: false
+                inspectOrders: false
+                inspectReceivers: false
+                isTaxable: false
+                lastDeliveryTicketDate: '2026-09-06T17:13:12.0000000+00:00'
+                lastDeliveryTicketNumber: string
+                lastDeliveryTicketQuantity: 0
+                lastJobDate: '2026-09-06T17:13:12.0000000+00:00'
+                lastJobDateFinished: '2026-09-06T17:13:12.0000000+00:00'
+                lastJobNumber: string
+                lastJobPrice: 0
+                lastJobQuantity: 0
+                lastJobQuoteNumber: string
+                lastModDate: '2026-09-06T17:13:12.0000000+00:00'
+                lastModUser: string
+                lastPriceChange: '2026-09-06T17:13:12.0000000+00:00'
+                lastPurchaseOrderCost: 0
+                lastPurchaseOrderDate: '2026-09-06T17:13:12.0000000+00:00'
+                lastPurchaseOrderNumber: string
+                lastPurchaseOrderQuantity: 0
+                leadTime: 0
+                lockPrice: false
+                markup1: 0
+                markup2: 0
+                markup3: 0
+                markup4: 0
+                markup5: 0
+                markup6: 0
+                markup7: 0
+                markup8: 0
+                markupPercent: 0
+                matchQuantityBreaks: false
+                miscCharge: 0
+                miscDescription: string
+                partNumber: string
+                partWeight: 0
+                price1: 0
+                price2: 0
+                price3: 0
+                price4: 0
+                price5: 0
+                price6: 0
+                price7: 0
+                price8: 0
+                pricingUnit: string
+                printed: false
+                productCode: string
+                purchaseCost1: 0
+                purchaseCost2: 0
+                purchaseCost3: 0
+                purchaseCost4: 0
+                purchaseCost5: 0
+                purchaseCost6: 0
+                purchaseCost7: 0
+                purchaseCost8: 0
+                purchaseFactor: 0
+                purchaseQuantity1: 0
+                purchaseQuantity2: 0
+                purchaseQuantity3: 0
+                purchaseQuantity4: 0
+                purchaseQuantity5: 0
+                purchaseQuantity6: 0
+                purchaseQuantity7: 0
+                purchaseQuantity8: 0
+                purchasingGLCode: string
+                purchasingUnit: string
+                QBItemType: string
+                quantity1: 0
+                quantity2: 0
+                quantity3: 0
+                quantity4: 0
+                quantity5: 0
+                quantity6: 0
+                quantity7: 0
+                quantity8: 0
+                quantityOnHand: string
+                quantityOnOrder: 0
+                quantityOutside: 0
+                reOrderLevel: 0
+                reOrderQuantity: 0
+                revisedDate: '2026-09-06T17:13:12.0000000+00:00'
+                revision: string
+                revisionDate: '2026-09-06T17:13:12.0000000+00:00'
+                routeDate: '2026-09-06T17:13:12.0000000+00:00'
+                routeEmployee: string
+                stockingCost: 0
+                stockUnit: string
+                uniqueID: 0
+                useDefaultQuantities: false
+                user_Currency1: 0
+                user_Currency2: 0
+                user_Date1: '2026-09-06T17:13:12.0000000+00:00'
+                user_Date2: '2026-09-06T17:13:12.0000000+00:00'
+                user_Memo1: string
+                user_Number1: 0
+                user_Number2: 0
+                user_Number3: 0
+                user_Number4: 0
+                user_Text1: string
+                user_Text2: string
+                user_Text3: string
+                user_Text4: string
+                vendorCode1: string
+                vendorCode2: string
+                vendorCode3: string
+      operationId: postApiV1Estimates
+      x-operation-id-source: derived
+  /api/v1/estimates/{partNumber}:
+    get:
+      tags:
+      - Estimates
+      summary: Gets an Estimate by part number
+      description: 'By default an estimate response will include only the fields: active, alternatePartNumber, calculationMethod, comments, customerCode, description, GLCode, leadTime, partNumber, productCode, purchaseFactor, purchasingGLCode, purchasingUnit, quantityOnHandBinLocation, revision, stockingCost, uniqueID, vendorCode1. You may specify the exact fields to return using the fields parameter.'
+      parameters:
+      - name: partNumber
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: fields
+        in: query
+        description: A comma separated list of fields to include in the result.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EstimateSuccessResponse'
+              example:
+                Data:
+                  accountingID: string
+                  active: false
+                  alternatePartNumber: string
+                  billingRate: 0
+                  bin1Lot: string
+                  bin2Lot: string
+                  bin3Lot: string
+                  bin4Lot: string
+                  bin5Lot: string
+                  binLocation1: string
+                  binLocation2: string
+                  binLocation3: string
+                  binLocation4: string
+                  binLocation5: string
+                  binQuantity1: 0
+                  binQuantity2: 0
+                  binQuantity3: 0
+                  binQuantity4: 0
+                  binQuantity5: 0
+                  calculationMethod: string
+                  comments: string
+                  commissionPercent: 0
+                  customerCode: string
+                  defaultBinLocation: string
+                  description: string
+                  drawingFileName: string
+                  drawingNumber: string
+                  enteredBy: string
+                  enteredDate: '2026-09-06T17:13:12.0000000+00:00'
+                  GLCode: string
+                  imageRepositoryID: 0
+                  inspectCustomerReturns: false
+                  inspectInternalRejections: false
+                  inspectOrders: false
+                  inspectReceivers: false
+                  isTaxable: false
+                  lastDeliveryTicketDate: '2026-09-06T17:13:12.0000000+00:00'
+                  lastDeliveryTicketNumber: string
+                  lastDeliveryTicketQuantity: 0
+                  lastJobDate: '2026-09-06T17:13:12.0000000+00:00'
+                  lastJobDateFinished: '2026-09-06T17:13:12.0000000+00:00'
+                  lastJobNumber: string
+                  lastJobPrice: 0
+                  lastJobQuantity: 0
+                  lastJobQuoteNumber: string
+                  lastModDate: '2026-09-06T17:13:12.0000000+00:00'
+                  lastModUser: string
+                  lastPriceChange: '2026-09-06T17:13:12.0000000+00:00'
+                  lastPurchaseOrderCost: 0
+                  lastPurchaseOrderDate: '2026-09-06T17:13:12.0000000+00:00'
+                  lastPurchaseOrderNumber: string
+                  lastPurchaseOrderQuantity: 0
+                  leadTime: 0
+                  lockPrice: false
+                  markup1: 0
+                  markup2: 0
+                  markup3: 0
+                  markup4: 0
+                  markup5: 0
+                  markup6: 0
+                  markup7: 0
+                  markup8: 0
+                  markupPercent: 0
+                  matchQuantityBreaks: false
+                  miscCharge: 0
+                  miscDescription: string
+                  partNumber: string
+                  partWeight: 0
+                  price1: 0
+                  price2: 0
+                  price3: 0
+                  price4: 0
+                  price5: 0
+                  price6: 0
+                  price7: 0
+                  price8: 0
+                  pricingUnit: string
+                  printed: false
+                  productCode: string
+                  purchaseCost1: 0
+                  purchaseCost2: 0
+                  purchaseCost3: 0
+                  purchaseCost4: 0
+                  purchaseCost5: 0
+                  purchaseCost6: 0
+                  purchaseCost7: 0
+                  purchaseCost8: 0
+                  purchaseFactor: 0
+                  purchaseQuantity1: 0
+                  purchaseQuantity2: 0
+                  purchaseQuantity3: 0
+                  purchaseQuantity4: 0
+                  purchaseQuantity5: 0
+                  purchaseQuantity6: 0
+                  purchaseQuantity7: 0
+                  purchaseQuantity8: 0
+                  purchasingGLCode: string
+                  purchasingUnit: string
+                  QBItemType: string
+                  quantity1: 0
+                  quantity2: 0
+                  quantity3: 0
+                  quantity4: 0
+                  quantity5: 0
+                  quantity6: 0
+                  quantity7: 0
+                  quantity8: 0
+                  quantityOnHand: string
+                  quantityOnOrder: 0
+                  quantityOutside: 0
+                  reOrderLevel: 0
+                  reOrderQuantity: 0
+                  revisedDate: '2026-09-06T17:13:12.0000000+00:00'
+                  revision: string
+                  revisionDate: '2026-09-06T17:13:12.0000000+00:00'
+                  routeDate: '2026-09-06T17:13:12.0000000+00:00'
+                  routeEmployee: string
+                  stockingCost: 0
+                  stockUnit: string
+                  uniqueID: 0
+                  useDefaultQuantities: false
+                  user_Currency1: 0
+                  user_Currency2: 0
+                  user_Date1: '2026-09-06T17:13:12.0000000+00:00'
+                  user_Date2: '2026-09-06T17:13:12.0000000+00:00'
+                  user_Memo1: string
+                  user_Number1: 0
+                  user_Number2: 0
+                  user_Number3: 0
+                  user_Number4: 0
+                  user_Text1: string
+                  user_Text2: string
+                  user_Text3: string
+                  user_Text4: string
+                  vendorCode1: string
+                  vendorCode2: string
+                  vendorCode3: string
+      operationId: getApiV1EstimatesByPartNumber
+      x-operation-id-source: derived
+    patch:
+      tags:
+      - Estimates
+      summary: Updates an Estimate
+      parameters:
+      - name: partNumber
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EstimateUpdate'
+            example:
+              revision: string
+              description: string
+              revisionDate: '2026-09-06T17:13:12.0000000+00:00'
+              user_Currency1: 0
+              user_Currency2: 0
+              user_Date1: '2026-09-06T17:13:12.0000000+00:00'
+              user_Date2: '2026-09-06T17:13:12.0000000+00:00'
+              user_Memo1: string
+              user_Number1: 0
+              user_Number2: 0
+              user_Number3: 0
+              user_Number4: 0
+              user_Text1: string
+              user_Text2: string
+              user_Text3: string
+              user_Text4: string
+      responses:
+        '204':
+          description: Success
+      operationId: patchApiV1EstimatesByPartNumber
+      x-operation-id-source: derived
+components:
+  schemas:
+    EstimateSuccessResponse:
+      type: object
+      properties:
+        Data:
+          $ref: '#/components/schemas/Estimate'
+      additionalProperties: false
+    EstimateCreate:
+      required:
+      - partNumber
+      type: object
+      properties:
+        active:
+          type: boolean
+        alternatePartNumber:
+          type:
+          - string
+          - 'null'
+        calculationMethod:
+          type:
+          - string
+          - 'null'
+        customerCode:
+          type:
+          - string
+          - 'null'
+        description:
+          type:
+          - string
+          - 'null'
+        GLCode:
+          type:
+          - string
+          - 'null'
+        leadTime:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        lockPrice:
+          type: boolean
+        markup1:
+          type:
+          - number
+          - 'null'
+          format: double
+        markup2:
+          type:
+          - number
+          - 'null'
+          format: double
+        markup3:
+          type:
+          - number
+          - 'null'
+          format: double
+        markup4:
+          type:
+          - number
+          - 'null'
+          format: double
+        markup5:
+          type:
+          - number
+          - 'null'
+          format: double
+        markup6:
+          type:
+          - number
+          - 'null'
+          format: double
+        markup7:
+          type:
+          - number
+          - 'null'
+          format: double
+        markup8:
+          type:
+          - number
+          - 'null'
+          format: double
+        partNumber:
+          type: string
+        partWeight:
+          type:
+          - number
+          - 'null'
+          format: double
+        price1:
+          type:
+          - number
+          - 'null'
+          format: double
+        price2:
+          type:
+          - number
+          - 'null'
+          format: double
+        price3:
+          type:
+          - number
+          - 'null'
+          format: double
+        price4:
+          type:
+          - number
+          - 'null'
+          format: double
+        price5:
+          type:
+          - number
+          - 'null'
+          format: double
+        price6:
+          type:
+          - number
+          - 'null'
+          format: double
+        price7:
+          type:
+          - number
+          - 'null'
+          format: double
+        price8:
+          type:
+          - number
+          - 'null'
+          format: double
+        pricingUnit:
+          type:
+          - string
+          - 'null'
+        productCode:
+          type:
+          - string
+          - 'null'
+        purchaseCost1:
+          type:
+          - number
+          - 'null'
+          format: double
+        purchaseCost2:
+          type:
+          - number
+          - 'null'
+          format: double
+        purchaseCost3:
+          type:
+          - number
+          - 'null'
+          format: double
+        purchaseCost4:
+          type:
+          - number
+          - 'null'
+          format: double
+        purchaseCost5:
+          type:
+          - number
+          - 'null'
+          format: double
+        purchaseCost6:
+          type:
+          - number
+          - 'null'
+          format: double
+        purchaseCost7:
+          type:
+          - number
+          - 'null'
+          format: double
+        purchaseCost8:
+          type:
+          - number
+          - 'null'
+          format: double
+        purchaseFactor:
+          type:
+          - number
+          - 'null'
+          format: double
+        purchaseQuantity1:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        purchaseQuantity2:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        purchaseQuantity3:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        purchaseQuantity4:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        purchaseQuantity5:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        purchaseQuantity6:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        purchaseQuantity7:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        purchaseQuantity8:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        purchasingGLCode:
+          type:
+          - string
+          - 'null'
+        purchasingUnit:
+          type:
+          - string
+          - 'null'
+        quantity1:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        quantity2:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        quantity3:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        quantity4:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        quantity5:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        quantity6:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        quantity7:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        quantity8:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        revision:
+          type:
+          - string
+          - 'null'
+        revisionDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        useDefaultQuantities:
+          type: boolean
+        user_Currency1:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Currency2:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Date1:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        user_Date2:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        user_Memo1:
+          type:
+          - string
+          - 'null'
+        user_Number1:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Number2:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Number3:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Number4:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Text1:
+          type:
+          - string
+          - 'null'
+        user_Text2:
+          type:
+          - string
+          - 'null'
+        user_Text3:
+          type:
+          - string
+          - 'null'
+        user_Text4:
+          type:
+          - string
+          - 'null'
+        vendorCode1:
+          type:
+          - string
+          - 'null'
+        materials:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/MaterialCreate'
+        routings:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/RoutingCreate'
+      additionalProperties: false
+    Estimate:
+      type: object
+      properties:
+        accountingID:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        active:
+          type: boolean
+          readOnly: true
+        alternatePartNumber:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        billingRate:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          readOnly: true
+        bin1Lot:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        bin2Lot:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        bin3Lot:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        bin4Lot:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        bin5Lot:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        binLocation1:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        binLocation2:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        binLocation3:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        binLocation4:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        binLocation5:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        binQuantity1:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        binQuantity2:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        binQuantity3:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        binQuantity4:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        binQuantity5:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        calculationMethod:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        comments:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        commissionPercent:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        customerCode:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        defaultBinLocation:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        description:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        drawingFileName:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        drawingNumber:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        enteredBy:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        enteredDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        GLCode:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        imageRepositoryID:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          readOnly: true
+        inspectCustomerReturns:
+          type:
+          - boolean
+          - 'null'
+          readOnly: true
+        inspectInternalRejections:
+          type:
+          - boolean
+          - 'null'
+          readOnly: true
+        inspectOrders:
+          type:
+          - boolean
+          - 'null'
+          readOnly: true
+        inspectReceivers:
+          type:
+          - boolean
+          - 'null'
+          readOnly: true
+        isTaxable:
+          type: boolean
+          readOnly: true
+        lastDeliveryTicketDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        lastDeliveryTicketNumber:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        lastDeliveryTicketQuantity:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          readOnly: true
+        lastJobDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        lastJobDateFinished:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        lastJobNumber:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        lastJobPrice:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        lastJobQuantity:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        lastJobQuoteNumber:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        lastModDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        lastModUser:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        lastPriceChange:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        lastPurchaseOrderCost:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        lastPurchaseOrderDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        lastPurchaseOrderNumber:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        lastPurchaseOrderQuantity:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        leadTime:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          readOnly: true
+        lockPrice:
+          type: boolean
+          readOnly: true
+        markup1:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        markup2:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        markup3:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        markup4:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        markup5:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        markup6:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        markup7:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        markup8:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        markupPercent:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        matchQuantityBreaks:
+          type: boolean
+          readOnly: true
+        miscCharge:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        miscDescription:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        partNumber:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        partWeight:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        price1:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        price2:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        price3:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        price4:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        price5:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        price6:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        price7:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        price8:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        pricingUnit:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        printed:
+          type: boolean
+          readOnly: true
+        productCode:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        purchaseCost1:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        purchaseCost2:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        purchaseCost3:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        purchaseCost4:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        purchaseCost5:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        purchaseCost6:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        purchaseCost7:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        purchaseCost8:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        purchaseFactor:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        purchaseQuantity1:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          readOnly: true
+        purchaseQuantity2:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          readOnly: true
+        purchaseQuantity3:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          readOnly: true
+        purchaseQuantity4:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          readOnly: true
+        purchaseQuantity5:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          readOnly: true
+        purchaseQuantity6:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          readOnly: true
+        purchaseQuantity7:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          readOnly: true
+        purchaseQuantity8:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          readOnly: true
+        purchasingGLCode:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        purchasingUnit:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        QBItemType:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        quantity1:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          readOnly: true
+        quantity2:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          readOnly: true
+        quantity3:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          readOnly: true
+        quantity4:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          readOnly: true
+        quantity5:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          readOnly: true
+        quantity6:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          readOnly: true
+        quantity7:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          readOnly: true
+        quantity8:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          readOnly: true
+        quantityOnHand:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        quantityOnOrder:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        quantityOutside:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        reOrderLevel:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          readOnly: true
+        reOrderQuantity:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          readOnly: true
+        revisedDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        revision:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        revisionDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        routeDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        routeEmployee:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        stockingCost:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        stockUnit:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        uniqueID:
+          type: integer
+          format: int32
+          readOnly: true
+        useDefaultQuantities:
+          type: boolean
+          readOnly: true
+        user_Currency1:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        user_Currency2:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        user_Date1:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        user_Date2:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        user_Memo1:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        user_Number1:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        user_Number2:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        user_Number3:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        user_Number4:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        user_Text1:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        user_Text2:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        user_Text3:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        user_Text4:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        vendorCode1:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        vendorCode2:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        vendorCode3:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+      additionalProperties: false
+    MaterialCreate:
+      required:
+      - subPartNumber
+      type: object
+      properties:
+        description:
+          type:
+          - string
+          - 'null'
+        materialDetailID:
+          type:
+          - string
+          - 'null'
+        partWeight:
+          type:
+          - number
+          - 'null'
+          format: double
+        quantity:
+          type:
+          - number
+          - 'null'
+          format: double
+        stepNumber:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        subPartNumber:
+          type: string
+        unit:
+          type:
+          - string
+          - 'null'
+        unitCost:
+          type:
+          - number
+          - 'null'
+          format: double
+        unitPrice:
+          type:
+          - number
+          - 'null'
+          format: double
+        vendor:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    EstimateUpdate:
+      type: object
+      properties:
+        revision:
+          type:
+          - string
+          - 'null'
+        description:
+          type:
+          - string
+          - 'null'
+        revisionDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        user_Currency1:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Currency2:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Date1:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        user_Date2:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        user_Memo1:
+          type:
+          - string
+          - 'null'
+        user_Number1:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Number2:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Number3:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Number4:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Text1:
+          type:
+          - string
+          - 'null'
+        user_Text2:
+          type:
+          - string
+          - 'null'
+        user_Text3:
+          type:
+          - string
+          - 'null'
+        user_Text4:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    EstimateListSuccessResponse:
+      type: object
+      properties:
+        Data:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Estimate'
+      additionalProperties: false
+    RoutingCreate:
+      required:
+      - cycleUnit
+      - stepNumber
+      - timeUnit
+      - workOrVendor
+      type: object
+      properties:
+        cycleTime:
+          type:
+          - number
+          - 'null'
+          format: double
+        cycleUnit:
+          type: string
+        description:
+          type:
+          - string
+          - 'null'
+        operatorCode:
+          type:
+          - string
+          - 'null'
+        setupTime:
+          type:
+          - number
+          - 'null'
+          format: double
+        stepNumber:
+          type: integer
+          format: int32
+        timeUnit:
+          type: string
+        vendorCode:
+          type:
+          - string
+          - 'null'
+        workCenter:
+          type:
+          - string
+          - 'null'
+        workOrVendor:
+          type: string
+      additionalProperties: false
+  securitySchemes:
+    Bearer:
+      type: oauth2
+      description: OAuth 2.0 Client Credentials Flow with API Users issued from Integration Engine Management Console
+      flows:
+        clientCredentials:
+          tokenUrl: https://api-user.integrations.ecimanufacturing.com/oauth2/api-user/token
+          scopes:
+            openid: openid

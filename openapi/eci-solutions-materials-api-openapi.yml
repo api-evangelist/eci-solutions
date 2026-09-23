@@ -1,0 +1,291 @@
+openapi: 3.2.0
+info:
+  title: JobBOSS² Public Materials API
+  description: Provides a common API surface for accessing ECI ERP JobBOSS².
+  version: v1
+servers:
+- url: https://api-jb2.integrations.ecimanufacturing.com:443
+  description: API Host
+security:
+- Bearer: []
+tags:
+- name: Materials
+paths:
+  /api/v1/estimates/{partNumber}/materials/{subPartNumber}:
+    get:
+      tags:
+      - Materials
+      summary: Gets a Material of an Estimate by part number and sub part number
+      description: 'By default a material response will include only the fields: description, itemNumber, lastModDate, lastModUser, uniqueID, partNumber, partWeight, isPurchased, quantity, stepNumber, subPartNumber, totalCost, totalPrice, totalQuantity, totalWeight, unit, unitCost, unitPrice, vendor, materialDetailID. You may specify the exact fields to return using the fields parameter.'
+      parameters:
+      - name: partNumber
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: subPartNumber
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: fields
+        in: query
+        description: A comma separated list of fields to include in the result.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MaterialSuccessResponse'
+              example:
+                Data:
+                  description: string
+                  enteredDate: '2026-09-06T17:13:12.0000000+00:00'
+                  isPurchased: false
+                  itemNumber: 0
+                  lastModDate: '2026-09-06T17:13:12.0000000+00:00'
+                  lastModUser: string
+                  materialDetailID: string
+                  partNumber: string
+                  partWeight: 0
+                  quantity: 0
+                  revisedDate: '2026-09-06T17:13:12.0000000+00:00'
+                  stepNumber: 0
+                  subPartNumber: string
+                  totalCost: 0
+                  totalPrice: 0
+                  totalQuantity: 0
+                  totalWeight: 0
+                  uniqueID: 0
+                  unit: string
+                  unitCost: 0
+                  unitPrice: 0
+                  vendor: string
+      operationId: getApiV1EstimatesByPartNumberMaterialsBySubPartNumber
+      x-operation-id-source: derived
+  /api/v1/materials:
+    get:
+      tags:
+      - Materials
+      summary: Gets a list of Materials
+      description: 'By default a material response will include only the fields: description, itemNumber, lastModDate, lastModUser, uniqueID, partNumber, partWeight, isPurchased, quantity, stepNumber, subPartNumber, totalCost, totalPrice, totalQuantity, totalWeight, unit, unitCost, unitPrice, vendor, materialDetailID. You may specify the exact fields to return using the fields parameter.'
+      parameters:
+      - name: fields
+        in: query
+        description: A comma separated list of fields to include in the result.
+        schema:
+          type: string
+      - name: sort
+        in: query
+        description: A comma separated list of fields to sort by.
+        schema:
+          type: string
+      - name: filters
+        in: query
+        description: Filters must be provided as query string parameters as defined in the Filter Expression section.
+        schema:
+          type: object
+          additionalProperties:
+            type: string
+        examples:
+          No filters: {}
+          Filter by Vendor:
+            value:
+              vendor: PLASTIC
+      - name: skip
+        in: query
+        description: The number of records at the start of the result set to skip over.
+        schema:
+          type: string
+      - name: take
+        in: query
+        description: The number of records to retrieve.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MaterialListSuccessResponse'
+              example:
+                Data:
+                - description: string
+                  enteredDate: '2026-09-06T17:13:12.0000000+00:00'
+                  isPurchased: false
+                  itemNumber: 0
+                  lastModDate: '2026-09-06T17:13:12.0000000+00:00'
+                  lastModUser: string
+                  materialDetailID: string
+                  partNumber: string
+                  partWeight: 0
+                  quantity: 0
+                  revisedDate: '2026-09-06T17:13:12.0000000+00:00'
+                  stepNumber: 0
+                  subPartNumber: string
+                  totalCost: 0
+                  totalPrice: 0
+                  totalQuantity: 0
+                  totalWeight: 0
+                  uniqueID: 0
+                  unit: string
+                  unitCost: 0
+                  unitPrice: 0
+                  vendor: string
+      operationId: getApiV1Materials
+      x-operation-id-source: derived
+components:
+  schemas:
+    Material:
+      type: object
+      properties:
+        description:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        enteredDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        isPurchased:
+          type: boolean
+          readOnly: true
+        itemNumber:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          readOnly: true
+        lastModDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        lastModUser:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        materialDetailID:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        partNumber:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        partWeight:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        quantity:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        revisedDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        stepNumber:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          readOnly: true
+        subPartNumber:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        totalCost:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        totalPrice:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        totalQuantity:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        totalWeight:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        uniqueID:
+          type: integer
+          format: int32
+          readOnly: true
+        unit:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        unitCost:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        unitPrice:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        vendor:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+      additionalProperties: false
+    MaterialSuccessResponse:
+      type: object
+      properties:
+        Data:
+          $ref: '#/components/schemas/Material'
+      additionalProperties: false
+    MaterialListSuccessResponse:
+      type: object
+      properties:
+        Data:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Material'
+      additionalProperties: false
+  securitySchemes:
+    Bearer:
+      type: oauth2
+      description: OAuth 2.0 Client Credentials Flow with API Users issued from Integration Engine Management Console
+      flows:
+        clientCredentials:
+          tokenUrl: https://api-user.integrations.ecimanufacturing.com/oauth2/api-user/token
+          scopes:
+            openid: openid

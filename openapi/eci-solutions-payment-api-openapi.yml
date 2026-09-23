@@ -1,0 +1,761 @@
+openapi: 3.2.0
+info:
+  title: ECI MFG Payment API
+  description: '# PaymentIntegration API User Guide
+
+
+    This guide explains how to use the PaymentIntegration API to process payments and manage customer data.'
+  contact:
+    name: ECI Manufacturing Division Integration Team
+    url: https://www.ecisolutions.com/support/
+  version: 2.9.29+ff43d60aad
+security:
+- Bearer: []
+tags:
+- name: Payment
+paths:
+  /api/payment/accountVaultTransaction:
+    post:
+      tags:
+      - Payment
+      summary: Charges an account vault
+      description: '### Charges an account vault
+
+        This API allows you to charge a customer through an associated account vault.
+
+
+        This endpoint supports the following actions:
+
+        * `sale`: A standard transaction that charges the customer''s card and marks it for settlement.
+
+        * `authonly`: Authorizes an amount on the customer''s card but does not charge it. The funds are held for a period of time.
+
+        * `debit`: A transaction that debits a bank account (ACH).
+
+        * `avsonly`: Performs an Address Verification System (AVS) check only, without charging the card.
+
+
+        Other actions like `refund`, `void`, `credit`, etc., are supported via the `POST /api/payment/updatetransaction` endpoint.
+
+        The `edit` action is supported via the `PUT /api/payment/accountVaultTransaction` endpoint.'
+      requestBody:
+        description: This is an object which contains all required fields to process the request.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AccountVaultTransaction'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/AccountVaultTransaction'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/AccountVaultTransaction'
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/TransactionResponseAPIResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionResponseAPIResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/TransactionResponseAPIResponse'
+      operationId: postApiPaymentAccountVaultTransaction
+      x-operation-id-source: derived
+    put:
+      tags:
+      - Payment
+      summary: Updates a transaction description
+      description: '### Updates a transaction description
+
+        This API allows you to update a description for any transaction using the `edit` action.'
+      requestBody:
+        description: This is an object which contains all required fields to proceed further.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PaymentTransaction'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/PaymentTransaction'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/PaymentTransaction'
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/StringAPIResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StringAPIResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/StringAPIResponse'
+      operationId: putApiPaymentAccountVaultTransaction
+      x-operation-id-source: derived
+  /api/payment/updateauthonlytransaction:
+    put:
+      tags:
+      - Payment
+      summary: Completes auth-only transactions
+      description: '### Completes auth-only transactions
+
+        This API allows you to perform a complete on auth-only transactions.'
+      requestBody:
+        description: This is a list object which contains all auth-only transaction IDs.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthOnlyTransactionDetails'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/AuthOnlyTransactionDetails'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/AuthOnlyTransactionDetails'
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/StringAPIResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StringAPIResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/StringAPIResponse'
+      operationId: putApiPaymentUpdateauthonlytransaction
+      x-operation-id-source: derived
+  /api/payment/updateauthonlytransactionbyid:
+    put:
+      tags:
+      - Payment
+      summary: Completes a single transaction
+      description: '### Completes a single transaction
+
+        This API allows you to perform a complete on a desired transaction. It uses the `authcomplete` action.'
+      requestBody:
+        description: This is an object which contains the transaction ID and can provide a transaction amount for a lesser amount than authorized.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthOnlyTransactionDetail'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/AuthOnlyTransactionDetail'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/AuthOnlyTransactionDetail'
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/StringAPIResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StringAPIResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/StringAPIResponse'
+      operationId: putApiPaymentUpdateauthonlytransactionbyid
+      x-operation-id-source: derived
+  /api/payment/getalltransactions:
+    get:
+      tags:
+      - Payment
+      summary: Retrieves all transactions
+      description: '### Retrieves all transactions
+
+        This API allows you to retrieve all transactions associated with the account. You can filter the transaction by providing a location ID and contact ID.'
+      parameters:
+      - name: contactId
+        in: query
+        description: This field contains the contact ID to filter the transactions.
+        schema:
+          type: string
+      - name: locationId
+        in: query
+        description: This field contains the location ID to filter the transactions.
+        schema:
+          type: string
+      - name: developerId
+        in: query
+        description: This field contains the developer ID which is required to retrieve the transactions.
+        required: true
+        schema:
+          type: string
+      - name: transactionId
+        in: query
+        description: This field contains the transaction ID to filter the transactions.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/TransactionUIResponseRootAPIResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionUIResponseRootAPIResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/TransactionUIResponseRootAPIResponse'
+      operationId: getApiPaymentGetalltransactions
+      x-operation-id-source: derived
+  /api/payment/gettransactionsbystatus:
+    get:
+      tags:
+      - Payment
+      summary: Retrieves transactions by status
+      description: '### Retrieves transactions by status
+
+        This API allows you to retrieve all transactions which have the provided status. You can provide a contact ID and location ID to filter the response.
+
+        The following statuses can be used:
+
+        `Approved`, `AuthOnly`, `Refunded`, `AvsOnly`, `PendingOrigination`, `Settled`, `Voided`, `Declined`, `ChargedBack`'
+      parameters:
+      - name: contactId
+        in: query
+        description: This field contains the contact ID to filter the transactions.
+        schema:
+          type: string
+      - name: status
+        in: query
+        description: This field contains the status.
+        required: true
+        schema:
+          type: string
+      - name: locationId
+        in: query
+        description: This field contains the location ID to filter the transactions.
+        schema:
+          type: string
+      - name: developerId
+        in: query
+        description: This field contains the developer ID which is required to retrieve the transactions.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/TransactionStatusResponseRootAPIResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionStatusResponseRootAPIResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/TransactionStatusResponseRootAPIResponse'
+      operationId: getApiPaymentGettransactionsbystatus
+      x-operation-id-source: derived
+  /api/payment/updatetransaction:
+    post:
+      tags:
+      - Payment
+      summary: Updates a transaction
+      description: '### Updates a transaction
+
+        Allows the following actions for CC transactions: `authonly`, `authincrement`, `refund`, `partialreversal`, and `void`.
+
+        Allows the `credit` action for ACH transactions.'
+      requestBody:
+        description: This is an object which contains all required fields to proceed further.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransactionUpdateRequestModel'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/TransactionUpdateRequestModel'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/TransactionUpdateRequestModel'
+      responses:
+        '200':
+          description: OK
+      operationId: postApiPaymentUpdatetransaction
+      x-operation-id-source: derived
+components:
+  schemas:
+    ApiError:
+      type: object
+      properties:
+        isError:
+          type: boolean
+        exceptionMessage:
+          type:
+          - string
+          - 'null'
+        details:
+          type:
+          - string
+          - 'null'
+        referenceErrorCode:
+          type:
+          - string
+          - 'null'
+        referenceDocumentLink:
+          type:
+          - string
+          - 'null'
+        validationErrors:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ValidationError'
+      additionalProperties: false
+    PaymentTransaction:
+      required:
+      - developer_id
+      - id
+      - location_id
+      type: object
+      properties:
+        location_id:
+          minLength: 1
+          type: string
+        developer_id:
+          minLength: 1
+          type: string
+        id:
+          minLength: 1
+          type: string
+        description:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    TransactionUIResponseRoot:
+      type: object
+      properties:
+        transactions:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/TransactionUIDetail'
+      additionalProperties: false
+    TransactionUIDetail:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+        payment_method:
+          type:
+          - string
+          - 'null'
+        transaction_amount:
+          type:
+          - string
+          - 'null'
+        order_num:
+          type:
+          - string
+          - 'null'
+        po_number:
+          type:
+          - string
+          - 'null'
+        status_id:
+          type: integer
+          format: int32
+        process:
+          type: boolean
+        description:
+          type:
+          - string
+          - 'null'
+        last_four:
+          type:
+          - string
+          - 'null'
+        account_vault_id:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    AuthOnlyTransactionDetails:
+      required:
+      - developer_id
+      - location_id
+      - transactions
+      type: object
+      properties:
+        location_id:
+          minLength: 1
+          type: string
+        developer_id:
+          minLength: 1
+          type: string
+        transactions:
+          type: array
+          items:
+            $ref: '#/components/schemas/AuthOnlyTransactionDetailNoBase'
+      additionalProperties: false
+    StringAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          $ref: '#/components/schemas/ApiError'
+        result:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    AuthOnlyTransactionDetailNoBase:
+      required:
+      - transaction_id
+      type: object
+      properties:
+        transaction_id:
+          minLength: 1
+          type: string
+        transaction_amount:
+          type: number
+          description: Can provide transaction_amount for lesser amount than auth
+          format: double
+        tax:
+          type: number
+          format: double
+      additionalProperties: false
+    TransactionStatusResponseRoot:
+      type: object
+      properties:
+        transactions:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/TransactionStatusDetail'
+        tokenExpiryTime:
+          type: integer
+          format: int32
+      additionalProperties: false
+    ValidationError:
+      type: object
+      properties:
+        field:
+          type:
+          - string
+          - 'null'
+        message:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    AuthOnlyTransactionDetail:
+      required:
+      - developer_id
+      - location_id
+      - transaction_id
+      type: object
+      properties:
+        location_id:
+          minLength: 1
+          type: string
+        developer_id:
+          minLength: 1
+          type: string
+        transaction_id:
+          minLength: 1
+          type: string
+        transaction_amount:
+          type: number
+          description: Can provide transaction_amount for lesser amount than auth
+          format: double
+        tax:
+          type: number
+          format: double
+      additionalProperties: false
+    TransactionStatusResponseRootAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          $ref: '#/components/schemas/ApiError'
+        result:
+          $ref: '#/components/schemas/TransactionStatusResponseRoot'
+      additionalProperties: false
+    TransactionStatusDetail:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+        payment_method:
+          type:
+          - string
+          - 'null'
+        transaction_amount:
+          type:
+          - string
+          - 'null'
+        transaction_c1:
+          type:
+          - string
+          - 'null'
+        status_id:
+          type: integer
+          format: int32
+        order_num:
+          type:
+          - string
+          - 'null'
+        po_number:
+          type:
+          - string
+          - 'null'
+        created_ts:
+          type: integer
+          format: int64
+        description:
+          type:
+          - string
+          - 'null'
+        last_four:
+          type:
+          - string
+          - 'null'
+        account_vault_id:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    TransactionUIResponseRootAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          $ref: '#/components/schemas/ApiError'
+        result:
+          $ref: '#/components/schemas/TransactionUIResponseRoot'
+      additionalProperties: false
+    TransactionUpdateModel:
+      required:
+      - action
+      - developer_id
+      - id
+      - location_id
+      type: object
+      properties:
+        location_id:
+          minLength: 1
+          type: string
+        developer_id:
+          minLength: 1
+          type: string
+        action:
+          minLength: 1
+          type: string
+          description: 'Action to take on the transaction. Value can be: void, refund, authcomplete, authonly, authincrement, partialreversal.'
+        id:
+          minLength: 1
+          type: string
+          description: 'The id of the transaction to update. For the authonly action, this id is for a previous (potentially voided)
+
+            transaction and will be used to retrieve payment method, amount, and tax for the new authorized transaction.
+
+            To perform an authonly without a previous transaction use POST /api/payment/accountVaultTransaction.'
+        transaction_amount:
+          type:
+          - number
+          - 'null'
+          description: 'Required when PaymentIntegration.Models.RequestModels.TransactionUpdateModel.Action is authincrement or partialreversal. Optional when action is authonly (CC), authcomplete (CC), or credit (ACH).
+
+            Ignored if provided for other actions. Authcomplete total may be less than or equal to the authorized amount.
+
+            For partialreversal, this value should be the final settlement total for the transaction. For credit, this value should be the amount being credited back to the original payer.'
+          format: double
+      additionalProperties: false
+    TransactionUpdateRequestModel:
+      required:
+      - transaction
+      type: object
+      properties:
+        transaction:
+          $ref: '#/components/schemas/TransactionUpdateModel'
+      additionalProperties: false
+      description: For updating an existing transaction by id
+    TransactionResponseAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          $ref: '#/components/schemas/ApiError'
+        result:
+          $ref: '#/components/schemas/TransactionResponse'
+      additionalProperties: false
+    AccountVaultTransaction:
+      required:
+      - account_vault_id
+      - action
+      - developer_id
+      - location_id
+      - payment_method
+      - transaction_amount
+      type: object
+      properties:
+        location_id:
+          minLength: 1
+          type: string
+        developer_id:
+          minLength: 1
+          type: string
+        payment_method:
+          minLength: 1
+          type: string
+        action:
+          minLength: 1
+          type: string
+        account_vault_id:
+          minLength: 1
+          type: string
+        transaction_amount:
+          minLength: 1
+          type: string
+        transaction_c1:
+          type:
+          - string
+          - 'null'
+        order_num:
+          maxLength: 32
+          pattern: ^[a-zA-Z0-9]*$
+          type:
+          - string
+          - 'null'
+        po_number:
+          maxLength: 24
+          pattern: ^[a-zA-Z0-9]*$
+          type:
+          - string
+          - 'null'
+        clerk_number:
+          type:
+          - string
+          - 'null'
+          description: The Clerk ID
+        tax:
+          type: number
+          description: Sales Tax which is added in the final amount.
+          format: double
+        description:
+          maxLength: 64
+          type:
+          - string
+          - 'null'
+        locale:
+          type:
+          - string
+          - 'null'
+          description: 'Locale: Value used "en_CA" to indicate "English Canada" in order to enable Canadian-specific labels. Only Required for canadian Merchant Processing.'
+      additionalProperties: false
+    TransactionResponse:
+      type: object
+      properties:
+        transaction_id:
+          type:
+          - string
+          - 'null'
+        avs:
+          type:
+          - string
+          - 'null'
+        avs_detail:
+          type:
+          - string
+          - 'null'
+        statusId:
+          type: integer
+          format: int32
+        statusMessage:
+          type:
+          - string
+          - 'null'
+        response_reason_code:
+          type: integer
+          format: int32
+        response_reason_message:
+          type:
+          - string
+          - 'null'
+        payment_method:
+          type:
+          - string
+          - 'null'
+        type_id:
+          type: integer
+          format: int32
+        action:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+  securitySchemes:
+    Bearer:
+      type: oauth2
+      description: OAuth 2.0 Client Credentials Flow with API Users issued from Integration Engine Management Console
+      flows:
+        clientCredentials:
+          tokenUrl: https://api-user.integrations.ecimanufacturing.com/oauth2/api-user/token
+          scopes:
+            openid: openid

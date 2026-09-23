@@ -1,0 +1,1118 @@
+openapi: 3.2.0
+info:
+  title: JobBOSS² Public Customers API
+  description: Provides a common API surface for accessing ECI ERP JobBOSS².
+  version: v1
+servers:
+- url: https://api-jb2.integrations.ecimanufacturing.com:443
+  description: API Host
+security:
+- Bearer: []
+tags:
+- name: Customers
+paths:
+  /api/v1/customers:
+    get:
+      tags:
+      - Customers
+      summary: Gets a list of Customers
+      description: 'By default a customer response will include only the fields: active, APContact, creditLimit, currencyCode, customerCode, customerName, lastModDate, phone, salesID, termsCode, uniqueID, website, workCode. You may specify the exact fields to return using the fields parameter.'
+      parameters:
+      - name: fields
+        in: query
+        description: A comma separated list of fields to include in the result.
+        schema:
+          type: string
+      - name: sort
+        in: query
+        description: A comma separated list of field to sort by. See the <a href='#sort-expressions'>Sort Expressions</a> section for more information.
+        schema:
+          type: string
+      - name: filters
+        in: query
+        description: Filters must be provided as query string parameters as defined in the <a href='#filter-expressions'>Filter Expressions</a> section.
+        schema:
+          type: object
+          additionalProperties:
+            type: string
+        examples:
+          No filters: {}
+          Filter by SalesID:
+            value:
+              salesID: BOB
+      - name: skip
+        in: query
+        description: The number of records at the start of the result set to skip over.
+        schema:
+          type: string
+      - name: take
+        in: query
+        description: The number of records to retrieve.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerListSuccessResponse'
+              example:
+                Data:
+                - accountingID: string
+                  active: false
+                  APContact: string
+                  APPhone: string
+                  averageDaysToPay: 0
+                  averageReceiptAge: 0
+                  billingAddress1: string
+                  billingCity: string
+                  billingCountry: string
+                  billingState: string
+                  billingZIPCode: string
+                  comments1: string
+                  comments2: string
+                  contact1: string
+                  contact1Phone: string
+                  contact2: string
+                  contact2Phone: string
+                  creditLimit: 0
+                  creditStatus: string
+                  currencyCode: string
+                  currentReceivableBalance: 0
+                  customerCode: string
+                  customerName: string
+                  dateLast: '2026-09-06T17:13:12.0000000+00:00'
+                  dateOpen: '2026-09-06T17:13:12.0000000+00:00'
+                  defaultPriority: 0
+                  discountPercent: 0
+                  enteredBy: string
+                  enteredDate: '2026-09-06T17:13:12.0000000+00:00'
+                  fax: string
+                  federalIDNumber: string
+                  GSTCode: string
+                  lastModDate: '2026-09-06T17:13:12.0000000+00:00'
+                  lastModUser: string
+                  location: string
+                  minimumOrder: 0
+                  NET1ContactID: string
+                  phone: string
+                  priceTier: 0
+                  QBCustomerCode: string
+                  restockingPercent: 0
+                  revisedDate: '2026-09-06T17:13:12.0000000+00:00'
+                  salesID: string
+                  taxCode: string
+                  termsCode: string
+                  uniqueID: 0
+                  user_Currency1: 0
+                  user_Currency2: 0
+                  user_Date1: '2026-09-06T17:13:12.0000000+00:00'
+                  user_Date2: '2026-09-06T17:13:12.0000000+00:00'
+                  user_Memo1: string
+                  user_Number1: 0
+                  user_Number2: 0
+                  user_Number3: 0
+                  user_Number4: 0
+                  user_Text1: string
+                  user_Text2: string
+                  user_Text3: string
+                  user_Text4: string
+                  website: string
+                  workCode: string
+                  YTDSales: 0
+      operationId: getApiV1Customers
+      x-operation-id-source: derived
+    post:
+      tags:
+      - Customers
+      summary: Creates a Customer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomerCreate'
+            example:
+              active: false
+              billingAddress1: string
+              billingCity: string
+              billingCountry: string
+              billingState: string
+              billingZIPCode: string
+              comments1: string
+              comments2: string
+              creditLimit: 0
+              creditStatus: string
+              currencyCode: string
+              customerCode: string
+              customerName: string
+              defaultPriority: 0
+              discountPercent: 0
+              fax: string
+              federalIDNumber: string
+              GSTCode: string
+              minimumOrder: 0
+              phone: string
+              QBCustomerCode: string
+              salesID: string
+              taxCode: string
+              termsCode: string
+              user_Currency1: 0
+              user_Currency2: 0
+              user_Date1: '2026-09-06T17:13:12.0000000+00:00'
+              user_Date2: '2026-09-06T17:13:12.0000000+00:00'
+              user_Memo1: string
+              user_Number1: 0
+              user_Number2: 0
+              user_Number3: 0
+              user_Number4: 0
+              user_Text1: string
+              user_Text2: string
+              user_Text3: string
+              user_Text4: string
+              website: string
+              workCode: string
+              shippingAddresses:
+              - location: string
+                printCertification: false
+                shippingAddress1: string
+                shippingCity: string
+                shippingCode: string
+                shippingContact: string
+                shippingCountry: string
+                shippingFAX: string
+                shippingPhone: string
+                shippingState: string
+                shippingZipCode: string
+                shipToName: string
+                shipVia: string
+                territory: string
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Customer'
+              example:
+                accountingID: string
+                active: false
+                APContact: string
+                APPhone: string
+                averageDaysToPay: 0
+                averageReceiptAge: 0
+                billingAddress1: string
+                billingCity: string
+                billingCountry: string
+                billingState: string
+                billingZIPCode: string
+                comments1: string
+                comments2: string
+                contact1: string
+                contact1Phone: string
+                contact2: string
+                contact2Phone: string
+                creditLimit: 0
+                creditStatus: string
+                currencyCode: string
+                currentReceivableBalance: 0
+                customerCode: string
+                customerName: string
+                dateLast: '2026-09-06T17:13:12.0000000+00:00'
+                dateOpen: '2026-09-06T17:13:12.0000000+00:00'
+                defaultPriority: 0
+                discountPercent: 0
+                enteredBy: string
+                enteredDate: '2026-09-06T17:13:12.0000000+00:00'
+                fax: string
+                federalIDNumber: string
+                GSTCode: string
+                lastModDate: '2026-09-06T17:13:12.0000000+00:00'
+                lastModUser: string
+                location: string
+                minimumOrder: 0
+                NET1ContactID: string
+                phone: string
+                priceTier: 0
+                QBCustomerCode: string
+                restockingPercent: 0
+                revisedDate: '2026-09-06T17:13:12.0000000+00:00'
+                salesID: string
+                taxCode: string
+                termsCode: string
+                uniqueID: 0
+                user_Currency1: 0
+                user_Currency2: 0
+                user_Date1: '2026-09-06T17:13:12.0000000+00:00'
+                user_Date2: '2026-09-06T17:13:12.0000000+00:00'
+                user_Memo1: string
+                user_Number1: 0
+                user_Number2: 0
+                user_Number3: 0
+                user_Number4: 0
+                user_Text1: string
+                user_Text2: string
+                user_Text3: string
+                user_Text4: string
+                website: string
+                workCode: string
+                YTDSales: 0
+      operationId: postApiV1Customers
+      x-operation-id-source: derived
+  /api/v1/customers/{customerCode}:
+    get:
+      tags:
+      - Customers
+      summary: Gets a Customer by customer code
+      description: 'By default a customer response will include only the fields: active, APContact, creditLimit, currencyCode, customerCode, customerName, lastModDate, phone, salesID, termsCode, uniqueID, website, workCode. You may specify the exact fields to return using the fields parameter.'
+      parameters:
+      - name: customerCode
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: fields
+        in: query
+        description: A comma separated list of fields to include in the result.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerSuccessResponse'
+              example:
+                Data:
+                  accountingID: string
+                  active: false
+                  APContact: string
+                  APPhone: string
+                  averageDaysToPay: 0
+                  averageReceiptAge: 0
+                  billingAddress1: string
+                  billingCity: string
+                  billingCountry: string
+                  billingState: string
+                  billingZIPCode: string
+                  comments1: string
+                  comments2: string
+                  contact1: string
+                  contact1Phone: string
+                  contact2: string
+                  contact2Phone: string
+                  creditLimit: 0
+                  creditStatus: string
+                  currencyCode: string
+                  currentReceivableBalance: 0
+                  customerCode: string
+                  customerName: string
+                  dateLast: '2026-09-06T17:13:12.0000000+00:00'
+                  dateOpen: '2026-09-06T17:13:12.0000000+00:00'
+                  defaultPriority: 0
+                  discountPercent: 0
+                  enteredBy: string
+                  enteredDate: '2026-09-06T17:13:12.0000000+00:00'
+                  fax: string
+                  federalIDNumber: string
+                  GSTCode: string
+                  lastModDate: '2026-09-06T17:13:12.0000000+00:00'
+                  lastModUser: string
+                  location: string
+                  minimumOrder: 0
+                  NET1ContactID: string
+                  phone: string
+                  priceTier: 0
+                  QBCustomerCode: string
+                  restockingPercent: 0
+                  revisedDate: '2026-09-06T17:13:12.0000000+00:00'
+                  salesID: string
+                  taxCode: string
+                  termsCode: string
+                  uniqueID: 0
+                  user_Currency1: 0
+                  user_Currency2: 0
+                  user_Date1: '2026-09-06T17:13:12.0000000+00:00'
+                  user_Date2: '2026-09-06T17:13:12.0000000+00:00'
+                  user_Memo1: string
+                  user_Number1: 0
+                  user_Number2: 0
+                  user_Number3: 0
+                  user_Number4: 0
+                  user_Text1: string
+                  user_Text2: string
+                  user_Text3: string
+                  user_Text4: string
+                  website: string
+                  workCode: string
+                  YTDSales: 0
+      operationId: getApiV1CustomersByCustomerCode
+      x-operation-id-source: derived
+    patch:
+      tags:
+      - Customers
+      summary: Updates a Customer
+      parameters:
+      - name: customerCode
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomerUpdate'
+            example:
+              active: false
+              billingAddress1: string
+              billingCity: string
+              billingCountry: string
+              billingState: string
+              billingZIPCode: string
+              comments1: string
+              comments2: string
+              creditLimit: 0
+              currencyCode: string
+              customerName: string
+              discountPercent: 0
+              federalIDNumber: string
+              GSTCode: string
+              user_Currency1: 0
+              user_Currency2: 0
+              user_Date1: '2026-09-06T17:13:12.0000000+00:00'
+              user_Date2: '2026-09-06T17:13:12.0000000+00:00'
+              user_Memo1: string
+              user_Number1: 0
+              user_Number2: 0
+              user_Number3: 0
+              user_Number4: 0
+              user_Text1: string
+              user_Text2: string
+              user_Text3: string
+              user_Text4: string
+              website: string
+      responses:
+        '204':
+          description: Success
+      operationId: patchApiV1CustomersByCustomerCode
+      x-operation-id-source: derived
+components:
+  schemas:
+    CustomerShippingAddressCreate:
+      required:
+      - location
+      type: object
+      properties:
+        location:
+          type: string
+        printCertification:
+          type: boolean
+        shippingAddress1:
+          type:
+          - string
+          - 'null'
+        shippingCity:
+          type:
+          - string
+          - 'null'
+        shippingCode:
+          type:
+          - string
+          - 'null'
+        shippingContact:
+          type:
+          - string
+          - 'null'
+        shippingCountry:
+          type:
+          - string
+          - 'null'
+        shippingFAX:
+          type:
+          - string
+          - 'null'
+        shippingPhone:
+          type:
+          - string
+          - 'null'
+        shippingState:
+          type:
+          - string
+          - 'null'
+        shippingZipCode:
+          type:
+          - string
+          - 'null'
+        shipToName:
+          type:
+          - string
+          - 'null'
+        shipVia:
+          type:
+          - string
+          - 'null'
+        territory:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    CustomerUpdate:
+      type: object
+      properties:
+        active:
+          type: boolean
+        billingAddress1:
+          type:
+          - string
+          - 'null'
+        billingCity:
+          type:
+          - string
+          - 'null'
+        billingCountry:
+          type:
+          - string
+          - 'null'
+        billingState:
+          type:
+          - string
+          - 'null'
+        billingZIPCode:
+          type:
+          - string
+          - 'null'
+        comments1:
+          type:
+          - string
+          - 'null'
+        comments2:
+          type:
+          - string
+          - 'null'
+        creditLimit:
+          type:
+          - number
+          - 'null'
+          format: double
+        currencyCode:
+          type:
+          - string
+          - 'null'
+        customerName:
+          type:
+          - string
+          - 'null'
+        discountPercent:
+          type:
+          - number
+          - 'null'
+          format: double
+        federalIDNumber:
+          type:
+          - string
+          - 'null'
+        GSTCode:
+          type:
+          - string
+          - 'null'
+        user_Currency1:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Currency2:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Date1:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        user_Date2:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        user_Memo1:
+          type:
+          - string
+          - 'null'
+        user_Number1:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Number2:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Number3:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Number4:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Text1:
+          type:
+          - string
+          - 'null'
+        user_Text2:
+          type:
+          - string
+          - 'null'
+        user_Text3:
+          type:
+          - string
+          - 'null'
+        user_Text4:
+          type:
+          - string
+          - 'null'
+        website:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    CustomerSuccessResponse:
+      type: object
+      properties:
+        Data:
+          $ref: '#/components/schemas/Customer'
+      additionalProperties: false
+    Customer:
+      type: object
+      properties:
+        accountingID:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        active:
+          type: boolean
+          readOnly: true
+        APContact:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        APPhone:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        averageDaysToPay:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          readOnly: true
+        averageReceiptAge:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          readOnly: true
+        billingAddress1:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        billingCity:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        billingCountry:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        billingState:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        billingZIPCode:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        comments1:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        comments2:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        contact1:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        contact1Phone:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        contact2:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        contact2Phone:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        creditLimit:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        creditStatus:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        currencyCode:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        currentReceivableBalance:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        customerCode:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        customerName:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        dateLast:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        dateOpen:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        defaultPriority:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          readOnly: true
+        discountPercent:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        enteredBy:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        enteredDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        fax:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        federalIDNumber:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        GSTCode:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        lastModDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        lastModUser:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        location:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        minimumOrder:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        NET1ContactID:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        phone:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        priceTier:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          readOnly: true
+        QBCustomerCode:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        restockingPercent:
+          type:
+          - number
+          - 'null'
+          format: float
+          readOnly: true
+        revisedDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        salesID:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        taxCode:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        termsCode:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        uniqueID:
+          type: integer
+          format: int32
+          readOnly: true
+        user_Currency1:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        user_Currency2:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        user_Date1:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        user_Date2:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        user_Memo1:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        user_Number1:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        user_Number2:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        user_Number3:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        user_Number4:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        user_Text1:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        user_Text2:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        user_Text3:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        user_Text4:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        website:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        workCode:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        YTDSales:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+      additionalProperties: false
+    CustomerCreate:
+      required:
+      - customerCode
+      - customerName
+      type: object
+      properties:
+        active:
+          type: boolean
+        billingAddress1:
+          type:
+          - string
+          - 'null'
+        billingCity:
+          type:
+          - string
+          - 'null'
+        billingCountry:
+          type:
+          - string
+          - 'null'
+        billingState:
+          type:
+          - string
+          - 'null'
+        billingZIPCode:
+          type:
+          - string
+          - 'null'
+        comments1:
+          type:
+          - string
+          - 'null'
+        comments2:
+          type:
+          - string
+          - 'null'
+        creditLimit:
+          type:
+          - number
+          - 'null'
+          format: double
+        creditStatus:
+          type:
+          - string
+          - 'null'
+        currencyCode:
+          type:
+          - string
+          - 'null'
+        customerCode:
+          type: string
+        customerName:
+          type: string
+        defaultPriority:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        discountPercent:
+          type:
+          - number
+          - 'null'
+          format: double
+        fax:
+          type:
+          - string
+          - 'null'
+        federalIDNumber:
+          type:
+          - string
+          - 'null'
+        GSTCode:
+          type:
+          - string
+          - 'null'
+        minimumOrder:
+          type:
+          - number
+          - 'null'
+          format: double
+        phone:
+          type:
+          - string
+          - 'null'
+        QBCustomerCode:
+          type:
+          - string
+          - 'null'
+        salesID:
+          type:
+          - string
+          - 'null'
+        taxCode:
+          type:
+          - string
+          - 'null'
+        termsCode:
+          type:
+          - string
+          - 'null'
+        user_Currency1:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Currency2:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Date1:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        user_Date2:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        user_Memo1:
+          type:
+          - string
+          - 'null'
+        user_Number1:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Number2:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Number3:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Number4:
+          type:
+          - number
+          - 'null'
+          format: double
+        user_Text1:
+          type:
+          - string
+          - 'null'
+        user_Text2:
+          type:
+          - string
+          - 'null'
+        user_Text3:
+          type:
+          - string
+          - 'null'
+        user_Text4:
+          type:
+          - string
+          - 'null'
+        website:
+          type:
+          - string
+          - 'null'
+        workCode:
+          type:
+          - string
+          - 'null'
+        shippingAddresses:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/CustomerShippingAddressCreate'
+      additionalProperties: false
+    CustomerListSuccessResponse:
+      type: object
+      properties:
+        Data:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Customer'
+      additionalProperties: false
+  securitySchemes:
+    Bearer:
+      type: oauth2
+      description: OAuth 2.0 Client Credentials Flow with API Users issued from Integration Engine Management Console
+      flows:
+        clientCredentials:
+          tokenUrl: https://api-user.integrations.ecimanufacturing.com/oauth2/api-user/token
+          scopes:
+            openid: openid

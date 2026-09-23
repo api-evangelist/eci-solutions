@@ -1,0 +1,179 @@
+openapi: 3.2.0
+info:
+  title: JobBOSS² Public Tooling Maintenance API
+  description: Provides a common API surface for accessing ECI ERP JobBOSS².
+  version: v1
+servers:
+- url: https://api-jb2.integrations.ecimanufacturing.com:443
+  description: API Host
+security:
+- Bearer: []
+tags:
+- name: Tooling Maintenance
+paths:
+  /api/v1/tooling-maintenance:
+    get:
+      tags:
+      - Tooling Maintenance
+      summary: Gets a list of Tooling Maintenance Records
+      description: 'By default a tooling maintenance response will include only the fields: completed, cost, description, employeeCode, endDate, invoiceNumber, jobNumber, lastModDate, lastModUser, partDescription, partNumber, startDate, toolingCode, uniqueID, vendorCode. You may specify the exact fields to return using the fields parameter.'
+      parameters:
+      - name: fields
+        in: query
+        description: A comma separated list of fields to include in the result.
+        schema:
+          type: string
+      - name: sort
+        in: query
+        description: A comma separated list of field to sort by. See the <a href='#sort-expressions'>Sort Expressions</a> section for more information.
+        schema:
+          type: string
+      - name: filters
+        in: query
+        description: Filters must be provided as query string parameters as defined in the <a href='#filter-expressions'>Filter Expressions</a> section.
+        schema:
+          type: object
+          additionalProperties:
+            type: string
+        examples:
+          No filters: {}
+          Filter by Employee Code:
+            value:
+              employeeCode: '101'
+      - name: skip
+        in: query
+        description: The number of records at the start of the result set to skip over.
+        schema:
+          type: string
+      - name: take
+        in: query
+        description: The number of records to retrieve.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolingMaintenanceListSuccessResponse'
+              example:
+                Data:
+                - completed: false
+                  cost: 0
+                  description: string
+                  employeeCode: string
+                  endDate: '2026-09-06T17:13:13.0000000+00:00'
+                  invoiceNumber: string
+                  jobNumber: string
+                  lastModDate: '2026-09-06T17:13:13.0000000+00:00'
+                  lastModUser: string
+                  partDescription: string
+                  partNumber: string
+                  startDate: '2026-09-06T17:13:13.0000000+00:00'
+                  toolingCode: string
+                  uniqueID: 0
+                  vendorCode: string
+      operationId: getApiV1ToolingMaintenance
+      x-operation-id-source: derived
+components:
+  schemas:
+    ToolingMaintenanceListSuccessResponse:
+      type: object
+      properties:
+        Data:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ToolingMaintenance'
+      additionalProperties: false
+    ToolingMaintenance:
+      type: object
+      properties:
+        completed:
+          type: boolean
+          readOnly: true
+        cost:
+          type:
+          - number
+          - 'null'
+          format: float
+          readOnly: true
+        description:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        employeeCode:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        endDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        invoiceNumber:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        jobNumber:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        lastModDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        lastModUser:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        partDescription:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        partNumber:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        startDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        toolingCode:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        uniqueID:
+          type: integer
+          format: int32
+          readOnly: true
+        vendorCode:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+      additionalProperties: false
+  securitySchemes:
+    Bearer:
+      type: oauth2
+      description: OAuth 2.0 Client Credentials Flow with API Users issued from Integration Engine Management Console
+      flows:
+        clientCredentials:
+          tokenUrl: https://api-user.integrations.ecimanufacturing.com/oauth2/api-user/token
+          scopes:
+            openid: openid

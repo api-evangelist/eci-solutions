@@ -1,0 +1,723 @@
+openapi: 3.2.0
+info:
+  title: Financial Integration General API
+  description: 'v2 of the Common Financial Package API supporting ECI Financials.
+
+
+    ## Authentication
+
+    Pass an access token in the HTTP Authorization header of each request. For example:
+
+
+    ```Authorization: Bearer [token]```
+
+
+    Access tokens are obtained from the Authentication API. See the Authentication API token endpoint for more information.'
+  contact:
+    name: ECI Integration Team
+    url: https://www.ecisolutions.com/support/
+  version: v2
+security:
+- Bearer: []
+tags:
+- name: General
+paths:
+  /api/v2/general-journal-entries:
+    post:
+      tags:
+      - General
+      summary: Create (or update) general journal entry
+      description: 'Create (or update) general journal entry
+
+
+        **TripleTex** The upsert parameter is not supported. A new general journal entry is always created
+
+        **AfasSB** The upsert parameter is not supported. A new general journal entry is always created
+
+        **Sage 50 UK** The upsert parameter is not supported. A new general journal entry is always created'
+      parameters:
+      - name: upsert
+        in: query
+        description: When an unique **Id is provided**, the record is **looked up by Id**.<br> When the **record is found** by the Id, it is **updated**.<br> When the **record is not found** and **upsert is not set**, an **error** is returned.<br> When the **record is found** and **upsert is set**, it **continues** as described below.<br><br> When an unique **Id is not provided** and **upsert is not set**, a new record is **inserted**.<br> When an unique **Id is not provided** and **upsert is set**, a record is **looked up by natural key**.<br> When the **record is found** by natural key, it is **updated**.<br> When the **record is not found** by natural key, a new record is **inserted**.
+        schema:
+          type: boolean
+      requestBody:
+        content:
+          application/json-patch+json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/GeneralJournalEntry'
+              description: "Represents a GL Journal to be saved to or existing in the financial system.\n* Id: Unique id of the journal. Provide when updating the record. \n    + ECI Financials: JournalEntry.Id\n    + Xero: ManualJournal.ManualJournalID\n    + TripleTex: n/a\n    + AccountView: JournalEntry.Id\n    + PowerOfficeGo: JournalEntry.Id\n    + AfasSB: n/a\n    + Sage50Uk: n/a\n    + Adsolut: n/a"
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/GeneralJournalEntry'
+              description: "Represents a GL Journal to be saved to or existing in the financial system.\n* Id: Unique id of the journal. Provide when updating the record. \n    + ECI Financials: JournalEntry.Id\n    + Xero: ManualJournal.ManualJournalID\n    + TripleTex: n/a\n    + AccountView: JournalEntry.Id\n    + PowerOfficeGo: JournalEntry.Id\n    + AfasSB: n/a\n    + Sage50Uk: n/a\n    + Adsolut: n/a"
+          text/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/GeneralJournalEntry'
+              description: "Represents a GL Journal to be saved to or existing in the financial system.\n* Id: Unique id of the journal. Provide when updating the record. \n    + ECI Financials: JournalEntry.Id\n    + Xero: ManualJournal.ManualJournalID\n    + TripleTex: n/a\n    + AccountView: JournalEntry.Id\n    + PowerOfficeGo: JournalEntry.Id\n    + AfasSB: n/a\n    + Sage50Uk: n/a\n    + Adsolut: n/a"
+          application/*+json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/GeneralJournalEntry'
+              description: "Represents a GL Journal to be saved to or existing in the financial system.\n* Id: Unique id of the journal. Provide when updating the record. \n    + ECI Financials: JournalEntry.Id\n    + Xero: ManualJournal.ManualJournalID\n    + TripleTex: n/a\n    + AccountView: JournalEntry.Id\n    + PowerOfficeGo: JournalEntry.Id\n    + AfasSB: n/a\n    + Sage50Uk: n/a\n    + Adsolut: n/a"
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/GeneralJournalEntry'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralJournalEntry'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/GeneralJournalEntry'
+        '202':
+          description: Accepted
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/AsyncAcceptedResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AsyncAcceptedResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/AsyncAcceptedResponse'
+        '400':
+          description: Bad Request
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Problem'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '409':
+          description: Conflict
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Problem'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '429':
+          description: Too Many Requests
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Problem'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '500':
+          description: Server Error
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Problem'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '501':
+          description: Server Error
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Problem'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+      operationId: postApiV2GeneralJournalEntries
+      x-operation-id-source: derived
+  /api/v2/tax-codes:
+    get:
+      tags:
+      - General
+      summary: Get a list of tax codes
+      description: Get a list of tax codes.
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/TaxCode'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaxCode'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/TaxCode'
+        '202':
+          description: Accepted
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/AsyncAcceptedResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AsyncAcceptedResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/AsyncAcceptedResponse'
+        '429':
+          description: Too Many Requests
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Problem'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '500':
+          description: Server Error
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Problem'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '501':
+          description: Server Error
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Problem'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+      operationId: getApiV2TaxCodes
+      x-operation-id-source: derived
+components:
+  schemas:
+    Entity:
+      type: object
+      properties:
+        code:
+          type:
+          - string
+          - 'null'
+          description: The natural key of this entity.
+        id:
+          type:
+          - string
+          - 'null'
+          description: The unique Id of this entity.
+      additionalProperties: false
+    TaxCode:
+      required:
+      - code
+      type: object
+      properties:
+        name:
+          type:
+          - string
+          - 'null'
+          description: 'The name of the tax code.
+
+            * ECI Financials: n/a
+
+            * Xero: TaxCode.Name
+
+            * TripleTex: n/a
+
+            * AccountView: n/a
+
+            * PowerOfficeGo: VatCode.Name
+
+            * Sage50Uk: TaxCode.Description
+
+            * Adsolut: TaxCode.Name'
+        isActive:
+          type:
+          - boolean
+          - 'null'
+          description: 'Indicates if the tax code is active.
+
+            * ECI Financials: n/a
+
+            * Xero: TaxCode.Status
+
+            * TripleTex: Always True
+
+            * AccountView: n/a
+
+            * PowerOfficeGo: VatCode.IsActive
+
+            * Sage50Uk: n/a
+
+            * Adsolut: n/a'
+        code:
+          allOf:
+          - $ref: '#/components/schemas/Entity'
+          description: "The identifier of the tax rate.\n* ECI Financials: n/a\n* Xero: Code = TaxCode.TaxType\n* TripleTex: \n    - Code = VatType.Number\n    - Id = VatType.Id\n* AccountView: n/a\n* PowerOfficeGo:\n    - Code = VatCode.Code\n    - Id = VatCode.Id\n* Sage50Uk: Id = TaxCode.Index\n* Adsolut: Id = TaxCode.Id"
+        rates:
+          type: array
+          items:
+            $ref: '#/components/schemas/TaxRate'
+      additionalProperties: false
+      description: <h2>Model for Tax data, also known as VAT.</h2>
+    JournalEntryLine:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: '* ECI Financials: n/a
+
+            * Xero: n/a
+
+            * TripleTex: n/a
+
+            * AccountView: n/a
+
+            * PowerOfficeGo: n/a
+
+            * AfasSB: n/a
+
+            * Sage50Uk: n/a
+
+            * Adsolut: n/a'
+        amount:
+          type: number
+          description: 'Amount excluding VAT amount
+
+            * ECI Financials: Lines.Amount / Lines.Debet / Lines.Credit
+
+            * Xero: ManualJournalLine.LineAmount
+
+            * TripleTex: Posting.AmountGross
+
+            * AccountView: Lines.Amount / Lines.Debet / Lines.Credit
+
+            * PowerOfficeGo: JournalEntryVoucherLine.Amount
+
+            * AfasSB: InvoiceLine.AmountExcludingVat / InvoiceLine2.AmountIncludingVat / EntryLine.AmountCredit / EntryLine.AmountDebit
+
+            * Sage50Uk: JournalEntryLine.NetAmount
+
+            * Adsolut: JournalEntryLine.NetAmount'
+          format: double
+        account:
+          allOf:
+          - $ref: '#/components/schemas/Entity'
+          description: "* ECI Financials: Lines.Account\n* Xero:\n    * Code = ManualJournalLine.AccountCode\n    * Id = ManualJournalLine.AccountId\n* TripleTex:\n    * Id = Posting.Account.Id\n    * Code = Posting.Account.Number\n* AccountView: Lines.Account\n* PowerOfficeGo:\n    * Id = n/a\n    * Code = JournalEntryVoucherLine.DebitAccountCode / JournalEntryVoucherLine.CreditAccountCode\n* AfasSB: InvoiceLine.LedgerAccountId / InvoiceLine2.LedgerAccountId / EntryLine.LedgerAccountId\n* Sage50Uk: JournalEntryLine.Account\n    - Code = Account.NominalCode\n    - Id = n/a\n* Adsolut: JournalEntryLine.Account\n    - Code = GeneralLedger.Code\n    - Id = n/a"
+        taxAmount:
+          type: number
+          description: 'VAT amount
+
+            * ECI Financials: n/a
+
+            * Xero: ManualJournalLine.TaxAmount
+
+            * TripleTex: n/a
+
+            * AccountView: n/a
+
+            * PowerOfficeGo: n/a
+
+            * AfasSB: InvoiceLine.AmountVat / InvoiceLine2.AmountVat
+
+            * Sage50Uk: JournalEntryLine.TaxAmount
+
+            * Adsolut: JournalEntryLine.VatAmount'
+          format: double
+        type:
+          enum:
+          - 0
+          - 1
+          type:
+          - integer
+          - 'null'
+          description: 'The balance side.
+
+            * ECI Financials: Based on type either Lines.Debet or Lines.Credit is set
+
+            * Xero: Calculated (based on ManualJournalLine.LineAmount)
+
+            * TripleTex: n/a
+
+            * AccountView: Based on type either Lines.Debet or Lines.Credit is set
+
+            * PowerOfficeGo: JournalEntryVoucherLine.Type
+
+            * AfasSB: n/a
+
+            * Sage50Uk: JournalEntryLine.Type
+
+            * Adsolut: Based on  JournalEntryLineType either Credit or Debit'
+          format: int32
+        taxCode:
+          allOf:
+          - $ref: '#/components/schemas/Entity'
+          description: "* ECI Financials: n/a\n* Xero:\n    * Code = ManualJournalLine.TaxType\n    * Id = n/a\n* TripleTex:\n    * Code = Posting.VatType.Number\n    * Id = Posting.VatType.Id\n* Acountview: n/a\n* PowerOfficeGo:\n    * Code = JournalEntryVoucherLine.DebitVatCode / JournalEntryVoucherLine.CreditVatCode\n    * Id = n/a\n* AfasSB: \n    * Id = n/a\n    * Code = InvoiceLine.VatType / InvoiceLine2.VatType / EntryLine.VatType\n* Sage50Uk:\n    * Code = JournalEntryLine.TaxCode\n    * Id = n/a\n* Adsolut:\n    * Code = JournalEntryLine.VatPercentage.Id\n    * Id = n/a"
+        description:
+          type:
+          - string
+          - 'null'
+          description: '* ECI Financials: Lines.Title
+
+            * Xero: ManualJournalLine.Description
+
+            * TripleTex: Posting.Description
+
+            * AccountView: Lines.Title
+
+            * PowerOfficeGo: JournalEntryVoucherLine.Description
+
+            * AfasSB: InvoiceLine.Description / InvoiceLine2.Description / EntryLine.Description
+
+            * Sage50Uk: JournalEntryLine.Details
+
+            * Adsolut: JournalEntryLine.Description'
+        taxShifted:
+          type:
+          - boolean
+          - 'null'
+          description: 'Indicates whether the VAT is shifted (reverse charge).
+
+            * ECI Financials: n/a
+
+            * Xero: n/a
+
+            * TripleTex: n/a
+
+            * AccountView: n/a
+
+            * PowerOfficeGo: n/a
+
+            * AfasSB: InvoiceLine.VatShifted / InvoiceLine2.VatShifted
+
+            * Sage50Uk: n/a
+
+            * Adsolut: n/a'
+        amountForeignCurrency:
+          type:
+          - number
+          - 'null'
+          description: 'Amount excluding VAT amount in foreign currency
+
+            * ECI Financials: n/a
+
+            * Xero: n/a
+
+            * TripleTex: n/a
+
+            * AccountView: n/a
+
+            * PowerOfficeGo: n/a
+
+            * AfasSB: n/a
+
+            * Sage50Uk: n/a'
+          format: double
+        taxAmountForeignCurrency:
+          type:
+          - number
+          - 'null'
+          description: 'Tax (Vat) Amount in foreign currency
+
+            * ECI Financials: n/a
+
+            * Xero: n/a
+
+            * TripleTex: n/a
+
+            * AccountView: n/a
+
+            * PowerOfficeGo: n/a
+
+            * AfasSB: n/a
+
+            * Sage50Uk: n/a'
+          format: double
+      additionalProperties: false
+      description: Represents an individual line of a GL Journal to be saved to or existing in the financial system.
+    Problem:
+      required:
+      - detail
+      - title
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+        title:
+          type: string
+        status:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        detail:
+          type: string
+        instance:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+      description: Definition of [RFC7807](https://tools.ietf.org/html/rfc7807) problem detail
+    TaxRate:
+      type: object
+      properties:
+        name:
+          type:
+          - string
+          - 'null'
+          description: 'The name of the tax rate.
+
+            * ECI Financials: n/a
+
+            * Xero: TaxRate.Name
+
+            * TripleTex: VatType.DisplayName
+
+            * AccountView: n/a
+
+            * PowerOfficeGo: VatCode.Name
+
+            * Sage50Uk: TaxRate.Description
+
+            * Adsolut: TaxRate.Name'
+        rate:
+          type:
+          - number
+          - 'null'
+          description: 'VAT rate
+
+            * ECI Financials: n/a
+
+            * Xero: TaxRate.Rate
+
+            * TripleTex: VatType.Percentage
+
+            * AccountView: n/a
+
+            * PowerOfficeGo: VatCode.Rate
+
+            * Sage50Uk: TaxRate.Rate
+
+            * Adsolut: TaxRate.Percentage'
+          format: double
+      additionalProperties: false
+      description: <h2>Model for Tax rate data, wich contains a name and a percentage.</h2>
+    AsyncAcceptedResponse:
+      type: object
+      properties:
+        requestId:
+          type: string
+          description: 'A unique identifier for the asynchronous request.
+
+            This ID can be used in a follow-up request (via the async-request-id header) to retrieve the result of the original operation once processing is complete.'
+          format: uuid
+      additionalProperties: false
+      description: Represents the response returned when an asynchronous request is accepted for processing.
+    GeneralJournalEntry:
+      type: object
+      properties:
+        syncToken:
+          type:
+          - string
+          - 'null'
+          description: 'SyncToken to ensure updating the latest version of the record.
+
+            * ECI Financials: JournalEntry.Stamp
+
+            * Xero: n/a
+
+            * TripleTex: n/a
+
+            * AccountView: JournalEntry.Stamp
+
+            * PowerOfficeGo: n/a
+
+            * AfasSB: n/a
+
+            * Sage50Uk: n/a
+
+            * Adsolut: n/a'
+        docNumber:
+          type:
+          - string
+          - 'null'
+          description: 'The journal entry number
+
+            * ECI Financials: JournalEntry.Number
+
+            * Xero: ManualJournal.Narration
+
+            * TripleTex: Voucher.ExternalVoucherNumber
+
+            * AccountView: JournalEntry.Number
+
+            * PowerOfficeGo: JournalEntry.Description
+
+            * AfasSB: n/a
+
+            * Sage50Uk: JournalEntry.InvRef
+
+            * Adsolut: JournalEntry.InvoiceNumber'
+        description:
+          type:
+          - string
+          - 'null'
+          description: '* ECI Financials: JournalEntry.Description
+
+            * Xero: n/a
+
+            * TripleTex: Voucher.Description
+
+            * AccountView: JournalEntry.Description
+
+            * PowerOfficeGo: n/a
+
+            * AfasSB: FinancialJournalEntry.Description
+
+            * Sage50Uk: n/a
+
+            * Adsolut: JournalEntry.Description'
+        date:
+          type:
+          - string
+          - 'null'
+          description: "The date of the journal entry.  \n* ECI Financials: JournalEntry.Date\n* Xero: ManualJournal.Date\n* TripleTex: Voucher.Date\n* AccountView: JournalEntry.Date\n* PowerOfficeGo: JournalEntry.VoucherDate\n* AfasSB: FinancialJournalEntry.EntryDate\n* Sage50Uk: JournalEntry.Date\n* Adsolut: JournalEntry.DocumentDate"
+          format: date-time
+        period:
+          type:
+          - string
+          - 'null'
+          description: 'Financial period
+
+            * ECI Financials: JournalEntry.Period
+
+            * Xero: n/a
+
+            * TripleTex: n/a
+
+            * AccountView: JournalEntry.Period
+
+            * PowerOfficeGo: n/a
+
+            * AfasSB: n/a
+
+            * Sage50Uk: JournalEntry.AccountingPeriod'
+        year:
+          type:
+          - integer
+          - 'null'
+          description: 'Financial year
+
+            * ECI Financials: JournalEntry.Year
+
+            * Xero: n/a
+
+            * TripleTex: Voucher.Year
+
+            * AccountView: JournalEntry.Year
+
+            * PowerOfficeGo: n/a
+
+            * AfasSB: n/a
+
+            * Sage50Uk: n/a
+
+            * Adsolut: JournalEntry.Year'
+          format: int32
+        journal:
+          type:
+          - string
+          - 'null'
+          description: 'Journal code
+
+            * ECI Financials: JournalEntry.Journal
+
+            * Xero: n/a
+
+            * TripleTex: Voucher.Number
+
+            * AccountView: JournalEntry.Journal
+
+            * PowerOfficeGo: n/a
+
+            * AfasSB: n/a
+
+            * Sage50Uk: n/a
+
+            * Adsolut: JournalEntry.JournalCode'
+        lines:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/JournalEntryLine'
+          description: 'A collection of line information for the journal.
+
+            * ECI Financials: JournalEntry.Lines
+
+            * Xero: ManualJournal.Lines
+
+            * TripleTex: n/a
+
+            * AccountView: JournalEntry.Lines
+
+            * PowerOfficeGo: JournalEntry.VoucherLines
+
+            * AfasSB: FinancialJournalEntry.EntryLine
+
+            * Sage50Uk: JournalEntry.Lines
+
+            * Adsolut: JournalEntry.Lines'
+        code:
+          type:
+          - string
+          - 'null'
+          description: The natural key of this entity.
+        id:
+          type:
+          - string
+          - 'null'
+          description: The unique Id of this entity.
+      additionalProperties: false
+      description: "Represents a GL Journal to be saved to or existing in the financial system.\n* Id: Unique id of the journal. Provide when updating the record. \n    + ECI Financials: JournalEntry.Id\n    + Xero: ManualJournal.ManualJournalID\n    + TripleTex: n/a\n    + AccountView: JournalEntry.Id\n    + PowerOfficeGo: JournalEntry.Id\n    + AfasSB: n/a\n    + Sage50Uk: n/a\n    + Adsolut: n/a"
+  securitySchemes:
+    Bearer:
+      type: oauth2
+      description: Use the Authentication API OAuth endpoints
+      flows:
+        clientCredentials:
+          tokenUrl: https://api-user.integrations.ecimanufacturing.com/oauth2/api-user/token
+          scopes:
+            openid: openid

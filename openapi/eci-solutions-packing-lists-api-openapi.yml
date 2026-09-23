@@ -1,0 +1,412 @@
+openapi: 3.2.0
+info:
+  title: JobBOSS² Public Packing Lists API
+  description: Provides a common API surface for accessing ECI ERP JobBOSS².
+  version: v1
+servers:
+- url: https://api-jb2.integrations.ecimanufacturing.com:443
+  description: API Host
+security:
+- Bearer: []
+tags:
+- name: Packing Lists
+paths:
+  /api/v1/packing-lists:
+    get:
+      tags:
+      - Packing Lists
+      summary: Gets a list of Packing Lists
+      description: 'By default a packing list response will include only the fields: active, address1, city, commissionAccount, commissionPercent, country, lastModDate, lastModUser, name, phone, salesID, state, uniqueID, YTDCommission, YTDSales, zipCode. You may specify the exact fields to return using the fields parameter.'
+      parameters:
+      - name: fields
+        in: query
+        description: A comma separated list of fields to include in the result.
+        schema:
+          type: string
+      - name: sort
+        in: query
+        description: A comma separated list of field to sort by. See the <a href='#sort-expressions'>Sort Expressions</a> section for more information.
+        schema:
+          type: string
+      - name: filters
+        in: query
+        description: Filters must be provided as query string parameters as defined in the <a href='#filter-expressions'>Filter Expressions</a> section.
+        schema:
+          type: object
+          additionalProperties:
+            type: string
+        examples:
+          No filters: {}
+          Filter by Customer:
+            value:
+              customerCode: BASS
+      - name: skip
+        in: query
+        description: The number of records at the start of the result set to skip over.
+        schema:
+          type: string
+      - name: take
+        in: query
+        description: The number of records to retrieve.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PackingListListSuccessResponse'
+              example:
+                Data:
+                - accountingID: string
+                  autoBill: false
+                  certificatePrinted: false
+                  CODAmount: 0
+                  CODAmountPrepaid: false
+                  CODFee: 0
+                  CODFeePrepaid: false
+                  containerOption: 0
+                  containerUnit: string
+                  containerWeight: 0
+                  country: string
+                  customerCode: string
+                  customerDescription: string
+                  customerPONumber: string
+                  dateEntered: '2026-09-06T17:13:12.0000000+00:00'
+                  deliveryTicketNumber: string
+                  descriptionOfContents: string
+                  enteredBy: string
+                  exported: false
+                  exportedToEDI: false
+                  freightCharge: 0
+                  freightChargePrepaid: false
+                  freightTerms: string
+                  freightVendorCode: string
+                  handlingCharge: 0
+                  isProcessed: 0
+                  isShipmentFromSystem: false
+                  labelPrinted: false
+                  lastModDate: '2026-09-06T17:13:12.0000000+00:00'
+                  lastModUser: string
+                  location: string
+                  notesToCustomer: string
+                  numberOfContainers: 0
+                  orderNumber: string
+                  packingListPrinted: false
+                  remitAddress1: string
+                  remitCity: string
+                  remitCountry: string
+                  remitName: string
+                  remitStreet: string
+                  remitZIP: string
+                  shippingAddress1: string
+                  shippingCharges: 0
+                  shippingCity: string
+                  shippingCode: string
+                  shippingDate: '2026-09-06T17:13:12.0000000+00:00'
+                  shippingStreet: string
+                  shippingToName: string
+                  shippingVia: string
+                  shippingZIP: string
+                  specialInstructions: string
+                  status: string
+                  uniqueID: 0
+                  vendorDescription: string
+                  weightOfParts: 0
+      operationId: getApiV1PackingLists
+      x-operation-id-source: derived
+components:
+  schemas:
+    PackingListListSuccessResponse:
+      type: object
+      properties:
+        Data:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/PackingList'
+      additionalProperties: false
+    PackingList:
+      type: object
+      properties:
+        accountingID:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        autoBill:
+          type: boolean
+          readOnly: true
+        certificatePrinted:
+          type: boolean
+          readOnly: true
+        CODAmount:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        CODAmountPrepaid:
+          type: boolean
+          readOnly: true
+        CODFee:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        CODFeePrepaid:
+          type: boolean
+          readOnly: true
+        containerOption:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          readOnly: true
+        containerUnit:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        containerWeight:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        country:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        customerCode:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        customerDescription:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        customerPONumber:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        dateEntered:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        deliveryTicketNumber:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        descriptionOfContents:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        enteredBy:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        exported:
+          type: boolean
+          readOnly: true
+        exportedToEDI:
+          type: boolean
+          readOnly: true
+        freightCharge:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        freightChargePrepaid:
+          type: boolean
+          readOnly: true
+        freightTerms:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        freightVendorCode:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        handlingCharge:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        isProcessed:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          readOnly: true
+        isShipmentFromSystem:
+          type:
+          - boolean
+          - 'null'
+          readOnly: true
+        labelPrinted:
+          type: boolean
+          readOnly: true
+        lastModDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        lastModUser:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        location:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        notesToCustomer:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        numberOfContainers:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          readOnly: true
+        orderNumber:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        packingListPrinted:
+          type: boolean
+          readOnly: true
+        remitAddress1:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        remitCity:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        remitCountry:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        remitName:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        remitStreet:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        remitZIP:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        shippingAddress1:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        shippingCharges:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        shippingCity:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        shippingCode:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        shippingDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        shippingStreet:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        shippingToName:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        shippingVia:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        shippingZIP:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        specialInstructions:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        status:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        uniqueID:
+          type: integer
+          format: int32
+          readOnly: true
+        vendorDescription:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        weightOfParts:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+      additionalProperties: false
+  securitySchemes:
+    Bearer:
+      type: oauth2
+      description: OAuth 2.0 Client Credentials Flow with API Users issued from Integration Engine Management Console
+      flows:
+        clientCredentials:
+          tokenUrl: https://api-user.integrations.ecimanufacturing.com/oauth2/api-user/token
+          scopes:
+            openid: openid

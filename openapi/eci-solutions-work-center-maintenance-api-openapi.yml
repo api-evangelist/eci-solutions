@@ -1,0 +1,179 @@
+openapi: 3.2.0
+info:
+  title: JobBOSS² Public Work Center Maintenance API
+  description: Provides a common API surface for accessing ECI ERP JobBOSS².
+  version: v1
+servers:
+- url: https://api-jb2.integrations.ecimanufacturing.com:443
+  description: API Host
+security:
+- Bearer: []
+tags:
+- name: Work Center Maintenance
+paths:
+  /api/v1/work-center-maintenance:
+    get:
+      tags:
+      - Work Center Maintenance
+      summary: Gets a list of Work Center Maintenance records
+      description: 'By default a Work Center maintenance response will include only the fields: completed, cost, description, employeeCode, endDate, invoiceNumber, jobNumber, lastModDate, lastModUser, startDate, vendorCode, wcMaintCode, uniqueID, workCenter, workCenterName. You may specify the exact fields to return using the fields parameter.'
+      parameters:
+      - name: fields
+        in: query
+        description: A comma separated list of fields to include in the result.
+        schema:
+          type: string
+      - name: sort
+        in: query
+        description: A comma separated list of field to sort by. See the <a href='#sort-expressions'>Sort Expressions</a> section for more information.
+        schema:
+          type: string
+      - name: filters
+        in: query
+        description: Filters must be provided as query string parameters as defined in the <a href='#filter-expressions'>Filter Expressions</a> section.
+        schema:
+          type: object
+          additionalProperties:
+            type: string
+        examples:
+          No filters: {}
+          Filter by Work Center Name:
+            value:
+              workCenterName: CNC Lathe
+      - name: skip
+        in: query
+        description: The number of records at the start of the result set to skip over.
+        schema:
+          type: string
+      - name: take
+        in: query
+        description: The number of records to retrieve.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkCenterMaintenanceListSuccessResponse'
+              example:
+                Data:
+                - completed: false
+                  cost: 0
+                  description: string
+                  employeeCode: string
+                  endDate: '2026-09-06T17:13:13.0000000+00:00'
+                  invoiceNumber: string
+                  jobNumber: string
+                  lastModDate: '2026-09-06T17:13:13.0000000+00:00'
+                  lastModUser: string
+                  startDate: '2026-09-06T17:13:13.0000000+00:00'
+                  uniqueID: 0
+                  vendorCode: string
+                  wcMaintCode: string
+                  workCenter: string
+                  workCenterName: string
+      operationId: getApiV1WorkCenterMaintenance
+      x-operation-id-source: derived
+components:
+  schemas:
+    WorkCenterMaintenanceListSuccessResponse:
+      type: object
+      properties:
+        Data:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/WorkCenterMaintenance'
+      additionalProperties: false
+    WorkCenterMaintenance:
+      type: object
+      properties:
+        completed:
+          type: boolean
+          readOnly: true
+        cost:
+          type:
+          - number
+          - 'null'
+          format: float
+          readOnly: true
+        description:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        employeeCode:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        endDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        invoiceNumber:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        jobNumber:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        lastModDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        lastModUser:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        startDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        uniqueID:
+          type: integer
+          format: int32
+          readOnly: true
+        vendorCode:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        wcMaintCode:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        workCenter:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        workCenterName:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+      additionalProperties: false
+  securitySchemes:
+    Bearer:
+      type: oauth2
+      description: OAuth 2.0 Client Credentials Flow with API Users issued from Integration Engine Management Console
+      flows:
+        clientCredentials:
+          tokenUrl: https://api-user.integrations.ecimanufacturing.com/oauth2/api-user/token
+          scopes:
+            openid: openid

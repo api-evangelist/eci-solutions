@@ -1,0 +1,747 @@
+openapi: 3.2.0
+info:
+  title: Eci Solutions Product API
+  version: '1.0'
+  description: 'Operations tagged Product across 2 of this provider''s published API definitions: eci-solutions-ecommerce-openapi.json, eci-solutions-management-openapi.json. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api-user.integrations.ecimanufacturing.com:443
+  description: Production
+tags:
+- name: Product
+paths:
+  /api/v1/products:
+    get:
+      tags:
+      - Product
+      summary: Get a list of products
+      operationId: GetProducts
+      parameters:
+      - name: take
+        in: query
+        description: 'Maximum number of records to return. Default: 100. Max: 100.'
+        schema:
+          maximum: 100
+          minimum: 1
+          type: integer
+          format: int32
+          default: 100
+      - name: from
+        in: query
+        description: 'The value from which to start taking records. Default: 0.'
+        schema:
+          maximum: 2147483647
+          minimum: 0
+          type: integer
+          format: int32
+          default: 0
+      - name: skus
+        in: query
+        description: Comma-separated list of one or more SKUs.
+        schema:
+          type: string
+      - name: productIds
+        in: query
+        description: Comma-separated list of one or more Product Ids from the Ecommerce system.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/EcommerceProductResponseListResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EcommerceProductResponseListResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/EcommerceProductResponseListResponse'
+      security:
+      - Bearer: []
+    post:
+      tags:
+      - Product
+      summary: Create a new product
+      operationId: CreateProduct
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EcommerceProductRequest'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/EcommerceProductRequest'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/EcommerceProductRequest'
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/EcommerceProductResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EcommerceProductResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/EcommerceProductResponse'
+      security:
+      - Bearer: []
+  /api/v1/products/{productId}:
+    get:
+      tags:
+      - Product
+      summary: Get a single product by Id
+      operationId: GetProduct
+      parameters:
+      - name: productId
+        in: path
+        description: The unique value by which to search for the product.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/EcommerceProductResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EcommerceProductResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/EcommerceProductResponse'
+        '404':
+          description: Not Found
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      security:
+      - Bearer: []
+    patch:
+      tags:
+      - Product
+      summary: Update a single product by Id
+      operationId: UpdateProduct
+      parameters:
+      - name: productId
+        in: path
+        description: The unique value by which to find the product to update.
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: The values with which to update the product.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EcommerceProductRequest'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/EcommerceProductRequest'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/EcommerceProductRequest'
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/EcommerceProductResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EcommerceProductResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/EcommerceProductResponse'
+      security:
+      - Bearer: []
+    delete:
+      tags:
+      - Product
+      summary: Delete a single product by Id
+      operationId: DeleteProduct
+      parameters:
+      - name: productId
+        in: path
+        description: The unique value by which to find the product to delete.
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: No Content
+      security:
+      - Bearer: []
+  /api/products:
+    get:
+      tags:
+      - Product
+      summary: This API is used to get Eci Products listings
+      description: 'Accessible By: Global Admin, Product Admin, Product Support User.\
+
+        Accessed From: User Mgmt UI.\
+
+        Description: This API is used to get Eci product listings.
+
+        Global admin will get all the Eci Product list.
+
+        Product admin only gets the list of Eci products that they have.'
+      operationId: Products
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/EciProductListAPIResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EciProductListAPIResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/EciProductListAPIResponse'
+      security:
+      - oidc:
+        - openid
+      - Basic: []
+    servers:
+    - url: https://api-user.integrations.ecimanufacturing.com:443
+      description: Production
+  /api/products/{productId}:
+    get:
+      tags:
+      - Product
+      summary: This API is used to get the integrations, systems and master keys
+      description: 'Accessible By: Global Admin, Product Admin, Product Support Users, Company Managers.\
+
+        Accessed From: User Mgmt UI.\
+
+        Description: This API is used to get the integrations, systems and master keys.
+
+        For Creating a company we need integrations and their master keys by selection of product.'
+      operationId: Product
+      parameters:
+      - name: productId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/EciProductsResponseModelAPIResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EciProductsResponseModelAPIResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/EciProductsResponseModelAPIResponse'
+      security:
+      - oidc:
+        - openid
+      - Basic: []
+    servers:
+    - url: https://api-user.integrations.ecimanufacturing.com:443
+      description: Production
+  /api/products/sync:
+    post:
+      tags:
+      - Product
+      summary: Triggers an on-demand sync of products from Nexus into the EciProducts table
+      description: 'Accessible By: Global Admin.\
+
+        Accessed From: Admin tooling.\
+
+        Description: Syncs active products from Nexus into the local EciProducts table.
+
+        New products are inserted and existing ones updated if the display name changed.'
+      operationId: SyncProducts
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/SyncProductsResultAPIResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SyncProductsResultAPIResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/SyncProductsResultAPIResponse'
+      security:
+      - oidc:
+        - openid
+      - Basic: []
+    servers:
+    - url: https://api-user.integrations.ecimanufacturing.com:443
+      description: Production
+components:
+  schemas:
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+        title:
+          type:
+          - string
+          - 'null'
+        status:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        detail:
+          type:
+          - string
+          - 'null'
+        instance:
+          type:
+          - string
+          - 'null'
+      additionalProperties: {}
+    EcommerceProductResponseListResponse:
+      type: object
+      properties:
+        count:
+          type: integer
+          format: int32
+        nextFrom:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        data:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/EcommerceProductResponse'
+      additionalProperties: false
+    EcommerceProductVisibility:
+      enum:
+      - 0
+      - 1
+      - 2
+      type: integer
+      format: int32
+    EcommerceProductRequest:
+      type: object
+      properties:
+        sku:
+          type:
+          - string
+          - 'null'
+        title:
+          type:
+          - string
+          - 'null'
+        description:
+          type:
+          - string
+          - 'null'
+        supplierId:
+          type:
+          - string
+          - 'null'
+        defaultCategoryId:
+          type:
+          - string
+          - 'null'
+        leadTime:
+          type:
+          - string
+          - 'null'
+        price:
+          type:
+          - number
+          - 'null'
+          format: double
+        costPrice:
+          type:
+          - number
+          - 'null'
+          format: double
+        packSize:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        packUom:
+          type:
+          - string
+          - 'null'
+        minimumOrder:
+          maximum: 2147483647
+          minimum: 0
+          type:
+          - number
+          - 'null'
+          format: double
+        orderIncrement:
+          maximum: 2147483647
+          minimum: 0
+          type:
+          - number
+          - 'null'
+          format: double
+        isEnabled:
+          type:
+          - boolean
+          - 'null'
+        isTaxable:
+          type:
+          - boolean
+          - 'null'
+        isHazmat:
+          type:
+          - boolean
+          - 'null'
+        visibility:
+          $ref: '#/components/schemas/EcommerceProductVisibility'
+      additionalProperties: false
+    EcommerceProductResponse:
+      type: object
+      properties:
+        catalogId:
+          type:
+          - string
+          - 'null'
+        isEnabled:
+          type:
+          - boolean
+          - 'null'
+        productId:
+          type:
+          - string
+          - 'null'
+        sku:
+          type:
+          - string
+          - 'null'
+        supplierId:
+          type:
+          - string
+          - 'null'
+        title:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    EciProductListAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        result:
+          allOf:
+          - $ref: '#/components/schemas/EciProductList'
+      additionalProperties: false
+    IntegrationMasterKey:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        key:
+          type:
+          - string
+          - 'null'
+        dataType:
+          type:
+          - string
+          - 'null'
+        isSecret:
+          type: boolean
+        maxLength:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        minLength:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        isMultiple:
+          type: boolean
+        isRequired:
+          type: boolean
+        createdDate:
+          type: string
+          format: date-time
+        defaultValue: {}
+        modifiedDate:
+          type: string
+          format: date-time
+        isCompanyHosted:
+          type: boolean
+        eciIntegrationId:
+          type: integer
+          format: int32
+        isCompanyOnPremises:
+          type:
+          - boolean
+          - 'null'
+        maskType:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    ApiError:
+      type: object
+      properties:
+        isError:
+          type: boolean
+        exceptionMessage:
+          type:
+          - string
+          - 'null'
+        details:
+          type:
+          - string
+          - 'null'
+        referenceErrorCode:
+          type:
+          - string
+          - 'null'
+        referenceDocumentLink:
+          type:
+          - string
+          - 'null'
+        validationErrors:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ValidationError'
+      additionalProperties: false
+    SyncProductsResult:
+      type: object
+      properties:
+        added:
+          type: integer
+          format: int32
+        updated:
+          type: integer
+          format: int32
+        skipped:
+          type: integer
+          format: int32
+        newProductNames:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+      additionalProperties: false
+    EciProductList:
+      type: object
+      properties:
+        allProducts:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/EciProduct'
+        eciProducts:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/EciProduct'
+      additionalProperties: false
+    EciProductsResponseModel:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        productName:
+          type:
+          - string
+          - 'null'
+        displayname:
+          type:
+          - string
+          - 'null'
+        integrations:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/EciIntegrationResponseModel'
+      additionalProperties: false
+    SyncProductsResultAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        result:
+          allOf:
+          - $ref: '#/components/schemas/SyncProductsResult'
+      additionalProperties: false
+    EciProductsResponseModelAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        result:
+          allOf:
+          - $ref: '#/components/schemas/EciProductsResponseModel'
+      additionalProperties: false
+    ValidationError:
+      type: object
+      properties:
+        field:
+          type:
+          - string
+          - 'null'
+        message:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    EciIntegrationResponseModel:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        integrationName:
+          type:
+          - string
+          - 'null'
+        introductionText:
+          type:
+          - string
+          - 'null'
+        allowHostedConfigurations:
+          type: boolean
+        isPublished:
+          type: boolean
+        masterKeys:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/IntegrationMasterKey'
+        system:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/IntegrationSystem'
+      additionalProperties: false
+    IntegrationSystem:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        productName:
+          type:
+          - string
+          - 'null'
+        eciIntegrationId:
+          type: integer
+          format: int32
+      additionalProperties: false
+    EciProduct:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        productName:
+          type:
+          - string
+          - 'null'
+        displayname:
+          type:
+          - string
+          - 'null'
+        defaultNexusAlias:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+  securitySchemes:
+    Bearer:
+      type: oauth2
+      description: OAuth 2.0 Client Credentials Flow with API Users issued from Integration Engine Management Console
+      flows:
+        clientCredentials:
+          tokenUrl: https://api-user.integrations.ecimanufacturing.com/oauth2/api-user/token
+          scopes:
+            openid: openid
+    oidc:
+      type: openIdConnect
+      description: Use id_token obtained from OpenID Connect flow.
+      openIdConnectUrl: https://cognito-idp.us-east-1.amazonaws.com/us-east-1_9IYBf4TpD/.well-known/openid-configuration
+      x-tokenName: id_token
+    Basic:
+      type: http
+      description: Username is ClientID, Password is Client Secret.
+      scheme: Basic
+x-refined-from:
+- eci-solutions-ecommerce-openapi.json
+- eci-solutions-management-openapi.json

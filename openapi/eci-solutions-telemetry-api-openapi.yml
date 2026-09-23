@@ -1,0 +1,927 @@
+openapi: 3.2.0
+info:
+  title: MFG Integration Management Telemetry API
+  description: Provides APIs for managing ECI MFG Integration Engine Configurations.
+  contact:
+    name: ECI Manufacturing Integration Team
+    url: https://www.ecisolutions.com/support/
+  version: 2.22.273+b02c1dfd00
+servers:
+- url: https://api-user.integrations.ecimanufacturing.com:443
+  description: Production
+security:
+- oidc:
+  - openid
+- Basic: []
+tags:
+- name: Telemetry
+paths:
+  /api/audit-logs:
+    get:
+      tags:
+      - Telemetry
+      summary: This API is used to fetch history of all changes made to a company, so that I…
+      description: 'Accessible By: Global Admin, Product Admin, Product Support User, Company Manager.\
+
+        Accessed From: User Mgmt UI.\
+
+        Description: This API is used to fetch history of all changes made to a company, so that I can determine who and when a change was made.'
+      operationId: GetAuditLogTelemetry
+      parameters:
+      - name: product_id
+        in: query
+        description: Set the product id to define the particular product
+        schema:
+          type: integer
+          format: int32
+      - name: company_id
+        in: query
+        description: Set the company id to define the particular company
+        schema:
+          type: integer
+          format: int32
+      - name: duration
+        in: query
+        description: Set duration in minutes to perform search
+        schema:
+          type: integer
+          format: int32
+      - name: start_date
+        in: query
+        description: Set UTC start_date in format like {YYYY-MM-DDTHH:MM:SS}
+        schema:
+          type: string
+          format: date-time
+      - name: end_date
+        in: query
+        description: Set UTC end_date in format like {YYYY-MM-DDTHH:MM:SS}
+        schema:
+          type: string
+          format: date-time
+      - name: take
+        in: query
+        description: Set number of records to fetch from database at a time. Default value is 100
+        schema:
+          maximum: 1000
+          minimum: 1
+          type: integer
+          format: int32
+          default: 100
+      - name: skip
+        in: query
+        description: Set number of records to skip which should not come from database
+        schema:
+          type: integer
+          format: int32
+          default: 0
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/AuditLogResponseIListAPIResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuditLogResponseIListAPIResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/AuditLogResponseIListAPIResponse'
+  /api/telemetry/api-requests:
+    get:
+      tags:
+      - Telemetry
+      summary: Gets a list of API requests that have been indexed from various integrations
+      description: 'Accessible By: Global Admin, Product Admin, Product Support User, Company Manager.\
+
+        Accessed From: User Mgmt UI.\
+
+        Description: Gets a list of API requests that have been indexed from various integrations.'
+      operationId: GetApiRequestsTelemetry
+      parameters:
+      - name: from
+        in: query
+        description: ''
+        schema:
+          type: string
+          format: date-time
+      - name: to
+        in: query
+        description: ''
+        schema:
+          type: string
+          format: date-time
+      - name: take
+        in: query
+        description: ''
+        schema:
+          type: integer
+          format: int32
+          default: 100
+      - name: skip
+        in: query
+        description: ''
+        schema:
+          type: integer
+          format: int32
+          default: 0
+      - name: trace_id
+        in: query
+        description: ''
+        schema:
+          type: string
+      - name: max_duration
+        in: query
+        description: ''
+        schema:
+          type: integer
+          format: int32
+      - name: min_duration
+        in: query
+        description: ''
+        schema:
+          type: integer
+          format: int32
+      - name: min_status_code
+        in: query
+        description: ''
+        schema:
+          type: integer
+          format: int32
+      - name: max_status_code
+        in: query
+        description: ''
+        schema:
+          type: integer
+          format: int32
+      - name: company_id
+        in: query
+        description: ''
+        schema:
+          type: integer
+          format: int32
+      - name: principal_id
+        in: query
+        description: ''
+        schema:
+          type: string
+      - name: user_name
+        in: query
+        description: ''
+        schema:
+          type: string
+      - name: success
+        in: query
+        description: ''
+        schema:
+          type: boolean
+      - name: product_name
+        in: query
+        description: ''
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/ProductEnum'
+      - name: request_path
+        in: query
+        description: ''
+        schema:
+          type: string
+      - name: method
+        in: query
+        description: ''
+        schema:
+          type: string
+      - name: request_id
+        in: query
+        description: ''
+        schema:
+          type: string
+      - name: apigw_requestid
+        in: query
+        description: ''
+        schema:
+          type: string
+      - name: system_id
+        in: query
+        description: ''
+        schema:
+          type: integer
+          format: int32
+      - name: client_id
+        in: query
+        description: ''
+        schema:
+          type: string
+      - name: source_address
+        in: query
+        description: ''
+        schema:
+          type: string
+      - name: integration_id
+        in: query
+        description: ''
+        schema:
+          type: integer
+          format: int32
+      - name: integration_name
+        in: query
+        description: ''
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ApiRequestLogCountResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiRequestLogCountResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ApiRequestLogCountResponse'
+  /api/telemetry/report/{id}:
+    get:
+      tags:
+      - Telemetry
+      summary: Gets a list of logs or UM DB data based on selected query type like DSL, SQL
+      description: 'Accessible By: Global Admin, Product Admin, Product Support User, Company Manager.\
+
+        Accessed From: User Mgmt UI.\
+
+        Description: Gets a list of logs or UM DB data based on selected query type like DSL, SQL.'
+      operationId: GetCustomLogReportTelemetry
+      parameters:
+      - name: id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: take
+        in: query
+        description: ''
+        schema:
+          type: integer
+          format: int32
+          default: 100
+      - name: skip
+        in: query
+        description: ''
+        schema:
+          type: integer
+          format: int32
+          default: 0
+      - name: startDate
+        in: query
+        description: ''
+        schema:
+          type: string
+          format: date-time
+      - name: endDate
+        in: query
+        description: ''
+        schema:
+          type: string
+          format: date-time
+      - name: parameters
+        in: query
+        description: ''
+        schema:
+          type: object
+          additionalProperties:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/CustomReportLogViewModel'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomReportLogViewModel'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/CustomReportLogViewModel'
+  /api/telemetry/traces:
+    get:
+      tags:
+      - Telemetry
+      summary: This API is used to get API Logs for admin level
+      description: 'Accessible by: Global Admin, Product Admin, Product Support User.\
+
+        Accessed From: User Mgmt UI.\
+
+        Description: This API is used to get API Logs for admin level.'
+      operationId: ApiLogsTelemetry
+      parameters:
+      - name: logType
+        in: query
+        description: ''
+        required: true
+        schema:
+          type: string
+      - name: integrationId
+        in: query
+        description: ''
+        schema:
+          type: integer
+          format: int32
+      - name: duration
+        in: query
+        description: ''
+        schema:
+          type: integer
+          format: int32
+      - name: startDate
+        in: query
+        description: Set UTC startDate in format like {YYYY-MM-DDTHH:MM:SS}
+        schema:
+          type: string
+          format: date-time
+      - name: endDate
+        in: query
+        description: Set UTC endDate in format like {YYYY-MM-DDTHH:MM:SS}
+        schema:
+          type: string
+          format: date-time
+      - name: is_error
+        in: query
+        description: ''
+        schema:
+          type: boolean
+      - name: methodType
+        in: query
+        description: ''
+        schema:
+          type: string
+      - name: productName
+        in: query
+        description: ''
+        schema:
+          type: string
+      - name: secDuration
+        in: query
+        description: ''
+        schema:
+          type: string
+          default: ''
+      - name: system
+        in: query
+        description: ''
+        schema:
+          type: string
+      - name: traceId
+        in: query
+        description: ''
+        schema:
+          type: string
+      - name: integrationName
+        in: query
+        description: ''
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/TraceMessageResponseListAPIResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TraceMessageResponseListAPIResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/TraceMessageResponseListAPIResponse'
+components:
+  schemas:
+    ApiError:
+      type: object
+      properties:
+        isError:
+          type: boolean
+        exceptionMessage:
+          type:
+          - string
+          - 'null'
+        details:
+          type:
+          - string
+          - 'null'
+        referenceErrorCode:
+          type:
+          - string
+          - 'null'
+        referenceDocumentLink:
+          type:
+          - string
+          - 'null'
+        validationErrors:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ValidationError'
+      additionalProperties: false
+    ApiRequestLog:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+        timestamp:
+          type: string
+          format: date-time
+        application:
+          type:
+          - string
+          - 'null'
+        applicationVersion:
+          type:
+          - string
+          - 'null'
+        messageText:
+          type:
+          - string
+          - 'null'
+        principalId:
+          type:
+          - string
+          - 'null'
+        userName:
+          type:
+          - string
+          - 'null'
+        clientId:
+          type:
+          - string
+          - 'null'
+        sourceAddress:
+          type:
+          - string
+          - 'null'
+        requestMethod:
+          type:
+          - string
+          - 'null'
+        requestScheme:
+          type:
+          - string
+          - 'null'
+        requestHost:
+          type:
+          - string
+          - 'null'
+        requestPath:
+          type:
+          - string
+          - 'null'
+        requestQuery:
+          type:
+          - string
+          - 'null'
+        requestHeaders:
+          type:
+          - string
+          - 'null'
+        requestContentType:
+          type:
+          - string
+          - 'null'
+        duration:
+          type:
+          - number
+          - 'null'
+          description: Time elapsed for this API call, in milliseconds
+          format: double
+        responseStatus:
+          type: integer
+          format: int32
+        responseRequestId:
+          type:
+          - string
+          - 'null'
+        responseHeaders:
+          type:
+          - string
+          - 'null'
+        responseContentType:
+          type:
+          - string
+          - 'null'
+        exceptionType:
+          type:
+          - string
+          - 'null'
+        requestId:
+          type:
+          - string
+          - 'null'
+        traceId:
+          type:
+          - string
+          - 'null'
+        spanId:
+          type:
+          - string
+          - 'null'
+        xrayTraceId:
+          type:
+          - string
+          - 'null'
+        apiGwRequestId:
+          type:
+          - string
+          - 'null'
+        productName:
+          type:
+          - string
+          - 'null'
+        system:
+          type:
+          - string
+          - 'null'
+        systemId:
+          type: integer
+          format: int32
+        companyId:
+          type: integer
+          format: int32
+        companyName:
+          type:
+          - string
+          - 'null'
+        integrationId:
+          type: integer
+          format: int32
+        integrationName:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    ApiRequestLogCountResponse:
+      type: object
+      properties:
+        count:
+          type: integer
+          format: int64
+        value:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ApiRequestLog'
+      additionalProperties: false
+    TraceMessageResponse:
+      type: object
+      properties:
+        traceIdentifier:
+          type:
+          - string
+          - 'null'
+        xRayTraceId:
+          type:
+          - string
+          - 'null'
+        traceId:
+          type:
+          - string
+          - 'null'
+        timeStamp:
+          type:
+          - string
+          - 'null'
+        productName:
+          type:
+          - string
+          - 'null'
+        httpMethod:
+          type:
+          - string
+          - 'null'
+        responseCode:
+          type:
+          - string
+          - 'null'
+        requestHost:
+          type:
+          - string
+          - 'null'
+        requestScheme:
+          type:
+          - string
+          - 'null'
+        requestQuery:
+          type:
+          - string
+          - 'null'
+        sourceAddress:
+          type:
+          - string
+          - 'null'
+        apiUserName:
+          type:
+          - string
+          - 'null'
+        requestId:
+          type:
+          - string
+          - 'null'
+        apiGwRequestId:
+          type:
+          - string
+          - 'null'
+        responseRequestId:
+          type:
+          - string
+          - 'null'
+        duration:
+          type:
+          - string
+          - 'null'
+        requestPath:
+          type:
+          - string
+          - 'null'
+        companyName:
+          type:
+          - string
+          - 'null'
+        companyId:
+          type:
+          - string
+          - 'null'
+        responseError:
+          type:
+          - string
+          - 'null'
+        system:
+          type:
+          - string
+          - 'null'
+        messageText:
+          type:
+          - string
+          - 'null'
+        logLevel:
+          type:
+          - string
+          - 'null'
+        spanId:
+          type:
+          - string
+          - 'null'
+        application:
+          type:
+          - string
+          - 'null'
+        eventId:
+          type:
+          - string
+          - 'null'
+        category:
+          type:
+          - string
+          - 'null'
+        elapsedMilliseconds:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type:
+          - string
+          - 'null'
+        parentId:
+          type:
+          - string
+          - 'null'
+        exceptionType:
+          type:
+          - string
+          - 'null'
+        stackTrace:
+          type:
+          - string
+          - 'null'
+        applicationVersion:
+          type:
+          - string
+          - 'null'
+        userName:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    TraceMessageResponseListAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        result:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/TraceMessageResponse'
+      additionalProperties: false
+    AuditLogResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        userType:
+          type:
+          - string
+          - 'null'
+        userId:
+          type:
+          - string
+          - 'null'
+          format: uuid
+        userAgent:
+          type:
+          - string
+          - 'null'
+        traceId:
+          type:
+          - string
+          - 'null'
+        sourceAddress:
+          type:
+          - string
+          - 'null'
+        recordId:
+          type:
+          - string
+          - 'null'
+        recordDescription:
+          type:
+          - string
+          - 'null'
+        companyId:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        action:
+          type:
+          - string
+          - 'null'
+        dateStamp:
+          type: string
+          format: date-time
+        companyName:
+          type:
+          - string
+          - 'null'
+        productId:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        productName:
+          type:
+          - string
+          - 'null'
+        userName:
+          type:
+          - string
+          - 'null'
+        jsonData:
+          type:
+          - string
+          - 'null'
+        userRole:
+          type:
+          - string
+          - 'null'
+        changedValuesList:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ChangedValue'
+      additionalProperties: false
+    ValidationError:
+      type: object
+      properties:
+        field:
+          type:
+          - string
+          - 'null'
+        message:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    CustomReportLogViewModel:
+      type: object
+      properties:
+        totalCount:
+          type: integer
+          format: int32
+        headers:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+        data:
+          type:
+          - array
+          - 'null'
+          items:
+            type: object
+            additionalProperties: {}
+      additionalProperties: false
+    AuditLogResponseIListAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        result:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/AuditLogResponse'
+      additionalProperties: false
+    ChangedValue:
+      type: object
+      properties:
+        oldValue:
+          type:
+          - string
+          - 'null'
+        propertyName:
+          type:
+          - string
+          - 'null'
+        newValue:
+          type:
+          - string
+          - 'null'
+        isSecret:
+          type:
+          - boolean
+          - 'null'
+      additionalProperties: false
+    ProductEnum:
+      enum:
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+      - 8
+      - 9
+      - 10
+      - 11
+      - 12
+      - 13
+      - 14
+      - 15
+      type: integer
+      format: int32
+  securitySchemes:
+    oidc:
+      type: openIdConnect
+      description: Use id_token obtained from OpenID Connect flow.
+      openIdConnectUrl: https://cognito-idp.us-east-1.amazonaws.com/us-east-1_9IYBf4TpD/.well-known/openid-configuration
+      x-tokenName: id_token
+    Basic:
+      type: http
+      description: Username is ClientID, Password is Client Secret.
+      scheme: Basic

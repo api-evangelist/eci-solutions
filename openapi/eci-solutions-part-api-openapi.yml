@@ -1,0 +1,616 @@
+openapi: 3.2.0
+info:
+  title: ERP API v2.1 Part API
+  description: Provides a common API surface for accessing ECI ERP products.
+  contact:
+    name: ECI Manufacturing Division Integration Team
+    url: https://www.ecisolutions.com/support/
+  version: 3.5.585+b1e45fd230
+servers:
+- url: https://api-erp.integrations.ecimanufacturing.com:443
+  description: Production
+security:
+- Bearer: []
+tags:
+- name: Part
+paths:
+  /api/v2.1/parts:
+    post:
+      tags:
+      - Part
+      summary: Create a new Part in the ERP system
+      description: '## Supported ERPs
+
+        - JobBOSS²'
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PartCreateModel'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/PartCreateModel'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/PartCreateModel'
+      responses:
+        '201':
+          description: Created
+      operationId: postApiV21Parts
+      x-operation-id-source: derived
+    get:
+      tags:
+      - Part
+      summary: Get a list of Parts from the ERP system that match the given filters
+      description: 'Gets a list of Part.
+
+
+        ## Supported ERPs
+
+        - M1
+
+        - JobBOSS²
+
+        - Deacom
+
+        ## Resource Features
+
+        Feature |Supported |Notes
+
+        ------------|------------|------------
+
+        Filter Expressions|**Yes**|
+
+        Sort Expressions|**Yes**
+
+        Field Selection|**Yes**
+
+        Pagination|**Yes**
+
+        UniqueID|uniqueID|
+
+        ## Features by Field
+
+        Field |Filterable |Sortable |Supported ERPs
+
+        ------------|------------|------------|------------
+
+        partClassID|No|Yes|M1, JobBOSS², Deacom
+
+        partGroupID|Yes|Yes|M1, JobBOSS², Deacom
+
+        cycleCodeID|No|Yes|M1, JobBOSS², Deacom
+
+        partType|Yes|Yes|M1, JobBOSS², Deacom
+
+        partID|Yes|Yes|M1, JobBOSS², Deacom
+
+        alternatePartID|No|Yes|JobBOSS²
+
+        uniqueID|Yes|Yes|M1, JobBOSS², Deacom
+
+        rowVersion|Yes|Yes|M1, JobBOSS², Deacom
+
+        isActive|Yes|Yes|M1, JobBOSS², Deacom'
+      parameters:
+      - name: fields
+        in: query
+        description: A comma-separated list of fields to include in the result.
+        schema:
+          type: string
+      - name: sort
+        in: query
+        description: A comma-separated list of <a href='#sortexpr'>sort expressions</a>.
+        schema:
+          type: string
+      - name: take
+        in: query
+        description: Limit the number of results being returned
+        schema:
+          minimum: 0
+          type: integer
+      - name: skip
+        in: query
+        description: The number of results to skip. Combine with 'take' to fetch records in pages
+        schema:
+          minimum: 0
+          type: integer
+      - name: count
+        in: query
+        description: '<a href=''#countparam''>Data and count</a> response behavior '
+        schema:
+          maximum: 2
+          minimum: 0
+          type: integer
+      - name: filters
+        in: query
+        description: See <a href='#filterexpr'>Filter Expressions</a> for query string syntax. The Test UI and any generated code tool may expose filter parameters as a dictionary of name/value pairs, but if creating a raw HTTP request, they must be provided on the querystring as defined in the Filter Expression section.
+        style: form
+        schema:
+          type: object
+          additionalProperties:
+            type: string
+        examples:
+          Empty:
+            description: No filters applied
+          'Example #1':
+            description: A dictionary of name/value pairs that will be serialized as querystring parameters in the format ```name[operator]=value```
+            value:
+              partGroupID[eq]: abc123
+              partType[gte]: 123
+              partID[eq]: abc123
+              uniqueID[eq]: cc90686b-399e-4094-b431-fa462f84b0a8
+              rowVersion[gte]: 123
+              isActive[eq]: true
+      - name: expand
+        in: query
+        description: '### Supported Expansions
+
+          An expansion expression containing a comma separater list of relationships to expand.
+
+          Name        |Value       |Description
+
+          ------------|------------|-----------
+
+          partClass|PartClasses|
+
+          partGroup|PartGroups|
+
+          '
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/PartListResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PartListResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/PartListResponse'
+      operationId: getApiV21Parts
+      x-operation-id-source: derived
+  /api/v2.1/parts/{id}:
+    get:
+      tags:
+      - Part
+      summary: Get a Part from the ERP system that match the given filters
+      description: 'Gets a Part by unique ID.
+
+
+        ## Supported ERPs
+
+        - M1
+
+        - JobBOSS²
+
+        - Deacom
+
+        ## Features by Field
+
+        Field |Supported ERPs
+
+        ------------|------------
+
+        partClassID||M1, JobBOSS², Deacom
+
+        partGroupID||M1, JobBOSS², Deacom
+
+        cycleCodeID||M1, JobBOSS², Deacom
+
+        partType||M1, JobBOSS², Deacom
+
+        partID||M1, JobBOSS², Deacom
+
+        alternatePartID||JobBOSS²
+
+        uniqueID||M1, JobBOSS², Deacom
+
+        rowVersion||M1, JobBOSS², Deacom
+
+        isActive||M1, JobBOSS², Deacom'
+      parameters:
+      - name: id
+        in: path
+        description: The ID of the Part
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Part'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Part'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/Part'
+      operationId: getApiV21PartsById
+      x-operation-id-source: derived
+components:
+  schemas:
+    PartCreateModel:
+      required:
+      - partID
+      type: object
+      properties:
+        partID:
+          minLength: 1
+          type: string
+          description: The ID or code identifying the part.
+        partClassID:
+          type:
+          - string
+          - 'null'
+          description: The ID or code identifying the part class.
+        partGroupID:
+          type:
+          - string
+          - 'null'
+          description: The ID or code identifying the part group.
+        cycleCodeID:
+          type:
+          - string
+          - 'null'
+          description: The ID for the cycle code.
+        partType:
+          type:
+          - integer
+          - 'null'
+          description: The type of the part.
+          format: int32
+        alternatePartID:
+          type:
+          - string
+          - 'null'
+          description: The alternate ID or code for the part.
+        lockPrices:
+          type:
+          - boolean
+          - 'null'
+          description: Whether to lock sell prices for the part, preventing automatic recalculation.
+        revision:
+          $ref: '#/components/schemas/PartRevisionCreateModel'
+        materials:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/PartMaterialCreateModel'
+          description: The materials for manufacturing the part.
+        operations:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/PartOperationCreateModel'
+          description: The operations for manufacturing the part.
+        price:
+          $ref: '#/components/schemas/PartPriceCreateModel'
+        organizations:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/OrganizationPartCreateModel'
+          description: The organizations linked to the part.
+      additionalProperties: false
+      description: A model used to create new parts.
+    PartMaterialCreateModel:
+      required:
+      - materialPartID
+      - partID
+      type: object
+      properties:
+        partID:
+          minLength: 1
+          type: string
+        partRevisionID:
+          type:
+          - string
+          - 'null'
+        partOperationSeq:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        materialPartID:
+          minLength: 1
+          type: string
+        materialPartRevisionID:
+          type:
+          - string
+          - 'null'
+        quantity:
+          type:
+          - number
+          - 'null'
+          format: double
+        unitOfMeasure:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    OrganizationPartCreateModel:
+      required:
+      - organizationID
+      - organizationTypes
+      type: object
+      properties:
+        organizationID:
+          minLength: 1
+          type: string
+          description: The ID or code identifying the organization being assigned to a part.
+        organizationTypes:
+          minItems: 1
+          type: array
+          items:
+            $ref: '#/components/schemas/OrganizationType'
+          description: The type(s) of the organization being assigned to a part.
+      additionalProperties: false
+      description: A model used to create new organization parts.
+    PartListResponse:
+      type: object
+      properties:
+        data:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Part'
+          readOnly: true
+        resultCount:
+          type: integer
+          format: int32
+      additionalProperties: false
+    PartRevisionCreateModel:
+      required:
+      - partID
+      - partRevisionID
+      - shortDesc
+      type: object
+      properties:
+        partID:
+          minLength: 1
+          type: string
+          description: The ID or code identifying the part.
+        partRevisionID:
+          type: string
+          description: The ID or code identifying the part revision.
+        shortDesc:
+          minLength: 1
+          type: string
+          description: The short description for the part revision.
+        supplierOrganizationID:
+          type:
+          - string
+          - 'null'
+          description: The ID of the primary supplier of the part revision.
+        leadTime:
+          type:
+          - integer
+          - 'null'
+          description: The expected lead time in days for the part revision.
+          format: int32
+        pricingUnitOfMeasure:
+          type:
+          - string
+          - 'null'
+          description: The unit of measure used when pricing the part revision.
+      additionalProperties: false
+      description: A model used to create new part revisions.
+    PartGroup:
+      title: PartGroup
+      type: object
+      properties:
+        uniqueID:
+          type: string
+        rowVersion:
+          type: integer
+          format: int64
+        partGroupID:
+          type: string
+        parentPartGroupID:
+          type: string
+        description:
+          type: string
+        isActive:
+          type: boolean
+        inactiveDate:
+          type: string
+          format: date
+    Part:
+      title: Part
+      type: object
+      properties:
+        partClassID:
+          type: string
+        partGroupID:
+          type: string
+        cycleCodeID:
+          type: string
+        partType:
+          type: integer
+          format: int32
+        partID:
+          type: string
+        alternatePartID:
+          type: string
+        uniqueID:
+          type: string
+        rowVersion:
+          type: integer
+          format: int64
+        isActive:
+          type: boolean
+        partClass:
+          $ref: '#/components/schemas/PartClass'
+        partGroup:
+          $ref: '#/components/schemas/PartGroup'
+    PartOperationCreateModel:
+      required:
+      - partID
+      - partOperationSeq
+      type: object
+      properties:
+        partID:
+          minLength: 1
+          type: string
+        partRevisionID:
+          type:
+          - string
+          - 'null'
+        partOperationSeq:
+          type: integer
+          format: int32
+        workCenterID:
+          type:
+          - string
+          - 'null'
+        processID:
+          type:
+          - string
+          - 'null'
+        shortDesc:
+          type:
+          - string
+          - 'null'
+        longDescText:
+          type:
+          - string
+          - 'null'
+        longDescFormatted:
+          type:
+          - string
+          - 'null'
+        outsideOperation:
+          type:
+          - string
+          - 'null'
+        estSetupHours:
+          type:
+          - number
+          - 'null'
+          format: double
+        estSetupTimeValue:
+          type:
+          - number
+          - 'null'
+          format: double
+        estSetupTimeUnit:
+          type:
+          - string
+          - 'null'
+        estProdHours:
+          type:
+          - number
+          - 'null'
+          format: double
+        estProdTimeValue:
+          type:
+          - number
+          - 'null'
+          format: double
+        estProdTimeUnit:
+          type:
+          - string
+          - 'null'
+        estQueueHours:
+          type:
+          - number
+          - 'null'
+          format: double
+        estMoveHours:
+          type:
+          - number
+          - 'null'
+          format: double
+        estQAHours:
+          type:
+          - number
+          - 'null'
+          format: double
+        vendorID:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    PartPriceCreateModel:
+      required:
+      - partID
+      - priceBreaks
+      type: object
+      properties:
+        partID:
+          minLength: 1
+          type: string
+        partRevisionID:
+          type:
+          - string
+          - 'null'
+        priceBreaks:
+          type: array
+          items:
+            $ref: '#/components/schemas/PartPriceBreakCreateModel'
+      additionalProperties: false
+    OrganizationType:
+      enum:
+      - 0
+      - 1
+      - 2
+      type: integer
+      format: int32
+    PartPriceBreakCreateModel:
+      required:
+      - partID
+      - quantity
+      - unitPrice
+      type: object
+      properties:
+        partID:
+          minLength: 1
+          type: string
+        partRevisionID:
+          type:
+          - string
+          - 'null'
+        quantity:
+          type: number
+          format: double
+        unitPrice:
+          type: number
+          format: double
+      additionalProperties: false
+    PartClass:
+      title: PartClass
+      type: object
+      properties:
+        description:
+          type: string
+        uniqueID:
+          type: string
+        rowVersion:
+          type: integer
+          format: int64
+        partClassID:
+          type: string
+        isActive:
+          type: boolean
+  securitySchemes:
+    Bearer:
+      type: oauth2
+      description: OAuth 2.0 Client Credentials Flow with API Users issued from Integration Engine Management Console
+      flows:
+        clientCredentials:
+          tokenUrl: https://api-user.integrations.ecimanufacturing.com/oauth2/api-user/token
+          scopes:
+            openid: openid

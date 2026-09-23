@@ -1,0 +1,1575 @@
+openapi: 3.2.0
+info:
+  title: MFG Integration Management API User API
+  description: Provides APIs for managing ECI MFG Integration Engine Configurations.
+  contact:
+    name: ECI Manufacturing Integration Team
+    url: https://www.ecisolutions.com/support/
+  version: 2.22.273+b02c1dfd00
+servers:
+- url: https://api-user.integrations.ecimanufacturing.com:443
+  description: Production
+security:
+- oidc:
+  - openid
+- Basic: []
+tags:
+- name: API User
+paths:
+  /api/api-users:
+    post:
+      tags:
+      - API User
+      summary: Register the API Users by Global Admin, Product Admin, Company Manager
+      description: 'Accessible By: Global Admin, Product Admin, Product Support User, Company Manager.\
+
+        Accessed From: User Mgmt UI, Payment Integration.\
+
+        Description: This API registers all API Users by Global Admin, Product Admin and Product Support User.
+
+        Using Company Manager, it registers only the ERP, NET1, Avalara and JobBOSS2 public API Users except the financial API Users.'
+      operationId: RegisterApiUser
+      requestBody:
+        description: This is an object which contains all required and optional fields to register the API Users
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/ErpApiUser'
+          text/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/ErpApiUser'
+          application/*+json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/ErpApiUser'
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/GetApiUserResponseModelAPIResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetApiUserResponseModelAPIResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/GetApiUserResponseModelAPIResponse'
+  /api/api-users/{clientId}/external-connection:
+    patch:
+      tags:
+      - API User
+      summary: Update Connection Properties
+      description: 'Updates the master key values for the connection associated with the given API Credential
+
+        Client ID and applies those settings to the API credential.
+
+
+        This method can only be invoked by the original creator of the connection.'
+      operationId: UpdateConnectionProperties
+      parameters:
+      - name: clientId
+        in: path
+        description: The API Credential Client ID
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/UpdateConnectionModel'
+          text/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/UpdateConnectionModel'
+          application/*+json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/UpdateConnectionModel'
+      responses:
+        '204':
+          description: No Content
+  /api/api-users/{userId}:
+    get:
+      tags:
+      - API User
+      summary: This API is used to get the details of the API User and their associated…
+      description: 'Accessible By: Global Admin, Product Admin, Product Support User, Company Manager.\
+
+        Accessed From: User Mgmt UI.\
+
+        Description: Global Admin can get the details of all the API Users.
+
+        Product Admin can get only those API Users'' details, whom they can access.'
+      operationId: GetApiUserDetailsById
+      parameters:
+      - name: userId
+        in: path
+        description: UserId of API User and is required in Guid
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/GetApiUserResponseModelAPIResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetApiUserResponseModelAPIResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/GetApiUserResponseModelAPIResponse'
+    put:
+      tags:
+      - API User
+      summary: Update first or last name of the API User and its property settings
+      description: 'Accessible By: Global Admin, Product Admin, Product Support User, Company Manager.\
+
+        Accessed From: User Mgmt UI.\
+
+        Description: This API is used to update the first or last name of API Users in database and cognito too.
+
+        And Erpsetting values of API Users in database.'
+      operationId: UpdateApiUser
+      parameters:
+      - name: userId
+        in: path
+        description: The API User id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        description: This is an object which contains some required and optional field
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/UpdateApiUserRequestModel'
+          text/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/UpdateApiUserRequestModel'
+          application/*+json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/UpdateApiUserRequestModel'
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/GetApiUserResponseModelAPIResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetApiUserResponseModelAPIResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/GetApiUserResponseModelAPIResponse'
+    patch:
+      tags:
+      - API User
+      summary: To change the status of API User by Global Admin, Product Admin and Company…
+      description: 'Accessible By: Global Admin, Product Admin, Product Support User, Company Manager.\
+
+        Accessed From: User Mgmt UI.\
+
+        Description: This API is used to change the status from active to inactive and vice-versa of any API User by Global Admin, Product Admin and Company Manager.'
+      operationId: UserStatusApiUser
+      parameters:
+      - name: userId
+        in: path
+        description: User ID of API User and this field is required in GUID format
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        description: The only property isActive with a value of true to activate the account or false to deactivate the account.
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/ToggleEntityModel'
+          text/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/ToggleEntityModel'
+          application/*+json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/ToggleEntityModel'
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/StringAPIResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StringAPIResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/StringAPIResponse'
+    delete:
+      tags:
+      - API User
+      summary: This API is used to delete the API Users
+      description: 'Accessible By: Global Admin, Product Admin, Product Support User, Company Manager.\
+
+        Accessed From: User Mgmt UI.\
+
+        Description: It Hard delete the API Users details from database and cognito.'
+      operationId: DeleteApiUser
+      parameters:
+      - name: userId
+        in: path
+        description: The userId of API Users which we want to delete and it is required in GUID format.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/StringAPIResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StringAPIResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/StringAPIResponse'
+  /api/api-users/{userId}/activity:
+    post:
+      tags:
+      - API User
+      summary: Updates the last activity date/time for the Company and API Credential and…
+      description: 'Accessible By: Global Admin, Product Admin, Product Support User, Financial Admin, Company Manager.\
+
+        Accessed From: User Mgmt UI, Payment Integration, Financial Integration, ERP Integration, Avatax Integration.\
+
+        Description: This method is typically used by integrations to obtain API Credential integration details.'
+      operationId: UpdateApiUserLastActivity
+      parameters:
+      - name: userId
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ApiUserResponseModelAPIResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiUserResponseModelAPIResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ApiUserResponseModelAPIResponse'
+  /api/api-users/{userId}/confirm:
+    post:
+      tags:
+      - API User
+      summary: Confirm pending API User manually, if API User has not received verification…
+      description: 'Accessible By: Global Admin, Product Admin, Product Support User, Company Manager.\
+
+        Accessed From: User Mgmt UI.\
+
+        Description: Confirm pending API User manually, if API User has not received verification mail.'
+      operationId: ConfirmApiUser
+      parameters:
+      - name: userId
+        in: path
+        description: User ID of API User and this filed is required in GUID
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/GetApiUserResponseModelAPIResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetApiUserResponseModelAPIResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/GetApiUserResponseModelAPIResponse'
+  /api/api-users/{userId}/resend_link:
+    post:
+      tags:
+      - API User
+      summary: This API is used to resend verification link for the API User who has…
+      description: 'Accessible By: Global Admin, Product Admin, Product Support User, Company Manager.\
+
+        Accessed From: User Mgmt UI, Payment Integration.\
+
+        Description: Used to resend verification link for the API User who has Enablepasswordreset set to "TRUE".'
+      operationId: ResendLinkApiUser
+      parameters:
+      - name: userId
+        in: path
+        description: The unique Guid user Id of the API User
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: userName
+        in: query
+        description: The unique username of the API User (optional)
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/StringAPIResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StringAPIResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/StringAPIResponse'
+  /api/api-users/login:
+    post:
+      tags:
+      - API User
+      summary: This API authenticates the user credentials
+      description: 'Accessible By: Everyone can use this API because it''s Anonymous.\
+
+        Accessed From: User Mgmt UI, Payment Integration.\
+
+        Description: This API authenticates the user credentials. After successful authentication, it returns AWS cognito tokens.'
+      operationId: LoginApiUser
+      requestBody:
+        description: This is an object which contains username and password and both are required.
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/AuthenticateAPIUser'
+          text/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/AuthenticateAPIUser'
+          application/*+json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/AuthenticateAPIUser'
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/AuthenticateUserResponseAPIResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticateUserResponseAPIResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticateUserResponseAPIResponse'
+  /api/api-users/test-connection:
+    post:
+      tags:
+      - API User
+      summary: Check connectivity with the integration's system using the provided settings
+      description: 'Accessible By: Global Admin, Product Admin, Product Support User, Company Manager.\
+
+        Accessed From: User Mgmt UI.\
+
+        Description: Check connectivity with the integration''s system using the provided settings.'
+      operationId: TestConnectionApiUser
+      parameters:
+      - name: system_Id
+        in: query
+        description: ''
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/TestConnectionRequestModel'
+          text/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/TestConnectionRequestModel'
+          application/*+json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/TestConnectionRequestModel'
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/TestConnectionResponseModelAPIResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TestConnectionResponseModelAPIResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/TestConnectionResponseModelAPIResponse'
+  /api/ApiUser:
+    post:
+      tags:
+      - API User
+      summary: Register the API Users by Global Admin, Product Admin, Company Manager
+      description: 'Accessible By: Global Admin, Product Admin, Product Support User, Company Manager.\
+
+        Accessed From: User Mgmt UI, Payment Integration.\
+
+        Description: This API registers all API Users by Global Admin, Product Admin and Product Support User.
+
+        Using Company Manager, it registers only the ERP, NET1, Avalara and JobBOSS2 public API Users except the financial API Users.'
+      operationId: RegisterApiUser
+      requestBody:
+        description: This is an object which contains all required and optional fields to register the API Users
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/ErpApiUser'
+          text/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/ErpApiUser'
+          application/*+json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/ErpApiUser'
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/GetApiUserResponseModelAPIResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetApiUserResponseModelAPIResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/GetApiUserResponseModelAPIResponse'
+  /api/ApiUser/{userId}:
+    get:
+      tags:
+      - API User
+      summary: This API is used to get the details of the API User and their associated…
+      description: 'Accessible By: Global Admin, Product Admin, Product Support User, Company Manager.\
+
+        Accessed From: User Mgmt UI.\
+
+        Description: Global Admin can get the details of all the API Users.
+
+        Product Admin can get only those API Users'' details, whom they can access.'
+      operationId: GetApiUserDetailsById
+      parameters:
+      - name: userId
+        in: path
+        description: UserId of API User and is required in Guid
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/GetApiUserResponseModelAPIResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetApiUserResponseModelAPIResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/GetApiUserResponseModelAPIResponse'
+    put:
+      tags:
+      - API User
+      summary: Update first or last name of the API User and its property settings
+      description: 'Accessible By: Global Admin, Product Admin, Product Support User, Company Manager.\
+
+        Accessed From: User Mgmt UI.\
+
+        Description: This API is used to update the first or last name of API Users in database and cognito too.
+
+        And Erpsetting values of API Users in database.'
+      operationId: UpdateApiUser
+      parameters:
+      - name: userId
+        in: path
+        description: The API User id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        description: This is an object which contains some required and optional field
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/UpdateApiUserRequestModel'
+          text/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/UpdateApiUserRequestModel'
+          application/*+json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/UpdateApiUserRequestModel'
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/GetApiUserResponseModelAPIResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetApiUserResponseModelAPIResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/GetApiUserResponseModelAPIResponse'
+    patch:
+      tags:
+      - API User
+      summary: To change the status of API User by Global Admin, Product Admin and Company…
+      description: 'Accessible By: Global Admin, Product Admin, Product Support User, Company Manager.\
+
+        Accessed From: User Mgmt UI.\
+
+        Description: This API is used to change the status from active to inactive and vice-versa of any API User by Global Admin, Product Admin and Company Manager.'
+      operationId: UserStatusApiUser
+      parameters:
+      - name: userId
+        in: path
+        description: User ID of API User and this field is required in GUID format
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        description: The only property isActive with a value of true to activate the account or false to deactivate the account.
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/ToggleEntityModel'
+          text/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/ToggleEntityModel'
+          application/*+json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/ToggleEntityModel'
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/StringAPIResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StringAPIResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/StringAPIResponse'
+    delete:
+      tags:
+      - API User
+      summary: This API is used to delete the API Users
+      description: 'Accessible By: Global Admin, Product Admin, Product Support User, Company Manager.\
+
+        Accessed From: User Mgmt UI.\
+
+        Description: It Hard delete the API Users details from database and cognito.'
+      operationId: DeleteApiUser
+      parameters:
+      - name: userId
+        in: path
+        description: The userId of API Users which we want to delete and it is required in GUID format.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/StringAPIResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StringAPIResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/StringAPIResponse'
+  /api/ApiUser/{userId}/activity:
+    post:
+      tags:
+      - API User
+      summary: Updates the last activity date/time for the Company and API Credential and…
+      description: 'Accessible By: Global Admin, Product Admin, Product Support User, Financial Admin, Company Manager.\
+
+        Accessed From: User Mgmt UI, Payment Integration, Financial Integration, ERP Integration, Avatax Integration.\
+
+        Description: This method is typically used by integrations to obtain API Credential integration details.'
+      operationId: UpdateApiUserLastActivity
+      parameters:
+      - name: userId
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ApiUserResponseModelAPIResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiUserResponseModelAPIResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ApiUserResponseModelAPIResponse'
+  /api/ApiUser/{userId}/confirm:
+    post:
+      tags:
+      - API User
+      summary: Confirm pending API User manually, if API User has not received verification…
+      description: 'Accessible By: Global Admin, Product Admin, Product Support User, Company Manager.\
+
+        Accessed From: User Mgmt UI.\
+
+        Description: Confirm pending API User manually, if API User has not received verification mail.'
+      operationId: ConfirmApiUser
+      parameters:
+      - name: userId
+        in: path
+        description: User ID of API User and this filed is required in GUID
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/GetApiUserResponseModelAPIResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetApiUserResponseModelAPIResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/GetApiUserResponseModelAPIResponse'
+  /api/ApiUser/{userId}/resend_link:
+    post:
+      tags:
+      - API User
+      summary: This API is used to resend verification link for the API User who has…
+      description: 'Accessible By: Global Admin, Product Admin, Product Support User, Company Manager.\
+
+        Accessed From: User Mgmt UI, Payment Integration.\
+
+        Description: Used to resend verification link for the API User who has Enablepasswordreset set to "TRUE".'
+      operationId: ResendLinkApiUser
+      parameters:
+      - name: userId
+        in: path
+        description: The unique Guid user Id of the API User
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: userName
+        in: query
+        description: The unique username of the API User (optional)
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/StringAPIResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StringAPIResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/StringAPIResponse'
+  /api/ApiUser/login:
+    post:
+      tags:
+      - API User
+      summary: This API authenticates the user credentials
+      description: 'Accessible By: Everyone can use this API because it''s Anonymous.\
+
+        Accessed From: User Mgmt UI, Payment Integration.\
+
+        Description: This API authenticates the user credentials. After successful authentication, it returns AWS cognito tokens.'
+      operationId: LoginApiUser
+      requestBody:
+        description: This is an object which contains username and password and both are required.
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/AuthenticateAPIUser'
+          text/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/AuthenticateAPIUser'
+          application/*+json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/AuthenticateAPIUser'
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/AuthenticateUserResponseAPIResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticateUserResponseAPIResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticateUserResponseAPIResponse'
+  /api/ApiUser/test-connection:
+    post:
+      tags:
+      - API User
+      summary: Check connectivity with the integration's system using the provided settings
+      description: 'Accessible By: Global Admin, Product Admin, Product Support User, Company Manager.\
+
+        Accessed From: User Mgmt UI.\
+
+        Description: Check connectivity with the integration''s system using the provided settings.'
+      operationId: TestConnectionApiUser
+      parameters:
+      - name: system_Id
+        in: query
+        description: ''
+        schema:
+          type: integer
+          format: int32
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/TestConnectionRequestModel'
+          text/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/TestConnectionRequestModel'
+          application/*+json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/TestConnectionRequestModel'
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/TestConnectionResponseModelAPIResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TestConnectionResponseModelAPIResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/TestConnectionResponseModelAPIResponse'
+components:
+  schemas:
+    UpdateApiUserRequestModel:
+      required:
+      - firstName
+      - username
+      type: object
+      properties:
+        username:
+          minLength: 1
+          type: string
+        firstName:
+          minLength: 1
+          type: string
+        lastName:
+          type:
+          - string
+          - 'null'
+        email:
+          type:
+          - string
+          - 'null'
+        keyIds:
+          type:
+          - array
+          - 'null'
+          items:
+            type: integer
+            format: int32
+        isPasswordChanged:
+          type: boolean
+        companyId:
+          type: integer
+          format: int32
+        financialCompanyId:
+          type: integer
+          format: int32
+        userType:
+          type: integer
+          format: int32
+        expireType:
+          type: integer
+          format: int32
+        days:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        expireDateTime:
+          type:
+          - string
+          - 'null'
+        environment:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    ValidationError:
+      type: object
+      properties:
+        field:
+          type:
+          - string
+          - 'null'
+        message:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    AuthenticateUserResponseAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        result:
+          allOf:
+          - $ref: '#/components/schemas/AuthenticateUserResponse'
+      additionalProperties: false
+    ApiUserResponseModelAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        result:
+          allOf:
+          - $ref: '#/components/schemas/ApiUserResponseModel'
+      additionalProperties: false
+    FinancialIntegrationApiUserProperties:
+      type: object
+      properties:
+        financialCompanyId:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        financialCompanyName:
+          type:
+          - string
+          - 'null'
+        financialCompanyExternalId:
+          type:
+          - string
+          - 'null'
+        financialSystemBaseUrl:
+          type:
+          - string
+          - 'null'
+        clientId:
+          type:
+          - string
+          - 'null'
+        clientSecret:
+          type:
+          - string
+          - 'null'
+        environment:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    GetApiUserResponseModelAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        result:
+          allOf:
+          - $ref: '#/components/schemas/GetApiUserResponseModel'
+      additionalProperties: false
+    AuthenticateAPIUser:
+      required:
+      - password
+      - username
+      type: object
+      properties:
+        username:
+          minLength: 1
+          type: string
+        password:
+          minLength: 1
+          type: string
+      additionalProperties: false
+    TestConnectionResponseModel:
+      type: object
+      properties:
+        passed:
+          type: boolean
+        details:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/TestConnectionResponseDetail'
+      additionalProperties: false
+    TestConnectionResponseModelAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        result:
+          allOf:
+          - $ref: '#/components/schemas/TestConnectionResponseModel'
+      additionalProperties: false
+    ApiIntegrationApiUserProperty:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        keyValue:
+          type:
+          - string
+          - 'null'
+        keyId:
+          type: integer
+          format: int32
+        isRequired:
+          type: boolean
+        description:
+          type:
+          - string
+          - 'null'
+        isSecret:
+          type: boolean
+        displayOrdinal:
+          type: integer
+          format: int32
+      additionalProperties: false
+    RateLimits:
+      type: object
+      properties:
+        ip:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        ipPeriod:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        company:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        companyPeriod:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        user:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        userPeriod:
+          type:
+          - integer
+          - 'null'
+          format: int32
+      additionalProperties: false
+    ErpApiUser:
+      required:
+      - companyId
+      - eciIntegrationId
+      - enablePasswordReset
+      - expireType
+      - firstName
+      - isAdmin
+      - systemId
+      - userType
+      type: object
+      properties:
+        username:
+          type:
+          - string
+          - 'null'
+        password:
+          type:
+          - string
+          - 'null'
+        email:
+          pattern: ^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$
+          type:
+          - string
+          - 'null'
+        firstName:
+          maxLength: 50
+          minLength: 2
+          type: string
+        lastName:
+          type:
+          - string
+          - 'null'
+        eciIntegrationId:
+          type: integer
+          format: int32
+        systemName:
+          type:
+          - string
+          - 'null'
+        userType:
+          type: integer
+          description: 1 = Person, 2 = System (default)
+          format: int32
+        keyIds:
+          type:
+          - array
+          - 'null'
+          items:
+            type: integer
+            format: int32
+        systemId:
+          type: integer
+          format: int32
+        companyId:
+          type: integer
+          format: int32
+        isAdmin:
+          type: boolean
+        enablePasswordReset:
+          type: boolean
+        expireType:
+          type: integer
+          format: int32
+        days:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        expireDateTime:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    TestConnectionRequestModel:
+      type: object
+      properties:
+        financialCompanyId:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        erpApiSettingId:
+          type:
+          - array
+          - 'null'
+          items:
+            type: integer
+            format: int32
+      additionalProperties: false
+    ApiError:
+      type: object
+      properties:
+        isError:
+          type: boolean
+        exceptionMessage:
+          type:
+          - string
+          - 'null'
+        details:
+          type:
+          - string
+          - 'null'
+        referenceErrorCode:
+          type:
+          - string
+          - 'null'
+        referenceDocumentLink:
+          type:
+          - string
+          - 'null'
+        validationErrors:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ValidationError'
+      additionalProperties: false
+    AuthenticateUserResponse:
+      type: object
+      properties:
+        accessToken:
+          type:
+          - string
+          - 'null'
+        idToken:
+          type:
+          - string
+          - 'null'
+        refreshToken:
+          type:
+          - string
+          - 'null'
+        expiresIn:
+          type: integer
+          format: int32
+        isPasswordChangeRequired:
+          type: boolean
+      additionalProperties: false
+    TestConnectionResponseDetail:
+      type: object
+      properties:
+        step:
+          type: integer
+          format: int32
+        description:
+          type:
+          - string
+          - 'null'
+        passed:
+          type: boolean
+        failureReason:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    UpdateConnectionModel:
+      required:
+      - properties
+      type: object
+      properties:
+        properties:
+          type: object
+          additionalProperties:
+            type: string
+          description: The properties that are being updated. This payload varies by the type of integration/system.
+      additionalProperties: false
+    StringAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        result:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    GetApiUserResponseModel:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+        username:
+          type:
+          - string
+          - 'null'
+        password:
+          type:
+          - string
+          - 'null'
+        name:
+          type:
+          - string
+          - 'null'
+        firstName:
+          type:
+          - string
+          - 'null'
+        lastName:
+          type:
+          - string
+          - 'null'
+        email:
+          type:
+          - string
+          - 'null'
+        companyId:
+          type: integer
+          format: int32
+        companyNexusId:
+          type:
+          - string
+          - 'null'
+        financialCompanyId:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        financialCompanyName:
+          type:
+          - string
+          - 'null'
+        companyName:
+          type:
+          - string
+          - 'null'
+        companyCustomerId:
+          type:
+          - string
+          - 'null'
+        eciProductName:
+          type:
+          - string
+          - 'null'
+        productId:
+          type: integer
+          format: int32
+        eciIntegrationId:
+          type: integer
+          format: int32
+        eciIntegrationName:
+          type:
+          - string
+          - 'null'
+        isEmailVerified:
+          type:
+          - string
+          - 'null'
+        isActive:
+          type: boolean
+        systemId:
+          type: integer
+          format: int32
+        systemName:
+          type:
+          - string
+          - 'null'
+        accountVerifiedStatus:
+          type:
+          - string
+          - 'null'
+        enablePasswordReset:
+          type: boolean
+        accountStatus:
+          type:
+          - string
+          - 'null'
+        enableResendVerification:
+          type: boolean
+        enableConfirmUser:
+          type: boolean
+        userType:
+          type: integer
+          format: int32
+        expireType:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        expireDateUtc:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        integrationIsActive:
+          type: boolean
+        integrationIsHosted:
+          type: boolean
+        companyIsActive:
+          type: boolean
+        rateLimits:
+          allOf:
+          - $ref: '#/components/schemas/RateLimits'
+        apiIntegrationApiUserProperties:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ApiIntegrationApiUserProperty'
+      additionalProperties: false
+    ToggleEntityModel:
+      type: object
+      properties:
+        isActive:
+          type: boolean
+      additionalProperties: false
+    ApiUserResponseModel:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+        username:
+          type:
+          - string
+          - 'null'
+        password:
+          type:
+          - string
+          - 'null'
+        name:
+          type:
+          - string
+          - 'null'
+        firstName:
+          type:
+          - string
+          - 'null'
+        lastName:
+          type:
+          - string
+          - 'null'
+        email:
+          type:
+          - string
+          - 'null'
+        companyId:
+          type: integer
+          format: int32
+        companyNexusId:
+          type:
+          - string
+          - 'null'
+        financialCompanyId:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        financialCompanyName:
+          type:
+          - string
+          - 'null'
+        companyName:
+          type:
+          - string
+          - 'null'
+        companyCustomerId:
+          type:
+          - string
+          - 'null'
+        eciProductName:
+          type:
+          - string
+          - 'null'
+        productId:
+          type: integer
+          format: int32
+        eciIntegrationId:
+          type: integer
+          format: int32
+        eciIntegrationName:
+          type:
+          - string
+          - 'null'
+        isEmailVerified:
+          type:
+          - string
+          - 'null'
+        isActive:
+          type: boolean
+        systemId:
+          type: integer
+          format: int32
+        systemName:
+          type:
+          - string
+          - 'null'
+        accountVerifiedStatus:
+          type:
+          - string
+          - 'null'
+        enablePasswordReset:
+          type: boolean
+        accountStatus:
+          type:
+          - string
+          - 'null'
+        enableResendVerification:
+          type: boolean
+        enableConfirmUser:
+          type: boolean
+        userType:
+          type: integer
+          format: int32
+        expireType:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        expireDateUtc:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        integrationIsActive:
+          type: boolean
+        integrationIsHosted:
+          type: boolean
+        companyIsActive:
+          type: boolean
+        rateLimits:
+          allOf:
+          - $ref: '#/components/schemas/RateLimits'
+        apiIntegrationApiUserProperties:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ApiIntegrationApiUserProperty'
+        integrationProperties:
+          type:
+          - object
+          - 'null'
+          additionalProperties:
+            type:
+            - string
+            - 'null'
+        financialIntegrationApiUserProperties:
+          allOf:
+          - $ref: '#/components/schemas/FinancialIntegrationApiUserProperties'
+        accessToken:
+          type:
+          - string
+          - 'null'
+        accessTokenExpiresAtUtc:
+          type:
+          - integer
+          - 'null'
+          format: int64
+        refreshToken:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+  securitySchemes:
+    oidc:
+      type: openIdConnect
+      description: Use id_token obtained from OpenID Connect flow.
+      openIdConnectUrl: https://cognito-idp.us-east-1.amazonaws.com/us-east-1_9IYBf4TpD/.well-known/openid-configuration
+      x-tokenName: id_token
+    Basic:
+      type: http
+      description: Username is ClientID, Password is Client Secret.
+      scheme: Basic

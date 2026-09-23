@@ -1,0 +1,225 @@
+openapi: 3.2.0
+info:
+  title: JobBOSS² Public Packing List Line Items API
+  description: Provides a common API surface for accessing ECI ERP JobBOSS².
+  version: v1
+servers:
+- url: https://api-jb2.integrations.ecimanufacturing.com:443
+  description: API Host
+security:
+- Bearer: []
+tags:
+- name: Packing List Line Items
+paths:
+  /api/v1/packing-list-line-items:
+    get:
+      tags:
+      - Packing List Line Items
+      summary: Gets a list of Packing List Line Items
+      description: 'By default a packing list line item response will include only the fields: accountingID, contactName, containerNumber, customerPONumber, deliveryTicketItemNumber, deliveryTicketNumber, isTaxable, jobNumber, lastModDate, lastModUser, masterJobNumber, partDescription, partNumber, partWeight, quantityFromStock, quantityOpen, quantityToCancel, quantityToShip, quantityToStock, revision, uniqueID, unit. You may specify the exact fields to return using the fields parameter.'
+      parameters:
+      - name: fields
+        in: query
+        description: A comma separated list of fields to include in the result.
+        schema:
+          type: string
+      - name: sort
+        in: query
+        description: A comma separated list of field to sort by. See the <a href='#sort-expressions'>Sort Expressions</a> section for more information.
+        schema:
+          type: string
+      - name: filters
+        in: query
+        description: Filters must be provided as query string parameters as defined in the <a href='#filter-expressions'>Filter Expressions</a> section.
+        schema:
+          type: object
+          additionalProperties:
+            type: string
+        examples:
+          No filters: {}
+          Filter by Packing List:
+            value:
+              deliveryTicketNumber: '4692'
+      - name: skip
+        in: query
+        description: The number of records at the start of the result set to skip over.
+        schema:
+          type: string
+      - name: take
+        in: query
+        description: The number of records to retrieve.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PackingListLineItemListSuccessResponse'
+              example:
+                Data:
+                - accountingID: string
+                  contactName: string
+                  containerNumber: string
+                  customerPONumber: string
+                  deliveryTicketItemNumber: 0
+                  deliveryTicketNumber: string
+                  isTaxable: false
+                  jobNumber: string
+                  lastModDate: '2026-09-06T17:13:12.0000000+00:00'
+                  lastModUser: string
+                  masterJobNumber: string
+                  partDescription: string
+                  partNumber: string
+                  partWeight: 0
+                  quantityFromStock: 0
+                  quantityOpen: 0
+                  quantityToCancel: 0
+                  quantityToShip: 0
+                  quantityToStock: 0
+                  revision: string
+                  uniqueID: 0
+                  unit: string
+      operationId: getApiV1PackingListLineItems
+      x-operation-id-source: derived
+components:
+  schemas:
+    PackingListLineItemListSuccessResponse:
+      type: object
+      properties:
+        Data:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/PackingListLineItem'
+      additionalProperties: false
+    PackingListLineItem:
+      type: object
+      properties:
+        accountingID:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        contactName:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        containerNumber:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        customerPONumber:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        deliveryTicketItemNumber:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          readOnly: true
+        deliveryTicketNumber:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        isTaxable:
+          type: boolean
+          readOnly: true
+        jobNumber:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        lastModDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          readOnly: true
+        lastModUser:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        masterJobNumber:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        partDescription:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        partNumber:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        partWeight:
+          type:
+          - number
+          - 'null'
+          format: double
+          readOnly: true
+        quantityFromStock:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          readOnly: true
+        quantityOpen:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          readOnly: true
+        quantityToCancel:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          readOnly: true
+        quantityToShip:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          readOnly: true
+        quantityToStock:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          readOnly: true
+        revision:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+        uniqueID:
+          type: integer
+          format: int32
+          readOnly: true
+        unit:
+          type:
+          - string
+          - 'null'
+          readOnly: true
+      additionalProperties: false
+  securitySchemes:
+    Bearer:
+      type: oauth2
+      description: OAuth 2.0 Client Credentials Flow with API Users issued from Integration Engine Management Console
+      flows:
+        clientCredentials:
+          tokenUrl: https://api-user.integrations.ecimanufacturing.com/oauth2/api-user/token
+          scopes:
+            openid: openid

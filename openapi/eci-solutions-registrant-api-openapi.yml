@@ -1,0 +1,1167 @@
+openapi: 3.2.0
+info:
+  title: Lasso Registrant API
+  description: 'Overview
+
+
+    Use this API to manage Registrant, Project, and Inventory data within Lasso CRM.'
+  version: 1.0.39
+servers:
+- url: https://api.lassocrm.com/v1
+  description: Production endpoint
+tags:
+- name: Registrant
+paths:
+  /registrants:
+    get:
+      summary: List of registrants for a project
+      operationId: get_registrants
+      description: 'Returns a full representation of a registrant, including notes and history items excluding the history body. This may produce a lot of data, so the endpoint is limited to 20 results at a time.
+
+        Because a history body can be quite large, a separate request must be made to `/registrants/{registrantId}/histories/{historyId}` in order to retrieve it.
+
+        Use the `next` link to page through the available registrants. Registrant are sorted by creation date, with newest on top.'
+      tags:
+      - Registrant
+      parameters:
+      - in: query
+        name: rating
+        schema:
+          type: string
+      - in: query
+        name: lastModifiedAfter
+        schema:
+          type: string
+          format: date
+        description: Returns only registrants that were modified at least once since the given date, in ISO 8601 UTC format
+      - in: query
+        name: lastModifiedBefore
+        schema:
+          type: string
+          format: date
+        description: Returns only registrants that were last modified before this date. Combined with lastModifiedAfter this allows to select registrants that were last modified between two dates. Dates are in ISO 8601 UTC format.
+      - in: query
+        name: registeredAfter
+        schema:
+          type: string
+          format: date
+        description: Returns only registrants that were registered since the given date, in ISO 8601 UTC format.
+      - in: query
+        name: registeredBefore
+        schema:
+          type: string
+          format: date
+        description: Returns only registrants that were registered before this date. Combined with registeredAfter this allows to select registrants that were registered between two dates. Dates are in ISO 8601 UTC format.
+      - $ref: '#/components/parameters/Cursor'
+      security:
+      - JwtAuthorizer: []
+      responses:
+        200:
+          description: Get a list of registrants, sorted newest-first. You can also limit the selection of registrants by rating and creation date.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/RegistrantRead'
+                  links:
+                    type: object
+                    properties:
+                      next:
+                        type: string
+                        description: Link to the next batch of registrants
+                        example: /registrants?cursor=fdslkb32b3o2o
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+    post:
+      summary: Create a registrant
+      operationId: post_registrants
+      description: 'Notes:
+
+        - History body is not returned in the response payload. Because a history body can be quite large,
+
+        a separate request must be made to `/registrants/{registrantId}/histories/{historyId}`
+
+        in order to retrieve it.
+
+        - Automatic handling of duplicates (upsert) is available if `RegistrantWrite.automaticallyMerge` is set to true.
+
+        (See notes in schema for matching rules and precedence)'
+      tags:
+      - Registrant
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegistrantWrite'
+      security:
+      - JwtAuthorizer: []
+      responses:
+        202:
+          description: Registrant has been created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegistrantAccepted'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+  /registrants/search:
+    get:
+      summary: Search registrants by name, email, phone, nickname, externalId, rating or…
+      operationId: get_registrants_search
+      description: 'This endpoint is optimized for speed with a smaller payload than `/registrants`. This is handy for live search features, e.g. a drop-down with suggested results for a search bar.
+
+        Note: History body is not returned in the response payload. Because a history body can be quite large, a separate request must be made to `/registrants/{registrantId}/histories/{historyId}` in order to retrieve it.'
+      tags:
+      - Registrant
+      parameters:
+      - name: lastModified
+        in: query
+        schema:
+          type: string
+        description: Return only registrant modified after the specified date time, in ISO 8601 UTC format.
+      - in: query
+        name: registeredAfter
+        schema:
+          type: string
+          format: date
+        description: Returns only registrants that were registered since the given date, in ISO 8601 UTC format.
+      - in: query
+        name: registeredBefore
+        schema:
+          type: string
+          format: date
+        description: Returns only registrants that were registered before this date. Combined with registeredAfter this allows to select registrants that were registered between two dates. Dates are in ISO 8601 UTC format.
+      - name: rating
+        in: query
+        schema:
+          type: string
+        description: Return only registrants who currently have the specified rating
+      - name: email
+        in: query
+        schema:
+          type: string
+        description: Search registrants by email address
+      - name: phone
+        in: query
+        schema:
+          type: string
+        description: Search registrants by phone number
+      - name: nickName
+        in: query
+        schema:
+          type: string
+        description: Search registrants by nickname
+      - name: name
+        in: query
+        schema:
+          type: string
+        description: Search registrants by name. This is a loose search, the name will be parsed into first and last name, and then partially matched. E.g. `Jim and Susan Smith` will match `Jim Smith` and `Susan Smith`.
+      - name: fuzzy
+        in: query
+        schema:
+          type: boolean
+        description: 'Default is `false`, turns on partial matching for specific field searches where the provided value is a prefix or an exact match. E.g. `name=rob&fuzzy=true` will match the name `Robert`. Affected fields are: name, nickName, phone, email, externalId, and rating.'
+      - name: externalId
+        in: query
+        schema:
+          type: string
+        description: Search registrants by an integration externalId. The integration type will be determined by the API key.
+      - name: smartSearch
+        in: query
+        schema:
+          type: string
+        description: Searches for registrants where the given value is a prefix or exactly matches at least one of first name, last name, full name, phone, email, nickName, or company. E.g. `Jon`, `Jon Sno`, `Sno`, `Jo`  will all return `Jon Snow`. `jonsnow@` and `jonsno` will return a registrant with the email `jonsnow@westeros.com`.
+      - $ref: '#/components/parameters/Cursor'
+      security:
+      - JwtAuthorizer: []
+      responses:
+        200:
+          description: Registrants found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  links:
+                    type: object
+                    properties:
+                      next:
+                        type: string
+                        description: Next batch of search results
+                        example: /registrants/search?name=Smith&cursor=32bj3k2b
+                  items:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        registrantId:
+                          type: string
+                          example: 123
+                        personalId:
+                          type: string
+                          example: 1234
+                        firstName:
+                          type: string
+                          example: John
+                        lastName:
+                          type: string
+                          example: Smith
+                        email:
+                          type: string
+                          description: Registrants primary email
+                          example: john.smith@example.com
+                        address:
+                          type: string
+                          description: Registrants primary address
+                          example: 335 Example St, ES, 38832, USA
+                        phone:
+                          type: string
+                          description: Registrants primary phone number
+                          example: 512-555-8787
+                        _links:
+                          type: object
+                          properties:
+                            self:
+                              type: string
+                              description: Link to the full representation of the registrant
+                              example: /registrants/123
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+  /registrants/{registrantId}:
+    parameters:
+    - in: path
+      name: registrantId
+      schema:
+        type: string
+      required: true
+    put:
+      description: Update a registrants personal data
+      operationId: put_registrants_by_id
+      tags:
+      - Registrant
+      security:
+      - JwtAuthorizer: []
+      responses:
+        200:
+          description: Registrants personal data successfully saved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegistrantRead'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegistrantPersonalInfo'
+      summary: Put registrants by id
+      x-summary-source: derived
+    get:
+      summary: Extended data for a registrant
+      operationId: get_registrants_by_id
+      description: 'Note: History body is not returned in the response payload. Because a history body can be quite large, a separate request must be made to `/registrants/{registrantId}/histories/{historyId}` in order to retrieve it.'
+      tags:
+      - Registrant
+      security:
+      - JwtAuthorizer: []
+      responses:
+        200:
+          description: Registrant exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegistrantRead'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+components:
+  schemas:
+    HistoryRead:
+      type: object
+      title: History Read Item
+      properties:
+        type:
+          type: string
+          description: 'Clients can create their own history types, so an exhaustive list of available history items is currently not available. Defaults:
+
+            Appointment Cancelled Appointment Email Email Reply Fax Mail Mass Mail Merge Opted-Out Phone - Left Message Return Visit SSRU Visit
+
+            '
+          example: Email
+        typeId:
+          type: string
+          description: ID of the history type (could be client-created)
+          example: 123
+        subject:
+          type: string
+          description: Short summary of history item
+          example: Welcome to Birch Towers
+        date:
+          type: string
+          format: datetime
+          description: When the history item was received, e.g. send-date for email
+          example: '2017-08-31T21:18:39Z'
+        createdBy:
+          $ref: '#/components/schemas/Creator'
+        _links:
+          type: object
+          properties:
+            self:
+              type: string
+              example: /registrants/123/history/123
+        historyId:
+          type: string
+          example: 123
+    RegistrantWrite:
+      title: RegistrantWrite
+      type: object
+      properties:
+        websiteTracking:
+          type: object
+          properties:
+            domainAccountId:
+              type: string
+              example: LAS-123456-01
+            guid:
+              type: string
+              example: UID123
+        excludeFromTraffic:
+          type: boolean
+          description: Exclude this registrant from traffic reports
+          example: false
+        registrationDate:
+          type: string
+          format: datetime
+          description: When the registrant was created in the system. Dates are in ISO 8601 UTC format.
+          example: '2017-08-31T21:18:39Z'
+        externalId:
+          type: string
+          example: ABC123
+          description: identifies this registrant in an externally linked system. The external system is determined from the api key
+        externalDuplicateIds:
+          type: array
+          description: a registrant that has been merged with another will inherit the other's externalId. This list keeps track of all other externalId's linked to this single registrant
+          items:
+            type: string
+            example: DEF456
+        person:
+          $ref: '#/components/schemas/RegistrantPersonalInfo'
+        rating:
+          $ref: '#/components/schemas/Rating'
+        sourceType:
+          $ref: '#/components/schemas/SourceType'
+        secondarySourceType:
+          $ref: '#/components/schemas/SecondarySourceType'
+        followUpProcess:
+          $ref: '#/components/schemas/FollowUpProcess'
+        assignedSalesReps:
+          type: array
+          items:
+            $ref: '#/components/schemas/SalesRepWrite'
+        questions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Question'
+        emails:
+          type: array
+          items:
+            $ref: '#/components/schemas/EmailWrite'
+        phones:
+          type: array
+          items:
+            $ref: '#/components/schemas/PhoneWrite'
+        addresses:
+          type: array
+          items:
+            $ref: '#/components/schemas/AddressWrite'
+        history:
+          type: array
+          items:
+            $ref: '#/components/schemas/HistoryWrite'
+        notes:
+          type: array
+          items:
+            $ref: '#/components/schemas/RegistrantNoteWrite'
+        sendSalesRepAssignmentNotification:
+          type: boolean
+          example: true
+        thankYouEmailTemplateId:
+          type: string
+          example: 123
+        sendOptInEmail:
+          type: boolean
+          example: true
+        rotationId:
+          type: string
+          description: Assign a sales rep from next in rotation. assignedSalesReps override rotationId
+          example: 1
+        automaticallyMerge:
+          type: boolean
+          example: true
+          description: "Set this directive to true to tell the system to look for and merge this new lead with an existing\nduplicate registrant. Defaults to true if not set. \n\nA duplicate registrant will be matched according to these criteria: (in order of precedence)\n- Match by personalId provided in `RegistrantWrite.personalId`\n- Match by email provided in `RegistrantWrite.emails[].email` (if multiple emails, then match at least one)\n- Match by phone provided in `RegistrantWrite.phones[].phone` (if multiple phones, then match at least one)\n"
+        _links:
+          $ref: '#/components/schemas/RegistrantLinks'
+    StandardError:
+      type: object
+      title: Standard Error
+      description: A standard error response format.
+      properties:
+        errorCode:
+          type: integer
+          example: 4xx
+        error:
+          type: string
+          description: A summary of the error
+          example: A summary of the error
+        errorMessage:
+          type: string
+          description: Details of the error
+          example: Details of the error
+    SecondarySourceType:
+      type: object
+      title: Secondary Source Type
+      description: If the secondary source type does not exist, it will be created
+      properties:
+        secondarySourceType:
+          type: string
+          minLength: 1
+          maxLength: 100
+          example: Facebook
+    AppointmentSmsReminderRecipient:
+      type: object
+      title: AppointmentReminderRecipient
+      properties:
+        phone:
+          type: string
+          minLength: 1
+          maxLength: 20
+          example: 123-456-7890
+        message:
+          type: string
+          example: 'Del Boca Vista: your appt is Today at 9:45 am with Andrew. Call 123.456.7890 to contact us. Reply STOP to opt out'
+    RegistrantLinks:
+      type: object
+      properties:
+        self:
+          type: string
+          description: Link to the registrant
+          example: /registrants/123
+        update:
+          type: string
+          description: Link to update the registrant
+          example: /registrants/123
+    RegistrantRelationshipRead:
+      type: object
+      title: Relationship Read
+      description: Contains a registrant's relationships
+      properties:
+        relationshipId:
+          type: string
+          example: 123
+        registrantId:
+          type: string
+          example: 456
+        relationship:
+          type: string
+          example: Wife
+        reverse:
+          type: string
+          example: Husband
+        firstName:
+          type: string
+          example: John
+        lastName:
+          type: string
+          example: Doe
+    AppointmentLinks:
+      type: object
+      properties:
+        self:
+          type: string
+          description: Link to the appointment
+          example: /registrants/456/appointments/123
+        update:
+          type: string
+          description: Link to update the appointment
+          example: /registrants/456/appointments/123
+        delete:
+          type: string
+          description: Link to delete the appointment
+          example: /registrants/456/appointments/123
+    SourceType:
+      type: object
+      title: Source Type
+      description: If the source type doesn't exist, it will be created
+      properties:
+        sourceType:
+          type: string
+          minLength: 1
+          maxLength: 100
+          example: Online Registration
+    EmailRead:
+      type: object
+      title: Email Read
+      properties:
+        emailId:
+          type: string
+          example: 123
+        email:
+          type: string
+          example: test_registrant@lassocrm.com
+        type:
+          type: string
+          example: Personal
+        primary:
+          type: boolean
+          example: true
+        optedStatus:
+          type: string
+          enum:
+          - opted_in
+          - opted_out
+          - non_opted
+          example: opted_in
+    RegistrantNoteRead:
+      type: object
+      title: Note Read
+      description: Contains a free-form text field
+      properties:
+        noteId:
+          type: string
+          example: 123
+        note:
+          type: string
+          example: Offer a $10.000 credit
+        createdBy:
+          $ref: '#/components/schemas/Creator'
+        _links:
+          $ref: '#/components/schemas/RegistrantNoteLinks'
+    AppointmentRead:
+      title: Appointment Read
+      type: object
+      properties:
+        name:
+          type: string
+          example: Design Center Selections
+        description:
+          type: string
+          example: Come on in and make it yours
+        details:
+          type: string
+          example: Appointment to make selection
+        startTime:
+          type: string
+          format: datetime
+          description: When the appointment is scheduled to start. Datetimes are in ISO-8601 UTC format.
+          example: '2019-01-31T18:30:00Z'
+        endTime:
+          type: string
+          format: datetime
+          description: When the appointment is scheduled to end. Datetimes are in ISO-8601 UTC format.
+          example: '2019-01-31T19:30:00Z'
+        location:
+          type: string
+          example: 4601 US-377, Brownwood, TX 76801, United States
+        isPublic:
+          type: boolean
+          example: false
+        status:
+          type: string
+          enum:
+          - Open
+          - Tentative
+          - Confirmed
+          - Cancelled
+          - Completed
+          - No Show
+        appointmentId:
+          type: string
+          example: '123'
+        scheduledSmsReminders:
+          type: array
+          items:
+            $ref: '#/components/schemas/AppointmentSmsReminderRecipient'
+        createdBy:
+          $ref: '#/components/schemas/Creator'
+        _links:
+          $ref: '#/components/schemas/AppointmentLinks'
+    EmailWrite:
+      type: object
+      title: Email Write
+      properties:
+        email:
+          type: string
+          minLength: 1
+          maxLength: 50
+          example: test_registrant@lassocrm.com
+        type:
+          type: string
+          minLength: 0
+          maxLength: 25
+          example: Personal
+        primary:
+          type: boolean
+          example: true
+    PhoneRead:
+      type: object
+      title: Phone Read
+      properties:
+        phoneId:
+          type: string
+          example: 123
+        phone:
+          type: string
+          example: 123-456-7890
+        type:
+          type: string
+          example: Mobile
+        primary:
+          type: boolean
+          example: true
+    Question:
+      type: object
+      title: Question
+      description: 'Questions in Lasso are sorted into folders. You can use `path` to
+
+        specify which folder the question should be saved to.
+
+
+        Specifying the questionId will override name and path and the
+
+        question will be looked up by its ID. If no question is found the
+
+        question is *not* created and the request fails.
+
+
+        Any existing registrant answers to the question will be replaced by the
+
+        answers from this request. Existing answer options on the question will
+
+        not be removed.
+
+
+        If the question does not exist and no question ID is provided, a new
+
+        question will be created. If the path is empty, the question will be
+
+        created in a folder named after the API key vendor type - ie, `lassoLeadCapture`.
+
+
+        The possible answer options are created for each answer provided in the
+
+        `answer` key. Only question type `checkbox` supports multiple answers. All
+
+        of them will be marked as checked for the registrant.
+
+        '
+      properties:
+        questionId:
+          type: string
+          description: Specifies precisely which question
+          example: 123
+        type:
+          type: string
+          description: "If the question does not exist, this defines which type of question is\ngoing to be created. Defaults to type `Text`. Available types are:\n- Checkbox\n  Multiple possible answers, and multiple set answers\n- Text\n  Only one possible answer which is freeform text\n- Date\n  Only one possible answer, a date in the ISO 8601 UTC format\n- Single Select\n  Only one possible answer from a set of answers\n- Multi Select\n  Multiple possible answers from a set of answers\n"
+          enum:
+          - checkbox
+          - text
+          - single_select
+          - multi_select
+          - date
+          example: checkbox
+        name:
+          type: string
+          example: How did you hear about us?
+          maxLength: 100
+        path:
+          type: string
+          description: 'Specify which folder the question is in. Format: `/folder/subfolder`. If no path is given, the `integrations` folder will be used.'
+          example: /marketing/inbound
+          maxLength: 40
+        answers:
+          type: array
+          items:
+            $ref: '#/components/schemas/Answer'
+    RegistrantNoteLinks:
+      type: object
+      properties:
+        delete:
+          type: string
+          example: /registrants/123/notes/123
+    Rating:
+      type: object
+      title: Rating
+      description: If rating does not exist, it will be created
+      properties:
+        rating:
+          type: string
+          minLength: 1
+          maxLength: 50
+          example: A
+    RegistrantCreateMessage:
+      type: object
+      title: RegistrantCreateMessage
+      properties:
+        message:
+          type: string
+          description: contains a message describing warnings and errors during processing
+          example: 'Warning: first name is greater than max size 20 and will be truncated'
+    AddressRead:
+      type: object
+      title: Address Read
+      properties:
+        addressId:
+          type: string
+          example: 123
+        address:
+          type: string
+          example: 350 Fifth Avenue
+        city:
+          type: string
+          example: New York
+        country:
+          type: string
+          example: USA
+        state:
+          type: string
+          example: NY
+        zipCode:
+          type: string
+          example: '10118'
+        type:
+          type: string
+          example: Mobile
+        primary:
+          type: boolean
+          example: true
+    Project:
+      title: Project
+      type: object
+      properties:
+        name:
+          type: string
+          example: Birch Towers
+        projectId:
+          type: string
+          example: 123
+    RegistrantAccepted:
+      type: object
+      title: RegistrantAccepted
+      properties:
+        registrantId:
+          type: string
+          example: 123
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/RegistrantCreateMessage'
+        _links:
+          $ref: '#/components/schemas/RegistrantLinks'
+    FollowUpProcess:
+      type: object
+      title: Follow-up Process
+      description: If `followUpProcessId` is provided, the system will attempt to lookup the process by id, and fail if not found. If `followUpProcessId` is not provided, but `followUpProcess` is instead provided, the system will then attempt to lookup the process by value. If the value doesn't exist, it will be created
+      properties:
+        followUpProcessId:
+          type: string
+          example: 1
+        followUpProcess:
+          type: string
+          minLength: 1
+          maxLength: 20
+          example: 30 day follow up
+    RegistrantNoteWrite:
+      type: object
+      title: Note Write
+      description: 'Contains a free-form text field.
+
+
+        Limitations: 4-byte UTF-8 characters are not supported and will be stripped during write.
+
+        This means that some emoticons and foreign language characters are unsupported.
+
+        '
+      properties:
+        note:
+          type: string
+          example: Offer a $10.000 credit
+        createdBy:
+          $ref: '#/components/schemas/Creator'
+        _links:
+          $ref: '#/components/schemas/RegistrantNoteLinks'
+    RegistrantRead:
+      title: RegistrantRead
+      type: object
+      properties:
+        websiteTracking:
+          type: object
+          properties:
+            domainAccountId:
+              type: string
+              example: LAS-123456-01
+            guid:
+              type: string
+              example: UID123
+        excludeFromTraffic:
+          type: boolean
+          description: Exclude this registrant from traffic reports
+          example: false
+        registrationDate:
+          type: string
+          format: datetime
+          description: When the registrant was created in the system. Dates are in ISO 8601 UTC format.
+          example: '2017-08-31T21:18:39Z'
+        externalId:
+          type: string
+          example: ABC123
+          description: identifies this registrant in an externally linked system. The external system is determined from the api key
+        externalDuplicateIds:
+          type: array
+          description: a registrant that has been merged with another will inherit the other's externalId. This list keeps track of all other externalId's linked to this single registrant
+          items:
+            type: string
+            example: DEF456
+        person:
+          $ref: '#/components/schemas/RegistrantPersonalInfo'
+        rating:
+          $ref: '#/components/schemas/Rating'
+        sourceType:
+          $ref: '#/components/schemas/SourceType'
+        secondarySourceType:
+          $ref: '#/components/schemas/SecondarySourceType'
+        followUpProcess:
+          $ref: '#/components/schemas/FollowUpProcess'
+        assignedSalesReps:
+          type: array
+          items:
+            $ref: '#/components/schemas/SalesRepWrite'
+        questions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Question'
+        registrantId:
+          type: string
+          example: 123
+        project:
+          $ref: '#/components/schemas/Project'
+        emails:
+          type: array
+          items:
+            $ref: '#/components/schemas/EmailRead'
+        phones:
+          type: array
+          items:
+            $ref: '#/components/schemas/PhoneRead'
+        addresses:
+          type: array
+          items:
+            $ref: '#/components/schemas/AddressRead'
+        history:
+          type: array
+          items:
+            $ref: '#/components/schemas/HistoryRead'
+        notes:
+          type: array
+          items:
+            $ref: '#/components/schemas/RegistrantNoteRead'
+        relationships:
+          type: array
+          items:
+            $ref: '#/components/schemas/RegistrantRelationshipRead'
+        appointments:
+          type: array
+          items:
+            $ref: '#/components/schemas/AppointmentRead'
+        _links:
+          $ref: '#/components/schemas/RegistrantLinks'
+    HistoryWrite:
+      type: object
+      title: History Write Item
+      properties:
+        type:
+          type: string
+          description: 'Clients can create their own history types, so an exhaustive list of available history items is currently not available. Defaults:
+
+            Appointment Cancelled Appointment Email Email Reply Fax Mail Mass Mail Merge Opted-Out Phone - Left Message Return Visit SSRU Visit
+
+            '
+          example: Email
+        typeId:
+          type: string
+          description: ID of the history type (could be client-created)
+          example: 123
+        subject:
+          type: string
+          description: Short summary of history item
+          example: Welcome to Birch Towers
+        date:
+          type: string
+          format: datetime
+          description: When the history item was received, e.g. send-date for email
+          example: '2017-08-31T21:18:39Z'
+        createdBy:
+          $ref: '#/components/schemas/Creator'
+        _links:
+          type: object
+          properties:
+            self:
+              type: string
+              example: /registrants/123/history/123
+        body:
+          type: string
+          description: 'Full content of history item. For emails, this may include
+
+            serialized attachments, which may lead to a large payload.
+
+
+            Limitations: 4-byte UTF-8 characters are not supported and will be stripped during write.
+
+            This means that some emoticons and foreign language characters are unsupported.
+
+            '
+    SalesRepWrite:
+      type: object
+      title: SalesRep Write Model
+      description: "When inputting a salesRep, you can provide a userId and the system\nwill try to look up the salesRep by the ID.\n\nIf no userId is provided but a first and last name are, then\nthe system will lookup the salesRep by name and assign it to this registrant.\n\nOtherwise, no salesRep will be assigned.\n\nNotes:\n- if multiple salesReps are being assigned, take care to only\n  choose one to be primary. If multiple are designated as primary, an error will\n  be returned\n- on registrant create, if both rotationId and assignedSalesReps are specified,\n  assignedSalesReps will override rotationId in salesRep selection.\n"
+      properties:
+        userId:
+          type: string
+          example: 123
+        firstName:
+          type: string
+          example: Lasso
+        lastName:
+          type: string
+          example: Autobot
+        isPrimary:
+          type: boolean
+          example: true
+    PhoneWrite:
+      type: object
+      title: Phone Write
+      properties:
+        phone:
+          type: string
+          minLength: 1
+          maxLength: 20
+          example: 123-456-7890
+        type:
+          type: string
+          minLength: 0
+          maxLength: 25
+          example: Mobile
+        primary:
+          type: boolean
+          example: true
+    AddressWrite:
+      type: object
+      title: Address Write
+      properties:
+        address:
+          type: string
+          example: 350 Fifth Avenue
+        city:
+          type: string
+          example: New York
+        country:
+          type: string
+          example: USA
+        state:
+          type: string
+          example: NY
+        zipCode:
+          minLength: 0
+          maxLength: 15
+          type: string
+          example: '10118'
+        type:
+          type: string
+          example: Mobile
+        primary:
+          type: boolean
+          example: true
+    Creator:
+      type: object
+      title: Creator
+      description: 'Determines the user that created this entity based on an ordered set of Heuristics:
+
+        - if creator is null or empty, then default to user: Lasso Autobot
+
+        - if userId is provided, then lookup user by id, respond with 400 level error if specified user does not exist
+
+        - if user first and last name are provided, then lookup user by name, otherwise default to user: Lasso Autobot
+
+        '
+      properties:
+        firstName:
+          type: string
+          example: John
+        lastName:
+          type: string
+          example: Smith
+        userId:
+          type: string
+          example: 123
+    Answer:
+      type: object
+      title: Question Answer
+      description: Represents an answer for a question for the registrant
+      properties:
+        answerId:
+          type: string
+          description: Specifies the answer by id. If present, `answer` will be ignored. If no answer matches `answerId` the answer will be looked-up by its answer string.
+          example: 123
+        answer:
+          type: string
+          description: If no `answerId` is given, the answer will be looked-up by its answer string. If no answer with the given answer string exists, the answer will be created.
+          example: Recommended by a friend
+    RegistrantPersonalInfo:
+      type: object
+      title: Registrant Personal Info
+      required:
+      - firstName
+      - lastName
+      properties:
+        personalId:
+          type: string
+          example: 1234
+          description: Providing a personalId when creating a new registrant will attempt to match and automatically merge the new registrant with an existing duplicate
+        nameTitle:
+          type: string
+          example: Mrs
+        firstName:
+          type: string
+          example: Jane
+        lastName:
+          type: string
+          example: Doe
+        company:
+          type: string
+          example: First Contracting
+        contactPreference:
+          type: string
+          description: How the registrant would like to be contacted
+          enum:
+          - noPreference
+          - any
+          - email
+          - mail
+          - phone
+          - text
+          - noEmail
+          - noContact
+          example: any
+        gender:
+          type: string
+          enum:
+          - unspecified
+          - male
+          - female
+          example: female
+        nickname:
+          type: string
+          example: Jane
+        birthday:
+          type: string
+          description: Contains only the month and day.
+          example: 08/14
+        ssnSin:
+          type: string
+          description: The social insurance number or social security number. Please ensure that you are allowed to collect this information in your jurisdiction.
+          example: 046 454 286
+  responses:
+    Unauthorized:
+      description: The request has not been fulfilled because it lacks valid authentication credentials
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/StandardError'
+    NotFound:
+      description: The specified resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/StandardError'
+    Forbidden:
+      description: The provided authentication credentials does not have sufficient privileges to access this resource
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/StandardError'
+    InternalServerError:
+      description: Receiving a 5xx response indicates an error on Lasso's end. Please contact us to report the problem
+    BadRequest:
+      description: 'The request could not be processed due to invalid input:
+
+        - Is the request payload malformed?
+
+        - Are all required fields present?
+
+        - Are field values of the expected type (ie, number format, date format)?
+
+        - Are field values within the expected constraints (ie, greater than max size of string)?
+
+        - Are query params of the expected format?
+
+
+        Check the body model for more documentation on field constraints and limits.
+
+        '
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/StandardError'
+  parameters:
+    Cursor:
+      name: cursor
+      in: query
+      schema:
+        type: string
+      description: 'A cursor for the next batch of registrants is providing in the metadata of the body. Provide the `next` cursor as a query parameter in your next request to access the next batch of registrants.
+
+        It''s a base64 encoded json object with the fields `v` for version, `o` for offset and `l` for limit. You don''t have to create the cursor object as it is embedded in the `next` link provided in the result set.
+
+        Version is an integer that indicates the layout of the cursor. Future layouts may provide a different way to access parts of a result set, e.g. by providing a primary key as a reference point. This prevents the missing/repeated data issue with paged results, if the result set is modified during paging (e.g. a registrant is added while on page 2, and when loading page 3, the last registrant from page is pushed down to be the first registrant on page three and being included in two result pages. The opposite happens if a registrant is deleted, one result will be skipped.)'
+  securitySchemes:
+    JwtAuthorizer:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

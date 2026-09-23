@@ -1,0 +1,550 @@
+openapi: 3.2.0
+info:
+  title: ERP API v2.1 Organization API
+  description: Provides a common API surface for accessing ECI ERP products.
+  contact:
+    name: ECI Manufacturing Division Integration Team
+    url: https://www.ecisolutions.com/support/
+  version: 3.5.585+b1e45fd230
+servers:
+- url: https://api-erp.integrations.ecimanufacturing.com:443
+  description: Production
+security:
+- Bearer: []
+tags:
+- name: Organization
+paths:
+  /api/v2.1/organizations:
+    post:
+      tags:
+      - Organization
+      summary: Create a new Organization in the ERP system
+      description: '## Supported ERPs
+
+        - JobBOSS²'
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrganizationCreateModel'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/OrganizationCreateModel'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/OrganizationCreateModel'
+      responses:
+        '201':
+          description: Created
+      operationId: postApiV21Organizations
+      x-operation-id-source: derived
+    get:
+      tags:
+      - Organization
+      summary: Get a list of Organizations from the ERP system that match the given filters
+      description: 'Gets a list of Organization.
+
+
+        ## Supported ERPs
+
+        - M1
+
+        - JobBOSS²
+
+        - Macola
+
+        ## Resource Features
+
+        Feature |Supported |Notes
+
+        ------------|------------|------------
+
+        Filter Expressions|**Yes**|
+
+        Sort Expressions|**Yes**
+
+        Field Selection|**Yes**
+
+        Pagination|**Yes**
+
+        UniqueID|uniqueID|
+
+        ## Features by Field
+
+        Field |Filterable |Sortable |Supported ERPs
+
+        ------------|------------|------------|------------
+
+        uniqueID|Yes|Yes|M1, JobBOSS², Macola
+
+        rowVersion|Yes|Yes|M1, JobBOSS², Macola
+
+        name|Yes|Yes|M1, JobBOSS², Macola
+
+        organizationID|Yes|Yes|M1, JobBOSS², Macola
+
+        country|Yes|Yes|M1, JobBOSS², Macola
+
+        isActive|Yes|Yes|M1, JobBOSS², Macola
+
+        organizationTypes|Yes|Yes|JobBOSS², Macola
+
+        phoneNumber|Yes|Yes|JobBOSS²
+
+        customerPaymentTermID|Yes|Yes|JobBOSS²
+
+        customerTaxCodeID|Yes|Yes|JobBOSS²
+
+        supplierPaymentTermID|Yes|Yes|JobBOSS²
+
+        supplierTaxCodeID|Yes|Yes|JobBOSS²
+
+        currencyCode|Yes|Yes|JobBOSS²
+
+        websiteUrl|No|Yes|JobBOSS²
+
+        comments|No|Yes|JobBOSS²
+
+        salesAccountID|Yes|Yes|JobBOSS²
+
+        leadTimeDays|No|Yes|JobBOSS²
+
+        minimumOrderAmount|No|Yes|JobBOSS²
+
+        customerStatus|Yes|Yes|M1
+
+        supplierStatus|Yes|Yes|M1'
+      parameters:
+      - name: fields
+        in: query
+        description: A comma-separated list of fields to include in the result.
+        schema:
+          type: string
+      - name: sort
+        in: query
+        description: A comma-separated list of <a href='#sortexpr'>sort expressions</a>.
+        schema:
+          type: string
+      - name: take
+        in: query
+        description: Limit the number of results being returned
+        schema:
+          minimum: 0
+          type: integer
+      - name: skip
+        in: query
+        description: The number of results to skip. Combine with 'take' to fetch records in pages
+        schema:
+          minimum: 0
+          type: integer
+      - name: count
+        in: query
+        description: '<a href=''#countparam''>Data and count</a> response behavior '
+        schema:
+          maximum: 2
+          minimum: 0
+          type: integer
+      - name: filters
+        in: query
+        description: See <a href='#filterexpr'>Filter Expressions</a> for query string syntax. The Test UI and any generated code tool may expose filter parameters as a dictionary of name/value pairs, but if creating a raw HTTP request, they must be provided on the querystring as defined in the Filter Expression section.
+        style: form
+        schema:
+          type: object
+          additionalProperties:
+            type: string
+        examples:
+          Empty:
+            description: No filters applied
+          'Example #1':
+            description: A dictionary of name/value pairs that will be serialized as querystring parameters in the format ```name[operator]=value```
+            value:
+              uniqueID[eq]: cc90686b-399e-4094-b431-fa462f84b0a8
+              rowVersion[gte]: 123
+              name[eq]: abc123
+              organizationID[eq]: abc123
+              country[eq]: abc123
+              isActive[eq]: true
+              organizationTypes[gte]: 123
+              phoneNumber[eq]: abc123
+              customerPaymentTermID[eq]: abc123
+              customerTaxCodeID[eq]: abc123
+              supplierPaymentTermID[eq]: abc123
+              supplierTaxCodeID[eq]: abc123
+              currencyCode[eq]: abc123
+              salesAccountID[eq]: abc123
+              customerStatus[gte]: 123
+              supplierStatus[gte]: 123
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/OrganizationListResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrganizationListResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/OrganizationListResponse'
+      operationId: getApiV21Organizations
+      x-operation-id-source: derived
+  /api/v2.1/organizations/{id}:
+    get:
+      tags:
+      - Organization
+      summary: Get an Organization from the ERP system that matches the given unique ID
+      description: 'Gets a Organization by unique ID.
+
+
+        ## Supported ERPs
+
+        - M1
+
+        - JobBOSS²
+
+        - Macola
+
+        ## Features by Field
+
+        Field |Supported ERPs
+
+        ------------|------------
+
+        uniqueID||M1, JobBOSS², Macola
+
+        rowVersion||M1, JobBOSS², Macola
+
+        name||M1, JobBOSS², Macola
+
+        organizationID||M1, JobBOSS², Macola
+
+        country||M1, JobBOSS², Macola
+
+        isActive||M1, JobBOSS², Macola
+
+        organizationTypes||JobBOSS², Macola
+
+        phoneNumber||JobBOSS²
+
+        customerPaymentTermID||JobBOSS²
+
+        customerTaxCodeID||JobBOSS²
+
+        supplierPaymentTermID||JobBOSS²
+
+        supplierTaxCodeID||JobBOSS²
+
+        currencyCode||JobBOSS²
+
+        websiteUrl||JobBOSS²
+
+        comments||JobBOSS²
+
+        salesAccountID||JobBOSS²
+
+        leadTimeDays||JobBOSS²
+
+        minimumOrderAmount||JobBOSS²
+
+        customerStatus||M1
+
+        supplierStatus||M1'
+      parameters:
+      - name: id
+        in: path
+        description: The ID of the organization
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Organization'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Organization'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/Organization'
+      operationId: getApiV21OrganizationsById
+      x-operation-id-source: derived
+components:
+  schemas:
+    OrganizationListResponse:
+      type: object
+      properties:
+        data:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Organization'
+          readOnly: true
+        resultCount:
+          type: integer
+          format: int32
+      additionalProperties: false
+    OrganizationType:
+      enum:
+      - 0
+      - 1
+      - 2
+      type: integer
+      format: int32
+    LocationType:
+      enum:
+      - 1
+      - 2
+      - 3
+      type: integer
+      format: int32
+    LocationCreateModel:
+      required:
+      - addressLine1
+      - locationTypes
+      - name
+      type: object
+      properties:
+        locationID:
+          type:
+          - string
+          - 'null'
+        locationTypes:
+          minItems: 1
+          type: array
+          items:
+            $ref: '#/components/schemas/LocationType'
+        name:
+          minLength: 1
+          type: string
+        addressLine1:
+          minLength: 1
+          type: string
+        addressLine2:
+          type:
+          - string
+          - 'null'
+        addressLine3:
+          type:
+          - string
+          - 'null'
+        city:
+          type:
+          - string
+          - 'null'
+        county:
+          type:
+          - string
+          - 'null'
+        country:
+          type:
+          - string
+          - 'null'
+        postalCode:
+          type:
+          - string
+          - 'null'
+        state:
+          type:
+          - string
+          - 'null'
+        organizationID:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    Organization:
+      title: Organization
+      type: object
+      properties:
+        uniqueID:
+          type: string
+        rowVersion:
+          type: integer
+          format: int64
+        name:
+          type: string
+        organizationID:
+          type: string
+        country:
+          type: string
+        isActive:
+          type: boolean
+        organizationTypes:
+          type: array
+          items:
+            type: integer
+            format: int32
+        phoneNumber:
+          type: string
+        customerPaymentTermID:
+          type: string
+        customerTaxCodeID:
+          type: string
+        supplierPaymentTermID:
+          type: string
+        supplierTaxCodeID:
+          type: string
+        currencyCode:
+          type: string
+        websiteUrl:
+          type: string
+        comments:
+          type: string
+        salesAccountID:
+          type: string
+        leadTimeDays:
+          type: integer
+          format: int32
+        minimumOrderAmount:
+          type: number
+          format: double
+        customerStatus:
+          type: integer
+        supplierStatus:
+          type: integer
+    OrganizationCreateModel:
+      required:
+      - name
+      - organizationID
+      - organizationTypes
+      type: object
+      properties:
+        organizationID:
+          minLength: 1
+          type: string
+          description: The ID or code identifying this organization.
+        organizationTypes:
+          minItems: 1
+          type: array
+          items:
+            $ref: '#/components/schemas/OrganizationType'
+          description: The type(s) of organization records to create.
+        name:
+          minLength: 1
+          type: string
+          description: The descriptive name for this organization.
+        country:
+          type:
+          - string
+          - 'null'
+          description: The country in which this organization legally belongs.
+        websiteUrl:
+          type:
+          - string
+          - 'null'
+          description: The URL of the organization's website.
+        phoneNumber:
+          type:
+          - string
+          - 'null'
+          description: A phone number for the organization.
+        currencyCode:
+          type:
+          - string
+          - 'null'
+          description: The currency code for the organization.
+        comments:
+          type:
+          - string
+          - 'null'
+          description: Any comments or notes about this organization.
+        customerPaymentTermID:
+          type:
+          - string
+          - 'null'
+          description: When assigned the customer organization type, specifies the payment term.
+        customerTaxCodeID:
+          type:
+          - string
+          - 'null'
+          description: When assigned the customer organization type, specifies the tax code.
+        supplierPaymentTermID:
+          type:
+          - string
+          - 'null'
+          description: When assigned the supplier organization type, specifies the payment term.
+        supplierTaxCodeID:
+          type:
+          - string
+          - 'null'
+          description: When assigned the supplier organization type, specifies the tax code.
+        salesAccountID:
+          type:
+          - string
+          - 'null'
+          description: The default sales account ID for a customer organization.
+        leadTimeDays:
+          type:
+          - integer
+          - 'null'
+          description: The expected lead time in days for a supplier organization.
+          format: int32
+        minimumOrderAmount:
+          type:
+          - number
+          - 'null'
+          description: The minimum order amount for a supplier organization.
+          format: double
+        addresses:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/LocationCreateModel'
+          description: The addresses for the organization.
+        contact:
+          $ref: '#/components/schemas/ContactCreateModel'
+      additionalProperties: false
+      description: A model used to create new organizations.
+    ContactCreateModel:
+      type: object
+      properties:
+        contactID:
+          type:
+          - string
+          - 'null'
+          description: A short identifier for the contact.
+        organizationID:
+          type:
+          - string
+          - 'null'
+          description: The ID or code identifying the organization with which the contact is associated.
+        organizationType:
+          $ref: '#/components/schemas/OrganizationType'
+        name:
+          type:
+          - string
+          - 'null'
+          description: The name of the contact.
+        phoneNumber:
+          type:
+          - string
+          - 'null'
+          description: A phone number for the contact.
+        emailAddress:
+          type:
+          - string
+          - 'null'
+          description: An email address for the contact.
+        comments:
+          type:
+          - string
+          - 'null'
+          description: Comments or notes about the contact.
+      additionalProperties: false
+      description: A model used to create new contacts.
+  securitySchemes:
+    Bearer:
+      type: oauth2
+      description: OAuth 2.0 Client Credentials Flow with API Users issued from Integration Engine Management Console
+      flows:
+        clientCredentials:
+          tokenUrl: https://api-user.integrations.ecimanufacturing.com/oauth2/api-user/token
+          scopes:
+            openid: openid

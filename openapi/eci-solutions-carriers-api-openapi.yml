@@ -1,0 +1,180 @@
+openapi: 3.2.0
+info:
+  title: Shipping Carriers API
+  description: Shipping Service API which provides integration with shipping services for shipping rates, purchasing labels, and tracking shipments.
+  version: 1.3.6+a49f73049e
+security:
+- Bearer: []
+tags:
+- name: Carriers
+paths:
+  /api/v1/carrier-types/{carrierType}/service-levels:
+    get:
+      tags:
+      - Carriers
+      summary: Gets Service Levels
+      description: Gets the list of service levels available for a given carrier type.
+      operationId: GetCarrierTypeServiceLevels
+      parameters:
+      - name: carrierType
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ServiceModelListResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceModelListResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ServiceModelListResponse'
+  /api/v1/carriers:
+    get:
+      tags:
+      - Carriers
+      summary: Get Carriers
+      description: 'Returns a list of available carriers.
+
+
+        Notes:
+
+        - When using an EasyPost Testing API Key, this endpoint will always return an empty list.'
+      operationId: GetCarriersList
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/CarrierModelListResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CarrierModelListResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/CarrierModelListResponse'
+  /api/v1/carriers/{id}:
+    get:
+      tags:
+      - Carriers
+      summary: Get Carrier
+      description: 'Gets an available carrier by ID.
+
+
+        Notes:
+
+        - When using an EasyPost Testing API Key, this endpoint will always return 404.'
+      operationId: GetCarrierById
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/CarrierModel'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CarrierModel'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/CarrierModel'
+components:
+  schemas:
+    ServiceModelListResponse:
+      type: object
+      properties:
+        value:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ServiceModel'
+      additionalProperties: false
+    ServiceModel:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: The service id
+        displayName:
+          type:
+          - string
+          - 'null'
+          description: The service name
+        description:
+          type:
+          - string
+          - 'null'
+          description: The service description
+        carrierType:
+          type:
+          - string
+          - 'null'
+          description: The carrier id
+        maxWeight:
+          type:
+          - number
+          - 'null'
+          description: Maximum weight of the parcel for this service
+          format: double
+        notes:
+          type:
+          - string
+          - 'null'
+          description: Additional information about the service level.
+      additionalProperties: false
+      description: Represents a shipping service offered by a carrier.
+    CarrierModel:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: The carrier id
+        displayName:
+          type:
+          - string
+          - 'null'
+          description: The service name
+        type:
+          type:
+          - string
+          - 'null'
+          description: The type of carrier
+      additionalProperties: false
+      description: Carrier
+    CarrierModelListResponse:
+      type: object
+      properties:
+        value:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/CarrierModel'
+      additionalProperties: false
+  securitySchemes:
+    Bearer:
+      type: oauth2
+      description: OAuth 2.0 Client Credentials Flow with API Users issued from Integration Engine Management Console
+      flows:
+        clientCredentials:
+          tokenUrl: https://api-user.integrations.ecimanufacturing.com/oauth2/api-user/token
+          scopes:
+            openid: openid

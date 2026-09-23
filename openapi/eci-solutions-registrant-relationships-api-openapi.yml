@@ -1,0 +1,223 @@
+openapi: 3.2.0
+info:
+  title: Lasso Registrant Relationships API
+  description: 'Overview
+
+
+    Use this API to manage Registrant, Project, and Inventory data within Lasso CRM.'
+  version: 1.0.39
+servers:
+- url: https://api.lassocrm.com/v1
+  description: Production endpoint
+tags:
+- name: Registrant Relationships
+paths:
+  /registrants/{registrantId}/relationships:
+    parameters:
+    - in: path
+      name: registrantId
+      required: true
+      schema:
+        type: string
+    post:
+      tags:
+      - Registrant Relationships
+      operationId: postt_registrants_relationships
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegistrantRelationshipCreate'
+      security:
+      - JwtAuthorizer: []
+      responses:
+        201:
+          description: Relationship successfully created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegistrantRelationshipRead'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+      summary: Postt registrants relationships
+      x-summary-source: derived
+  /registrants/{registrantId}/relationships/{relationshipId}:
+    parameters:
+    - in: path
+      name: registrantId
+      required: true
+      schema:
+        type: string
+    - in: path
+      name: relationshipId
+      required: true
+      schema:
+        type: string
+    put:
+      tags:
+      - Registrant Relationships
+      operationId: put_registrants_relationships_by_id
+      description: Edits a relationship type only. This method cannot be used to edit a relationship's registrant. To do so, please delete the relationship, then re-add.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegistrantRelationshipUpdate'
+      security:
+      - JwtAuthorizer: []
+      responses:
+        200:
+          description: Relationship successfully updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegistrantRelationshipRead'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+      summary: Put registrants relationships by id
+      x-summary-source: derived
+    delete:
+      tags:
+      - Registrant Relationships
+      operationId: delete_registrants_relationships_by_id
+      security:
+      - JwtAuthorizer: []
+      responses:
+        204:
+          description: Relationship deleted
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+      summary: Delete registrants relationships by id
+      x-summary-source: derived
+components:
+  responses:
+    BadRequest:
+      description: 'The request could not be processed due to invalid input:
+
+        - Is the request payload malformed?
+
+        - Are all required fields present?
+
+        - Are field values of the expected type (ie, number format, date format)?
+
+        - Are field values within the expected constraints (ie, greater than max size of string)?
+
+        - Are query params of the expected format?
+
+
+        Check the body model for more documentation on field constraints and limits.
+
+        '
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/StandardError'
+    Unauthorized:
+      description: The request has not been fulfilled because it lacks valid authentication credentials
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/StandardError'
+    InternalServerError:
+      description: Receiving a 5xx response indicates an error on Lasso's end. Please contact us to report the problem
+    NotFound:
+      description: The specified resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/StandardError'
+    Forbidden:
+      description: The provided authentication credentials does not have sufficient privileges to access this resource
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/StandardError'
+  schemas:
+    StandardError:
+      type: object
+      title: Standard Error
+      description: A standard error response format.
+      properties:
+        errorCode:
+          type: integer
+          example: 4xx
+        error:
+          type: string
+          description: A summary of the error
+          example: A summary of the error
+        errorMessage:
+          type: string
+          description: Details of the error
+          example: Details of the error
+    RegistrantRelationshipCreate:
+      type: object
+      title: Relationship Create
+      required:
+      - registrantId
+      description: Data for creating a relationship
+      properties:
+        registrantId:
+          type: string
+          example: 456
+          description: Identifies the registrant related to this registrant.
+        relationship:
+          type: string
+          example: Realtor
+          description: The related registrant's relationship to this registrant.
+    RegistrantRelationshipRead:
+      type: object
+      title: Relationship Read
+      description: Contains a registrant's relationships
+      properties:
+        relationshipId:
+          type: string
+          example: 123
+        registrantId:
+          type: string
+          example: 456
+        relationship:
+          type: string
+          example: Wife
+        reverse:
+          type: string
+          example: Husband
+        firstName:
+          type: string
+          example: John
+        lastName:
+          type: string
+          example: Doe
+    RegistrantRelationshipUpdate:
+      type: object
+      title: Relationship Update
+      description: Data for updating a relationship
+      properties:
+        relationship:
+          type: string
+          example: Realtor
+          description: The related registrant's relationship to this registrant.
+  securitySchemes:
+    JwtAuthorizer:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
