@@ -225,74 +225,51 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    QuoteLineListResponse:
+    Reason:
+      title: Reason
       type: object
       properties:
-        data:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/QuoteLine'
-          readOnly: true
-        resultCount:
-          type: integer
-          format: int32
-      additionalProperties: false
-    QuoteLine:
-      title: QuoteLine
-      type: object
-      properties:
-        uniqueID:
-          type: string
-        rowVersion:
-          type: integer
-          format: int64
-        quoteID:
-          type: string
-        partID:
-          type: string
-        partRevisionID:
-          type: string
-        partGroupID:
-          type: string
-        shortDescription:
-          type: string
-        quoteQuantityID:
-          type: string
-          description: The QuoteQuantity record identifier to be used when calculating a Quote Total.
-        quoteLineID:
-          type: string
-        resolutionReasonID:
-          type: string
-        locationID:
-          type: string
-        quote:
-          $ref: '#/components/schemas/Quote'
-        resolutionReason:
-          $ref: '#/components/schemas/Reason'
-        partGroup:
-          $ref: '#/components/schemas/PartGroup'
-    PartGroup:
-      title: PartGroup
-      type: object
-      properties:
-        uniqueID:
-          type: string
-        rowVersion:
-          type: integer
-          format: int64
-        partGroupID:
-          type: string
-        parentPartGroupID:
+        reasonID:
           type: string
         description:
           type: string
+        name:
+          type: string
+        uniqueID:
+          type: string
+        rowVersion:
+          type: integer
+          format: int64
+    Contact:
+      title: Contact
+      type: object
+      properties:
+        uniqueID:
+          type: string
+        rowVersion:
+          type: integer
+          format: int64
+        contactID:
+          type: string
+        name:
+          type: string
+        organizationID:
+          type: string
+        organizationTypes:
+          type: array
+          items:
+            type: integer
+            format: int32
+        phoneNumber:
+          type: string
+        emailAddress:
+          type: string
         isActive:
           type: boolean
-        inactiveDate:
+        comments:
           type: string
-          format: date
+        organization:
+          $ref: '#/components/schemas/Organization'
     Organization:
       title: Organization
       type: object
@@ -412,21 +389,26 @@ components:
           $ref: '#/components/schemas/Contact'
         project:
           $ref: '#/components/schemas/Project'
-    Reason:
-      title: Reason
+    PartGroup:
+      title: PartGroup
       type: object
       properties:
-        reasonID:
-          type: string
-        description:
-          type: string
-        name:
-          type: string
         uniqueID:
           type: string
         rowVersion:
           type: integer
           format: int64
+        partGroupID:
+          type: string
+        parentPartGroupID:
+          type: string
+        description:
+          type: string
+        isActive:
+          type: boolean
+        inactiveDate:
+          type: string
+          format: date
     Project:
       title: Project
       type: object
@@ -463,8 +445,8 @@ components:
           type: boolean
         customer:
           $ref: '#/components/schemas/Organization'
-    Contact:
-      title: Contact
+    QuoteLine:
+      title: QuoteLine
       type: object
       properties:
         uniqueID:
@@ -472,27 +454,45 @@ components:
         rowVersion:
           type: integer
           format: int64
-        contactID:
+        quoteID:
           type: string
-        name:
+        partID:
           type: string
-        organizationID:
+        partRevisionID:
           type: string
-        organizationTypes:
-          type: array
+        partGroupID:
+          type: string
+        shortDescription:
+          type: string
+        quoteQuantityID:
+          type: string
+          description: The QuoteQuantity record identifier to be used when calculating a Quote Total.
+        quoteLineID:
+          type: string
+        resolutionReasonID:
+          type: string
+        locationID:
+          type: string
+        quote:
+          $ref: '#/components/schemas/Quote'
+        resolutionReason:
+          $ref: '#/components/schemas/Reason'
+        partGroup:
+          $ref: '#/components/schemas/PartGroup'
+    QuoteLineListResponse:
+      type: object
+      properties:
+        data:
+          type:
+          - array
+          - 'null'
           items:
-            type: integer
-            format: int32
-        phoneNumber:
-          type: string
-        emailAddress:
-          type: string
-        isActive:
-          type: boolean
-        comments:
-          type: string
-        organization:
-          $ref: '#/components/schemas/Organization'
+            $ref: '#/components/schemas/QuoteLine'
+          readOnly: true
+        resultCount:
+          type: integer
+          format: int32
+      additionalProperties: false
   securitySchemes:
     Bearer:
       type: oauth2

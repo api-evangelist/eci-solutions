@@ -321,24 +321,57 @@ components:
           - string
           - 'null'
       additionalProperties: false
-    OAuthAccessTokenResponse:
+    DeviceActivateRequestModel:
+      required:
+      - code
       type: object
       properties:
-        access_token:
+        code:
+          minLength: 1
+          type: string
+      additionalProperties: false
+    DeviceActivatedResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The device unique ID
+          format: uuid
+        isActivated:
+          type: boolean
+          description: Indicates if the device is activated
+        properties:
+          type:
+          - object
+          - 'null'
+          additionalProperties:
+            type: string
+          description: Additional information provided by the activator
+        credential:
+          allOf:
+          - $ref: '#/components/schemas/DeviceCredentialModel'
+          description: 'If the device activation requested an access token and refresh token
+
+            for the device, this property will contain the token information'
+      additionalProperties: false
+    DeviceCreateResponse:
+      type: object
+      properties:
+        code:
           type:
           - string
           - 'null'
-        token_type:
+          description: The device activation code to be displayed to the user
+        id:
+          type: string
+          description: The device unique id
+          format: uuid
+        codeExpires:
           type:
           - string
           - 'null'
-        expires_in:
-          type: integer
-          format: int32
-        refresh_token:
-          type:
-          - string
-          - 'null'
+          description: The expiration date/time of the activation code in UTC
+          format: date-time
       additionalProperties: false
     ProblemDetails:
       type: object
@@ -365,22 +398,6 @@ components:
           - string
           - 'null'
       additionalProperties: {}
-    DeviceCredentialType:
-      enum:
-      - None
-      - Token
-      - Secret
-      - TokenAndSecret
-      type: string
-    DeviceActivateRequestModel:
-      required:
-      - code
-      type: object
-      properties:
-        code:
-          minLength: 1
-          type: string
-      additionalProperties: false
     DeviceCreateModel:
       required:
       - clientId
@@ -421,48 +438,31 @@ components:
 
             Will be displayed to the user who will authorize activation of the device.'
       additionalProperties: false
-    DeviceCreateResponse:
+    DeviceCredentialType:
+      enum:
+      - None
+      - Token
+      - Secret
+      - TokenAndSecret
+      type: string
+    OAuthAccessTokenResponse:
       type: object
       properties:
-        code:
+        access_token:
           type:
           - string
           - 'null'
-          description: The device activation code to be displayed to the user
-        id:
-          type: string
-          description: The device unique id
-          format: uuid
-        codeExpires:
+        token_type:
           type:
           - string
           - 'null'
-          description: The expiration date/time of the activation code in UTC
-          format: date-time
-      additionalProperties: false
-    DeviceActivatedResponse:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The device unique ID
-          format: uuid
-        isActivated:
-          type: boolean
-          description: Indicates if the device is activated
-        properties:
+        expires_in:
+          type: integer
+          format: int32
+        refresh_token:
           type:
-          - object
+          - string
           - 'null'
-          additionalProperties:
-            type: string
-          description: Additional information provided by the activator
-        credential:
-          allOf:
-          - $ref: '#/components/schemas/DeviceCredentialModel'
-          description: 'If the device activation requested an access token and refresh token
-
-            for the device, this property will contain the token information'
       additionalProperties: false
   securitySchemes:
     oidc:

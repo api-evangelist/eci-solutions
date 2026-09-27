@@ -404,18 +404,195 @@ components:
           - string
           - 'null'
       additionalProperties: false
-    VendorPaymentInvoice:
+    UpdateVendorInvoiceRequestModel:
       type: object
       properties:
-        invoiceId:
+        invoiceNo:
+          maxLength: 200
+          minLength: 0
           type:
           - string
           - 'null'
+        date:
+          type:
+          - string
+          - 'null'
+          format: date
+        dueDate:
+          type:
+          - string
+          - 'null'
+          format: date
         amount:
           type:
           - number
           - 'null'
           format: double
+        balance:
+          type:
+          - number
+          - 'null'
+          format: double
+        comment:
+          maxLength: 200
+          minLength: 0
+          type:
+          - string
+          - 'null'
+        purchaseOrderNumber:
+          maxLength: 50
+          minLength: 0
+          type:
+          - string
+          - 'null'
+        discountAmount:
+          type:
+          - number
+          - 'null'
+          format: double
+        discountDate:
+          type:
+          - string
+          - 'null'
+          format: date
+      additionalProperties: false
+    VendorResponse:
+      type: object
+      properties:
+        vendorId:
+          type:
+          - string
+          - 'null'
+        externalVendorId:
+          type:
+          - string
+          - 'null'
+        vendorName:
+          type:
+          - string
+          - 'null'
+        address:
+          $ref: '#/components/schemas/Address'
+        contactGivenName:
+          type:
+          - string
+          - 'null'
+        contactSurname:
+          type:
+          - string
+          - 'null'
+        emailAddress:
+          type:
+          - string
+          - 'null'
+        comment:
+          type:
+          - string
+          - 'null'
+        defaultPaymentMethod:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    UpdateVendorRequestModel:
+      type: object
+      properties:
+        externalVendorId:
+          maxLength: 50
+          minLength: 0
+          type:
+          - string
+          - 'null'
+        vendorName:
+          maxLength: 255
+          minLength: 0
+          type:
+          - string
+          - 'null'
+        address:
+          $ref: '#/components/schemas/Address'
+        contactGivenName:
+          maxLength: 50
+          minLength: 0
+          type:
+          - string
+          - 'null'
+        contactSurname:
+          maxLength: 50
+          minLength: 0
+          type:
+          - string
+          - 'null'
+        emailAddress:
+          type:
+          - string
+          - 'null'
+        comment:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    InvoiceRequestModel:
+      required:
+      - amount
+      - invoiceId
+      type: object
+      properties:
+        invoiceId:
+          minLength: 1
+          type: string
+        amount:
+          type: number
+          format: double
+      additionalProperties: false
+    CreateVendorInvoiceRequestModel:
+      required:
+      - amount
+      - date
+      - dueDate
+      - invoiceNo
+      type: object
+      properties:
+        invoiceNo:
+          maxLength: 200
+          minLength: 0
+          type: string
+        date:
+          type: string
+          format: date
+        dueDate:
+          type: string
+          format: date
+        amount:
+          type: number
+          format: double
+        balance:
+          type:
+          - number
+          - 'null'
+          format: double
+        discountAmount:
+          type:
+          - number
+          - 'null'
+          format: double
+        discountDate:
+          type:
+          - string
+          - 'null'
+          format: date
+        comment:
+          maxLength: 200
+          minLength: 0
+          type:
+          - string
+          - 'null'
+        purchaseOrderNumber:
+          maxLength: 50
+          minLength: 0
+          type:
+          - string
+          - 'null'
       additionalProperties: false
     CreateVendorPaymentModel:
       required:
@@ -458,19 +635,6 @@ components:
             $ref: '#/components/schemas/InvoiceRequestModel'
           description: The vendor invoices and amounts that will be paid with this payment.
       additionalProperties: false
-    InvoiceRequestModel:
-      required:
-      - amount
-      - invoiceId
-      type: object
-      properties:
-        invoiceId:
-          minLength: 1
-          type: string
-        amount:
-          type: number
-          format: double
-      additionalProperties: false
     VendorResponseListResponse:
       type: object
       properties:
@@ -483,6 +647,62 @@ components:
           - 'null'
           items:
             $ref: '#/components/schemas/VendorResponse'
+      additionalProperties: false
+    VendorPaymentInvoice:
+      type: object
+      properties:
+        invoiceId:
+          type:
+          - string
+          - 'null'
+        amount:
+          type:
+          - number
+          - 'null'
+          format: double
+      additionalProperties: false
+    VendorRequestModel:
+      required:
+      - address
+      - emailAddress
+      - vendorName
+      type: object
+      properties:
+        externalVendorId:
+          maxLength: 50
+          minLength: 0
+          type:
+          - string
+          - 'null'
+        vendorName:
+          maxLength: 255
+          minLength: 0
+          type: string
+        address:
+          $ref: '#/components/schemas/Address'
+        contactGivenName:
+          maxLength: 50
+          minLength: 0
+          type:
+          - string
+          - 'null'
+        contactSurname:
+          maxLength: 50
+          minLength: 0
+          type:
+          - string
+          - 'null'
+        emailAddress:
+          minLength: 1
+          type: string
+        comment:
+          type:
+          - string
+          - 'null'
+        defaultPaymentMethod:
+          type:
+          - string
+          - 'null'
       additionalProperties: false
     VendorPaymentResponse:
       required:
@@ -543,188 +763,6 @@ components:
           items:
             $ref: '#/components/schemas/VendorPaymentInvoice'
       additionalProperties: false
-    UpdateVendorRequestModel:
-      type: object
-      properties:
-        externalVendorId:
-          maxLength: 50
-          minLength: 0
-          type:
-          - string
-          - 'null'
-        vendorName:
-          maxLength: 255
-          minLength: 0
-          type:
-          - string
-          - 'null'
-        address:
-          $ref: '#/components/schemas/Address'
-        contactGivenName:
-          maxLength: 50
-          minLength: 0
-          type:
-          - string
-          - 'null'
-        contactSurname:
-          maxLength: 50
-          minLength: 0
-          type:
-          - string
-          - 'null'
-        emailAddress:
-          type:
-          - string
-          - 'null'
-        comment:
-          type:
-          - string
-          - 'null'
-      additionalProperties: false
-    CreateVendorInvoiceRequestModel:
-      required:
-      - amount
-      - date
-      - dueDate
-      - invoiceNo
-      type: object
-      properties:
-        invoiceNo:
-          maxLength: 200
-          minLength: 0
-          type: string
-        date:
-          type: string
-          format: date
-        dueDate:
-          type: string
-          format: date
-        amount:
-          type: number
-          format: double
-        balance:
-          type:
-          - number
-          - 'null'
-          format: double
-        discountAmount:
-          type:
-          - number
-          - 'null'
-          format: double
-        discountDate:
-          type:
-          - string
-          - 'null'
-          format: date
-        comment:
-          maxLength: 200
-          minLength: 0
-          type:
-          - string
-          - 'null'
-        purchaseOrderNumber:
-          maxLength: 50
-          minLength: 0
-          type:
-          - string
-          - 'null'
-      additionalProperties: false
-    VendorRequestModel:
-      required:
-      - address
-      - emailAddress
-      - vendorName
-      type: object
-      properties:
-        externalVendorId:
-          maxLength: 50
-          minLength: 0
-          type:
-          - string
-          - 'null'
-        vendorName:
-          maxLength: 255
-          minLength: 0
-          type: string
-        address:
-          $ref: '#/components/schemas/Address'
-        contactGivenName:
-          maxLength: 50
-          minLength: 0
-          type:
-          - string
-          - 'null'
-        contactSurname:
-          maxLength: 50
-          minLength: 0
-          type:
-          - string
-          - 'null'
-        emailAddress:
-          minLength: 1
-          type: string
-        comment:
-          type:
-          - string
-          - 'null'
-        defaultPaymentMethod:
-          type:
-          - string
-          - 'null'
-      additionalProperties: false
-    UpdateVendorInvoiceRequestModel:
-      type: object
-      properties:
-        invoiceNo:
-          maxLength: 200
-          minLength: 0
-          type:
-          - string
-          - 'null'
-        date:
-          type:
-          - string
-          - 'null'
-          format: date
-        dueDate:
-          type:
-          - string
-          - 'null'
-          format: date
-        amount:
-          type:
-          - number
-          - 'null'
-          format: double
-        balance:
-          type:
-          - number
-          - 'null'
-          format: double
-        comment:
-          maxLength: 200
-          minLength: 0
-          type:
-          - string
-          - 'null'
-        purchaseOrderNumber:
-          maxLength: 50
-          minLength: 0
-          type:
-          - string
-          - 'null'
-        discountAmount:
-          type:
-          - number
-          - 'null'
-          format: double
-        discountDate:
-          type:
-          - string
-          - 'null'
-          format: date
-      additionalProperties: false
     Address:
       type: object
       properties:
@@ -753,44 +791,6 @@ components:
           - string
           - 'null'
         postalCode:
-          type:
-          - string
-          - 'null'
-      additionalProperties: false
-    VendorResponse:
-      type: object
-      properties:
-        vendorId:
-          type:
-          - string
-          - 'null'
-        externalVendorId:
-          type:
-          - string
-          - 'null'
-        vendorName:
-          type:
-          - string
-          - 'null'
-        address:
-          $ref: '#/components/schemas/Address'
-        contactGivenName:
-          type:
-          - string
-          - 'null'
-        contactSurname:
-          type:
-          - string
-          - 'null'
-        emailAddress:
-          type:
-          - string
-          - 'null'
-        comment:
-          type:
-          - string
-          - 'null'
-        defaultPaymentMethod:
           type:
           - string
           - 'null'

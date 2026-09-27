@@ -110,7 +110,73 @@ paths:
       summary: Delete registrants relationships by id
       x-summary-source: derived
 components:
+  schemas:
+    StandardError:
+      type: object
+      title: Standard Error
+      description: A standard error response format.
+      properties:
+        errorCode:
+          type: integer
+          example: 4xx
+        error:
+          type: string
+          description: A summary of the error
+          example: A summary of the error
+        errorMessage:
+          type: string
+          description: Details of the error
+          example: Details of the error
+    RegistrantRelationshipRead:
+      type: object
+      title: Relationship Read
+      description: Contains a registrant's relationships
+      properties:
+        relationshipId:
+          type: string
+          example: 123
+        registrantId:
+          type: string
+          example: 456
+        relationship:
+          type: string
+          example: Wife
+        reverse:
+          type: string
+          example: Husband
+        firstName:
+          type: string
+          example: John
+        lastName:
+          type: string
+          example: Doe
+    RegistrantRelationshipCreate:
+      type: object
+      title: Relationship Create
+      required:
+      - registrantId
+      description: Data for creating a relationship
+      properties:
+        registrantId:
+          type: string
+          example: 456
+          description: Identifies the registrant related to this registrant.
+        relationship:
+          type: string
+          example: Realtor
+          description: The related registrant's relationship to this registrant.
+    RegistrantRelationshipUpdate:
+      type: object
+      title: Relationship Update
+      description: Data for updating a relationship
+      properties:
+        relationship:
+          type: string
+          example: Realtor
+          description: The related registrant's relationship to this registrant.
   responses:
+    InternalServerError:
+      description: Receiving a 5xx response indicates an error on Lasso's end. Please contact us to report the problem
     BadRequest:
       description: 'The request could not be processed due to invalid input:
 
@@ -138,8 +204,6 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/StandardError'
-    InternalServerError:
-      description: Receiving a 5xx response indicates an error on Lasso's end. Please contact us to report the problem
     NotFound:
       description: The specified resource was not found
       content:
@@ -152,70 +216,6 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/StandardError'
-  schemas:
-    StandardError:
-      type: object
-      title: Standard Error
-      description: A standard error response format.
-      properties:
-        errorCode:
-          type: integer
-          example: 4xx
-        error:
-          type: string
-          description: A summary of the error
-          example: A summary of the error
-        errorMessage:
-          type: string
-          description: Details of the error
-          example: Details of the error
-    RegistrantRelationshipCreate:
-      type: object
-      title: Relationship Create
-      required:
-      - registrantId
-      description: Data for creating a relationship
-      properties:
-        registrantId:
-          type: string
-          example: 456
-          description: Identifies the registrant related to this registrant.
-        relationship:
-          type: string
-          example: Realtor
-          description: The related registrant's relationship to this registrant.
-    RegistrantRelationshipRead:
-      type: object
-      title: Relationship Read
-      description: Contains a registrant's relationships
-      properties:
-        relationshipId:
-          type: string
-          example: 123
-        registrantId:
-          type: string
-          example: 456
-        relationship:
-          type: string
-          example: Wife
-        reverse:
-          type: string
-          example: Husband
-        firstName:
-          type: string
-          example: John
-        lastName:
-          type: string
-          example: Doe
-    RegistrantRelationshipUpdate:
-      type: object
-      title: Relationship Update
-      description: Data for updating a relationship
-      properties:
-        relationship:
-          type: string
-          example: Realtor
-          description: The related registrant's relationship to this registrant.
   securitySchemes:
     JwtAuthorizer:
       type: http

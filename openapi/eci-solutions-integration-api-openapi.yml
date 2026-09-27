@@ -630,29 +630,69 @@ paths:
                 $ref: '#/components/schemas/ListCompanySystemResultIEnumerableAPIResponse'
 components:
   schemas:
-    SystemDetailResponseModelIListAPIResponse:
+    SystemDetailResponseModel:
       type: object
       properties:
-        version:
+        integrationName:
           type:
           - string
           - 'null'
-        statusCode:
+        systemName:
+          maxLength: 25
+          type:
+          - string
+          - 'null'
+        isActive:
+          type:
+          - boolean
+          - 'null'
+        canBeCreatedByAdmin:
+          type:
+          - boolean
+          - 'null'
+        vendorName:
+          type:
+          - string
+          - 'null'
+        vendorUrl:
+          type:
+          - string
+          - 'null'
+        vendorLogoUrl:
+          type:
+          - string
+          - 'null'
+        vendorLogoThumbmailUrl:
+          type:
+          - string
+          - 'null'
+        title:
+          type:
+          - string
+          - 'null'
+        shortDescription:
+          type:
+          - string
+          - 'null'
+        longDescription:
+          type:
+          - string
+          - 'null'
+        isPublic:
+          type:
+          - boolean
+          - 'null'
+        maxConnectionCount:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        id:
           type: integer
           format: int32
-        message:
-          type:
-          - string
-          - 'null'
-        responseException:
-          allOf:
-          - $ref: '#/components/schemas/ApiError'
-        result:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/SystemDetailResponseModel'
+        eciIntegrationId:
+          type: integer
+          format: int32
       additionalProperties: false
     IntegrationsDetailsResponseModel:
       type: object
@@ -741,53 +781,48 @@ components:
           items:
             $ref: '#/components/schemas/AuthSessionDataModel'
       additionalProperties: false
-    SystemsDataModel:
+    IntegrationResponseModel:
       type: object
       properties:
         id:
           type: integer
           format: int32
-        systemName:
+        integrationName:
           type:
           - string
           - 'null'
-        isActive:
+        introductionText:
+          type:
+          - string
+          - 'null'
+        allowHostedConfigurations:
+          type:
+          - boolean
+          - 'null'
+        allowOnPremisesConfigurations:
           type: boolean
-        canBeCreatedByAdmin:
+        enableCompanyManagerDashboard:
           type: boolean
-        vendorName:
+        testConnectionUrl:
           type:
           - string
           - 'null'
-        vendorUrl:
+        isPublished:
           type:
-          - string
+          - boolean
           - 'null'
-        vendorLogoUrl:
+        products:
           type:
-          - string
+          - array
           - 'null'
-        vendorLogoThumbmailUrl:
+          items:
+            $ref: '#/components/schemas/ProductsResponseModel'
+        systems:
           type:
-          - string
+          - array
           - 'null'
-        title:
-          type:
-          - string
-          - 'null'
-        shortDescription:
-          type:
-          - string
-          - 'null'
-        longDescription:
-          type:
-          - string
-          - 'null'
-        isPublic:
-          type: boolean
-        maxConnectionCount:
-          type: integer
-          format: int32
+          items:
+            $ref: '#/components/schemas/SystemResponseModel'
       additionalProperties: false
     MasterKeyProductsResponseModel:
       type: object
@@ -820,6 +855,224 @@ components:
         result:
           allOf:
           - $ref: '#/components/schemas/EciIntegrationProductResponseModel'
+      additionalProperties: false
+    AuthSessionDataModel:
+      type: object
+      properties:
+        systemId:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        systemName:
+          type:
+          - string
+          - 'null'
+        financialCompanyId:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        financialCompanyName:
+          type:
+          - string
+          - 'null'
+        environment:
+          type:
+          - string
+          - 'null'
+        createdDate:
+          type: string
+          format: date-time
+        expiresDate:
+          type: string
+          format: date-time
+        createdById:
+          type:
+          - string
+          - 'null'
+        createdByName:
+          type:
+          - string
+          - 'null'
+        redirectUrl:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    EciIntegrationResponse:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        integrationName:
+          type:
+          - string
+          - 'null'
+        allowHostedConfigurations:
+          type:
+          - boolean
+          - 'null'
+        allowOnPremisesConfigurations:
+          type: boolean
+        enableCompanyManagerDashboard:
+          type: boolean
+        testConnectionUrl:
+          type:
+          - string
+          - 'null'
+        allowsTestConnection:
+          type: boolean
+        isHosted:
+          type:
+          - boolean
+          - 'null'
+        introductionText:
+          type:
+          - string
+          - 'null'
+        isActive:
+          type:
+          - boolean
+          - 'null'
+        isPublished:
+          type:
+          - boolean
+          - 'null'
+        ipRateLimitDefault:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        ipRateLimitDefaultPeriod:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        companyRateLimitDefault:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        companyRateLimitDefaultPeriod:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        userRateLimitDefault:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        userRateLimitDefaultPeriod:
+          type:
+          - integer
+          - 'null'
+          format: int32
+      additionalProperties: false
+    SystemDetailResponseModelAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        result:
+          allOf:
+          - $ref: '#/components/schemas/SystemDetailResponseModel'
+      additionalProperties: false
+    IntegrationsDetailsResponseModelAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        result:
+          allOf:
+          - $ref: '#/components/schemas/IntegrationsDetailsResponseModel'
+      additionalProperties: false
+    ApplicationDataModel:
+      type: object
+      properties:
+        clientId:
+          type:
+          - string
+          - 'null'
+        roleId:
+          type: integer
+          format: int32
+        roleName:
+          type:
+          - string
+          - 'null'
+        integrationId:
+          type: integer
+          format: int32
+        integrationName:
+          type:
+          - string
+          - 'null'
+        redirectUris:
+          type:
+          - string
+          - 'null'
+        description:
+          type:
+          - string
+          - 'null'
+        lastUsedDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+      additionalProperties: false
+    SystemDetailResponseModelIListAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        result:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/SystemDetailResponseModel'
       additionalProperties: false
     ValidationError:
       type: object
@@ -891,43 +1144,74 @@ components:
           - 'null'
           format: int32
       additionalProperties: false
-    EciIntegrationResponseAPIResponse:
+    IntegrationProductRequestModel:
       type: object
       properties:
-        version:
-          type:
-          - string
-          - 'null'
-        statusCode:
+        productId:
           type: integer
           format: int32
-        message:
+        shortDescription:
+          maxLength: 150
+          minLength: 0
           type:
           - string
           - 'null'
-        responseException:
-          allOf:
-          - $ref: '#/components/schemas/ApiError'
-        result:
-          allOf:
-          - $ref: '#/components/schemas/EciIntegrationResponse'
+        longDescription:
+          type:
+          - string
+          - 'null'
+        ispublic:
+          type: boolean
       additionalProperties: false
-    SystemImportRequestModel:
-      required:
-      - systemName
+    ProductsResponseModel:
       type: object
       properties:
         id:
           type: integer
           format: int32
-        systemName:
-          maxLength: 25
-          minLength: 1
-          type: string
-        isActive:
-          type: boolean
-        canBeCreatedByAdmin:
-          type: boolean
+        productName:
+          type:
+          - string
+          - 'null'
+        displayname:
+          type:
+          - string
+          - 'null'
+        shortDescription:
+          type:
+          - string
+          - 'null'
+        longDescription:
+          type:
+          - string
+          - 'null'
+        maxConnectionCount:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        isPublic:
+          type:
+          - boolean
+          - 'null'
+      additionalProperties: false
+    SystemResponseModel:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        productName:
+          type:
+          - string
+          - 'null'
+        eciIntegrationId:
+          type:
+          - integer
+          - 'null'
+          format: int32
         vendorName:
           type:
           - string
@@ -956,11 +1240,92 @@ components:
           type:
           - string
           - 'null'
-        isPublic:
-          type: boolean
         maxConnectionCount:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        isPublic:
+          type:
+          - boolean
+          - 'null'
+      additionalProperties: false
+    AddIntegrationRequestModel:
+      required:
+      - allowHostedConfigurations
+      - integrationName
+      - integrationProductRequestModel
+      type: object
+      properties:
+        id:
           type: integer
           format: int32
+        integrationName:
+          maxLength: 50
+          minLength: 1
+          type: string
+        allowHostedConfigurations:
+          type: boolean
+        allowOnPremisesConfigurations:
+          type: boolean
+        enableCompanyManagerDashboard:
+          type: boolean
+        introductionText:
+          type:
+          - string
+          - 'null'
+        testConnectionUrl:
+          type:
+          - string
+          - 'null'
+        integrationProductRequestModel:
+          type: array
+          items:
+            $ref: '#/components/schemas/IntegrationProductRequestModel'
+        isPublished:
+          type: boolean
+        ipRateLimitDefault:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        ipRateLimitDefaultPeriod:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        companyRateLimitDefault:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        companyRateLimitDefaultPeriod:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        userRateLimitDefault:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        userRateLimitDefaultPeriod:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        masterKeys:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/MasterKeysImportRequestModel'
+        systems:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/SystemImportRequestModel'
       additionalProperties: false
     IntegrationMasterKeyDetail:
       type: object
@@ -1073,58 +1438,20 @@ components:
           - string
           - 'null'
       additionalProperties: false
-    ProductsResponseModel:
+    SystemsDataModel:
       type: object
       properties:
         id:
           type: integer
           format: int32
-        productName:
-          type:
-          - string
-          - 'null'
-        displayname:
-          type:
-          - string
-          - 'null'
-        shortDescription:
-          type:
-          - string
-          - 'null'
-        longDescription:
-          type:
-          - string
-          - 'null'
-        maxConnectionCount:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        isPublic:
-          type:
-          - boolean
-          - 'null'
-      additionalProperties: false
-    SystemDetailResponseModel:
-      type: object
-      properties:
-        integrationName:
-          type:
-          - string
-          - 'null'
         systemName:
-          maxLength: 25
           type:
           - string
           - 'null'
         isActive:
-          type:
-          - boolean
-          - 'null'
+          type: boolean
         canBeCreatedByAdmin:
-          type:
-          - boolean
-          - 'null'
+          type: boolean
         vendorName:
           type:
           - string
@@ -1154,20 +1481,54 @@ components:
           - string
           - 'null'
         isPublic:
-          type:
-          - boolean
-          - 'null'
+          type: boolean
         maxConnectionCount:
+          type: integer
+          format: int32
+      additionalProperties: false
+    ListCompanySystemResultIEnumerableAPIResponse:
+      type: object
+      properties:
+        version:
           type:
-          - integer
+          - string
           - 'null'
-          format: int32
-        id:
+        statusCode:
           type: integer
           format: int32
-        eciIntegrationId:
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        result:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ListCompanySystemResult'
+      additionalProperties: false
+    ListCompanySystemResult:
+      type: object
+      properties:
+        systemId:
           type: integer
           format: int32
+        systemName:
+          type:
+          - string
+          - 'null'
+        integrationId:
+          type: integer
+          format: int32
+        integrationName:
+          type:
+          - string
+          - 'null'
+        isPublished:
+          type: boolean
       additionalProperties: false
     MasterKeysImportRequestModel:
       required:
@@ -1261,157 +1622,22 @@ components:
           - string
           - 'null'
       additionalProperties: false
-    AddIntegration:
+    SystemImportRequestModel:
       required:
-      - allowHostedConfigurations
-      - integrationName
-      type: object
-      properties:
-        integrationName:
-          maxLength: 50
-          minLength: 1
-          type: string
-        allowHostedConfigurations:
-          type: boolean
-        allowOnPremisesConfigurations:
-          type: boolean
-        enableCompanyManagerDashboard:
-          type: boolean
-        introductionText:
-          type:
-          - string
-          - 'null'
-        testConnectionUrl:
-          type:
-          - string
-          - 'null'
-        isPublished:
-          type: boolean
-        ipRateLimitDefault:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        ipRateLimitDefaultPeriod:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        companyRateLimitDefault:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        companyRateLimitDefaultPeriod:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        userRateLimitDefault:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        userRateLimitDefaultPeriod:
-          type:
-          - integer
-          - 'null'
-          format: int32
-      additionalProperties: false
-    AddIntegrationRequestModel:
-      required:
-      - allowHostedConfigurations
-      - integrationName
-      - integrationProductRequestModel
+      - systemName
       type: object
       properties:
         id:
           type: integer
           format: int32
-        integrationName:
-          maxLength: 50
+        systemName:
+          maxLength: 25
           minLength: 1
           type: string
-        allowHostedConfigurations:
+        isActive:
           type: boolean
-        allowOnPremisesConfigurations:
+        canBeCreatedByAdmin:
           type: boolean
-        enableCompanyManagerDashboard:
-          type: boolean
-        introductionText:
-          type:
-          - string
-          - 'null'
-        testConnectionUrl:
-          type:
-          - string
-          - 'null'
-        integrationProductRequestModel:
-          type: array
-          items:
-            $ref: '#/components/schemas/IntegrationProductRequestModel'
-        isPublished:
-          type: boolean
-        ipRateLimitDefault:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        ipRateLimitDefaultPeriod:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        companyRateLimitDefault:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        companyRateLimitDefaultPeriod:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        userRateLimitDefault:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        userRateLimitDefaultPeriod:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        masterKeys:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/MasterKeysImportRequestModel'
-        systems:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/SystemImportRequestModel'
-      additionalProperties: false
-    SystemResponseModel:
-      type: object
-      properties:
-        id:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        productName:
-          type:
-          - string
-          - 'null'
-        eciIntegrationId:
-          type:
-          - integer
-          - 'null'
-          format: int32
         vendorName:
           type:
           - string
@@ -1440,90 +1666,13 @@ components:
           type:
           - string
           - 'null'
-        maxConnectionCount:
-          type:
-          - integer
-          - 'null'
-          format: int32
         isPublic:
-          type:
-          - boolean
-          - 'null'
-      additionalProperties: false
-    EciIntegrationResponse:
-      type: object
-      properties:
-        id:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        integrationName:
-          type:
-          - string
-          - 'null'
-        allowHostedConfigurations:
-          type:
-          - boolean
-          - 'null'
-        allowOnPremisesConfigurations:
           type: boolean
-        enableCompanyManagerDashboard:
-          type: boolean
-        testConnectionUrl:
-          type:
-          - string
-          - 'null'
-        allowsTestConnection:
-          type: boolean
-        isHosted:
-          type:
-          - boolean
-          - 'null'
-        introductionText:
-          type:
-          - string
-          - 'null'
-        isActive:
-          type:
-          - boolean
-          - 'null'
-        isPublished:
-          type:
-          - boolean
-          - 'null'
-        ipRateLimitDefault:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        ipRateLimitDefaultPeriod:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        companyRateLimitDefault:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        companyRateLimitDefaultPeriod:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        userRateLimitDefault:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        userRateLimitDefaultPeriod:
-          type:
-          - integer
-          - 'null'
+        maxConnectionCount:
+          type: integer
           format: int32
       additionalProperties: false
-    SystemDetailResponseModelAPIResponse:
+    StringAPIResponse:
       type: object
       properties:
         version:
@@ -1541,18 +1690,32 @@ components:
           allOf:
           - $ref: '#/components/schemas/ApiError'
         result:
-          allOf:
-          - $ref: '#/components/schemas/SystemDetailResponseModel'
+          type:
+          - string
+          - 'null'
       additionalProperties: false
-    IntegrationProductRequestModel:
+    EciIntegrationProductResponseModel:
       type: object
       properties:
+        integrationId:
+          type: integer
+          format: int32
         productId:
           type: integer
           format: int32
+        integrationName:
+          type:
+          - string
+          - 'null'
+        productName:
+          type:
+          - string
+          - 'null'
+        displayName:
+          type:
+          - string
+          - 'null'
         shortDescription:
-          maxLength: 150
-          minLength: 0
           type:
           - string
           - 'null'
@@ -1560,7 +1723,7 @@ components:
           type:
           - string
           - 'null'
-        ispublic:
+        isPublic:
           type: boolean
       additionalProperties: false
     UpdateIntegration:
@@ -1626,64 +1789,76 @@ components:
           - 'null'
           format: int32
       additionalProperties: false
-    ApplicationDataModel:
+    AddIntegration:
+      required:
+      - allowHostedConfigurations
+      - integrationName
       type: object
       properties:
-        clientId:
-          type:
-          - string
-          - 'null'
-        roleId:
-          type: integer
-          format: int32
-        roleName:
-          type:
-          - string
-          - 'null'
-        integrationId:
-          type: integer
-          format: int32
         integrationName:
+          maxLength: 50
+          minLength: 1
+          type: string
+        allowHostedConfigurations:
+          type: boolean
+        allowOnPremisesConfigurations:
+          type: boolean
+        enableCompanyManagerDashboard:
+          type: boolean
+        introductionText:
           type:
           - string
           - 'null'
-        redirectUris:
+        testConnectionUrl:
           type:
           - string
           - 'null'
-        description:
+        isPublished:
+          type: boolean
+        ipRateLimitDefault:
           type:
-          - string
+          - integer
           - 'null'
-        lastUsedDate:
+          format: int32
+        ipRateLimitDefaultPeriod:
           type:
-          - string
+          - integer
           - 'null'
-          format: date-time
+          format: int32
+        companyRateLimitDefault:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        companyRateLimitDefaultPeriod:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        userRateLimitDefault:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        userRateLimitDefaultPeriod:
+          type:
+          - integer
+          - 'null'
+          format: int32
       additionalProperties: false
-    ListCompanySystemResultIEnumerableAPIResponse:
+    UpdateIntegrationProductsDetail:
       type: object
       properties:
-        version:
+        shortDescription:
           type:
           - string
           - 'null'
-        statusCode:
-          type: integer
-          format: int32
-        message:
+        longDescription:
           type:
           - string
           - 'null'
-        responseException:
-          allOf:
-          - $ref: '#/components/schemas/ApiError'
-        result:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/ListCompanySystemResult'
+        isPublic:
+          type: boolean
       additionalProperties: false
     IntegrationResponseModelListAPIResponse:
       type: object
@@ -1709,37 +1884,26 @@ components:
           items:
             $ref: '#/components/schemas/IntegrationResponseModel'
       additionalProperties: false
-    EciIntegrationProductResponseModel:
+    EciIntegrationResponseAPIResponse:
       type: object
       properties:
-        integrationId:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
           type: integer
           format: int32
-        productId:
-          type: integer
-          format: int32
-        integrationName:
+        message:
           type:
           - string
           - 'null'
-        productName:
-          type:
-          - string
-          - 'null'
-        displayName:
-          type:
-          - string
-          - 'null'
-        shortDescription:
-          type:
-          - string
-          - 'null'
-        longDescription:
-          type:
-          - string
-          - 'null'
-        isPublic:
-          type: boolean
+        responseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        result:
+          allOf:
+          - $ref: '#/components/schemas/EciIntegrationResponse'
       additionalProperties: false
     ApiError:
       type: object
@@ -1768,170 +1932,6 @@ components:
           - 'null'
           items:
             $ref: '#/components/schemas/ValidationError'
-      additionalProperties: false
-    UpdateIntegrationProductsDetail:
-      type: object
-      properties:
-        shortDescription:
-          type:
-          - string
-          - 'null'
-        longDescription:
-          type:
-          - string
-          - 'null'
-        isPublic:
-          type: boolean
-      additionalProperties: false
-    StringAPIResponse:
-      type: object
-      properties:
-        version:
-          type:
-          - string
-          - 'null'
-        statusCode:
-          type: integer
-          format: int32
-        message:
-          type:
-          - string
-          - 'null'
-        responseException:
-          allOf:
-          - $ref: '#/components/schemas/ApiError'
-        result:
-          type:
-          - string
-          - 'null'
-      additionalProperties: false
-    ListCompanySystemResult:
-      type: object
-      properties:
-        systemId:
-          type: integer
-          format: int32
-        systemName:
-          type:
-          - string
-          - 'null'
-        integrationId:
-          type: integer
-          format: int32
-        integrationName:
-          type:
-          - string
-          - 'null'
-        isPublished:
-          type: boolean
-      additionalProperties: false
-    IntegrationResponseModel:
-      type: object
-      properties:
-        id:
-          type: integer
-          format: int32
-        integrationName:
-          type:
-          - string
-          - 'null'
-        introductionText:
-          type:
-          - string
-          - 'null'
-        allowHostedConfigurations:
-          type:
-          - boolean
-          - 'null'
-        allowOnPremisesConfigurations:
-          type: boolean
-        enableCompanyManagerDashboard:
-          type: boolean
-        testConnectionUrl:
-          type:
-          - string
-          - 'null'
-        isPublished:
-          type:
-          - boolean
-          - 'null'
-        products:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/ProductsResponseModel'
-        systems:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/SystemResponseModel'
-      additionalProperties: false
-    AuthSessionDataModel:
-      type: object
-      properties:
-        systemId:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        systemName:
-          type:
-          - string
-          - 'null'
-        financialCompanyId:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        financialCompanyName:
-          type:
-          - string
-          - 'null'
-        environment:
-          type:
-          - string
-          - 'null'
-        createdDate:
-          type: string
-          format: date-time
-        expiresDate:
-          type: string
-          format: date-time
-        createdById:
-          type:
-          - string
-          - 'null'
-        createdByName:
-          type:
-          - string
-          - 'null'
-        redirectUrl:
-          type:
-          - string
-          - 'null'
-      additionalProperties: false
-    IntegrationsDetailsResponseModelAPIResponse:
-      type: object
-      properties:
-        version:
-          type:
-          - string
-          - 'null'
-        statusCode:
-          type: integer
-          format: int32
-        message:
-          type:
-          - string
-          - 'null'
-        responseException:
-          allOf:
-          - $ref: '#/components/schemas/ApiError'
-        result:
-          allOf:
-          - $ref: '#/components/schemas/IntegrationsDetailsResponseModel'
       additionalProperties: false
   securitySchemes:
     oidc:

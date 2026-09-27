@@ -118,6 +118,100 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
+    Links:
+      type: object
+      properties:
+        self:
+          $ref: '#/components/schemas/Self'
+      additionalProperties: false
+    Self:
+      type: object
+      properties:
+        href:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    AccountVaultUpdate:
+      required:
+      - account_holder_name
+      - account_vault_id
+      - developer_id
+      - exp_date
+      type: object
+      properties:
+        account_vault_id:
+          minLength: 1
+          type: string
+        exp_date:
+          minLength: 1
+          pattern: ^(0[1-9]|1[0-2])([0-9]{2})$
+          type: string
+        account_holder_name:
+          minLength: 1
+          type: string
+        developer_id:
+          minLength: 1
+          type: string
+      additionalProperties: false
+    AccountVaultDetailResponse:
+      type: object
+      properties:
+        accountvault:
+          $ref: '#/components/schemas/AccountVaultDetail'
+      additionalProperties: false
+    ValidationError:
+      type: object
+      properties:
+        field:
+          type:
+          - string
+          - 'null'
+        message:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    AccountVaultUpdateModel:
+      type: object
+      properties:
+        accountvault:
+          $ref: '#/components/schemas/AccountVaultUpdate'
+      additionalProperties: false
+    StringAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          $ref: '#/components/schemas/ApiError'
+        result:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    AccountVaultDetailRequest:
+      required:
+      - account_vault_id
+      - developer_id
+      type: object
+      properties:
+        account_vault_id:
+          minLength: 1
+          type: string
+        developer_id:
+          minLength: 1
+          type: string
+      additionalProperties: false
     ApiError:
       type: object
       properties:
@@ -237,12 +331,6 @@ components:
         _links:
           $ref: '#/components/schemas/Links'
       additionalProperties: false
-    Links:
-      type: object
-      properties:
-        self:
-          $ref: '#/components/schemas/Self'
-      additionalProperties: false
     AccountVaultDetailResponseAPIResponse:
       type: object
       properties:
@@ -261,94 +349,6 @@ components:
           $ref: '#/components/schemas/ApiError'
         result:
           $ref: '#/components/schemas/AccountVaultDetailResponse'
-      additionalProperties: false
-    StringAPIResponse:
-      type: object
-      properties:
-        version:
-          type:
-          - string
-          - 'null'
-        statusCode:
-          type: integer
-          format: int32
-        message:
-          type:
-          - string
-          - 'null'
-        responseException:
-          $ref: '#/components/schemas/ApiError'
-        result:
-          type:
-          - string
-          - 'null'
-      additionalProperties: false
-    AccountVaultUpdate:
-      required:
-      - account_holder_name
-      - account_vault_id
-      - developer_id
-      - exp_date
-      type: object
-      properties:
-        account_vault_id:
-          minLength: 1
-          type: string
-        exp_date:
-          minLength: 1
-          pattern: ^(0[1-9]|1[0-2])([0-9]{2})$
-          type: string
-        account_holder_name:
-          minLength: 1
-          type: string
-        developer_id:
-          minLength: 1
-          type: string
-      additionalProperties: false
-    AccountVaultDetailRequest:
-      required:
-      - account_vault_id
-      - developer_id
-      type: object
-      properties:
-        account_vault_id:
-          minLength: 1
-          type: string
-        developer_id:
-          minLength: 1
-          type: string
-      additionalProperties: false
-    ValidationError:
-      type: object
-      properties:
-        field:
-          type:
-          - string
-          - 'null'
-        message:
-          type:
-          - string
-          - 'null'
-      additionalProperties: false
-    AccountVaultDetailResponse:
-      type: object
-      properties:
-        accountvault:
-          $ref: '#/components/schemas/AccountVaultDetail'
-      additionalProperties: false
-    Self:
-      type: object
-      properties:
-        href:
-          type:
-          - string
-          - 'null'
-      additionalProperties: false
-    AccountVaultUpdateModel:
-      type: object
-      properties:
-        accountvault:
-          $ref: '#/components/schemas/AccountVaultUpdate'
       additionalProperties: false
   securitySchemes:
     Bearer:

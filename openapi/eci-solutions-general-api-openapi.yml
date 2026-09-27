@@ -221,6 +221,75 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
+    TaxRate:
+      type: object
+      properties:
+        name:
+          type:
+          - string
+          - 'null'
+          description: 'The name of the tax rate.
+
+            * ECI Financials: n/a
+
+            * Xero: TaxRate.Name
+
+            * TripleTex: VatType.DisplayName
+
+            * AccountView: n/a
+
+            * PowerOfficeGo: VatCode.Name
+
+            * Sage50Uk: TaxRate.Description
+
+            * Adsolut: TaxRate.Name'
+        rate:
+          type:
+          - number
+          - 'null'
+          description: 'VAT rate
+
+            * ECI Financials: n/a
+
+            * Xero: TaxRate.Rate
+
+            * TripleTex: VatType.Percentage
+
+            * AccountView: n/a
+
+            * PowerOfficeGo: VatCode.Rate
+
+            * Sage50Uk: TaxRate.Rate
+
+            * Adsolut: TaxRate.Percentage'
+          format: double
+      additionalProperties: false
+      description: <h2>Model for Tax rate data, wich contains a name and a percentage.</h2>
+    Problem:
+      required:
+      - detail
+      - title
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+        title:
+          type: string
+        status:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        detail:
+          type: string
+        instance:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+      description: Definition of [RFC7807](https://tools.ietf.org/html/rfc7807) problem detail
     Entity:
       type: object
       properties:
@@ -235,6 +304,17 @@ components:
           - 'null'
           description: The unique Id of this entity.
       additionalProperties: false
+    AsyncAcceptedResponse:
+      type: object
+      properties:
+        requestId:
+          type: string
+          description: 'A unique identifier for the asynchronous request.
+
+            This ID can be used in a follow-up request (via the async-request-id header) to retrieve the result of the original operation once processing is complete.'
+          format: uuid
+      additionalProperties: false
+      description: Represents the response returned when an asynchronous request is accepted for processing.
     TaxCode:
       required:
       - code
@@ -465,86 +545,6 @@ components:
           format: double
       additionalProperties: false
       description: Represents an individual line of a GL Journal to be saved to or existing in the financial system.
-    Problem:
-      required:
-      - detail
-      - title
-      type: object
-      properties:
-        type:
-          type:
-          - string
-          - 'null'
-        title:
-          type: string
-        status:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        detail:
-          type: string
-        instance:
-          type:
-          - string
-          - 'null'
-      additionalProperties: false
-      description: Definition of [RFC7807](https://tools.ietf.org/html/rfc7807) problem detail
-    TaxRate:
-      type: object
-      properties:
-        name:
-          type:
-          - string
-          - 'null'
-          description: 'The name of the tax rate.
-
-            * ECI Financials: n/a
-
-            * Xero: TaxRate.Name
-
-            * TripleTex: VatType.DisplayName
-
-            * AccountView: n/a
-
-            * PowerOfficeGo: VatCode.Name
-
-            * Sage50Uk: TaxRate.Description
-
-            * Adsolut: TaxRate.Name'
-        rate:
-          type:
-          - number
-          - 'null'
-          description: 'VAT rate
-
-            * ECI Financials: n/a
-
-            * Xero: TaxRate.Rate
-
-            * TripleTex: VatType.Percentage
-
-            * AccountView: n/a
-
-            * PowerOfficeGo: VatCode.Rate
-
-            * Sage50Uk: TaxRate.Rate
-
-            * Adsolut: TaxRate.Percentage'
-          format: double
-      additionalProperties: false
-      description: <h2>Model for Tax rate data, wich contains a name and a percentage.</h2>
-    AsyncAcceptedResponse:
-      type: object
-      properties:
-        requestId:
-          type: string
-          description: 'A unique identifier for the asynchronous request.
-
-            This ID can be used in a follow-up request (via the async-request-id header) to retrieve the result of the original operation once processing is complete.'
-          format: uuid
-      additionalProperties: false
-      description: Represents the response returned when an asynchronous request is accepted for processing.
     GeneralJournalEntry:
       type: object
       properties:

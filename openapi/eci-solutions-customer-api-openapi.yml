@@ -565,7 +565,7 @@ paths:
       tags:
       - Customer
       summary: Update a single customer by Id
-      operationId: UpdateCustomer
+      operationId: patchApiV1CustomersByCustomerId
       parameters:
       - name: customerId
         in: path
@@ -598,6 +598,8 @@ paths:
             text/json:
               schema:
                 $ref: '#/components/schemas/EcommerceCustomerResponse'
+      x-operation-id-source: normalized
+      x-operation-id-original: UpdateCustomer
   /api/v1/customers/{customerId}/addresses:
     get:
       tags:
@@ -946,68 +948,29 @@ paths:
           description: No Content
 components:
   schemas:
-    Address:
+    CreateCustomerInvoiceRequestModel:
+      required:
+      - amount
+      - date
+      - dueDate
+      - invoiceNo
+      - taxAmount
       type: object
       properties:
-        addressLine1:
-          type:
-          - string
-          - 'null'
-        addressLine2:
-          type:
-          - string
-          - 'null'
-        city:
-          type:
-          - string
-          - 'null'
-        country:
-          maxLength: 2
-          minLength: 0
-          type:
-          - string
-          - 'null'
-        state:
-          maxLength: 2
-          minLength: 0
-          type:
-          - string
-          - 'null'
-        postalCode:
-          type:
-          - string
-          - 'null'
-      additionalProperties: false
-    UpdateCustomerSalesOrderRequestModel:
-      type: object
-      properties:
-        salesOrderNo:
+        invoiceNo:
           maxLength: 200
           minLength: 0
-          type:
-          - string
-          - 'null'
+          type: string
         date:
-          type:
-          - string
-          - 'null'
-          format: date-time
+          type: string
+          format: date
         dueDate:
-          type:
-          - string
-          - 'null'
-          format: date-time
+          type: string
+          format: date
         amount:
-          type:
-          - number
-          - 'null'
+          type: number
           format: double
         balance:
-          type:
-          - number
-          - 'null'
-          format: double
-        taxAmount:
           type:
           - number
           - 'null'
@@ -1021,24 +984,14 @@ components:
           type:
           - string
           - 'null'
-          format: date-time
+          format: date
+        taxAmount:
+          type: number
+          format: double
         preAuth:
           type:
           - boolean
           - 'null'
-      additionalProperties: false
-    CustomerResponseListResponse:
-      type: object
-      properties:
-        count:
-          type: integer
-          format: int32
-        data:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/CustomerResponse'
       additionalProperties: false
     CustomerInvoiceResponse:
       type: object
@@ -1107,128 +1060,6 @@ components:
           - string
           - 'null'
       additionalProperties: false
-    CreateCustomerSalesOrderRequestModel:
-      required:
-      - amount
-      - date
-      - dueDate
-      - salesOrderNo
-      type: object
-      properties:
-        salesOrderNo:
-          maxLength: 200
-          minLength: 0
-          type: string
-        date:
-          type: string
-          format: date-time
-        dueDate:
-          type: string
-          format: date-time
-        amount:
-          type: number
-          format: double
-        balance:
-          type:
-          - number
-          - 'null'
-          format: double
-        taxAmount:
-          type:
-          - number
-          - 'null'
-          format: double
-        discountAmount:
-          type:
-          - number
-          - 'null'
-          format: double
-        discountDate:
-          type:
-          - string
-          - 'null'
-          format: date-time
-        preAuth:
-          type:
-          - boolean
-          - 'null'
-      additionalProperties: false
-    UpdateCustomerRequestModel:
-      type: object
-      properties:
-        externalCustomerId:
-          type:
-          - string
-          - 'null'
-        contactGivenName:
-          maxLength: 50
-          minLength: 0
-          type:
-          - string
-          - 'null'
-        contactSurname:
-          maxLength: 50
-          minLength: 0
-          type:
-          - string
-          - 'null'
-        emailAddress:
-          maxLength: 320
-          minLength: 0
-          type:
-          - string
-          - 'null'
-        address:
-          $ref: '#/components/schemas/Address'
-        restrictPayment:
-          $ref: '#/components/schemas/RestrictPayment'
-        disableFeeRecovery:
-          type:
-          - boolean
-          - 'null'
-        selfServiceAccount:
-          type:
-          - boolean
-          - 'null'
-      additionalProperties: false
-    CustomerResponse:
-      type: object
-      properties:
-        customerId:
-          type:
-          - string
-          - 'null'
-        externalCustomerId:
-          type:
-          - string
-          - 'null'
-        address:
-          $ref: '#/components/schemas/Address'
-        contactGivenName:
-          type:
-          - string
-          - 'null'
-        contactSurname:
-          type:
-          - string
-          - 'null'
-        emailAddress:
-          type:
-          - string
-          - 'null'
-        restrictPayment:
-          type:
-          - string
-          - 'null'
-        disableFeeRecovery:
-          type:
-          - boolean
-          - 'null'
-        selfServiceAccount:
-          type:
-          - boolean
-          - 'null'
-      additionalProperties: false
     CustomerRequestModel:
       required:
       - address
@@ -1269,16 +1100,10 @@ components:
           - boolean
           - 'null'
       additionalProperties: false
-    RestrictPayment:
-      enum:
-      - CreditCard
-      - ACH
-      - Both
-      type: string
-    UpdateCustomerInvoiceRequestModel:
+    UpdateCustomerSalesOrderRequestModel:
       type: object
       properties:
-        invoiceNo:
+        salesOrderNo:
           maxLength: 200
           minLength: 0
           type:
@@ -1288,12 +1113,12 @@ components:
           type:
           - string
           - 'null'
-          format: date
+          format: date-time
         dueDate:
           type:
           - string
           - 'null'
-          format: date
+          format: date-time
         amount:
           type:
           - number
@@ -1318,8 +1143,52 @@ components:
           type:
           - string
           - 'null'
-          format: date
+          format: date-time
         preAuth:
+          type:
+          - boolean
+          - 'null'
+      additionalProperties: false
+    RestrictPayment:
+      enum:
+      - CreditCard
+      - ACH
+      - Both
+      type: string
+    CustomerResponse:
+      type: object
+      properties:
+        customerId:
+          type:
+          - string
+          - 'null'
+        externalCustomerId:
+          type:
+          - string
+          - 'null'
+        address:
+          $ref: '#/components/schemas/Address'
+        contactGivenName:
+          type:
+          - string
+          - 'null'
+        contactSurname:
+          type:
+          - string
+          - 'null'
+        emailAddress:
+          type:
+          - string
+          - 'null'
+        restrictPayment:
+          type:
+          - string
+          - 'null'
+        disableFeeRecovery:
+          type:
+          - boolean
+          - 'null'
+        selfServiceAccount:
           type:
           - boolean
           - 'null'
@@ -1391,29 +1260,87 @@ components:
           - string
           - 'null'
       additionalProperties: false
-    CreateCustomerInvoiceRequestModel:
-      required:
-      - amount
-      - date
-      - dueDate
-      - invoiceNo
-      - taxAmount
+    UpdateCustomerRequestModel:
+      type: object
+      properties:
+        externalCustomerId:
+          type:
+          - string
+          - 'null'
+        contactGivenName:
+          maxLength: 50
+          minLength: 0
+          type:
+          - string
+          - 'null'
+        contactSurname:
+          maxLength: 50
+          minLength: 0
+          type:
+          - string
+          - 'null'
+        emailAddress:
+          maxLength: 320
+          minLength: 0
+          type:
+          - string
+          - 'null'
+        address:
+          $ref: '#/components/schemas/Address'
+        restrictPayment:
+          $ref: '#/components/schemas/RestrictPayment'
+        disableFeeRecovery:
+          type:
+          - boolean
+          - 'null'
+        selfServiceAccount:
+          type:
+          - boolean
+          - 'null'
+      additionalProperties: false
+    CustomerResponseListResponse:
+      type: object
+      properties:
+        count:
+          type: integer
+          format: int32
+        data:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/CustomerResponse'
+      additionalProperties: false
+    UpdateCustomerInvoiceRequestModel:
       type: object
       properties:
         invoiceNo:
           maxLength: 200
           minLength: 0
-          type: string
+          type:
+          - string
+          - 'null'
         date:
-          type: string
+          type:
+          - string
+          - 'null'
           format: date
         dueDate:
-          type: string
+          type:
+          - string
+          - 'null'
           format: date
         amount:
-          type: number
+          type:
+          - number
+          - 'null'
           format: double
         balance:
+          type:
+          - number
+          - 'null'
+          format: double
+        taxAmount:
           type:
           - number
           - 'null'
@@ -1428,27 +1355,112 @@ components:
           - string
           - 'null'
           format: date
-        taxAmount:
-          type: number
-          format: double
         preAuth:
           type:
           - boolean
           - 'null'
       additionalProperties: false
-    EcommerceCustomerProductAliasRequest:
+    CreateCustomerSalesOrderRequestModel:
       required:
-      - alias
-      - sku
+      - amount
+      - date
+      - dueDate
+      - salesOrderNo
       type: object
       properties:
-        sku:
-          minLength: 1
-          type: string
-        alias:
-          maxLength: 1008
+        salesOrderNo:
+          maxLength: 200
           minLength: 0
           type: string
+        date:
+          type: string
+          format: date-time
+        dueDate:
+          type: string
+          format: date-time
+        amount:
+          type: number
+          format: double
+        balance:
+          type:
+          - number
+          - 'null'
+          format: double
+        taxAmount:
+          type:
+          - number
+          - 'null'
+          format: double
+        discountAmount:
+          type:
+          - number
+          - 'null'
+          format: double
+        discountDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        preAuth:
+          type:
+          - boolean
+          - 'null'
+      additionalProperties: false
+    Address:
+      type: object
+      properties:
+        addressLine1:
+          type:
+          - string
+          - 'null'
+        addressLine2:
+          type:
+          - string
+          - 'null'
+        city:
+          type:
+          - string
+          - 'null'
+        country:
+          maxLength: 2
+          minLength: 0
+          type:
+          - string
+          - 'null'
+        state:
+          maxLength: 2
+          minLength: 0
+          type:
+          - string
+          - 'null'
+        postalCode:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    EcommerceCustomerAddress:
+      type: object
+      properties:
+        addressId:
+          type:
+          - string
+          - 'null'
+        title:
+          type:
+          - string
+          - 'null'
+        type:
+          type:
+          - string
+          - 'null'
+        referenceCode:
+          type:
+          - string
+          - 'null'
+        isEnabled:
+          type:
+          - boolean
+          - 'null'
       additionalProperties: false
     ProblemDetails:
       type: object
@@ -1475,6 +1487,232 @@ components:
           - string
           - 'null'
       additionalProperties: {}
+    EcommerceCustomerResponse:
+      type: object
+      properties:
+        customerId:
+          type:
+          - string
+          - 'null'
+        accountNumber:
+          type:
+          - string
+          - 'null'
+        parentCustomerId:
+          type:
+          - string
+          - 'null'
+        companyName:
+          type:
+          - string
+          - 'null'
+        isEnabled:
+          type:
+          - boolean
+          - 'null'
+        referenceCode:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    EcommerceCustomerUpdateRequest:
+      required:
+      - companyName
+      type: object
+      properties:
+        companyName:
+          minLength: 1
+          type: string
+        accountNumber:
+          type:
+          - string
+          - 'null'
+        parentCustomerId:
+          type:
+          - string
+          - 'null'
+        referenceCode:
+          type:
+          - string
+          - 'null'
+        isEnabled:
+          type:
+          - boolean
+          - 'null'
+        rewardsStatus:
+          $ref: '#/components/schemas/EcommerceCustomerRewardsStatus'
+        isPoNumberRequired:
+          type:
+          - boolean
+          - 'null'
+        poNumberMask:
+          type:
+          - string
+          - 'null'
+        locationReferenceCode:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    EcommerceUpdateCustomerProductAliasRequest:
+      required:
+      - alias
+      - sku
+      type: object
+      properties:
+        sku:
+          $ref: '#/components/schemas/SkuOldNewValue'
+        alias:
+          $ref: '#/components/schemas/AliasOldNewValue'
+      additionalProperties: false
+    ProductPricing:
+      required:
+      - price
+      - quantity
+      - sku
+      type: object
+      properties:
+        sku:
+          minLength: 1
+          type: string
+        quantity:
+          minimum: 0
+          type: number
+          format: double
+        price:
+          minimum: 0.01
+          type: number
+          format: double
+      additionalProperties: false
+    SkuOldNewValue:
+      required:
+      - newValue
+      - oldValue
+      type: object
+      properties:
+        oldValue:
+          minLength: 1
+          type: string
+        newValue:
+          minLength: 1
+          type: string
+      additionalProperties: false
+    EcommerceCustomerProductAliasesResponseProductAliasesListResponse:
+      type: object
+      properties:
+        count:
+          type: integer
+          format: int32
+        nextFrom:
+          type:
+          - string
+          - 'null'
+        data:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/EcommerceCustomerProductAliasesResponse'
+      additionalProperties: false
+    EcommerceCustomerWithAddressResponse:
+      type: object
+      properties:
+        accountNumber:
+          type:
+          - string
+          - 'null'
+        companyName:
+          type:
+          - string
+          - 'null'
+        customerId:
+          type:
+          - string
+          - 'null'
+        parentCustomerId:
+          type:
+          - string
+          - 'null'
+        isEnabled:
+          type:
+          - boolean
+          - 'null'
+        referenceCode:
+          type:
+          - string
+          - 'null'
+        addresses:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/EcommerceCustomerAddress'
+      additionalProperties: false
+    EcommerceCustomerAddressResponse:
+      type: object
+      properties:
+        addressId:
+          type:
+          - string
+          - 'null'
+        type:
+          $ref: '#/components/schemas/EcommerceAddressType'
+        title:
+          type:
+          - string
+          - 'null'
+        line1:
+          type:
+          - string
+          - 'null'
+        line2:
+          type:
+          - string
+          - 'null'
+        line3:
+          type:
+          - string
+          - 'null'
+        city:
+          type:
+          - string
+          - 'null'
+        state:
+          type:
+          - string
+          - 'null'
+        postalCode:
+          type:
+          - string
+          - 'null'
+        country:
+          type:
+          - string
+          - 'null'
+        referenceCode:
+          type:
+          - string
+          - 'null'
+        isEnabled:
+          type:
+          - boolean
+          - 'null'
+      additionalProperties: false
+    AliasOldNewValue:
+      required:
+      - newValue
+      - oldValue
+      type: object
+      properties:
+        oldValue:
+          maxLength: 1008
+          minLength: 0
+          type: string
+        newValue:
+          maxLength: 1008
+          minLength: 0
+          type: string
+      additionalProperties: false
     EcommerceCustomerContractPricingRequest:
       required:
       - endDate
@@ -1498,70 +1736,122 @@ components:
           items:
             $ref: '#/components/schemas/ProductPricing'
       additionalProperties: false
-    EcommerceCustomerResponseListResponse:
+    EcommerceUpdateAddressRequest:
       type: object
       properties:
-        count:
-          type: integer
-          format: int32
-        nextFrom:
+        type:
+          $ref: '#/components/schemas/EcommerceAddressType'
+        title:
           type:
-          - integer
+          - string
           - 'null'
-          format: int32
-        data:
+        line1:
+          type:
+          - string
+          - 'null'
+        line2:
+          type:
+          - string
+          - 'null'
+        line3:
+          type:
+          - string
+          - 'null'
+        city:
+          type:
+          - string
+          - 'null'
+        state:
+          type:
+          - string
+          - 'null'
+        postalCode:
+          type:
+          - string
+          - 'null'
+        country:
+          maxLength: 2
+          minLength: 0
+          type:
+          - string
+          - 'null'
+        referenceCode:
+          type:
+          - string
+          - 'null'
+        isEnabled:
+          type:
+          - boolean
+          - 'null'
+      additionalProperties: false
+    EcommerceAddressResponse:
+      type: object
+      properties:
+        addressId:
+          type:
+          - string
+          - 'null'
+        type:
+          $ref: '#/components/schemas/EcommerceAddressType'
+        title:
+          type:
+          - string
+          - 'null'
+        referenceCode:
+          type:
+          - string
+          - 'null'
+        isEnabled:
+          type:
+          - boolean
+          - 'null'
+      additionalProperties: false
+    EcommerceAddressType:
+      enum:
+      - 0
+      - 1
+      - 2
+      type: integer
+      format: int32
+    EcommerceCustomerRequest:
+      required:
+      - companyName
+      type: object
+      properties:
+        companyName:
+          minLength: 1
+          type: string
+        accountNumber:
+          type:
+          - string
+          - 'null'
+        parentCustomerId:
+          type:
+          - string
+          - 'null'
+        referenceCode:
+          type:
+          - string
+          - 'null'
+        addresses:
           type:
           - array
           - 'null'
           items:
-            $ref: '#/components/schemas/EcommerceCustomerResponse'
-      additionalProperties: false
-    AliasOldNewValue:
-      required:
-      - newValue
-      - oldValue
-      type: object
-      properties:
-        oldValue:
-          maxLength: 1008
-          minLength: 0
-          type: string
-        newValue:
-          maxLength: 1008
-          minLength: 0
-          type: string
-      additionalProperties: false
-    ProductPricing:
-      required:
-      - price
-      - quantity
-      - sku
-      type: object
-      properties:
-        sku:
-          minLength: 1
-          type: string
-        quantity:
-          minimum: 0
-          type: number
-          format: double
-        price:
-          minimum: 0.01
-          type: number
-          format: double
-      additionalProperties: false
-    EcommerceCustomerProductAliasResponse:
-      type: object
-      properties:
-        customerId:
+            $ref: '#/components/schemas/EcommerceAddress'
+        isEnabled:
+          type: boolean
+        rewardsStatus:
+          $ref: '#/components/schemas/EcommerceCustomerRewardsStatus'
+        isPoNumberRequired:
+          type:
+          - boolean
+          - 'null'
+        poNumberMask:
           type:
           - string
           - 'null'
-        sku:
-          type:
-          - string
-          - 'null'
-        alias:
+        locationReferenceCode:
           type:
           - string
           - 'null'
@@ -1614,56 +1904,70 @@ components:
           - boolean
           - 'null'
       additionalProperties: false
-    EcommerceCustomerResponse:
+    EcommerceCustomerRewardsStatus:
+      enum:
+      - 0
+      - 1
+      type: integer
+      format: int32
+    EcommerceCustomerProductAliasRequest:
+      required:
+      - alias
+      - sku
+      type: object
+      properties:
+        sku:
+          minLength: 1
+          type: string
+        alias:
+          maxLength: 1008
+          minLength: 0
+          type: string
+      additionalProperties: false
+    EcommerceCustomerProductAliasesResponse:
+      type: object
+      properties:
+        sku:
+          type:
+          - string
+          - 'null'
+        alias:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    EcommerceCustomerResponseListResponse:
+      type: object
+      properties:
+        count:
+          type: integer
+          format: int32
+        nextFrom:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        data:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/EcommerceCustomerResponse'
+      additionalProperties: false
+    EcommerceCustomerProductAliasResponse:
       type: object
       properties:
         customerId:
           type:
           - string
           - 'null'
-        accountNumber:
+        sku:
           type:
           - string
           - 'null'
-        parentCustomerId:
+        alias:
           type:
           - string
-          - 'null'
-        companyName:
-          type:
-          - string
-          - 'null'
-        isEnabled:
-          type:
-          - boolean
-          - 'null'
-        referenceCode:
-          type:
-          - string
-          - 'null'
-      additionalProperties: false
-    EcommerceCustomerAddress:
-      type: object
-      properties:
-        addressId:
-          type:
-          - string
-          - 'null'
-        title:
-          type:
-          - string
-          - 'null'
-        type:
-          type:
-          - string
-          - 'null'
-        referenceCode:
-          type:
-          - string
-          - 'null'
-        isEnabled:
-          type:
-          - boolean
           - 'null'
       additionalProperties: false
     EcommerceCustomerAddressResponseListResponse:
@@ -1683,308 +1987,6 @@ components:
           - 'null'
           items:
             $ref: '#/components/schemas/EcommerceCustomerAddressResponse'
-      additionalProperties: false
-    EcommerceCustomerRewardsStatus:
-      enum:
-      - 0
-      - 1
-      type: integer
-      format: int32
-    EcommerceCustomerUpdateRequest:
-      required:
-      - companyName
-      type: object
-      properties:
-        companyName:
-          minLength: 1
-          type: string
-        accountNumber:
-          type:
-          - string
-          - 'null'
-        parentCustomerId:
-          type:
-          - string
-          - 'null'
-        referenceCode:
-          type:
-          - string
-          - 'null'
-        isEnabled:
-          type:
-          - boolean
-          - 'null'
-        rewardsStatus:
-          $ref: '#/components/schemas/EcommerceCustomerRewardsStatus'
-        isPoNumberRequired:
-          type:
-          - boolean
-          - 'null'
-        poNumberMask:
-          type:
-          - string
-          - 'null'
-        locationReferenceCode:
-          type:
-          - string
-          - 'null'
-      additionalProperties: false
-    EcommerceCustomerProductAliasesResponseProductAliasesListResponse:
-      type: object
-      properties:
-        count:
-          type: integer
-          format: int32
-        nextFrom:
-          type:
-          - string
-          - 'null'
-        data:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/EcommerceCustomerProductAliasesResponse'
-      additionalProperties: false
-    EcommerceUpdateAddressRequest:
-      type: object
-      properties:
-        type:
-          $ref: '#/components/schemas/EcommerceAddressType'
-        title:
-          type:
-          - string
-          - 'null'
-        line1:
-          type:
-          - string
-          - 'null'
-        line2:
-          type:
-          - string
-          - 'null'
-        line3:
-          type:
-          - string
-          - 'null'
-        city:
-          type:
-          - string
-          - 'null'
-        state:
-          type:
-          - string
-          - 'null'
-        postalCode:
-          type:
-          - string
-          - 'null'
-        country:
-          maxLength: 2
-          minLength: 0
-          type:
-          - string
-          - 'null'
-        referenceCode:
-          type:
-          - string
-          - 'null'
-        isEnabled:
-          type:
-          - boolean
-          - 'null'
-      additionalProperties: false
-    SkuOldNewValue:
-      required:
-      - newValue
-      - oldValue
-      type: object
-      properties:
-        oldValue:
-          minLength: 1
-          type: string
-        newValue:
-          minLength: 1
-          type: string
-      additionalProperties: false
-    EcommerceCustomerWithAddressResponse:
-      type: object
-      properties:
-        accountNumber:
-          type:
-          - string
-          - 'null'
-        companyName:
-          type:
-          - string
-          - 'null'
-        customerId:
-          type:
-          - string
-          - 'null'
-        parentCustomerId:
-          type:
-          - string
-          - 'null'
-        isEnabled:
-          type:
-          - boolean
-          - 'null'
-        referenceCode:
-          type:
-          - string
-          - 'null'
-        addresses:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/EcommerceCustomerAddress'
-      additionalProperties: false
-    EcommerceCustomerProductAliasesResponse:
-      type: object
-      properties:
-        sku:
-          type:
-          - string
-          - 'null'
-        alias:
-          type:
-          - string
-          - 'null'
-      additionalProperties: false
-    EcommerceAddressType:
-      enum:
-      - 0
-      - 1
-      - 2
-      type: integer
-      format: int32
-    EcommerceCustomerAddressResponse:
-      type: object
-      properties:
-        addressId:
-          type:
-          - string
-          - 'null'
-        type:
-          $ref: '#/components/schemas/EcommerceAddressType'
-        title:
-          type:
-          - string
-          - 'null'
-        line1:
-          type:
-          - string
-          - 'null'
-        line2:
-          type:
-          - string
-          - 'null'
-        line3:
-          type:
-          - string
-          - 'null'
-        city:
-          type:
-          - string
-          - 'null'
-        state:
-          type:
-          - string
-          - 'null'
-        postalCode:
-          type:
-          - string
-          - 'null'
-        country:
-          type:
-          - string
-          - 'null'
-        referenceCode:
-          type:
-          - string
-          - 'null'
-        isEnabled:
-          type:
-          - boolean
-          - 'null'
-      additionalProperties: false
-    EcommerceAddressResponse:
-      type: object
-      properties:
-        addressId:
-          type:
-          - string
-          - 'null'
-        type:
-          $ref: '#/components/schemas/EcommerceAddressType'
-        title:
-          type:
-          - string
-          - 'null'
-        referenceCode:
-          type:
-          - string
-          - 'null'
-        isEnabled:
-          type:
-          - boolean
-          - 'null'
-      additionalProperties: false
-    EcommerceCustomerRequest:
-      required:
-      - companyName
-      type: object
-      properties:
-        companyName:
-          minLength: 1
-          type: string
-        accountNumber:
-          type:
-          - string
-          - 'null'
-        parentCustomerId:
-          type:
-          - string
-          - 'null'
-        referenceCode:
-          type:
-          - string
-          - 'null'
-        addresses:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/EcommerceAddress'
-        isEnabled:
-          type: boolean
-        rewardsStatus:
-          $ref: '#/components/schemas/EcommerceCustomerRewardsStatus'
-        isPoNumberRequired:
-          type:
-          - boolean
-          - 'null'
-        poNumberMask:
-          type:
-          - string
-          - 'null'
-        locationReferenceCode:
-          type:
-          - string
-          - 'null'
-      additionalProperties: false
-    EcommerceUpdateCustomerProductAliasRequest:
-      required:
-      - alias
-      - sku
-      type: object
-      properties:
-        sku:
-          $ref: '#/components/schemas/SkuOldNewValue'
-        alias:
-          $ref: '#/components/schemas/AliasOldNewValue'
       additionalProperties: false
   securitySchemes:
     Bearer:

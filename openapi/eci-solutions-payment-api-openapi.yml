@@ -292,33 +292,23 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    ApiError:
+    AuthOnlyTransactionDetails:
+      required:
+      - developer_id
+      - location_id
+      - transactions
       type: object
       properties:
-        isError:
-          type: boolean
-        exceptionMessage:
-          type:
-          - string
-          - 'null'
-        details:
-          type:
-          - string
-          - 'null'
-        referenceErrorCode:
-          type:
-          - string
-          - 'null'
-        referenceDocumentLink:
-          type:
-          - string
-          - 'null'
-        validationErrors:
-          type:
-          - array
-          - 'null'
+        location_id:
+          minLength: 1
+          type: string
+        developer_id:
+          minLength: 1
+          type: string
+        transactions:
+          type: array
           items:
-            $ref: '#/components/schemas/ValidationError'
+            $ref: '#/components/schemas/AuthOnlyTransactionDetailNoBase'
       additionalProperties: false
     PaymentTransaction:
       required:
@@ -340,16 +330,6 @@ components:
           type:
           - string
           - 'null'
-      additionalProperties: false
-    TransactionUIResponseRoot:
-      type: object
-      properties:
-        transactions:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/TransactionUIDetail'
       additionalProperties: false
     TransactionUIDetail:
       type: object
@@ -392,23 +372,18 @@ components:
           - string
           - 'null'
       additionalProperties: false
-    AuthOnlyTransactionDetails:
-      required:
-      - developer_id
-      - location_id
-      - transactions
+    TransactionStatusResponseRoot:
       type: object
       properties:
-        location_id:
-          minLength: 1
-          type: string
-        developer_id:
-          minLength: 1
-          type: string
         transactions:
-          type: array
+          type:
+          - array
+          - 'null'
           items:
-            $ref: '#/components/schemas/AuthOnlyTransactionDetailNoBase'
+            $ref: '#/components/schemas/TransactionStatusDetail'
+        tokenExpiryTime:
+          type: integer
+          format: int32
       additionalProperties: false
     StringAPIResponse:
       type: object
@@ -431,35 +406,6 @@ components:
           - string
           - 'null'
       additionalProperties: false
-    AuthOnlyTransactionDetailNoBase:
-      required:
-      - transaction_id
-      type: object
-      properties:
-        transaction_id:
-          minLength: 1
-          type: string
-        transaction_amount:
-          type: number
-          description: Can provide transaction_amount for lesser amount than auth
-          format: double
-        tax:
-          type: number
-          format: double
-      additionalProperties: false
-    TransactionStatusResponseRoot:
-      type: object
-      properties:
-        transactions:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/TransactionStatusDetail'
-        tokenExpiryTime:
-          type: integer
-          format: int32
-      additionalProperties: false
     ValidationError:
       type: object
       properties:
@@ -472,114 +418,15 @@ components:
           - string
           - 'null'
       additionalProperties: false
-    AuthOnlyTransactionDetail:
+    TransactionUpdateRequestModel:
       required:
-      - developer_id
-      - location_id
-      - transaction_id
+      - transaction
       type: object
       properties:
-        location_id:
-          minLength: 1
-          type: string
-        developer_id:
-          minLength: 1
-          type: string
-        transaction_id:
-          minLength: 1
-          type: string
-        transaction_amount:
-          type: number
-          description: Can provide transaction_amount for lesser amount than auth
-          format: double
-        tax:
-          type: number
-          format: double
+        transaction:
+          $ref: '#/components/schemas/TransactionUpdateModel'
       additionalProperties: false
-    TransactionStatusResponseRootAPIResponse:
-      type: object
-      properties:
-        version:
-          type:
-          - string
-          - 'null'
-        statusCode:
-          type: integer
-          format: int32
-        message:
-          type:
-          - string
-          - 'null'
-        responseException:
-          $ref: '#/components/schemas/ApiError'
-        result:
-          $ref: '#/components/schemas/TransactionStatusResponseRoot'
-      additionalProperties: false
-    TransactionStatusDetail:
-      type: object
-      properties:
-        id:
-          type:
-          - string
-          - 'null'
-        payment_method:
-          type:
-          - string
-          - 'null'
-        transaction_amount:
-          type:
-          - string
-          - 'null'
-        transaction_c1:
-          type:
-          - string
-          - 'null'
-        status_id:
-          type: integer
-          format: int32
-        order_num:
-          type:
-          - string
-          - 'null'
-        po_number:
-          type:
-          - string
-          - 'null'
-        created_ts:
-          type: integer
-          format: int64
-        description:
-          type:
-          - string
-          - 'null'
-        last_four:
-          type:
-          - string
-          - 'null'
-        account_vault_id:
-          type:
-          - string
-          - 'null'
-      additionalProperties: false
-    TransactionUIResponseRootAPIResponse:
-      type: object
-      properties:
-        version:
-          type:
-          - string
-          - 'null'
-        statusCode:
-          type: integer
-          format: int32
-        message:
-          type:
-          - string
-          - 'null'
-        responseException:
-          $ref: '#/components/schemas/ApiError'
-        result:
-          $ref: '#/components/schemas/TransactionUIResponseRoot'
-      additionalProperties: false
+      description: For updating an existing transaction by id
     TransactionUpdateModel:
       required:
       - action
@@ -617,15 +464,25 @@ components:
             For partialreversal, this value should be the final settlement total for the transaction. For credit, this value should be the amount being credited back to the original payer.'
           format: double
       additionalProperties: false
-    TransactionUpdateRequestModel:
-      required:
-      - transaction
+    TransactionUIResponseRootAPIResponse:
       type: object
       properties:
-        transaction:
-          $ref: '#/components/schemas/TransactionUpdateModel'
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          $ref: '#/components/schemas/ApiError'
+        result:
+          $ref: '#/components/schemas/TransactionUIResponseRoot'
       additionalProperties: false
-      description: For updating an existing transaction by id
     TransactionResponseAPIResponse:
       type: object
       properties:
@@ -709,6 +566,125 @@ components:
           - 'null'
           description: 'Locale: Value used "en_CA" to indicate "English Canada" in order to enable Canadian-specific labels. Only Required for canadian Merchant Processing.'
       additionalProperties: false
+    TransactionUIResponseRoot:
+      type: object
+      properties:
+        transactions:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/TransactionUIDetail'
+      additionalProperties: false
+    TransactionStatusDetail:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+        payment_method:
+          type:
+          - string
+          - 'null'
+        transaction_amount:
+          type:
+          - string
+          - 'null'
+        transaction_c1:
+          type:
+          - string
+          - 'null'
+        status_id:
+          type: integer
+          format: int32
+        order_num:
+          type:
+          - string
+          - 'null'
+        po_number:
+          type:
+          - string
+          - 'null'
+        created_ts:
+          type: integer
+          format: int64
+        description:
+          type:
+          - string
+          - 'null'
+        last_four:
+          type:
+          - string
+          - 'null'
+        account_vault_id:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    TransactionStatusResponseRootAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          $ref: '#/components/schemas/ApiError'
+        result:
+          $ref: '#/components/schemas/TransactionStatusResponseRoot'
+      additionalProperties: false
+    ApiError:
+      type: object
+      properties:
+        isError:
+          type: boolean
+        exceptionMessage:
+          type:
+          - string
+          - 'null'
+        details:
+          type:
+          - string
+          - 'null'
+        referenceErrorCode:
+          type:
+          - string
+          - 'null'
+        referenceDocumentLink:
+          type:
+          - string
+          - 'null'
+        validationErrors:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ValidationError'
+      additionalProperties: false
+    AuthOnlyTransactionDetailNoBase:
+      required:
+      - transaction_id
+      type: object
+      properties:
+        transaction_id:
+          minLength: 1
+          type: string
+        transaction_amount:
+          type: number
+          description: Can provide transaction_amount for lesser amount than auth
+          format: double
+        tax:
+          type: number
+          format: double
+      additionalProperties: false
     TransactionResponse:
       type: object
       properties:
@@ -749,6 +725,30 @@ components:
           type:
           - string
           - 'null'
+      additionalProperties: false
+    AuthOnlyTransactionDetail:
+      required:
+      - developer_id
+      - location_id
+      - transaction_id
+      type: object
+      properties:
+        location_id:
+          minLength: 1
+          type: string
+        developer_id:
+          minLength: 1
+          type: string
+        transaction_id:
+          minLength: 1
+          type: string
+        transaction_amount:
+          type: number
+          description: Can provide transaction_amount for lesser amount than auth
+          format: double
+        tax:
+          type: number
+          format: double
       additionalProperties: false
   securitySchemes:
     Bearer:

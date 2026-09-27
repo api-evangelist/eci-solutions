@@ -297,6 +297,24 @@ paths:
       description: Production
 components:
   schemas:
+    EcommerceProductResponseListResponse:
+      type: object
+      properties:
+        count:
+          type: integer
+          format: int32
+        nextFrom:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        data:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/EcommerceProductResponse'
+      additionalProperties: false
     ProblemDetails:
       type: object
       properties:
@@ -322,24 +340,6 @@ components:
           - string
           - 'null'
       additionalProperties: {}
-    EcommerceProductResponseListResponse:
-      type: object
-      properties:
-        count:
-          type: integer
-          format: int32
-        nextFrom:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        data:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/EcommerceProductResponse'
-      additionalProperties: false
     EcommerceProductVisibility:
       enum:
       - 0
@@ -450,6 +450,137 @@ components:
           - string
           - 'null'
       additionalProperties: false
+    EciProductList:
+      type: object
+      properties:
+        allProducts:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/EciProduct'
+        eciProducts:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/EciProduct'
+      additionalProperties: false
+    ApiError:
+      type: object
+      properties:
+        isError:
+          type: boolean
+        exceptionMessage:
+          type:
+          - string
+          - 'null'
+        details:
+          type:
+          - string
+          - 'null'
+        referenceErrorCode:
+          type:
+          - string
+          - 'null'
+        referenceDocumentLink:
+          type:
+          - string
+          - 'null'
+        validationErrors:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ValidationError'
+      additionalProperties: false
+    EciProductsResponseModelAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        result:
+          allOf:
+          - $ref: '#/components/schemas/EciProductsResponseModel'
+      additionalProperties: false
+    ValidationError:
+      type: object
+      properties:
+        field:
+          type:
+          - string
+          - 'null'
+        message:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    IntegrationSystem:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        productName:
+          type:
+          - string
+          - 'null'
+        eciIntegrationId:
+          type: integer
+          format: int32
+      additionalProperties: false
+    SyncProductsResult:
+      type: object
+      properties:
+        added:
+          type: integer
+          format: int32
+        updated:
+          type: integer
+          format: int32
+        skipped:
+          type: integer
+          format: int32
+        newProductNames:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+      additionalProperties: false
+    EciProductsResponseModel:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        productName:
+          type:
+          - string
+          - 'null'
+        displayname:
+          type:
+          - string
+          - 'null'
+        integrations:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/EciIntegrationResponseModel'
+      additionalProperties: false
     EciProductListAPIResponse:
       type: object
       properties:
@@ -470,6 +601,77 @@ components:
         result:
           allOf:
           - $ref: '#/components/schemas/EciProductList'
+      additionalProperties: false
+    EciIntegrationResponseModel:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        integrationName:
+          type:
+          - string
+          - 'null'
+        introductionText:
+          type:
+          - string
+          - 'null'
+        allowHostedConfigurations:
+          type: boolean
+        isPublished:
+          type: boolean
+        masterKeys:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/IntegrationMasterKey'
+        system:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/IntegrationSystem'
+      additionalProperties: false
+    SyncProductsResultAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        result:
+          allOf:
+          - $ref: '#/components/schemas/SyncProductsResult'
+      additionalProperties: false
+    EciProduct:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        productName:
+          type:
+          - string
+          - 'null'
+        displayname:
+          type:
+          - string
+          - 'null'
+        defaultNexusAlias:
+          type:
+          - string
+          - 'null'
       additionalProperties: false
     IntegrationMasterKey:
       type: object
@@ -518,208 +720,6 @@ components:
           - boolean
           - 'null'
         maskType:
-          type:
-          - string
-          - 'null'
-      additionalProperties: false
-    ApiError:
-      type: object
-      properties:
-        isError:
-          type: boolean
-        exceptionMessage:
-          type:
-          - string
-          - 'null'
-        details:
-          type:
-          - string
-          - 'null'
-        referenceErrorCode:
-          type:
-          - string
-          - 'null'
-        referenceDocumentLink:
-          type:
-          - string
-          - 'null'
-        validationErrors:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/ValidationError'
-      additionalProperties: false
-    SyncProductsResult:
-      type: object
-      properties:
-        added:
-          type: integer
-          format: int32
-        updated:
-          type: integer
-          format: int32
-        skipped:
-          type: integer
-          format: int32
-        newProductNames:
-          type:
-          - array
-          - 'null'
-          items:
-            type: string
-      additionalProperties: false
-    EciProductList:
-      type: object
-      properties:
-        allProducts:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/EciProduct'
-        eciProducts:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/EciProduct'
-      additionalProperties: false
-    EciProductsResponseModel:
-      type: object
-      properties:
-        id:
-          type: integer
-          format: int32
-        productName:
-          type:
-          - string
-          - 'null'
-        displayname:
-          type:
-          - string
-          - 'null'
-        integrations:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/EciIntegrationResponseModel'
-      additionalProperties: false
-    SyncProductsResultAPIResponse:
-      type: object
-      properties:
-        version:
-          type:
-          - string
-          - 'null'
-        statusCode:
-          type: integer
-          format: int32
-        message:
-          type:
-          - string
-          - 'null'
-        responseException:
-          allOf:
-          - $ref: '#/components/schemas/ApiError'
-        result:
-          allOf:
-          - $ref: '#/components/schemas/SyncProductsResult'
-      additionalProperties: false
-    EciProductsResponseModelAPIResponse:
-      type: object
-      properties:
-        version:
-          type:
-          - string
-          - 'null'
-        statusCode:
-          type: integer
-          format: int32
-        message:
-          type:
-          - string
-          - 'null'
-        responseException:
-          allOf:
-          - $ref: '#/components/schemas/ApiError'
-        result:
-          allOf:
-          - $ref: '#/components/schemas/EciProductsResponseModel'
-      additionalProperties: false
-    ValidationError:
-      type: object
-      properties:
-        field:
-          type:
-          - string
-          - 'null'
-        message:
-          type:
-          - string
-          - 'null'
-      additionalProperties: false
-    EciIntegrationResponseModel:
-      type: object
-      properties:
-        id:
-          type: integer
-          format: int32
-        integrationName:
-          type:
-          - string
-          - 'null'
-        introductionText:
-          type:
-          - string
-          - 'null'
-        allowHostedConfigurations:
-          type: boolean
-        isPublished:
-          type: boolean
-        masterKeys:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/IntegrationMasterKey'
-        system:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/IntegrationSystem'
-      additionalProperties: false
-    IntegrationSystem:
-      type: object
-      properties:
-        id:
-          type: integer
-          format: int32
-        productName:
-          type:
-          - string
-          - 'null'
-        eciIntegrationId:
-          type: integer
-          format: int32
-      additionalProperties: false
-    EciProduct:
-      type: object
-      properties:
-        id:
-          type: integer
-          format: int32
-        productName:
-          type:
-          - string
-          - 'null'
-        displayname:
-          type:
-          - string
-          - 'null'
-        defaultNexusAlias:
           type:
           - string
           - 'null'

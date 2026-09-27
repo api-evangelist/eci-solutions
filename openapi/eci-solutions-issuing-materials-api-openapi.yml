@@ -187,46 +187,6 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    StockToJobTransferResult:
-      type: object
-      properties:
-        jobNumber:
-          type:
-          - string
-          - 'null'
-        materials:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/StockToJobMaterialResultSchema'
-        warnings:
-          type:
-          - array
-          - 'null'
-          items:
-            type: string
-      additionalProperties: false
-    StockToJobMaterialResultSchema:
-      type: object
-      properties:
-        partNumber:
-          type:
-          - string
-          - 'null'
-        quantityRequested:
-          type: number
-          format: double
-        quantityTransferred:
-          type: number
-          format: double
-        quantityCapped:
-          type: number
-          format: double
-        quantityRemainingToBuy:
-          type: number
-          format: double
-      additionalProperties: false
     StockToJobBinCreate:
       required:
       - qty2Use
@@ -242,6 +202,24 @@ components:
         qty2Use:
           type: integer
           format: int32
+      additionalProperties: false
+    StockToJobTransferCreate:
+      required:
+      - jobNumber
+      - materials
+      - postingEffectiveDate
+      type: object
+      properties:
+        jobNumber:
+          type: string
+        postingEffectiveDate:
+          type: string
+        allowClosedJobs:
+          type: boolean
+        materials:
+          type: array
+          items:
+            $ref: '#/components/schemas/StockToJobMaterialCreate'
       additionalProperties: false
     StockToJobMaterialCreate:
       required:
@@ -265,29 +243,51 @@ components:
           items:
             $ref: '#/components/schemas/StockToJobBinCreate'
       additionalProperties: false
-    StockToJobTransferCreate:
-      required:
-      - jobNumber
-      - materials
-      - postingEffectiveDate
-      type: object
-      properties:
-        jobNumber:
-          type: string
-        postingEffectiveDate:
-          type: string
-        allowClosedJobs:
-          type: boolean
-        materials:
-          type: array
-          items:
-            $ref: '#/components/schemas/StockToJobMaterialCreate'
-      additionalProperties: false
     StockToJobTransferResultSuccessResponse:
       type: object
       properties:
         Data:
           $ref: '#/components/schemas/StockToJobTransferResult'
+      additionalProperties: false
+    StockToJobMaterialResultSchema:
+      type: object
+      properties:
+        partNumber:
+          type:
+          - string
+          - 'null'
+        quantityRequested:
+          type: number
+          format: double
+        quantityTransferred:
+          type: number
+          format: double
+        quantityCapped:
+          type: number
+          format: double
+        quantityRemainingToBuy:
+          type: number
+          format: double
+      additionalProperties: false
+    StockToJobTransferResult:
+      type: object
+      properties:
+        jobNumber:
+          type:
+          - string
+          - 'null'
+        materials:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/StockToJobMaterialResultSchema'
+        warnings:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
       additionalProperties: false
   securitySchemes:
     Bearer:

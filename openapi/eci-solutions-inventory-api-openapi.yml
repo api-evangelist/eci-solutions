@@ -252,86 +252,36 @@ paths:
         500:
           $ref: '#/components/responses/InternalServerError'
 components:
-  responses:
-    ErrorInventoryAlreadySynced:
-      description: 'The inventory item you tried to create or sync with Lasso already exists
-
-        or is already synced. Right now, it is only possible to sync an inventory
-
-        item with Lasso once. Any subsequent changes will have to be applied
-
-        manually (ie, adding a note)
-
-
-        Alternatively, you can reset the inventory and sync again. Resetting
-
-        the inventory will remove any associated information (ie, deposits,
-
-        notes, etc). Any information that is not included in the sync will be
-
-        lost. In addition, there may be issues with custom reports that inspect
-
-        the system creation date of data (this is not related to dates included
-
-        in the sync, like the deposit received date). If you choose to reset
-
-        and sync the inventory, please ensure that you are not deleted data
-
-        in Lasso.
-
-        '
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/StandardError'
-    Unauthorized:
-      description: The request has not been fulfilled because it lacks valid authentication credentials
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/StandardError'
-    Forbidden:
-      description: The provided authentication credentials does not have sufficient privileges to access this resource
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/StandardError'
-    NotFound:
-      description: The specified resource was not found
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/StandardError'
-    ErrorInventoryCannotBeDeleted:
-      description: The inventory you tried to delete was either "locked" or its status is not "Available"
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/StandardError'
-    InternalServerError:
-      description: Receiving a 5xx response indicates an error on Lasso's end. Please contact us to report the problem
-    BadRequest:
-      description: 'The request could not be processed due to invalid input:
-
-        - Is the request payload malformed?
-
-        - Are all required fields present?
-
-        - Are field values of the expected type (ie, number format, date format)?
-
-        - Are field values within the expected constraints (ie, greater than max size of string)?
-
-        - Are query params of the expected format?
-
-
-        Check the body model for more documentation on field constraints and limits.
-
-        '
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/StandardError'
   schemas:
+    RealtorCompensation:
+      type: object
+      properties:
+        bonuses:
+          type: array
+          items:
+            type: number
+            example: '10000.00'
+        percentages:
+          type: array
+          items:
+            type: object
+            properties:
+              cutOff:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    enum:
+                    - under
+                    - over
+                    example: under
+                  value:
+                    type: number
+                    example: '100000'
+              margin:
+                type: number
+                description: Percentage as fraction of 100 as float, e.g. '0.0125' => 1.25%
+                example: '0.022'
     StorageLocker:
       title: Storage Locker
       properties:
@@ -355,51 +305,75 @@ components:
         description:
           type: string
           example: Part of storage package
-    PricingRevision:
-      title: PricingRevision
-      type: object
+    Deposit:
+      title: Deposit
       required:
-      - name
       - amount
+      - dueDate
       properties:
-        name:
-          type: string
-          example: Adapt to higher mortgage rates
-        amount:
-          type: number
-          example: '-100000'
-    Note:
-      title: Note
-      type: object
-      required:
-      - note
-      properties:
-        noteId:
+        depositId:
           type: string
           example: '123'
-        note:
+        amount:
+          type: number
+          example: '145000'
+        dueDate:
           type: string
-          example: Offered $10.000 credit
-        createdAt:
+          format: date
+          example: '2017-08-30'
+        amountReceived:
+          type: number
+          example: '145000'
+        receivedDate:
           type: string
-          description: Date in the ISO 8601 UTC format
-          example: '2017-08-30T05:48:35Z'
-    StandardError:
-      type: object
-      title: Standard Error
-      description: A standard error response format.
+          format: date
+          example: '2017-09-10'
+    BicycleLocker:
+      title: Bicycle Locker
       properties:
-        errorCode:
-          type: integer
-          example: 4xx
-        error:
+        uniqueId:
           type: string
-          description: A summary of the error
-          example: A summary of the error
-        errorMessage:
+          example: '077'
+        price:
+          type: number
+          example: '12000'
+        date:
           type: string
-          description: Details of the error
-          example: Details of the error
+          format: date
+          example: '2017-08-30'
+        paymentReceivedDate:
+          type: string
+          format: date
+          example: '2017-08-30'
+        outsideOfContract:
+          type: boolean
+          example: true
+        description:
+          type: string
+          example: Part of storage package
+    ParkingStall:
+      title: Parking Stall
+      properties:
+        uniqueId:
+          type: string
+          example: '077'
+        price:
+          type: number
+          example: '12000'
+        date:
+          type: string
+          format: date
+          example: '2017-08-30'
+        paymentReceivedDate:
+          type: string
+          format: date
+          example: '2017-08-30'
+        outsideOfContract:
+          type: boolean
+          example: true
+        description:
+          type: string
+          example: Part of storage package
     InventorySync:
       title: InventorySync
       properties:
@@ -546,95 +520,48 @@ components:
         lastName:
           type: string
           example: Doe
-    InventoryCreate:
-      title: InventoryCreate
-      required:
-      - strataLot
-      - inventoryNumber
+    Component:
+      title: Component
+      type: object
       properties:
-        statusOverwrite:
+        name:
           type: string
-          description: Current status of inventory. Will default to existing value if not provided.
-          enum:
-          - Available
-          - Unavailable
-          - Reserved
-          - Subject
-          - Firm
-          - Firm(R)
-          - Offer
-          - Closed
-          example: Available
-        plan:
+          example: Birch Towers
+        componentId:
           type: string
-          example: E2
-          description: This field has to be set up in Lasso. It is matched to an existing option via the name. If no existing option is found, a new one is created. Will default to existing value if not provided.
-        squareFootage:
+          example: 123
+    Pricing:
+      title: Pricing
+      type: object
+      description: Sets the pricing information for the inventory in Lasso. Setting all fields to 0 except the `initialPrice` allows you to specify an exact sales price.
+      required:
+      - initialPrice
+      properties:
+        initialPrice:
           type: number
-          example: 1251
-          description: Will default to existing value if not provided.
-        patioSquareFootage:
+          description: Base price of inventory
+          example: '4300000'
+        adjustedGrossPrice:
           type: number
-          example: 70
-          description: Will default to existing value if not provided.
-        colorScheme:
-          type: string
-          example: Beige
-          description: This field has to be set up in Lasso. It is matched to an existing option via the name. If no existing option is found, a new one is created. Will default to existing value if not provided.
-        maintenanceFee:
+          example: '-50000'
+        offTheTopDiscount:
           type: number
-          example: '351.12'
-          description: Will default to existing value if not provided.
-        floor:
+          example: '-10000'
+        inLieuOfIncentive:
           type: number
-          example: 11
-          description: Will default to existing value if not provided.
-        bedrooms:
-          type: string
-          example: 2 Bedroom + Den
-          description: This field has to be set up in Lasso. It is matched to an existing option via the name. If no existing option is found, a new one is created. Will default to existing value if not provided.
-        bathrooms:
-          type: string
-          example: 2 1/2
-          description: Will default to existing value if not provided.
-        direction:
-          type: string
-          example: SE
-          description: This field has to be set up in Lasso. It is matched to an existing option via the name. If no existing option is found, a new one is created. Will default to existing value if not provided.
-        exposure:
-          type: string
-          example: South East
-          description: This field has to be set up in Lasso. It is matched to an existing option via the name. If no existing option is found, a new one is created. Will default to existing value if not provided.
-        definition:
-          type: string
-          enum:
-          - Unit
-          - Townhome
-          - Lot
-          - Homesite
-          example: Unit
-          description: Will default to existing value if not provided.
-        dates:
-          $ref: '#/components/schemas/Dates'
-        pricing:
-          $ref: '#/components/schemas/Pricing'
+          example: '10000'
+        credit:
+          type: number
+          example: '25000'
         _links:
           type: object
           properties:
             self:
               type: string
-              example: /inventory/123-123
-            delete:
+              example: /inventory/123-123/pricing
+            update:
               type: string
-              example: /inventory/123-123
-        component:
-          $ref: '#/components/schemas/Component'
-        strataLot:
-          type: string
-          example: 123
-        inventoryNumber:
-          type: string
-          example: 123
+              example: /inventory/123-123/pricing
     InventoryRead:
       title: InventoryRead
       properties:
@@ -727,6 +654,22 @@ components:
         inventoryNumber:
           type: string
           example: 123
+    StandardError:
+      type: object
+      title: Standard Error
+      description: A standard error response format.
+      properties:
+        errorCode:
+          type: integer
+          example: 4xx
+        error:
+          type: string
+          description: A summary of the error
+          example: A summary of the error
+        errorMessage:
+          type: string
+          description: Details of the error
+          example: Details of the error
     InventoryFull:
       title: InventoryFull
       properties:
@@ -875,76 +818,121 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Option'
-    Subject:
+    Option:
       type: object
       required:
-      - purchaser
-      - subjectDate
-      - description
-      properties:
-        purchaser:
-          type: string
-          example: '123'
-          description: RegistrantId of a registrant assigned to the inventory
-        subjectDate:
-          type: string
-          format: date
-          example: '2017-08-14'
-        description:
-          type: string
-          example: Adjust doors that do not close properly
-        removed:
-          type: boolean
-          example: false
-        removalDate:
-          type: string
-          format: date
-          example: '2017-08-25'
-        removalDescription:
-          type: string
-          example: Contractor sanded doors, all close properly now
-    Project:
-      title: Project
-      type: object
+      - name
+      - price
       properties:
         name:
           type: string
-          example: Birch Towers
-        projectId:
+          example: Marble counter tops
+        description:
           type: string
-          example: 123
-    Pricing:
-      title: Pricing
-      type: object
-      description: Sets the pricing information for the inventory in Lasso. Setting all fields to 0 except the `initialPrice` allows you to specify an exact sales price.
+          example: Upgrade for kitchen counter tops
+        price:
+          type: number
+          example: '1000'
+        area:
+          type: string
+          example: Kitchen
+          description: Areas have to be set up in Lasso, they are matched via string. If no area is found, one will be created.
+        date:
+          type: string
+          format: date
+          example: '2017-08-29'
+        outsideContract:
+          type: boolean
+          example: true
+    InventoryCreate:
+      title: InventoryCreate
       required:
-      - initialPrice
+      - strataLot
+      - inventoryNumber
       properties:
-        initialPrice:
+        statusOverwrite:
+          type: string
+          description: Current status of inventory. Will default to existing value if not provided.
+          enum:
+          - Available
+          - Unavailable
+          - Reserved
+          - Subject
+          - Firm
+          - Firm(R)
+          - Offer
+          - Closed
+          example: Available
+        plan:
+          type: string
+          example: E2
+          description: This field has to be set up in Lasso. It is matched to an existing option via the name. If no existing option is found, a new one is created. Will default to existing value if not provided.
+        squareFootage:
           type: number
-          description: Base price of inventory
-          example: '4300000'
-        adjustedGrossPrice:
+          example: 1251
+          description: Will default to existing value if not provided.
+        patioSquareFootage:
           type: number
-          example: '-50000'
-        offTheTopDiscount:
+          example: 70
+          description: Will default to existing value if not provided.
+        colorScheme:
+          type: string
+          example: Beige
+          description: This field has to be set up in Lasso. It is matched to an existing option via the name. If no existing option is found, a new one is created. Will default to existing value if not provided.
+        maintenanceFee:
           type: number
-          example: '-10000'
-        inLieuOfIncentive:
+          example: '351.12'
+          description: Will default to existing value if not provided.
+        floor:
           type: number
-          example: '10000'
-        credit:
-          type: number
-          example: '25000'
+          example: 11
+          description: Will default to existing value if not provided.
+        bedrooms:
+          type: string
+          example: 2 Bedroom + Den
+          description: This field has to be set up in Lasso. It is matched to an existing option via the name. If no existing option is found, a new one is created. Will default to existing value if not provided.
+        bathrooms:
+          type: string
+          example: 2 1/2
+          description: Will default to existing value if not provided.
+        direction:
+          type: string
+          example: SE
+          description: This field has to be set up in Lasso. It is matched to an existing option via the name. If no existing option is found, a new one is created. Will default to existing value if not provided.
+        exposure:
+          type: string
+          example: South East
+          description: This field has to be set up in Lasso. It is matched to an existing option via the name. If no existing option is found, a new one is created. Will default to existing value if not provided.
+        definition:
+          type: string
+          enum:
+          - Unit
+          - Townhome
+          - Lot
+          - Homesite
+          example: Unit
+          description: Will default to existing value if not provided.
+        dates:
+          $ref: '#/components/schemas/Dates'
+        pricing:
+          $ref: '#/components/schemas/Pricing'
         _links:
           type: object
           properties:
             self:
               type: string
-              example: /inventory/123-123/pricing
-            update:
+              example: /inventory/123-123
+            delete:
               type: string
-              example: /inventory/123-123/pricing
+              example: /inventory/123-123
+        component:
+          $ref: '#/components/schemas/Component'
+        strataLot:
+          type: string
+          example: 123
+        inventoryNumber:
+          type: string
+          example: 123
     Dates:
       title: Dates
       type: object
@@ -991,195 +979,22 @@ components:
             update:
               type: string
               example: /inventory/123-123/dates
-    ParkingStall:
-      title: Parking Stall
-      properties:
-        uniqueId:
-          type: string
-          example: '077'
-        price:
-          type: number
-          example: '12000'
-        date:
-          type: string
-          format: date
-          example: '2017-08-30'
-        paymentReceivedDate:
-          type: string
-          format: date
-          example: '2017-08-30'
-        outsideOfContract:
-          type: boolean
-          example: true
-        description:
-          type: string
-          example: Part of storage package
-    Deposit:
-      title: Deposit
+    Note:
+      title: Note
+      type: object
       required:
-      - amount
-      - dueDate
+      - note
       properties:
-        depositId:
+        noteId:
           type: string
           example: '123'
-        amount:
-          type: number
-          example: '145000'
-        dueDate:
+        note:
           type: string
-          format: date
-          example: '2017-08-30'
-        amountReceived:
-          type: number
-          example: '145000'
-        receivedDate:
+          example: Offered $10.000 credit
+        createdAt:
           type: string
-          format: date
-          example: '2017-09-10'
-    Component:
-      title: Component
-      type: object
-      properties:
-        name:
-          type: string
-          example: Birch Towers
-        componentId:
-          type: string
-          example: 123
-    RealtorCompensation:
-      type: object
-      properties:
-        bonuses:
-          type: array
-          items:
-            type: number
-            example: '10000.00'
-        percentages:
-          type: array
-          items:
-            type: object
-            properties:
-              cutOff:
-                type: object
-                properties:
-                  type:
-                    type: string
-                    enum:
-                    - under
-                    - over
-                    example: under
-                  value:
-                    type: number
-                    example: '100000'
-              margin:
-                type: number
-                description: Percentage as fraction of 100 as float, e.g. '0.0125' => 1.25%
-                example: '0.022'
-    Option:
-      type: object
-      required:
-      - name
-      - price
-      properties:
-        name:
-          type: string
-          example: Marble counter tops
-        description:
-          type: string
-          example: Upgrade for kitchen counter tops
-        price:
-          type: number
-          example: '1000'
-        area:
-          type: string
-          example: Kitchen
-          description: Areas have to be set up in Lasso, they are matched via string. If no area is found, one will be created.
-        date:
-          type: string
-          format: date
-          example: '2017-08-29'
-        outsideContract:
-          type: boolean
-          example: true
-    BicycleLocker:
-      title: Bicycle Locker
-      properties:
-        uniqueId:
-          type: string
-          example: '077'
-        price:
-          type: number
-          example: '12000'
-        date:
-          type: string
-          format: date
-          example: '2017-08-30'
-        paymentReceivedDate:
-          type: string
-          format: date
-          example: '2017-08-30'
-        outsideOfContract:
-          type: boolean
-          example: true
-        description:
-          type: string
-          example: Part of storage package
-    Realtor:
-      type: object
-      required:
-      - firstName
-      - lastName
-      - company
-      properties:
-        realtorId:
-          type: string
-          example: '123'
-        nameTitle:
-          type: string
-          example: Mrs
-        firstName:
-          type: string
-          example: Susan
-        lastName:
-          type: string
-          example: Smith
-        email:
-          type: string
-          example: susan.smith@example.com
-        fax:
-          type: string
-          example: (604) 123-1234
-        phone:
-          type: string
-          example: (604) 555-1234
-        company:
-          type: string
-          example: Realtor Inc
-        address:
-          type: string
-          example: 123 Street
-        city:
-          type: string
-          example: Vancouver
-        province:
-          type: string
-          example: BC
-        postalCode:
-          type: string
-          example: V6V1T1
-        country:
-          type: string
-          example: Canada
-        gender:
-          type: string
-          enum:
-          - unspecified
-          - male
-          - female
-          example: female
-        compensation:
-          $ref: '#/components/schemas/RealtorCompensation'
+          description: Date in the ISO 8601 UTC format
+          example: '2017-08-30T05:48:35Z'
     InventoryUpdate:
       title: InventoryUpdate
       properties:
@@ -1268,6 +1083,191 @@ components:
           example: 123
           minLength: 1
           maxLength: 11
+    Subject:
+      type: object
+      required:
+      - purchaser
+      - subjectDate
+      - description
+      properties:
+        purchaser:
+          type: string
+          example: '123'
+          description: RegistrantId of a registrant assigned to the inventory
+        subjectDate:
+          type: string
+          format: date
+          example: '2017-08-14'
+        description:
+          type: string
+          example: Adjust doors that do not close properly
+        removed:
+          type: boolean
+          example: false
+        removalDate:
+          type: string
+          format: date
+          example: '2017-08-25'
+        removalDescription:
+          type: string
+          example: Contractor sanded doors, all close properly now
+    PricingRevision:
+      title: PricingRevision
+      type: object
+      required:
+      - name
+      - amount
+      properties:
+        name:
+          type: string
+          example: Adapt to higher mortgage rates
+        amount:
+          type: number
+          example: '-100000'
+    Project:
+      title: Project
+      type: object
+      properties:
+        name:
+          type: string
+          example: Birch Towers
+        projectId:
+          type: string
+          example: 123
+    Realtor:
+      type: object
+      required:
+      - firstName
+      - lastName
+      - company
+      properties:
+        realtorId:
+          type: string
+          example: '123'
+        nameTitle:
+          type: string
+          example: Mrs
+        firstName:
+          type: string
+          example: Susan
+        lastName:
+          type: string
+          example: Smith
+        email:
+          type: string
+          example: susan.smith@example.com
+        fax:
+          type: string
+          example: (604) 123-1234
+        phone:
+          type: string
+          example: (604) 555-1234
+        company:
+          type: string
+          example: Realtor Inc
+        address:
+          type: string
+          example: 123 Street
+        city:
+          type: string
+          example: Vancouver
+        province:
+          type: string
+          example: BC
+        postalCode:
+          type: string
+          example: V6V1T1
+        country:
+          type: string
+          example: Canada
+        gender:
+          type: string
+          enum:
+          - unspecified
+          - male
+          - female
+          example: female
+        compensation:
+          $ref: '#/components/schemas/RealtorCompensation'
+  responses:
+    Forbidden:
+      description: The provided authentication credentials does not have sufficient privileges to access this resource
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/StandardError'
+    ErrorInventoryAlreadySynced:
+      description: 'The inventory item you tried to create or sync with Lasso already exists
+
+        or is already synced. Right now, it is only possible to sync an inventory
+
+        item with Lasso once. Any subsequent changes will have to be applied
+
+        manually (ie, adding a note)
+
+
+        Alternatively, you can reset the inventory and sync again. Resetting
+
+        the inventory will remove any associated information (ie, deposits,
+
+        notes, etc). Any information that is not included in the sync will be
+
+        lost. In addition, there may be issues with custom reports that inspect
+
+        the system creation date of data (this is not related to dates included
+
+        in the sync, like the deposit received date). If you choose to reset
+
+        and sync the inventory, please ensure that you are not deleted data
+
+        in Lasso.
+
+        '
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/StandardError'
+    InternalServerError:
+      description: Receiving a 5xx response indicates an error on Lasso's end. Please contact us to report the problem
+    BadRequest:
+      description: 'The request could not be processed due to invalid input:
+
+        - Is the request payload malformed?
+
+        - Are all required fields present?
+
+        - Are field values of the expected type (ie, number format, date format)?
+
+        - Are field values within the expected constraints (ie, greater than max size of string)?
+
+        - Are query params of the expected format?
+
+
+        Check the body model for more documentation on field constraints and limits.
+
+        '
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/StandardError'
+    Unauthorized:
+      description: The request has not been fulfilled because it lacks valid authentication credentials
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/StandardError'
+    NotFound:
+      description: The specified resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/StandardError'
+    ErrorInventoryCannotBeDeleted:
+      description: The inventory you tried to delete was either "locked" or its status is not "Available"
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/StandardError'
   securitySchemes:
     JwtAuthorizer:
       type: http

@@ -195,17 +195,6 @@ paths:
       x-summary-source: derived
 components:
   schemas:
-    InventoryPlanTypeWrite:
-      title: Inventory Plan Type (Write)
-      type: object
-      description: Associate an inventory with a plan type by ID or by plan type. If both are provided, then lookup will be by ID
-      properties:
-        planTypeId:
-          type: string
-          example: 1
-        planType:
-          type: string
-          example: E2
     PlanTypeRead:
       title: Plan Type (Read)
       type: object
@@ -215,21 +204,6 @@ components:
           example: 1
         planType:
           type: string
-          example: E2
-        planPrice:
-          type: number
-          example: '13000'
-    PlanTypeWrite:
-      title: Plan Type (Write)
-      type: object
-      required:
-      - planType
-      - planPrice
-      properties:
-        planType:
-          type: string
-          minLength: 1
-          maxLength: 20
           example: E2
         planPrice:
           type: number
@@ -250,7 +224,35 @@ components:
           type: string
           description: Details of the error
           example: Details of the error
+    PlanTypeWrite:
+      title: Plan Type (Write)
+      type: object
+      required:
+      - planType
+      - planPrice
+      properties:
+        planType:
+          type: string
+          minLength: 1
+          maxLength: 20
+          example: E2
+        planPrice:
+          type: number
+          example: '13000'
+    InventoryPlanTypeWrite:
+      title: Inventory Plan Type (Write)
+      type: object
+      description: Associate an inventory with a plan type by ID or by plan type. If both are provided, then lookup will be by ID
+      properties:
+        planTypeId:
+          type: string
+          example: 1
+        planType:
+          type: string
+          example: E2
   responses:
+    InternalServerError:
+      description: Receiving a 5xx response indicates an error on Lasso's end. Please contact us to report the problem
     BadRequest:
       description: 'The request could not be processed due to invalid input:
 
@@ -278,8 +280,6 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/StandardError'
-    InternalServerError:
-      description: Receiving a 5xx response indicates an error on Lasso's end. Please contact us to report the problem
     NotFound:
       description: The specified resource was not found
       content:

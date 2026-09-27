@@ -214,11 +214,15 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    TimeTicketTimeTicketDetailsCreate:
-      required:
-      - jobNumber
+    TimeTicketTimeTicketDetailsUpdate:
       type: object
       properties:
+        timeTicketGUID:
+          type:
+          - string
+          - 'null'
+        allowClosedJobs:
+          type: boolean
         billingRate:
           type:
           - integer
@@ -234,7 +238,9 @@ components:
           - 'null'
           format: double
         jobNumber:
-          type: string
+          type:
+          - string
+          - 'null'
         machinesRun:
           type:
           - integer
@@ -356,15 +362,32 @@ components:
           format: int32
           readOnly: true
       additionalProperties: false
-    TimeTicketTimeTicketDetailsUpdate:
+    TimeTicketCreate:
+      required:
+      - employeeCode
+      - ticketDate
       type: object
       properties:
-        timeTicketGUID:
+        timeTicketDetails:
           type:
-          - string
+          - array
           - 'null'
+          items:
+            $ref: '#/components/schemas/TimeTicketTimeTicketDetailsCreate'
         allowClosedJobs:
           type: boolean
+        employeeCode:
+          type: integer
+          format: int32
+        ticketDate:
+          type: string
+          format: date-time
+      additionalProperties: false
+    TimeTicketTimeTicketDetailsCreate:
+      required:
+      - jobNumber
+      type: object
+      properties:
         billingRate:
           type:
           - integer
@@ -380,9 +403,7 @@ components:
           - 'null'
           format: double
         jobNumber:
-          type:
-          - string
-          - 'null'
+          type: string
         machinesRun:
           type:
           - integer
@@ -451,6 +472,16 @@ components:
           - 'null'
           format: int32
       additionalProperties: false
+    TimeTicketUpdate:
+      type: object
+      properties:
+        timeTicketDetails:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/TimeTicketTimeTicketDetailsUpdate'
+      additionalProperties: false
     TimeTicketListSuccessResponse:
       type: object
       properties:
@@ -466,37 +497,6 @@ components:
       properties:
         Data:
           $ref: '#/components/schemas/TimeTicket'
-      additionalProperties: false
-    TimeTicketCreate:
-      required:
-      - employeeCode
-      - ticketDate
-      type: object
-      properties:
-        timeTicketDetails:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/TimeTicketTimeTicketDetailsCreate'
-        allowClosedJobs:
-          type: boolean
-        employeeCode:
-          type: integer
-          format: int32
-        ticketDate:
-          type: string
-          format: date-time
-      additionalProperties: false
-    TimeTicketUpdate:
-      type: object
-      properties:
-        timeTicketDetails:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/TimeTicketTimeTicketDetailsUpdate'
       additionalProperties: false
   securitySchemes:
     Bearer:

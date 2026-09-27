@@ -1399,6 +1399,18 @@ paths:
                 $ref: '#/components/schemas/APIResponseMessageDto'
 components:
   schemas:
+    ERPResponseMessageDto_IList_ERPReceiptLineDto:
+      type: object
+      properties:
+        responseInfo:
+          $ref: '#/components/schemas/APIResponseMessageDto'
+        returnObject:
+          type: array
+          items:
+            $ref: '#/components/schemas/ERPReceiptLineDto'
+        recordCount:
+          type: integer
+          format: int32
     APIResponseMessageDto:
       type: object
       properties:
@@ -1418,16 +1430,23 @@ components:
           items:
             $ref: '#/components/schemas/Warning'
           readOnly: true
-    ERPResponseMessageDto_ERPReceiptDto:
+    ERPResponseMessageDto_IList_ERPReceiptDto:
       type: object
       properties:
         responseInfo:
           $ref: '#/components/schemas/APIResponseMessageDto'
         returnObject:
-          $ref: '#/components/schemas/ERPReceiptDto'
+          type: array
+          items:
+            $ref: '#/components/schemas/ERPReceiptDto'
         recordCount:
           type: integer
           format: int32
+    Error:
+      type: object
+      properties:
+        innerText:
+          type: string
     ERPReceiptLineDto:
       required:
       - rmlReceiptID
@@ -1640,15 +1659,124 @@ components:
           minimum: 0
           type: number
           format: double
-    ERPResponseMessageDto_IList_ERPReceiptLineDto:
+    ERPReceiptDto:
+      required:
+      - rmpReceiptID
+      - rmpReceiptDate
+      - rmpSupplierOrganizationID
+      type: object
+      properties:
+        rmpApInvoiceContactID:
+          type: string
+        rmpApInvoiceLocationID:
+          type: string
+        rmpClosedDate:
+          type: string
+          format: date-time
+        rmpReceiptID:
+          type: string
+        rmpCreatedBy:
+          type: string
+        rmpCreatedDate:
+          type: string
+          format: date-time
+        rmpCurrencyRateID:
+          type: string
+        rmpDeliveryDocket:
+          type: string
+        rmpUniqueID:
+          type: string
+          format: uuid
+          example: 00000000-0000-0000-0000-000000000000
+        rmpExchangeRate:
+          minimum: 0
+          type: number
+          format: double
+        rmpFreightCharge:
+          minimum: 0
+          type: number
+          format: double
+        rmpFreightChargeForeign:
+          minimum: 0
+          type: number
+          format: double
+        rmpClosed:
+          type: boolean
+        rmpCustomRate:
+          type: boolean
+        rmpFlaggedForWMS:
+          type: boolean
+        rmpNestlinkProcessed:
+          type: boolean
+        rmpPostedToGl:
+          type: boolean
+        rmpReversalEntry:
+          type: boolean
+        rmpReversed:
+          type: boolean
+        rmpLandedCostID:
+          type: string
+        rmpPlantDepartmentID:
+          type: string
+        rmpPlantID:
+          type: string
+        rmpPostedDate:
+          type: string
+          format: date-time
+        rmpProjectID:
+          type: string
+        rmpPurchaseContactID:
+          type: string
+        rmpPurchaseLocationID:
+          type: string
+        rmpReceiptDate:
+          type: string
+          format: date-time
+        rmpReceiptSubtotal:
+          minimum: 0
+          type: number
+          format: double
+        rmpReceiptSubtotalForeign:
+          minimum: 0
+          type: number
+          format: double
+        rmpReceiptTotal:
+          minimum: 0
+          type: number
+          format: double
+        rmpReceiptTotalForeign:
+          minimum: 0
+          type: number
+          format: double
+        rmpRowVersion:
+          type: integer
+          format: int64
+        rmpShippingMethodID:
+          type: string
+        rmpSupplierOrganizationID:
+          type: string
+    ERPResponseMessageDto_ERPReceiptComponentDto:
       type: object
       properties:
         responseInfo:
           $ref: '#/components/schemas/APIResponseMessageDto'
         returnObject:
-          type: array
-          items:
-            $ref: '#/components/schemas/ERPReceiptLineDto'
+          $ref: '#/components/schemas/ERPReceiptComponentDto'
+        recordCount:
+          type: integer
+          format: int32
+    Warning:
+      type: object
+      properties:
+        innerText:
+          type: string
+    ERPResponseMessageDto_ERPReceiptDto:
+      type: object
+      properties:
+        responseInfo:
+          $ref: '#/components/schemas/APIResponseMessageDto'
+        returnObject:
+          $ref: '#/components/schemas/ERPReceiptDto'
         recordCount:
           type: integer
           format: int32
@@ -1661,16 +1789,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ERPReceiptComponentDto'
-        recordCount:
-          type: integer
-          format: int32
-    ERPResponseMessageDto_ERPReceiptLineDto:
-      type: object
-      properties:
-        responseInfo:
-          $ref: '#/components/schemas/APIResponseMessageDto'
-        returnObject:
-          $ref: '#/components/schemas/ERPReceiptLineDto'
         recordCount:
           type: integer
           format: int32
@@ -1819,131 +1937,13 @@ components:
           minimum: 0
           type: number
           format: double
-    ERPReceiptDto:
-      required:
-      - rmpReceiptID
-      - rmpReceiptDate
-      - rmpSupplierOrganizationID
-      type: object
-      properties:
-        rmpApInvoiceContactID:
-          type: string
-        rmpApInvoiceLocationID:
-          type: string
-        rmpClosedDate:
-          type: string
-          format: date-time
-        rmpReceiptID:
-          type: string
-        rmpCreatedBy:
-          type: string
-        rmpCreatedDate:
-          type: string
-          format: date-time
-        rmpCurrencyRateID:
-          type: string
-        rmpDeliveryDocket:
-          type: string
-        rmpUniqueID:
-          type: string
-          format: uuid
-          example: 00000000-0000-0000-0000-000000000000
-        rmpExchangeRate:
-          minimum: 0
-          type: number
-          format: double
-        rmpFreightCharge:
-          minimum: 0
-          type: number
-          format: double
-        rmpFreightChargeForeign:
-          minimum: 0
-          type: number
-          format: double
-        rmpClosed:
-          type: boolean
-        rmpCustomRate:
-          type: boolean
-        rmpFlaggedForWMS:
-          type: boolean
-        rmpNestlinkProcessed:
-          type: boolean
-        rmpPostedToGl:
-          type: boolean
-        rmpReversalEntry:
-          type: boolean
-        rmpReversed:
-          type: boolean
-        rmpLandedCostID:
-          type: string
-        rmpPlantDepartmentID:
-          type: string
-        rmpPlantID:
-          type: string
-        rmpPostedDate:
-          type: string
-          format: date-time
-        rmpProjectID:
-          type: string
-        rmpPurchaseContactID:
-          type: string
-        rmpPurchaseLocationID:
-          type: string
-        rmpReceiptDate:
-          type: string
-          format: date-time
-        rmpReceiptSubtotal:
-          minimum: 0
-          type: number
-          format: double
-        rmpReceiptSubtotalForeign:
-          minimum: 0
-          type: number
-          format: double
-        rmpReceiptTotal:
-          minimum: 0
-          type: number
-          format: double
-        rmpReceiptTotalForeign:
-          minimum: 0
-          type: number
-          format: double
-        rmpRowVersion:
-          type: integer
-          format: int64
-        rmpShippingMethodID:
-          type: string
-        rmpSupplierOrganizationID:
-          type: string
-    Error:
-      type: object
-      properties:
-        innerText:
-          type: string
-    ERPResponseMessageDto_ERPReceiptComponentDto:
+    ERPResponseMessageDto_ERPReceiptLineDto:
       type: object
       properties:
         responseInfo:
           $ref: '#/components/schemas/APIResponseMessageDto'
         returnObject:
-          $ref: '#/components/schemas/ERPReceiptComponentDto'
-        recordCount:
-          type: integer
-          format: int32
-    Warning:
-      type: object
-      properties:
-        innerText:
-          type: string
-    ERPResponseMessageDto_IList_ERPReceiptDto:
-      type: object
-      properties:
-        responseInfo:
-          $ref: '#/components/schemas/APIResponseMessageDto'
-        returnObject:
-          type: array
-          items:
-            $ref: '#/components/schemas/ERPReceiptDto'
+          $ref: '#/components/schemas/ERPReceiptLineDto'
         recordCount:
           type: integer
           format: int32

@@ -313,10 +313,21 @@ paths:
         500:
           $ref: '#/components/responses/InternalServerError'
 components:
+  parameters:
+    Cursor:
+      name: cursor
+      in: query
+      schema:
+        type: string
+      description: 'A cursor for the next batch of registrants is providing in the metadata of the body. Provide the `next` cursor as a query parameter in your next request to access the next batch of registrants.
+
+        It''s a base64 encoded json object with the fields `v` for version, `o` for offset and `l` for limit. You don''t have to create the cursor object as it is embedded in the `next` link provided in the result set.
+
+        Version is an integer that indicates the layout of the cursor. Future layouts may provide a different way to access parts of a result set, e.g. by providing a primary key as a reference point. This prevents the missing/repeated data issue with paged results, if the result set is modified during paging (e.g. a registrant is added while on page 2, and when loading page 3, the last registrant from page is pushed down to be the first registrant on page three and being included in two result pages. The opposite happens if a registrant is deleted, one result will be skipped.)'
   schemas:
-    HistoryRead:
+    HistoryWrite:
       type: object
-      title: History Read Item
+      title: History Write Item
       properties:
         type:
           type: string
@@ -347,9 +358,112 @@ components:
             self:
               type: string
               example: /registrants/123/history/123
-        historyId:
+        body:
+          type: string
+          description: 'Full content of history item. For emails, this may include
+
+            serialized attachments, which may lead to a large payload.
+
+
+            Limitations: 4-byte UTF-8 characters are not supported and will be stripped during write.
+
+            This means that some emoticons and foreign language characters are unsupported.
+
+            '
+    AddressWrite:
+      type: object
+      title: Address Write
+      properties:
+        address:
+          type: string
+          example: 350 Fifth Avenue
+        city:
+          type: string
+          example: New York
+        country:
+          type: string
+          example: USA
+        state:
+          type: string
+          example: NY
+        zipCode:
+          minLength: 0
+          maxLength: 15
+          type: string
+          example: '10118'
+        type:
+          type: string
+          example: Mobile
+        primary:
+          type: boolean
+          example: true
+    RegistrantAccepted:
+      type: object
+      title: RegistrantAccepted
+      properties:
+        registrantId:
           type: string
           example: 123
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/RegistrantCreateMessage'
+        _links:
+          $ref: '#/components/schemas/RegistrantLinks'
+    RegistrantRelationshipRead:
+      type: object
+      title: Relationship Read
+      description: Contains a registrant's relationships
+      properties:
+        relationshipId:
+          type: string
+          example: 123
+        registrantId:
+          type: string
+          example: 456
+        relationship:
+          type: string
+          example: Wife
+        reverse:
+          type: string
+          example: Husband
+        firstName:
+          type: string
+          example: John
+        lastName:
+          type: string
+          example: Doe
+    Answer:
+      type: object
+      title: Question Answer
+      description: Represents an answer for a question for the registrant
+      properties:
+        answerId:
+          type: string
+          description: Specifies the answer by id. If present, `answer` will be ignored. If no answer matches `answerId` the answer will be looked-up by its answer string.
+          example: 123
+        answer:
+          type: string
+          description: If no `answerId` is given, the answer will be looked-up by its answer string. If no answer with the given answer string exists, the answer will be created.
+          example: Recommended by a friend
+    AppointmentSmsReminderRecipient:
+      type: object
+      title: AppointmentReminderRecipient
+      properties:
+        phone:
+          type: string
+          minLength: 1
+          maxLength: 20
+          example: 123-456-7890
+        message:
+          type: string
+          example: 'Del Boca Vista: your appt is Today at 9:45 am with Andrew. Call 123.456.7890 to contact us. Reply STOP to opt out'
+    RegistrantNoteLinks:
+      type: object
+      properties:
+        delete:
+          type: string
+          example: /registrants/123/notes/123
     RegistrantWrite:
       title: RegistrantWrite
       type: object
@@ -439,78 +553,23 @@ components:
           description: "Set this directive to true to tell the system to look for and merge this new lead with an existing\nduplicate registrant. Defaults to true if not set. \n\nA duplicate registrant will be matched according to these criteria: (in order of precedence)\n- Match by personalId provided in `RegistrantWrite.personalId`\n- Match by email provided in `RegistrantWrite.emails[].email` (if multiple emails, then match at least one)\n- Match by phone provided in `RegistrantWrite.phones[].phone` (if multiple phones, then match at least one)\n"
         _links:
           $ref: '#/components/schemas/RegistrantLinks'
-    StandardError:
+    SalesRepWrite:
       type: object
-      title: Standard Error
-      description: A standard error response format.
+      title: SalesRep Write Model
+      description: "When inputting a salesRep, you can provide a userId and the system\nwill try to look up the salesRep by the ID.\n\nIf no userId is provided but a first and last name are, then\nthe system will lookup the salesRep by name and assign it to this registrant.\n\nOtherwise, no salesRep will be assigned.\n\nNotes:\n- if multiple salesReps are being assigned, take care to only\n  choose one to be primary. If multiple are designated as primary, an error will\n  be returned\n- on registrant create, if both rotationId and assignedSalesReps are specified,\n  assignedSalesReps will override rotationId in salesRep selection.\n"
       properties:
-        errorCode:
-          type: integer
-          example: 4xx
-        error:
-          type: string
-          description: A summary of the error
-          example: A summary of the error
-        errorMessage:
-          type: string
-          description: Details of the error
-          example: Details of the error
-    SecondarySourceType:
-      type: object
-      title: Secondary Source Type
-      description: If the secondary source type does not exist, it will be created
-      properties:
-        secondarySourceType:
-          type: string
-          minLength: 1
-          maxLength: 100
-          example: Facebook
-    AppointmentSmsReminderRecipient:
-      type: object
-      title: AppointmentReminderRecipient
-      properties:
-        phone:
-          type: string
-          minLength: 1
-          maxLength: 20
-          example: 123-456-7890
-        message:
-          type: string
-          example: 'Del Boca Vista: your appt is Today at 9:45 am with Andrew. Call 123.456.7890 to contact us. Reply STOP to opt out'
-    RegistrantLinks:
-      type: object
-      properties:
-        self:
-          type: string
-          description: Link to the registrant
-          example: /registrants/123
-        update:
-          type: string
-          description: Link to update the registrant
-          example: /registrants/123
-    RegistrantRelationshipRead:
-      type: object
-      title: Relationship Read
-      description: Contains a registrant's relationships
-      properties:
-        relationshipId:
+        userId:
           type: string
           example: 123
-        registrantId:
-          type: string
-          example: 456
-        relationship:
-          type: string
-          example: Wife
-        reverse:
-          type: string
-          example: Husband
         firstName:
           type: string
-          example: John
+          example: Lasso
         lastName:
           type: string
-          example: Doe
+          example: Autobot
+        isPrimary:
+          type: boolean
+          example: true
     AppointmentLinks:
       type: object
       properties:
@@ -526,6 +585,28 @@ components:
           type: string
           description: Link to delete the appointment
           example: /registrants/456/appointments/123
+    Creator:
+      type: object
+      title: Creator
+      description: 'Determines the user that created this entity based on an ordered set of Heuristics:
+
+        - if creator is null or empty, then default to user: Lasso Autobot
+
+        - if userId is provided, then lookup user by id, respond with 400 level error if specified user does not exist
+
+        - if user first and last name are provided, then lookup user by name, otherwise default to user: Lasso Autobot
+
+        '
+      properties:
+        firstName:
+          type: string
+          example: John
+        lastName:
+          type: string
+          example: Smith
+        userId:
+          type: string
+          example: 123
     SourceType:
       type: object
       title: Source Type
@@ -536,44 +617,19 @@ components:
           minLength: 1
           maxLength: 100
           example: Online Registration
-    EmailRead:
+    FollowUpProcess:
       type: object
-      title: Email Read
+      title: Follow-up Process
+      description: If `followUpProcessId` is provided, the system will attempt to lookup the process by id, and fail if not found. If `followUpProcessId` is not provided, but `followUpProcess` is instead provided, the system will then attempt to lookup the process by value. If the value doesn't exist, it will be created
       properties:
-        emailId:
+        followUpProcessId:
           type: string
-          example: 123
-        email:
+          example: 1
+        followUpProcess:
           type: string
-          example: test_registrant@lassocrm.com
-        type:
-          type: string
-          example: Personal
-        primary:
-          type: boolean
-          example: true
-        optedStatus:
-          type: string
-          enum:
-          - opted_in
-          - opted_out
-          - non_opted
-          example: opted_in
-    RegistrantNoteRead:
-      type: object
-      title: Note Read
-      description: Contains a free-form text field
-      properties:
-        noteId:
-          type: string
-          example: 123
-        note:
-          type: string
-          example: Offer a $10.000 credit
-        createdBy:
-          $ref: '#/components/schemas/Creator'
-        _links:
-          $ref: '#/components/schemas/RegistrantNoteLinks'
+          minLength: 1
+          maxLength: 20
+          example: 30 day follow up
     AppointmentRead:
       title: Appointment Read
       type: object
@@ -623,35 +679,46 @@ components:
           $ref: '#/components/schemas/Creator'
         _links:
           $ref: '#/components/schemas/AppointmentLinks'
-    EmailWrite:
+    RegistrantNoteWrite:
       type: object
-      title: Email Write
+      title: Note Write
+      description: 'Contains a free-form text field.
+
+
+        Limitations: 4-byte UTF-8 characters are not supported and will be stripped during write.
+
+        This means that some emoticons and foreign language characters are unsupported.
+
+        '
       properties:
-        email:
+        note:
+          type: string
+          example: Offer a $10.000 credit
+        createdBy:
+          $ref: '#/components/schemas/Creator'
+        _links:
+          $ref: '#/components/schemas/RegistrantNoteLinks'
+    RegistrantCreateMessage:
+      type: object
+      title: RegistrantCreateMessage
+      properties:
+        message:
+          type: string
+          description: contains a message describing warnings and errors during processing
+          example: 'Warning: first name is greater than max size 20 and will be truncated'
+    PhoneWrite:
+      type: object
+      title: Phone Write
+      properties:
+        phone:
           type: string
           minLength: 1
-          maxLength: 50
-          example: test_registrant@lassocrm.com
+          maxLength: 20
+          example: 123-456-7890
         type:
           type: string
           minLength: 0
           maxLength: 25
-          example: Personal
-        primary:
-          type: boolean
-          example: true
-    PhoneRead:
-      type: object
-      title: Phone Read
-      properties:
-        phoneId:
-          type: string
-          example: 123
-        phone:
-          type: string
-          example: 123-456-7890
-        type:
-          type: string
           example: Mobile
         primary:
           type: boolean
@@ -720,113 +787,22 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Answer'
-    RegistrantNoteLinks:
+    StandardError:
       type: object
+      title: Standard Error
+      description: A standard error response format.
       properties:
-        delete:
+        errorCode:
+          type: integer
+          example: 4xx
+        error:
           type: string
-          example: /registrants/123/notes/123
-    Rating:
-      type: object
-      title: Rating
-      description: If rating does not exist, it will be created
-      properties:
-        rating:
+          description: A summary of the error
+          example: A summary of the error
+        errorMessage:
           type: string
-          minLength: 1
-          maxLength: 50
-          example: A
-    RegistrantCreateMessage:
-      type: object
-      title: RegistrantCreateMessage
-      properties:
-        message:
-          type: string
-          description: contains a message describing warnings and errors during processing
-          example: 'Warning: first name is greater than max size 20 and will be truncated'
-    AddressRead:
-      type: object
-      title: Address Read
-      properties:
-        addressId:
-          type: string
-          example: 123
-        address:
-          type: string
-          example: 350 Fifth Avenue
-        city:
-          type: string
-          example: New York
-        country:
-          type: string
-          example: USA
-        state:
-          type: string
-          example: NY
-        zipCode:
-          type: string
-          example: '10118'
-        type:
-          type: string
-          example: Mobile
-        primary:
-          type: boolean
-          example: true
-    Project:
-      title: Project
-      type: object
-      properties:
-        name:
-          type: string
-          example: Birch Towers
-        projectId:
-          type: string
-          example: 123
-    RegistrantAccepted:
-      type: object
-      title: RegistrantAccepted
-      properties:
-        registrantId:
-          type: string
-          example: 123
-        messages:
-          type: array
-          items:
-            $ref: '#/components/schemas/RegistrantCreateMessage'
-        _links:
-          $ref: '#/components/schemas/RegistrantLinks'
-    FollowUpProcess:
-      type: object
-      title: Follow-up Process
-      description: If `followUpProcessId` is provided, the system will attempt to lookup the process by id, and fail if not found. If `followUpProcessId` is not provided, but `followUpProcess` is instead provided, the system will then attempt to lookup the process by value. If the value doesn't exist, it will be created
-      properties:
-        followUpProcessId:
-          type: string
-          example: 1
-        followUpProcess:
-          type: string
-          minLength: 1
-          maxLength: 20
-          example: 30 day follow up
-    RegistrantNoteWrite:
-      type: object
-      title: Note Write
-      description: 'Contains a free-form text field.
-
-
-        Limitations: 4-byte UTF-8 characters are not supported and will be stripped during write.
-
-        This means that some emoticons and foreign language characters are unsupported.
-
-        '
-      properties:
-        note:
-          type: string
-          example: Offer a $10.000 credit
-        createdBy:
-          $ref: '#/components/schemas/Creator'
-        _links:
-          $ref: '#/components/schemas/RegistrantNoteLinks'
+          description: Details of the error
+          example: Details of the error
     RegistrantRead:
       title: RegistrantRead
       type: object
@@ -912,9 +888,47 @@ components:
             $ref: '#/components/schemas/AppointmentRead'
         _links:
           $ref: '#/components/schemas/RegistrantLinks'
-    HistoryWrite:
+    EmailRead:
       type: object
-      title: History Write Item
+      title: Email Read
+      properties:
+        emailId:
+          type: string
+          example: 123
+        email:
+          type: string
+          example: test_registrant@lassocrm.com
+        type:
+          type: string
+          example: Personal
+        primary:
+          type: boolean
+          example: true
+        optedStatus:
+          type: string
+          enum:
+          - opted_in
+          - opted_out
+          - non_opted
+          example: opted_in
+    RegistrantNoteRead:
+      type: object
+      title: Note Read
+      description: Contains a free-form text field
+      properties:
+        noteId:
+          type: string
+          example: 123
+        note:
+          type: string
+          example: Offer a $10.000 credit
+        createdBy:
+          $ref: '#/components/schemas/Creator'
+        _links:
+          $ref: '#/components/schemas/RegistrantNoteLinks'
+    HistoryRead:
+      type: object
+      title: History Read Item
       properties:
         type:
           type: string
@@ -945,56 +959,16 @@ components:
             self:
               type: string
               example: /registrants/123/history/123
-        body:
-          type: string
-          description: 'Full content of history item. For emails, this may include
-
-            serialized attachments, which may lead to a large payload.
-
-
-            Limitations: 4-byte UTF-8 characters are not supported and will be stripped during write.
-
-            This means that some emoticons and foreign language characters are unsupported.
-
-            '
-    SalesRepWrite:
-      type: object
-      title: SalesRep Write Model
-      description: "When inputting a salesRep, you can provide a userId and the system\nwill try to look up the salesRep by the ID.\n\nIf no userId is provided but a first and last name are, then\nthe system will lookup the salesRep by name and assign it to this registrant.\n\nOtherwise, no salesRep will be assigned.\n\nNotes:\n- if multiple salesReps are being assigned, take care to only\n  choose one to be primary. If multiple are designated as primary, an error will\n  be returned\n- on registrant create, if both rotationId and assignedSalesReps are specified,\n  assignedSalesReps will override rotationId in salesRep selection.\n"
-      properties:
-        userId:
+        historyId:
           type: string
           example: 123
-        firstName:
-          type: string
-          example: Lasso
-        lastName:
-          type: string
-          example: Autobot
-        isPrimary:
-          type: boolean
-          example: true
-    PhoneWrite:
+    AddressRead:
       type: object
-      title: Phone Write
+      title: Address Read
       properties:
-        phone:
+        addressId:
           type: string
-          minLength: 1
-          maxLength: 20
-          example: 123-456-7890
-        type:
-          type: string
-          minLength: 0
-          maxLength: 25
-          example: Mobile
-        primary:
-          type: boolean
-          example: true
-    AddressWrite:
-      type: object
-      title: Address Write
-      properties:
+          example: 123
         address:
           type: string
           example: 350 Fifth Avenue
@@ -1008,8 +982,6 @@ components:
           type: string
           example: NY
         zipCode:
-          minLength: 0
-          maxLength: 15
           type: string
           example: '10118'
         type:
@@ -1018,41 +990,59 @@ components:
         primary:
           type: boolean
           example: true
-    Creator:
+    PhoneRead:
       type: object
-      title: Creator
-      description: 'Determines the user that created this entity based on an ordered set of Heuristics:
-
-        - if creator is null or empty, then default to user: Lasso Autobot
-
-        - if userId is provided, then lookup user by id, respond with 400 level error if specified user does not exist
-
-        - if user first and last name are provided, then lookup user by name, otherwise default to user: Lasso Autobot
-
-        '
+      title: Phone Read
       properties:
-        firstName:
-          type: string
-          example: John
-        lastName:
-          type: string
-          example: Smith
-        userId:
+        phoneId:
           type: string
           example: 123
-    Answer:
+        phone:
+          type: string
+          example: 123-456-7890
+        type:
+          type: string
+          example: Mobile
+        primary:
+          type: boolean
+          example: true
+    SecondarySourceType:
       type: object
-      title: Question Answer
-      description: Represents an answer for a question for the registrant
+      title: Secondary Source Type
+      description: If the secondary source type does not exist, it will be created
       properties:
-        answerId:
+        secondarySourceType:
           type: string
-          description: Specifies the answer by id. If present, `answer` will be ignored. If no answer matches `answerId` the answer will be looked-up by its answer string.
-          example: 123
-        answer:
+          minLength: 1
+          maxLength: 100
+          example: Facebook
+    EmailWrite:
+      type: object
+      title: Email Write
+      properties:
+        email:
           type: string
-          description: If no `answerId` is given, the answer will be looked-up by its answer string. If no answer with the given answer string exists, the answer will be created.
-          example: Recommended by a friend
+          minLength: 1
+          maxLength: 50
+          example: test_registrant@lassocrm.com
+        type:
+          type: string
+          minLength: 0
+          maxLength: 25
+          example: Personal
+        primary:
+          type: boolean
+          example: true
+    Rating:
+      type: object
+      title: Rating
+      description: If rating does not exist, it will be created
+      properties:
+        rating:
+          type: string
+          minLength: 1
+          maxLength: 50
+          example: A
     RegistrantPersonalInfo:
       type: object
       title: Registrant Personal Info
@@ -1107,19 +1097,28 @@ components:
           type: string
           description: The social insurance number or social security number. Please ensure that you are allowed to collect this information in your jurisdiction.
           example: 046 454 286
+    RegistrantLinks:
+      type: object
+      properties:
+        self:
+          type: string
+          description: Link to the registrant
+          example: /registrants/123
+        update:
+          type: string
+          description: Link to update the registrant
+          example: /registrants/123
+    Project:
+      title: Project
+      type: object
+      properties:
+        name:
+          type: string
+          example: Birch Towers
+        projectId:
+          type: string
+          example: 123
   responses:
-    Unauthorized:
-      description: The request has not been fulfilled because it lacks valid authentication credentials
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/StandardError'
-    NotFound:
-      description: The specified resource was not found
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/StandardError'
     Forbidden:
       description: The provided authentication credentials does not have sufficient privileges to access this resource
       content:
@@ -1128,6 +1127,12 @@ components:
             $ref: '#/components/schemas/StandardError'
     InternalServerError:
       description: Receiving a 5xx response indicates an error on Lasso's end. Please contact us to report the problem
+    Unauthorized:
+      description: The request has not been fulfilled because it lacks valid authentication credentials
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/StandardError'
     BadRequest:
       description: 'The request could not be processed due to invalid input:
 
@@ -1149,17 +1154,12 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/StandardError'
-  parameters:
-    Cursor:
-      name: cursor
-      in: query
-      schema:
-        type: string
-      description: 'A cursor for the next batch of registrants is providing in the metadata of the body. Provide the `next` cursor as a query parameter in your next request to access the next batch of registrants.
-
-        It''s a base64 encoded json object with the fields `v` for version, `o` for offset and `l` for limit. You don''t have to create the cursor object as it is embedded in the `next` link provided in the result set.
-
-        Version is an integer that indicates the layout of the cursor. Future layouts may provide a different way to access parts of a result set, e.g. by providing a primary key as a reference point. This prevents the missing/repeated data issue with paged results, if the result set is modified during paging (e.g. a registrant is added while on page 2, and when loading page 3, the last registrant from page is pushed down to be the first registrant on page three and being included in two result pages. The opposite happens if a registrant is deleted, one result will be skipped.)'
+    NotFound:
+      description: The specified resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/StandardError'
   securitySchemes:
     JwtAuthorizer:
       type: http

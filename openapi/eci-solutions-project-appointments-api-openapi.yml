@@ -44,7 +44,146 @@ paths:
         500:
           $ref: '#/components/responses/InternalServerError'
 components:
+  parameters:
+    Cursor:
+      name: cursor
+      in: query
+      schema:
+        type: string
+      description: 'A cursor for the next batch of registrants is providing in the metadata of the body. Provide the `next` cursor as a query parameter in your next request to access the next batch of registrants.
+
+        It''s a base64 encoded json object with the fields `v` for version, `o` for offset and `l` for limit. You don''t have to create the cursor object as it is embedded in the `next` link provided in the result set.
+
+        Version is an integer that indicates the layout of the cursor. Future layouts may provide a different way to access parts of a result set, e.g. by providing a primary key as a reference point. This prevents the missing/repeated data issue with paged results, if the result set is modified during paging (e.g. a registrant is added while on page 2, and when loading page 3, the last registrant from page is pushed down to be the first registrant on page three and being included in two result pages. The opposite happens if a registrant is deleted, one result will be skipped.)'
   schemas:
+    ProjectAppointments:
+      type: object
+      title: Project Appointments
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProjectAppointment'
+        links:
+          type: object
+          properties:
+            next:
+              type: string
+              description: Link to the next page of appointments
+              example: /appointments?cursor=ewogICJ2IjogIjEuMCIsCiAgIm8iOiAiMTIzIiwKICAibCI6ICIxMDAiCn0=
+    ProjectAppointment:
+      title: Project Appointment
+      type: object
+      properties:
+        name:
+          type: string
+          example: Design Center Selections
+        description:
+          type: string
+          example: Come on in and make it yours
+        details:
+          type: string
+          example: Appointment to make selection
+        startTime:
+          type: string
+          format: datetime
+          description: When the appointment is scheduled to start. Datetimes are in ISO-8601 UTC format.
+          example: '2019-01-31T18:30:00Z'
+        endTime:
+          type: string
+          format: datetime
+          description: When the appointment is scheduled to end. Datetimes are in ISO-8601 UTC format.
+          example: '2019-01-31T19:30:00Z'
+        location:
+          type: string
+          example: 4601 US-377, Brownwood, TX 76801, United States
+        isPublic:
+          type: boolean
+          example: false
+        status:
+          type: string
+          enum:
+          - Open
+          - Tentative
+          - Confirmed
+          - Cancelled
+          - Completed
+          - No Show
+        appointmentId:
+          type: string
+          example: '123'
+        owner:
+          $ref: '#/components/schemas/Creator'
+        registrant:
+          $ref: '#/components/schemas/AppointmentRegistrant'
+    StandardError:
+      type: object
+      title: Standard Error
+      description: A standard error response format.
+      properties:
+        errorCode:
+          type: integer
+          example: 4xx
+        error:
+          type: string
+          description: A summary of the error
+          example: A summary of the error
+        errorMessage:
+          type: string
+          description: Details of the error
+          example: Details of the error
+    Creator:
+      type: object
+      title: Creator
+      description: 'Determines the user that created this entity based on an ordered set of Heuristics:
+
+        - if creator is null or empty, then default to user: Lasso Autobot
+
+        - if userId is provided, then lookup user by id, respond with 400 level error if specified user does not exist
+
+        - if user first and last name are provided, then lookup user by name, otherwise default to user: Lasso Autobot
+
+        '
+      properties:
+        firstName:
+          type: string
+          example: John
+        lastName:
+          type: string
+          example: Smith
+        userId:
+          type: string
+          example: 123
+    AppointmentRegistrant:
+      type: object
+      title: Appointment Registrant
+      description: This model is a subset of `RegistrantRead`, which describes a minimal set of details of an appointment registrant. Use the `GET /registrants/{registrantId}` route to get full details on this registrant.
+      properties:
+        registrantId:
+          type: string
+          example: '123'
+        person:
+          $ref: '#/components/schemas/RegistrantPersonalInfo'
+        project:
+          $ref: '#/components/schemas/Project'
+        emails:
+          type: array
+          items:
+            $ref: '#/components/schemas/EmailRead'
+        phones:
+          type: array
+          items:
+            $ref: '#/components/schemas/PhoneRead'
+        addresses:
+          type: array
+          items:
+            $ref: '#/components/schemas/AddressRead'
+        assignedSalesReps:
+          type: array
+          items:
+            $ref: '#/components/schemas/SalesRepRead'
+        _links:
+          $ref: '#/components/schemas/RegistrantLinks'
     EmailRead:
       type: object
       title: Email Read
@@ -68,22 +207,6 @@ components:
           - opted_out
           - non_opted
           example: opted_in
-    PhoneRead:
-      type: object
-      title: Phone Read
-      properties:
-        phoneId:
-          type: string
-          example: 123
-        phone:
-          type: string
-          example: 123-456-7890
-        type:
-          type: string
-          example: Mobile
-        primary:
-          type: boolean
-          example: true
     SalesRepRead:
       type: object
       title: SalesRep Read Model
@@ -101,37 +224,6 @@ components:
         isPrimary:
           type: boolean
           example: true
-    ProjectAppointments:
-      type: object
-      title: Project Appointments
-      properties:
-        items:
-          type: array
-          items:
-            $ref: '#/components/schemas/ProjectAppointment'
-        links:
-          type: object
-          properties:
-            next:
-              type: string
-              description: Link to the next page of appointments
-              example: /appointments?cursor=ewogICJ2IjogIjEuMCIsCiAgIm8iOiAiMTIzIiwKICAibCI6ICIxMDAiCn0=
-    StandardError:
-      type: object
-      title: Standard Error
-      description: A standard error response format.
-      properties:
-        errorCode:
-          type: integer
-          example: 4xx
-        error:
-          type: string
-          description: A summary of the error
-          example: A summary of the error
-        errorMessage:
-          type: string
-          description: Details of the error
-          example: Details of the error
     RegistrantPersonalInfo:
       type: object
       title: Registrant Personal Info
@@ -186,36 +278,6 @@ components:
           type: string
           description: The social insurance number or social security number. Please ensure that you are allowed to collect this information in your jurisdiction.
           example: 046 454 286
-    AppointmentRegistrant:
-      type: object
-      title: Appointment Registrant
-      description: This model is a subset of `RegistrantRead`, which describes a minimal set of details of an appointment registrant. Use the `GET /registrants/{registrantId}` route to get full details on this registrant.
-      properties:
-        registrantId:
-          type: string
-          example: '123'
-        person:
-          $ref: '#/components/schemas/RegistrantPersonalInfo'
-        project:
-          $ref: '#/components/schemas/Project'
-        emails:
-          type: array
-          items:
-            $ref: '#/components/schemas/EmailRead'
-        phones:
-          type: array
-          items:
-            $ref: '#/components/schemas/PhoneRead'
-        addresses:
-          type: array
-          items:
-            $ref: '#/components/schemas/AddressRead'
-        assignedSalesReps:
-          type: array
-          items:
-            $ref: '#/components/schemas/SalesRepRead'
-        _links:
-          $ref: '#/components/schemas/RegistrantLinks'
     RegistrantLinks:
       type: object
       properties:
@@ -227,61 +289,6 @@ components:
           type: string
           description: Link to update the registrant
           example: /registrants/123
-    ProjectAppointment:
-      title: Project Appointment
-      type: object
-      properties:
-        name:
-          type: string
-          example: Design Center Selections
-        description:
-          type: string
-          example: Come on in and make it yours
-        details:
-          type: string
-          example: Appointment to make selection
-        startTime:
-          type: string
-          format: datetime
-          description: When the appointment is scheduled to start. Datetimes are in ISO-8601 UTC format.
-          example: '2019-01-31T18:30:00Z'
-        endTime:
-          type: string
-          format: datetime
-          description: When the appointment is scheduled to end. Datetimes are in ISO-8601 UTC format.
-          example: '2019-01-31T19:30:00Z'
-        location:
-          type: string
-          example: 4601 US-377, Brownwood, TX 76801, United States
-        isPublic:
-          type: boolean
-          example: false
-        status:
-          type: string
-          enum:
-          - Open
-          - Tentative
-          - Confirmed
-          - Cancelled
-          - Completed
-          - No Show
-        appointmentId:
-          type: string
-          example: '123'
-        owner:
-          $ref: '#/components/schemas/Creator'
-        registrant:
-          $ref: '#/components/schemas/AppointmentRegistrant'
-    Project:
-      title: Project
-      type: object
-      properties:
-        name:
-          type: string
-          example: Birch Towers
-        projectId:
-          type: string
-          example: 123
     AddressRead:
       type: object
       title: Address Read
@@ -310,54 +317,47 @@ components:
         primary:
           type: boolean
           example: true
-    Creator:
+    Project:
+      title: Project
       type: object
-      title: Creator
-      description: 'Determines the user that created this entity based on an ordered set of Heuristics:
-
-        - if creator is null or empty, then default to user: Lasso Autobot
-
-        - if userId is provided, then lookup user by id, respond with 400 level error if specified user does not exist
-
-        - if user first and last name are provided, then lookup user by name, otherwise default to user: Lasso Autobot
-
-        '
       properties:
-        firstName:
+        name:
           type: string
-          example: John
-        lastName:
-          type: string
-          example: Smith
-        userId:
+          example: Birch Towers
+        projectId:
           type: string
           example: 123
+    PhoneRead:
+      type: object
+      title: Phone Read
+      properties:
+        phoneId:
+          type: string
+          example: 123
+        phone:
+          type: string
+          example: 123-456-7890
+        type:
+          type: string
+          example: Mobile
+        primary:
+          type: boolean
+          example: true
   responses:
+    InternalServerError:
+      description: Receiving a 5xx response indicates an error on Lasso's end. Please contact us to report the problem
     Unauthorized:
       description: The request has not been fulfilled because it lacks valid authentication credentials
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/StandardError'
-    InternalServerError:
-      description: Receiving a 5xx response indicates an error on Lasso's end. Please contact us to report the problem
     Forbidden:
       description: The provided authentication credentials does not have sufficient privileges to access this resource
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/StandardError'
-  parameters:
-    Cursor:
-      name: cursor
-      in: query
-      schema:
-        type: string
-      description: 'A cursor for the next batch of registrants is providing in the metadata of the body. Provide the `next` cursor as a query parameter in your next request to access the next batch of registrants.
-
-        It''s a base64 encoded json object with the fields `v` for version, `o` for offset and `l` for limit. You don''t have to create the cursor object as it is embedded in the `next` link provided in the result set.
-
-        Version is an integer that indicates the layout of the cursor. Future layouts may provide a different way to access parts of a result set, e.g. by providing a primary key as a reference point. This prevents the missing/repeated data issue with paged results, if the result set is modified during paging (e.g. a registrant is added while on page 2, and when loading page 3, the last registrant from page is pushed down to be the first registrant on page three and being included in two result pages. The opposite happens if a registrant is deleted, one result will be skipped.)'
   securitySchemes:
     JwtAuthorizer:
       type: http

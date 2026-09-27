@@ -364,49 +364,129 @@ paths:
       summary: Delete registrants addresses by id
       x-summary-source: derived
 components:
-  responses:
-    BadRequest:
-      description: 'The request could not be processed due to invalid input:
-
-        - Is the request payload malformed?
-
-        - Are all required fields present?
-
-        - Are field values of the expected type (ie, number format, date format)?
-
-        - Are field values within the expected constraints (ie, greater than max size of string)?
-
-        - Are query params of the expected format?
-
-
-        Check the body model for more documentation on field constraints and limits.
-
-        '
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/StandardError'
-    Unauthorized:
-      description: The request has not been fulfilled because it lacks valid authentication credentials
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/StandardError'
-    InternalServerError:
-      description: Receiving a 5xx response indicates an error on Lasso's end. Please contact us to report the problem
-    NotFound:
-      description: The specified resource was not found
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/StandardError'
-    Forbidden:
-      description: The provided authentication credentials does not have sufficient privileges to access this resource
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/StandardError'
   schemas:
+    Email:
+      type: object
+      title: Email
+      properties:
+        email:
+          type: string
+          minLength: 1
+          maxLength: 50
+          example: test_registrant@lassocrm.com
+        type:
+          type: string
+          minLength: 0
+          maxLength: 25
+          example: Personal
+        primary:
+          type: boolean
+          description: there can be only one primary email in a non-empty collection of emails
+          example: true
+    StandardError:
+      type: object
+      title: Standard Error
+      description: A standard error response format.
+      properties:
+        errorCode:
+          type: integer
+          example: 4xx
+        error:
+          type: string
+          description: A summary of the error
+          example: A summary of the error
+        errorMessage:
+          type: string
+          description: Details of the error
+          example: Details of the error
+    Phone:
+      type: object
+      title: Phone
+      properties:
+        phone:
+          type: string
+          minLength: 1
+          maxLength: 20
+          example: 123-456-7890
+        type:
+          type: string
+          minLength: 0
+          maxLength: 25
+          example: Mobile
+        primary:
+          type: boolean
+          description: there can be only one primary phone in a non-empty collection of phones
+          example: true
+    EmailWrite:
+      type: object
+      title: Email Write
+      properties:
+        email:
+          type: string
+          minLength: 1
+          maxLength: 50
+          example: test_registrant@lassocrm.com
+        type:
+          type: string
+          minLength: 0
+          maxLength: 25
+          example: Personal
+        primary:
+          type: boolean
+          example: true
+    AddressWrite:
+      type: object
+      title: Address Write
+      properties:
+        address:
+          type: string
+          example: 350 Fifth Avenue
+        city:
+          type: string
+          example: New York
+        country:
+          type: string
+          example: USA
+        state:
+          type: string
+          example: NY
+        zipCode:
+          minLength: 0
+          maxLength: 15
+          type: string
+          example: '10118'
+        type:
+          type: string
+          example: Mobile
+        primary:
+          type: boolean
+          example: true
+    Address:
+      type: object
+      title: Address
+      properties:
+        address:
+          type: string
+          example: 350 Fifth Avenue
+        city:
+          type: string
+          example: New York
+        country:
+          type: string
+          example: USA
+        state:
+          type: string
+          example: NY
+        zipCode:
+          type: string
+          example: '10118'
+        type:
+          type: string
+          example: Mobile
+        primary:
+          type: boolean
+          description: there can be only one primary address in a non-empty collection of addresses
+          example: true
     EmailRead:
       type: object
       title: Email Read
@@ -430,56 +510,6 @@ components:
           - opted_out
           - non_opted
           example: opted_in
-    PhoneRead:
-      type: object
-      title: Phone Read
-      properties:
-        phoneId:
-          type: string
-          example: 123
-        phone:
-          type: string
-          example: 123-456-7890
-        type:
-          type: string
-          example: Mobile
-        primary:
-          type: boolean
-          example: true
-    EmailWrite:
-      type: object
-      title: Email Write
-      properties:
-        email:
-          type: string
-          minLength: 1
-          maxLength: 50
-          example: test_registrant@lassocrm.com
-        type:
-          type: string
-          minLength: 0
-          maxLength: 25
-          example: Personal
-        primary:
-          type: boolean
-          example: true
-    PhoneWrite:
-      type: object
-      title: Phone Write
-      properties:
-        phone:
-          type: string
-          minLength: 1
-          maxLength: 20
-          example: 123-456-7890
-        type:
-          type: string
-          minLength: 0
-          maxLength: 25
-          example: Mobile
-        primary:
-          type: boolean
-          example: true
     ContactInformation:
       type: object
       title: Contact Information
@@ -541,22 +571,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Address'
-    StandardError:
-      type: object
-      title: Standard Error
-      description: A standard error response format.
-      properties:
-        errorCode:
-          type: integer
-          example: 4xx
-        error:
-          type: string
-          description: A summary of the error
-          example: A summary of the error
-        errorMessage:
-          type: string
-          description: Details of the error
-          example: Details of the error
     AddressRead:
       type: object
       title: Address Read
@@ -585,80 +599,25 @@ components:
         primary:
           type: boolean
           example: true
-    AddressWrite:
+    PhoneRead:
       type: object
-      title: Address Write
+      title: Phone Read
       properties:
-        address:
+        phoneId:
           type: string
-          example: 350 Fifth Avenue
-        city:
+          example: 123
+        phone:
           type: string
-          example: New York
-        country:
-          type: string
-          example: USA
-        state:
-          type: string
-          example: NY
-        zipCode:
-          minLength: 0
-          maxLength: 15
-          type: string
-          example: '10118'
+          example: 123-456-7890
         type:
           type: string
           example: Mobile
         primary:
           type: boolean
           example: true
-    Email:
+    PhoneWrite:
       type: object
-      title: Email
-      properties:
-        email:
-          type: string
-          minLength: 1
-          maxLength: 50
-          example: test_registrant@lassocrm.com
-        type:
-          type: string
-          minLength: 0
-          maxLength: 25
-          example: Personal
-        primary:
-          type: boolean
-          description: there can be only one primary email in a non-empty collection of emails
-          example: true
-    Address:
-      type: object
-      title: Address
-      properties:
-        address:
-          type: string
-          example: 350 Fifth Avenue
-        city:
-          type: string
-          example: New York
-        country:
-          type: string
-          example: USA
-        state:
-          type: string
-          example: NY
-        zipCode:
-          type: string
-          example: '10118'
-        type:
-          type: string
-          example: Mobile
-        primary:
-          type: boolean
-          description: there can be only one primary address in a non-empty collection of addresses
-          example: true
-    Phone:
-      type: object
-      title: Phone
+      title: Phone Write
       properties:
         phone:
           type: string
@@ -672,8 +631,49 @@ components:
           example: Mobile
         primary:
           type: boolean
-          description: there can be only one primary phone in a non-empty collection of phones
           example: true
+  responses:
+    BadRequest:
+      description: 'The request could not be processed due to invalid input:
+
+        - Is the request payload malformed?
+
+        - Are all required fields present?
+
+        - Are field values of the expected type (ie, number format, date format)?
+
+        - Are field values within the expected constraints (ie, greater than max size of string)?
+
+        - Are query params of the expected format?
+
+
+        Check the body model for more documentation on field constraints and limits.
+
+        '
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/StandardError'
+    Unauthorized:
+      description: The request has not been fulfilled because it lacks valid authentication credentials
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/StandardError'
+    InternalServerError:
+      description: Receiving a 5xx response indicates an error on Lasso's end. Please contact us to report the problem
+    NotFound:
+      description: The specified resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/StandardError'
+    Forbidden:
+      description: The provided authentication credentials does not have sufficient privileges to access this resource
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/StandardError'
   securitySchemes:
     JwtAuthorizer:
       type: http

@@ -378,7 +378,48 @@ components:
           - 'null'
           description: The name of the integration system that the authenticated user is able to use.
       additionalProperties: false
-    AuthenticateUserResponseAPIResponse:
+    ApiUserSettings:
+      type: object
+      properties:
+        companyId:
+          type: integer
+          format: int32
+        productName:
+          type:
+          - string
+          - 'null'
+        integrationId:
+          type: integer
+          format: int32
+        integrationName:
+          type:
+          - string
+          - 'null'
+        systemId:
+          type: integer
+          format: int32
+        systemName:
+          type:
+          - string
+          - 'null'
+        allowedDomains:
+          type:
+          - string
+          - 'null'
+        merchantCountry:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    MerchantUserModel:
+      type: object
+      properties:
+        merchant:
+          $ref: '#/components/schemas/MerchantAccountModel'
+        user:
+          $ref: '#/components/schemas/AuthenticateUser_2'
+      additionalProperties: false
+    StringAPIResponse:
       type: object
       properties:
         version:
@@ -395,54 +436,21 @@ components:
         responseException:
           $ref: '#/components/schemas/ApiError'
         result:
-          $ref: '#/components/schemas/AuthenticateUserResponse'
+          type:
+          - string
+          - 'null'
       additionalProperties: false
-    ApiError:
+    ValidationError:
       type: object
       properties:
-        isError:
-          type: boolean
-        exceptionMessage:
+        field:
           type:
           - string
           - 'null'
-        details:
-          type:
-          - string
-          - 'null'
-        referenceErrorCode:
-          type:
-          - string
-          - 'null'
-        referenceDocumentLink:
-          type:
-          - string
-          - 'null'
-        validationErrors:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/ValidationError'
-      additionalProperties: false
-    ApiUserSettingsAPIResponse:
-      type: object
-      properties:
-        version:
-          type:
-          - string
-          - 'null'
-        statusCode:
-          type: integer
-          format: int32
         message:
           type:
           - string
           - 'null'
-        responseException:
-          $ref: '#/components/schemas/ApiError'
-        result:
-          $ref: '#/components/schemas/ApiUserSettings'
       additionalProperties: false
     RegistrationModel:
       required:
@@ -519,112 +527,6 @@ components:
             The value should match with the information retrieved from the integration if exists.'
           default: null
       additionalProperties: false
-    AuthenticateUserResponse:
-      required:
-      - password
-      - user_name
-      type: object
-      properties:
-        user_name:
-          maxLength: 50
-          minLength: 1
-          type: string
-        password:
-          maxLength: 64
-          minLength: 6
-          type: string
-        token:
-          type:
-          - string
-          - 'null'
-        refreshToken:
-          type:
-          - string
-          - 'null'
-      additionalProperties: false
-    ResendConfirmEmailModel:
-      required:
-      - userName
-      type: object
-      properties:
-        userName:
-          minLength: 1
-          type: string
-      additionalProperties: false
-    StringAPIResponse:
-      type: object
-      properties:
-        version:
-          type:
-          - string
-          - 'null'
-        statusCode:
-          type: integer
-          format: int32
-        message:
-          type:
-          - string
-          - 'null'
-        responseException:
-          $ref: '#/components/schemas/ApiError'
-        result:
-          type:
-          - string
-          - 'null'
-      additionalProperties: false
-    ValidationError:
-      type: object
-      properties:
-        field:
-          type:
-          - string
-          - 'null'
-        message:
-          type:
-          - string
-          - 'null'
-      additionalProperties: false
-    ApiUserSettings:
-      type: object
-      properties:
-        companyId:
-          type: integer
-          format: int32
-        productName:
-          type:
-          - string
-          - 'null'
-        integrationId:
-          type: integer
-          format: int32
-        integrationName:
-          type:
-          - string
-          - 'null'
-        systemId:
-          type: integer
-          format: int32
-        systemName:
-          type:
-          - string
-          - 'null'
-        allowedDomains:
-          type:
-          - string
-          - 'null'
-        merchantCountry:
-          type:
-          - string
-          - 'null'
-      additionalProperties: false
-    MerchantUserModel:
-      type: object
-      properties:
-        merchant:
-          $ref: '#/components/schemas/MerchantAccountModel'
-        user:
-          $ref: '#/components/schemas/AuthenticateUser_2'
-      additionalProperties: false
     MerchantAccountModel:
       required:
       - developer_id
@@ -651,6 +553,104 @@ components:
         password:
           maxLength: 64
           minLength: 6
+          type: string
+      additionalProperties: false
+    AuthenticateUserResponse:
+      required:
+      - password
+      - user_name
+      type: object
+      properties:
+        user_name:
+          maxLength: 50
+          minLength: 1
+          type: string
+        password:
+          maxLength: 64
+          minLength: 6
+          type: string
+        token:
+          type:
+          - string
+          - 'null'
+        refreshToken:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    ApiUserSettingsAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          $ref: '#/components/schemas/ApiError'
+        result:
+          $ref: '#/components/schemas/ApiUserSettings'
+      additionalProperties: false
+    AuthenticateUserResponseAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          $ref: '#/components/schemas/ApiError'
+        result:
+          $ref: '#/components/schemas/AuthenticateUserResponse'
+      additionalProperties: false
+    ApiError:
+      type: object
+      properties:
+        isError:
+          type: boolean
+        exceptionMessage:
+          type:
+          - string
+          - 'null'
+        details:
+          type:
+          - string
+          - 'null'
+        referenceErrorCode:
+          type:
+          - string
+          - 'null'
+        referenceDocumentLink:
+          type:
+          - string
+          - 'null'
+        validationErrors:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ValidationError'
+      additionalProperties: false
+    ResendConfirmEmailModel:
+      required:
+      - userName
+      type: object
+      properties:
+        userName:
+          minLength: 1
           type: string
       additionalProperties: false
   securitySchemes:

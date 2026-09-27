@@ -246,7 +246,7 @@ paths:
       - BOM/SALES
       summary: Returns QuoteAssemblies for a given Quote id and Quote Line id
       description: This endpoint retrieves a list of QuoteAssemblies based on Quote and QuoteLine identifier.
-      operationId: BOMQuoteAssemblies_GetQuoteAssemblyAsync
+      operationId: getApiBOMSalesGetQuoteAssembliesByQuoteIdByQuoteLineId
       parameters:
       - name: quoteId
         in: path
@@ -353,6 +353,8 @@ paths:
             text/xml:
               schema:
                 $ref: '#/components/schemas/APIResponseMessageDto'
+      x-operation-id-source: normalized
+      x-operation-id-original: BOMQuoteAssemblies_GetQuoteAssemblyAsync
   /api/BOM/Sales/PostQuoteAssembly:
     post:
       tags:
@@ -1107,7 +1109,7 @@ paths:
       - BOM/SALES
       summary: Returns a list of QuoteMaterial for a given QuoteId and QuoteLineId
       description: This endpoint retrieves QuoteMaterials based on QuoteId and QuoteLineId.
-      operationId: BOMQuoteMaterials_GetQuoteMaterialAsync
+      operationId: getApiBOMSalesGetQuoteMaterialsByQuoteIdByQuoteLineId
       parameters:
       - name: quoteId
         in: path
@@ -1214,13 +1216,15 @@ paths:
             text/xml:
               schema:
                 $ref: '#/components/schemas/APIResponseMessageDto'
+      x-operation-id-source: normalized
+      x-operation-id-original: BOMQuoteMaterials_GetQuoteMaterialAsync
   /api/BOM/Sales/GetQuoteMaterials/{quoteId}/{quoteLineId}/{quoteAssemblyId}:
     get:
       tags:
       - BOM/SALES
       summary: Returns a list of QuoteMaterial for a given QuoteId, QuoteLineId and…
       description: This endpoint retrieves QuoteMaterials based on QuoteId, QuoteLineId and QuoteAssemblyId.
-      operationId: BOMQuoteMaterials_GetQuoteMaterialAsync
+      operationId: getApiBOMSalesGetQuoteMaterialsByQuoteIdByQuoteLineIdByQuoteAssemblyId
       parameters:
       - name: quoteId
         in: path
@@ -1334,6 +1338,8 @@ paths:
             text/xml:
               schema:
                 $ref: '#/components/schemas/APIResponseMessageDto'
+      x-operation-id-source: normalized
+      x-operation-id-original: BOMQuoteMaterials_GetQuoteMaterialAsync
   /api/BOM/Sales/PostQuoteMaterial:
     post:
       tags:
@@ -1666,7 +1672,7 @@ paths:
       - BOM/SALES
       summary: Returns QuoteOperation for a given Quote and QuoteLine id
       description: This endpoint retrieves a list of QuoteOperations based on Quote and QuoteLine identifiers.
-      operationId: BOMQuoteOperations_GetQuoteOperationsAsync
+      operationId: getApiBOMSalesGetQuoteOperationsByQuoteIdByQuoteLineId
       parameters:
       - name: quoteId
         in: path
@@ -1773,13 +1779,15 @@ paths:
             text/xml:
               schema:
                 $ref: '#/components/schemas/APIResponseMessageDto'
+      x-operation-id-source: normalized
+      x-operation-id-original: BOMQuoteOperations_GetQuoteOperationsAsync
   /api/BOM/Sales/GetQuoteOperations/{quoteId}/{quoteLineId}/{quoteAssemblyId}:
     get:
       tags:
       - BOM/SALES
       summary: Returns QuoteOperation for a given Quote, QuoteLine, and QuoteAssembly id
       description: This endpoint retrieves a list of QuoteOperations based on Quote, QuoteLine and QuoteAssembly identifiers.
-      operationId: BOMQuoteOperations_GetQuoteOperationsAsync
+      operationId: getApiBOMSalesGetQuoteOperationsByQuoteIdByQuoteLineIdByQuoteAssemblyId
       parameters:
       - name: quoteId
         in: path
@@ -1893,6 +1901,8 @@ paths:
             text/xml:
               schema:
                 $ref: '#/components/schemas/APIResponseMessageDto'
+      x-operation-id-source: normalized
+      x-operation-id-original: BOMQuoteOperations_GetQuoteOperationsAsync
   /api/BOM/Sales/GetAllQuoteQuantities/{pageSize}/{pageNumber}:
     get:
       tags:
@@ -2119,7 +2129,7 @@ paths:
       - BOM/SALES
       summary: Returns QuoteQuantities for a given Quote Id and Quote Line Id
       description: Returns all existing QuoteQuantities for a QuoteId and Quote Line Id.
-      operationId: BOMQuoteQuantities_GetQuoteQuantityAsync
+      operationId: getApiBOMSalesGetQuoteQuantitiesByQuoteIdByQuoteLineId
       parameters:
       - name: quoteId
         in: path
@@ -2226,6 +2236,8 @@ paths:
             text/xml:
               schema:
                 $ref: '#/components/schemas/APIResponseMessageDto'
+      x-operation-id-source: normalized
+      x-operation-id-original: BOMQuoteQuantities_GetQuoteQuantityAsync
   /api/BOM/Sales/GetAllQuotes/{pageSize}/{pageNumber}:
     get:
       tags:
@@ -2758,267 +2770,6 @@ paths:
                 $ref: '#/components/schemas/APIResponseMessageDto'
 components:
   schemas:
-    BOMSalesOrderDto:
-      required:
-      - salesOrderID
-      - customerOrganizationID
-      - shipOrganizationID
-      - orderDate
-      - status
-      type: object
-      properties:
-        salesOrderID:
-          type: string
-        customerOrganizationID:
-          type: string
-        shipOrganizationID:
-          type: string
-        customerPo:
-          type: string
-        plantID:
-          type: string
-        plantDepartmentID:
-          type: string
-        shipLocationID:
-          type: string
-        shipContactID:
-          type: string
-        arInvoiceLocationID:
-          type: string
-        arInvoiceContactID:
-          type: string
-        paymentTermID:
-          type: string
-        currencyRateID:
-          type: string
-        exchangeRate:
-          type: number
-          format: double
-        fullOrderSubtotalBase:
-          type: number
-          format: double
-        requestedShipDate:
-          type: string
-          format: date-time
-        orderDate:
-          type: string
-          format: date-time
-        orderTotalBase:
-          type: number
-          format: double
-        orderTotalForeign:
-          type: number
-          format: double
-        status:
-          type: integer
-          format: int32
-        customRate:
-          type: boolean
-        closed:
-          type: boolean
-        closedDate:
-          type: string
-          format: date-time
-        freightAmountBase:
-          type: number
-          format: double
-        freightAmountForeign:
-          type: number
-          format: double
-        freightTaxAmountBase:
-          type: number
-          format: double
-        freightTaxAmountForeign:
-          type: number
-          format: double
-        freightTaxCodeID:
-          type: string
-        freightTotalBase:
-          type: number
-          format: double
-        freightTotalForeign:
-          type: number
-          format: double
-        orderSubtotalBase:
-          type: number
-          format: double
-        orderSubTotalForeign:
-          type: number
-          format: double
-        orderTaxAmountBase:
-          type: number
-          format: double
-        orderTaxAmountForeign:
-          type: number
-          format: double
-        shippingMethodID:
-          type: string
-        shippingPaymentTypeID:
-          type: string
-        totalOrderWeight:
-          type: number
-          format: double
-    APIResponseMessageDto:
-      type: object
-      properties:
-        description:
-          type: string
-        status:
-          type: string
-        payloadID:
-          type: string
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/Error'
-          readOnly: true
-        warnings:
-          type: array
-          items:
-            $ref: '#/components/schemas/Warning'
-          readOnly: true
-    BOMQuoteQuantityDto:
-      required:
-      - quoteID
-      - quoteLineID
-      - quoteQuantityID
-      - quoteQuantity
-      - quoteMarkupType
-      type: object
-      properties:
-        quoteID:
-          type: string
-        quoteLineID:
-          type: integer
-          format: int32
-        quoteQuantityID:
-          type: integer
-          format: int32
-        quoteQuantity:
-          type: number
-          format: double
-        scrapPercent:
-          type: number
-          format: double
-        totalRunQuantity:
-          type: number
-          format: double
-        quoteMarkupType:
-          type: integer
-          format: int32
-        purchaseToOrder:
-          type: boolean
-        setupHours:
-          type: number
-          format: double
-        productionHours:
-          type: number
-          format: double
-        materialCost:
-          type: number
-          format: double
-        materialMarkupPercent:
-          type: number
-          format: double
-        materialPrice:
-          type: number
-          format: double
-        subcontractPrice:
-          type: number
-          format: double
-        laborCost:
-          type: number
-          format: double
-        laborMarkupPercent:
-          type: number
-          format: double
-        laborPrice:
-          type: number
-          format: double
-        overheadCost:
-          type: number
-          format: double
-        overheadMarkupPercent:
-          type: number
-          format: double
-        overheadPrice:
-          type: number
-          format: double
-        quotingPrice:
-          type: number
-          format: double
-        purchaseUnitCostBase:
-          type: number
-          format: double
-        purchaseToOrderCost:
-          type: number
-          format: double
-        purToOrderMarkupPercent:
-          type: number
-          format: double
-        purchaseToOrderPrice:
-          type: number
-          format: double
-        additionalCostAmount:
-          type: number
-          format: double
-        additionalMarkupPercent:
-          type: number
-          format: double
-        additionalCostPrice:
-          type: number
-          format: double
-        totalCost:
-          type: number
-          format: double
-        totalPrice:
-          type: number
-          format: double
-        totalUnitCost:
-          type: number
-          format: double
-        totalMarkupPercent:
-          type: number
-          format: double
-        totalUnitPrice:
-          type: number
-          format: double
-        calculatedUnitPrice:
-          type: number
-          format: double
-        fullRevisedUnitPriceForeign:
-          type: number
-          format: double
-        discountPercent:
-          type: number
-          format: double
-        unitDiscountForeign:
-          type: number
-          format: double
-        revisedUnitPriceForeign:
-          type: number
-          format: double
-        additionalChargeForeign:
-          type: number
-          format: double
-        additionalChargeDescription:
-          type: string
-        leadTime:
-          type: string
-        closed:
-          type: boolean
-        createdBy:
-          type: string
-        createdDate:
-          type: string
-          format: date-time
-        uniqueID:
-          type: string
-          format: uuid
-          example: 00000000-0000-0000-0000-000000000000
-        rowVersion:
-          type: string
-          format: byte
     BOMQuoteLineDto:
       required:
       - quoteID
@@ -3080,6 +2831,82 @@ components:
         rowVersion:
           type: string
           format: byte
+    BOMQuoteDto:
+      required:
+      - quoteID
+      - customerOrganizationID
+      - quoterEmployeeID
+      - dueDate
+      type: object
+      properties:
+        quoteID:
+          type: string
+        customerOrganizationID:
+          type: string
+        plantID:
+          type: string
+        quoterEmployeeID:
+          type: string
+        quoteDate:
+          type: string
+          format: date-time
+        dueDate:
+          type: string
+          format: date-time
+        expirationDate:
+          type: string
+          format: date-time
+        projectID:
+          type: string
+        closed:
+          type: boolean
+        closedDate:
+          type: string
+          format: date-time
+        paymentTermID:
+          type: string
+        shippingMethodID:
+          type: string
+        createdBy:
+          type: string
+        createdDate:
+          type: string
+          format: date-time
+        uniqueID:
+          type: string
+          format: uuid
+          example: 00000000-0000-0000-0000-000000000000
+        rowVersion:
+          type: string
+          format: byte
+    BOMCreateQuoteLineDto:
+      required:
+      - quoteID
+      - quoteLineID
+      - partID
+      - unitOfMeasure
+      type: object
+      properties:
+        quoteID:
+          type: string
+        quoteLineID:
+          type: integer
+          format: int32
+        partID:
+          type: string
+        partRevisionID:
+          type: string
+        unitOfMeasure:
+          type: string
+        supplierOrganizationID:
+          type: string
+        purchaseLocationID:
+          type: string
+        purchaseUnitCostBase:
+          type: number
+          format: double
+        firm:
+          type: boolean
     BOMQuoteOperationDto:
       required:
       - quoteID
@@ -3226,55 +3053,25 @@ components:
         rowVersion:
           type: string
           format: byte
-    CTMBOMQuoteLineDto:
-      required:
-      - quote
+    APIResponseMessageDto:
       type: object
       properties:
-        quote:
-          $ref: '#/components/schemas/BOMQuoteDto'
-        quoteLines:
+        description:
+          type: string
+        status:
+          type: string
+        payloadID:
+          type: string
+        errors:
           type: array
           items:
-            $ref: '#/components/schemas/BOMQuoteLineDto'
-    Warning:
-      type: object
-      properties:
-        innerText:
-          type: string
-    BOMCreateQuoteMaterialDto:
-      required:
-      - quoteID
-      - quoteLineID
-      - quoteMaterialID
-      - partID
-      - unitOfMeasure
-      type: object
-      properties:
-        quoteID:
-          type: string
-        quoteLineID:
-          type: integer
-          format: int32
-        quoteAssemblyID:
-          type: integer
-          format: int32
-        quoteMaterialID:
-          type: integer
-          format: int32
-        partID:
-          type: string
-        partRevisionID:
-          type: string
-        unitOfMeasure:
-          type: string
-        quantityPerAssembly:
-          type: number
-          format: double
-        supplierOrganizationID:
-          type: string
-        purchaseLocationID:
-          type: string
+            $ref: '#/components/schemas/Error'
+          readOnly: true
+        warnings:
+          type: array
+          items:
+            $ref: '#/components/schemas/Warning'
+          readOnly: true
     BOMQuoteMaterialDto:
       required:
       - quoteID
@@ -3346,42 +3143,158 @@ components:
         rowVersion:
           type: string
           format: byte
-    BOMQuoteDto:
+    BOMCreateQuoteDto:
       required:
       - quoteID
       - customerOrganizationID
-      - quoterEmployeeID
-      - dueDate
+      - shipOrganizationID
       type: object
       properties:
         quoteID:
           type: string
         customerOrganizationID:
           type: string
-        plantID:
+        shipOrganizationID:
           type: string
         quoterEmployeeID:
           type: string
-        quoteDate:
+        currencyRateID:
           type: string
-          format: date-time
-        dueDate:
+    Error:
+      type: object
+      properties:
+        innerText:
           type: string
-          format: date-time
-        expirationDate:
+    BOMQuoteQuantityDto:
+      required:
+      - quoteID
+      - quoteLineID
+      - quoteQuantityID
+      - quoteQuantity
+      - quoteMarkupType
+      type: object
+      properties:
+        quoteID:
           type: string
-          format: date-time
-        projectID:
+        quoteLineID:
+          type: integer
+          format: int32
+        quoteQuantityID:
+          type: integer
+          format: int32
+        quoteQuantity:
+          type: number
+          format: double
+        scrapPercent:
+          type: number
+          format: double
+        totalRunQuantity:
+          type: number
+          format: double
+        quoteMarkupType:
+          type: integer
+          format: int32
+        purchaseToOrder:
+          type: boolean
+        setupHours:
+          type: number
+          format: double
+        productionHours:
+          type: number
+          format: double
+        materialCost:
+          type: number
+          format: double
+        materialMarkupPercent:
+          type: number
+          format: double
+        materialPrice:
+          type: number
+          format: double
+        subcontractPrice:
+          type: number
+          format: double
+        laborCost:
+          type: number
+          format: double
+        laborMarkupPercent:
+          type: number
+          format: double
+        laborPrice:
+          type: number
+          format: double
+        overheadCost:
+          type: number
+          format: double
+        overheadMarkupPercent:
+          type: number
+          format: double
+        overheadPrice:
+          type: number
+          format: double
+        quotingPrice:
+          type: number
+          format: double
+        purchaseUnitCostBase:
+          type: number
+          format: double
+        purchaseToOrderCost:
+          type: number
+          format: double
+        purToOrderMarkupPercent:
+          type: number
+          format: double
+        purchaseToOrderPrice:
+          type: number
+          format: double
+        additionalCostAmount:
+          type: number
+          format: double
+        additionalMarkupPercent:
+          type: number
+          format: double
+        additionalCostPrice:
+          type: number
+          format: double
+        totalCost:
+          type: number
+          format: double
+        totalPrice:
+          type: number
+          format: double
+        totalUnitCost:
+          type: number
+          format: double
+        totalMarkupPercent:
+          type: number
+          format: double
+        totalUnitPrice:
+          type: number
+          format: double
+        calculatedUnitPrice:
+          type: number
+          format: double
+        fullRevisedUnitPriceForeign:
+          type: number
+          format: double
+        discountPercent:
+          type: number
+          format: double
+        unitDiscountForeign:
+          type: number
+          format: double
+        revisedUnitPriceForeign:
+          type: number
+          format: double
+        additionalChargeForeign:
+          type: number
+          format: double
+        additionalChargeDescription:
+          type: string
+        leadTime:
           type: string
         closed:
           type: boolean
-        closedDate:
-          type: string
-          format: date-time
-        paymentTermID:
-          type: string
-        shippingMethodID:
-          type: string
         createdBy:
           type: string
         createdDate:
@@ -3394,6 +3307,122 @@ components:
         rowVersion:
           type: string
           format: byte
+    CTMBOMQuoteLineDto:
+      required:
+      - quote
+      type: object
+      properties:
+        quote:
+          $ref: '#/components/schemas/BOMQuoteDto'
+        quoteLines:
+          type: array
+          items:
+            $ref: '#/components/schemas/BOMQuoteLineDto'
+    BOMSalesOrderDto:
+      required:
+      - salesOrderID
+      - customerOrganizationID
+      - shipOrganizationID
+      - orderDate
+      - status
+      type: object
+      properties:
+        salesOrderID:
+          type: string
+        customerOrganizationID:
+          type: string
+        shipOrganizationID:
+          type: string
+        customerPo:
+          type: string
+        plantID:
+          type: string
+        plantDepartmentID:
+          type: string
+        shipLocationID:
+          type: string
+        shipContactID:
+          type: string
+        arInvoiceLocationID:
+          type: string
+        arInvoiceContactID:
+          type: string
+        paymentTermID:
+          type: string
+        currencyRateID:
+          type: string
+        exchangeRate:
+          type: number
+          format: double
+        fullOrderSubtotalBase:
+          type: number
+          format: double
+        requestedShipDate:
+          type: string
+          format: date-time
+        orderDate:
+          type: string
+          format: date-time
+        orderTotalBase:
+          type: number
+          format: double
+        orderTotalForeign:
+          type: number
+          format: double
+        status:
+          type: integer
+          format: int32
+        customRate:
+          type: boolean
+        closed:
+          type: boolean
+        closedDate:
+          type: string
+          format: date-time
+        freightAmountBase:
+          type: number
+          format: double
+        freightAmountForeign:
+          type: number
+          format: double
+        freightTaxAmountBase:
+          type: number
+          format: double
+        freightTaxAmountForeign:
+          type: number
+          format: double
+        freightTaxCodeID:
+          type: string
+        freightTotalBase:
+          type: number
+          format: double
+        freightTotalForeign:
+          type: number
+          format: double
+        orderSubtotalBase:
+          type: number
+          format: double
+        orderSubTotalForeign:
+          type: number
+          format: double
+        orderTaxAmountBase:
+          type: number
+          format: double
+        orderTaxAmountForeign:
+          type: number
+          format: double
+        shippingMethodID:
+          type: string
+        shippingPaymentTypeID:
+          type: string
+        totalOrderWeight:
+          type: number
+          format: double
+    Warning:
+      type: object
+      properties:
+        innerText:
+          type: string
     BOMCreateQuoteAssemblyDto:
       required:
       - quoteID
@@ -3431,15 +3460,11 @@ components:
           format: double
         pullAllFromStock:
           type: boolean
-    Error:
-      type: object
-      properties:
-        innerText:
-          type: string
-    BOMCreateQuoteLineDto:
+    BOMCreateQuoteMaterialDto:
       required:
       - quoteID
       - quoteLineID
+      - quoteMaterialID
       - partID
       - unitOfMeasure
       type: object
@@ -3449,37 +3474,24 @@ components:
         quoteLineID:
           type: integer
           format: int32
+        quoteAssemblyID:
+          type: integer
+          format: int32
+        quoteMaterialID:
+          type: integer
+          format: int32
         partID:
           type: string
         partRevisionID:
           type: string
         unitOfMeasure:
           type: string
+        quantityPerAssembly:
+          type: number
+          format: double
         supplierOrganizationID:
           type: string
         purchaseLocationID:
-          type: string
-        purchaseUnitCostBase:
-          type: number
-          format: double
-        firm:
-          type: boolean
-    BOMCreateQuoteDto:
-      required:
-      - quoteID
-      - customerOrganizationID
-      - shipOrganizationID
-      type: object
-      properties:
-        quoteID:
-          type: string
-        customerOrganizationID:
-          type: string
-        shipOrganizationID:
-          type: string
-        quoterEmployeeID:
-          type: string
-        currencyRateID:
           type: string
   securitySchemes:
     oauth2:

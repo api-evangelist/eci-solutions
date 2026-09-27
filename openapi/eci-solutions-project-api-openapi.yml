@@ -35,48 +35,6 @@ paths:
           $ref: '#/components/responses/InternalServerError'
 components:
   schemas:
-    ProjectSettings:
-      type: object
-      title: ProjectSettings
-      properties:
-        project:
-          $ref: '#/components/schemas/Project'
-        websiteTracking:
-          type: array
-          items:
-            $ref: '#/components/schemas/ProjectWebsiteTracking'
-        rotations:
-          type: array
-          items:
-            $ref: '#/components/schemas/ProjectRotation'
-        salesReps:
-          type: array
-          items:
-            $ref: '#/components/schemas/ProjectSalesRep'
-        sourceTypes:
-          type: array
-          items:
-            $ref: '#/components/schemas/ProjectSourceType'
-        secondarySourceTypes:
-          type: array
-          items:
-            $ref: '#/components/schemas/ProjectSecondarySourceType'
-        ratings:
-          type: array
-          items:
-            $ref: '#/components/schemas/ProjectRating'
-        followUpProcesses:
-          type: array
-          items:
-            $ref: '#/components/schemas/FollowUpProcess'
-        questions:
-          type: array
-          items:
-            $ref: '#/components/schemas/Question'
-        autoReplyTemplates:
-          type: array
-          items:
-            $ref: '#/components/schemas/EmailTemplateMetadata'
     ProjectSourceType:
       type: object
       title: Source Type
@@ -87,6 +45,25 @@ components:
         sourceType:
           type: string
           example: Online Registration
+    EmailTemplateMetadata:
+      type: object
+      title: Email Template Metadata
+      description: 'Size conservative metadata representation of Email Template i.e. no content body
+
+        '
+      properties:
+        templateId:
+          type: string
+          example: 123
+        folderId:
+          type: string
+          example: 123
+        name:
+          type: string
+          example: Welcoming email
+        subject:
+          type: string
+          example: You are offically welcomed
     Question:
       type: object
       title: Question
@@ -167,16 +144,6 @@ components:
           type: string
           description: Details of the error
           example: Details of the error
-    Project:
-      title: Project
-      type: object
-      properties:
-        name:
-          type: string
-          example: Birch Towers
-        projectId:
-          type: string
-          example: 123
     ProjectWebsiteTracking:
       type: object
       title: Website Tracking
@@ -187,6 +154,48 @@ components:
         domain:
           type: string
           example: http://example.com/
+    ProjectSettings:
+      type: object
+      title: ProjectSettings
+      properties:
+        project:
+          $ref: '#/components/schemas/Project'
+        websiteTracking:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProjectWebsiteTracking'
+        rotations:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProjectRotation'
+        salesReps:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProjectSalesRep'
+        sourceTypes:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProjectSourceType'
+        secondarySourceTypes:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProjectSecondarySourceType'
+        ratings:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProjectRating'
+        followUpProcesses:
+          type: array
+          items:
+            $ref: '#/components/schemas/FollowUpProcess'
+        questions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Question'
+        autoReplyTemplates:
+          type: array
+          items:
+            $ref: '#/components/schemas/EmailTemplateMetadata'
     ProjectRotation:
       type: object
       title: Rotation
@@ -197,35 +206,38 @@ components:
         rotationName:
           type: string
           example: Newsletter
-    ProjectSecondarySourceType:
+    ProjectSalesRep:
       type: object
-      title: Secondary Source Type
+      title: Sales Rep
       properties:
-        secondarySourceTypeId:
+        userId:
           type: string
           example: 123
-        secondarySourceType:
+        firstName:
           type: string
-          example: Facebook
-    EmailTemplateMetadata:
+          example: Lasso
+        lastName:
+          type: string
+          example: Autobot
+        email:
+          type: string
+          example: john.smith@example.com
+        phone:
+          type: string
+          example: 123-456-7890
+    FollowUpProcess:
       type: object
-      title: Email Template Metadata
-      description: 'Size conservative metadata representation of Email Template i.e. no content body
-
-        '
+      title: Follow-up Process
+      description: If `followUpProcessId` is provided, the system will attempt to lookup the process by id, and fail if not found. If `followUpProcessId` is not provided, but `followUpProcess` is instead provided, the system will then attempt to lookup the process by value. If the value doesn't exist, it will be created
       properties:
-        templateId:
+        followUpProcessId:
           type: string
-          example: 123
-        folderId:
+          example: 1
+        followUpProcess:
           type: string
-          example: 123
-        name:
-          type: string
-          example: Welcoming email
-        subject:
-          type: string
-          example: You are offically welcomed
+          minLength: 1
+          maxLength: 20
+          example: 30 day follow up
     ProjectRating:
       type: object
       title: Rating
@@ -249,47 +261,35 @@ components:
           type: string
           description: If no `answerId` is given, the answer will be looked-up by its answer string. If no answer with the given answer string exists, the answer will be created.
           example: Recommended by a friend
-    FollowUpProcess:
+    Project:
+      title: Project
       type: object
-      title: Follow-up Process
-      description: If `followUpProcessId` is provided, the system will attempt to lookup the process by id, and fail if not found. If `followUpProcessId` is not provided, but `followUpProcess` is instead provided, the system will then attempt to lookup the process by value. If the value doesn't exist, it will be created
       properties:
-        followUpProcessId:
+        name:
           type: string
-          example: 1
-        followUpProcess:
-          type: string
-          minLength: 1
-          maxLength: 20
-          example: 30 day follow up
-    ProjectSalesRep:
-      type: object
-      title: Sales Rep
-      properties:
-        userId:
+          example: Birch Towers
+        projectId:
           type: string
           example: 123
-        firstName:
+    ProjectSecondarySourceType:
+      type: object
+      title: Secondary Source Type
+      properties:
+        secondarySourceTypeId:
           type: string
-          example: Lasso
-        lastName:
+          example: 123
+        secondarySourceType:
           type: string
-          example: Autobot
-        email:
-          type: string
-          example: john.smith@example.com
-        phone:
-          type: string
-          example: 123-456-7890
+          example: Facebook
   responses:
+    InternalServerError:
+      description: Receiving a 5xx response indicates an error on Lasso's end. Please contact us to report the problem
     Unauthorized:
       description: The request has not been fulfilled because it lacks valid authentication credentials
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/StandardError'
-    InternalServerError:
-      description: Receiving a 5xx response indicates an error on Lasso's end. Please contact us to report the problem
     Forbidden:
       description: The provided authentication credentials does not have sufficient privileges to access this resource
       content:

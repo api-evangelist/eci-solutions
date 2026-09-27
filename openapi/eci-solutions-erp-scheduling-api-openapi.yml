@@ -1390,18 +1390,35 @@ paths:
                 $ref: '#/components/schemas/APIResponseMessageDto'
 components:
   schemas:
-    ERPResponseMessageDto_IList_ERPScheduleTaskDto:
+    ERPResponseMessageDto_ERPScheduleTreeDto:
       type: object
       properties:
         responseInfo:
           $ref: '#/components/schemas/APIResponseMessageDto'
         returnObject:
-          type: array
-          items:
-            $ref: '#/components/schemas/ERPScheduleTaskDto'
+          $ref: '#/components/schemas/ERPScheduleTreeDto'
         recordCount:
           type: integer
           format: int32
+    APIResponseMessageDto:
+      type: object
+      properties:
+        description:
+          type: string
+        status:
+          type: string
+        payloadID:
+          type: string
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+          readOnly: true
+        warnings:
+          type: array
+          items:
+            $ref: '#/components/schemas/Warning'
+          readOnly: true
     ERPScheduleTreeDto:
       required:
       - sxtScheduleTreeID
@@ -1441,89 +1458,6 @@ components:
         sxtType:
           type: integer
           format: int32
-    ERPResponseMessageDto_IList_ERPScheduleTaskBucketDto:
-      type: object
-      properties:
-        responseInfo:
-          $ref: '#/components/schemas/APIResponseMessageDto'
-        returnObject:
-          type: array
-          items:
-            $ref: '#/components/schemas/ERPScheduleTaskBucketDto'
-        recordCount:
-          type: integer
-          format: int32
-    ERPScheduleBranchDto:
-      required:
-      - sxbScheduleTreeID
-      - sxbScheduleBranchID
-      type: object
-      properties:
-        sxbCreatedBy:
-          type: string
-        sxbCreatedDate:
-          type: string
-          format: date-time
-        sxbCurrentLinkedTaskDateType:
-          type: integer
-          format: int32
-        sxbCurrentLinkedTaskID:
-          type: integer
-          format: int32
-        sxbUniqueID:
-          type: string
-          format: uuid
-          example: 00000000-0000-0000-0000-000000000000
-        sxbOffsetMinutes:
-          maximum: 9999
-          minimum: 0
-          type: integer
-          format: int32
-        sxbParentLinkedTaskDateType:
-          type: integer
-          format: int32
-        sxbParentLinkedTaskID:
-          type: integer
-          format: int32
-        sxbParentScheduleBranchID:
-          type: integer
-          format: int32
-        sxbRowVersion:
-          type: integer
-          format: int64
-        sxbScheduleTreeID:
-          type: integer
-          format: int32
-        sxbScheduleBranchID:
-          maximum: 9999
-          minimum: 0
-          type: integer
-          format: int32
-        sxbSiblingBranchLink:
-          type: integer
-          format: int32
-    ERPResponseMessageDto_IList_ERPScheduleAllocationDto:
-      type: object
-      properties:
-        responseInfo:
-          $ref: '#/components/schemas/APIResponseMessageDto'
-        returnObject:
-          type: array
-          items:
-            $ref: '#/components/schemas/ERPScheduleAllocationDto'
-        recordCount:
-          type: integer
-          format: int32
-    ERPResponseMessageDto_ERPScheduleTaskBucketDto:
-      type: object
-      properties:
-        responseInfo:
-          $ref: '#/components/schemas/APIResponseMessageDto'
-        returnObject:
-          $ref: '#/components/schemas/ERPScheduleTaskBucketDto'
-        recordCount:
-          type: integer
-          format: int32
     ERPResponseMessageDto_ERPScheduleAllocationDto:
       type: object
       properties:
@@ -1534,13 +1468,63 @@ components:
         recordCount:
           type: integer
           format: int32
-    ERPResponseMessageDto_ERPScheduleResourceLaneDto:
+    ERPResponseMessageDto_ERPScheduleBranchDto:
       type: object
       properties:
         responseInfo:
           $ref: '#/components/schemas/APIResponseMessageDto'
         returnObject:
-          $ref: '#/components/schemas/ERPScheduleResourceLaneDto'
+          $ref: '#/components/schemas/ERPScheduleBranchDto'
+        recordCount:
+          type: integer
+          format: int32
+    ERPScheduleResourceLaneDto:
+      required:
+      - sxrScheduleBranchID
+      - sxrScheduleTaskID
+      - sxrScheduleTreeID
+      - sxrScheduleResourceLaneID
+      type: object
+      properties:
+        sxrUniqueID:
+          type: string
+          format: uuid
+          example: 00000000-0000-0000-0000-000000000000
+        sxrGroupUniqueID:
+          type: string
+          format: uuid
+          example: 00000000-0000-0000-0000-000000000000
+        sxrLockedResourceUniqueID:
+          type: string
+          format: uuid
+          example: 00000000-0000-0000-0000-000000000000
+        sxrResourceType:
+          type: integer
+          format: int32
+        sxrRowVersion:
+          type: integer
+          format: int64
+        sxrScheduleBranchID:
+          type: integer
+          format: int32
+        sxrScheduleTaskID:
+          type: integer
+          format: int32
+        sxrScheduleTreeID:
+          type: integer
+          format: int32
+        sxrScheduleResourceLaneID:
+          type: integer
+          format: int32
+    ERPResponseMessageDto_IList_ERPScheduleBranchDto:
+      type: object
+      properties:
+        responseInfo:
+          $ref: '#/components/schemas/APIResponseMessageDto'
+        returnObject:
+          type: array
+          items:
+            $ref: '#/components/schemas/ERPScheduleBranchDto'
         recordCount:
           type: integer
           format: int32
@@ -1593,21 +1577,89 @@ components:
         sxeScheduleTaskBucketID:
           type: integer
           format: int32
-    ERPResponseMessageDto_ERPScheduleBranchDto:
+    ERPResponseMessageDto_IList_ERPScheduleTaskBucketDto:
       type: object
       properties:
         responseInfo:
           $ref: '#/components/schemas/APIResponseMessageDto'
         returnObject:
-          $ref: '#/components/schemas/ERPScheduleBranchDto'
+          type: array
+          items:
+            $ref: '#/components/schemas/ERPScheduleTaskBucketDto'
         recordCount:
           type: integer
           format: int32
-    Warning:
+    ERPResponseMessageDto_ERPScheduleTaskBucketDto:
       type: object
       properties:
-        innerText:
+        responseInfo:
+          $ref: '#/components/schemas/APIResponseMessageDto'
+        returnObject:
+          $ref: '#/components/schemas/ERPScheduleTaskBucketDto'
+        recordCount:
+          type: integer
+          format: int32
+    ERPScheduleBranchDto:
+      required:
+      - sxbScheduleTreeID
+      - sxbScheduleBranchID
+      type: object
+      properties:
+        sxbCreatedBy:
           type: string
+        sxbCreatedDate:
+          type: string
+          format: date-time
+        sxbCurrentLinkedTaskDateType:
+          type: integer
+          format: int32
+        sxbCurrentLinkedTaskID:
+          type: integer
+          format: int32
+        sxbUniqueID:
+          type: string
+          format: uuid
+          example: 00000000-0000-0000-0000-000000000000
+        sxbOffsetMinutes:
+          maximum: 9999
+          minimum: 0
+          type: integer
+          format: int32
+        sxbParentLinkedTaskDateType:
+          type: integer
+          format: int32
+        sxbParentLinkedTaskID:
+          type: integer
+          format: int32
+        sxbParentScheduleBranchID:
+          type: integer
+          format: int32
+        sxbRowVersion:
+          type: integer
+          format: int64
+        sxbScheduleTreeID:
+          type: integer
+          format: int32
+        sxbScheduleBranchID:
+          maximum: 9999
+          minimum: 0
+          type: integer
+          format: int32
+        sxbSiblingBranchLink:
+          type: integer
+          format: int32
+    ERPResponseMessageDto_IList_ERPScheduleResourceLaneDto:
+      type: object
+      properties:
+        responseInfo:
+          $ref: '#/components/schemas/APIResponseMessageDto'
+        returnObject:
+          type: array
+          items:
+            $ref: '#/components/schemas/ERPScheduleResourceLaneDto'
+        recordCount:
+          type: integer
+          format: int32
     ERPResponseMessageDto_IList_ERPScheduleTreeDto:
       type: object
       properties:
@@ -1630,7 +1682,7 @@ components:
         recordCount:
           type: integer
           format: int32
-    ERPResponseMessageDto_IList_ERPScheduleBranchDto:
+    ERPResponseMessageDto_IList_ERPScheduleTaskDto:
       type: object
       properties:
         responseInfo:
@@ -1638,105 +1690,10 @@ components:
         returnObject:
           type: array
           items:
-            $ref: '#/components/schemas/ERPScheduleBranchDto'
+            $ref: '#/components/schemas/ERPScheduleTaskDto'
         recordCount:
           type: integer
           format: int32
-    ERPScheduleAllocationDto:
-      required:
-      - sxdScheduleAllocationID
-      type: object
-      properties:
-        sxdDateType:
-          type: integer
-          format: int32
-        sxdEndActualDateTime:
-          type: string
-          format: date-time
-        sxdEndDate:
-          type: string
-          format: date-time
-        sxdEndMinute:
-          type: integer
-          format: int32
-        sxdUniqueID:
-          type: string
-          format: uuid
-          example: 00000000-0000-0000-0000-000000000000
-        sxdGroupUniqueID:
-          type: string
-          format: uuid
-          example: 00000000-0000-0000-0000-000000000000
-        sxdMinutes:
-          maximum: 9999
-          minimum: 0
-          type: integer
-          format: int32
-        sxdResourceUniqueID:
-          type: string
-          format: uuid
-          example: 00000000-0000-0000-0000-000000000000
-        sxdRowVersion:
-          type: integer
-          format: int64
-        sxdScheduleBranchID:
-          type: integer
-          format: int32
-        sxdScheduleResourceLaneID:
-          type: integer
-          format: int32
-        sxdScheduleTaskID:
-          type: integer
-          format: int32
-        sxdScheduleTreeID:
-          type: integer
-          format: int32
-        sxdScheduleAllocationID:
-          type: integer
-          format: int32
-        sxdStartActualDateTime:
-          type: string
-          format: date-time
-        sxdStartDate:
-          type: string
-          format: date-time
-        sxdStartMinute:
-          type: integer
-          format: int32
-    APIResponseMessageDto:
-      type: object
-      properties:
-        description:
-          type: string
-        status:
-          type: string
-        payloadID:
-          type: string
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/Error'
-          readOnly: true
-        warnings:
-          type: array
-          items:
-            $ref: '#/components/schemas/Warning'
-          readOnly: true
-    ERPResponseMessageDto_ERPScheduleTreeDto:
-      type: object
-      properties:
-        responseInfo:
-          $ref: '#/components/schemas/APIResponseMessageDto'
-        returnObject:
-          $ref: '#/components/schemas/ERPScheduleTreeDto'
-        recordCount:
-          type: integer
-          format: int32
-    Error:
-      type: object
-      properties:
-        innerText:
-          type: string
     ERPScheduleTaskDto:
       required:
       - sxkProcessID
@@ -1817,45 +1774,83 @@ components:
         sxkStartMinute:
           type: integer
           format: int32
-    ERPScheduleResourceLaneDto:
+    ERPScheduleAllocationDto:
       required:
-      - sxrScheduleBranchID
-      - sxrScheduleTaskID
-      - sxrScheduleTreeID
-      - sxrScheduleResourceLaneID
+      - sxdScheduleAllocationID
       type: object
       properties:
-        sxrUniqueID:
-          type: string
-          format: uuid
-          example: 00000000-0000-0000-0000-000000000000
-        sxrGroupUniqueID:
-          type: string
-          format: uuid
-          example: 00000000-0000-0000-0000-000000000000
-        sxrLockedResourceUniqueID:
-          type: string
-          format: uuid
-          example: 00000000-0000-0000-0000-000000000000
-        sxrResourceType:
+        sxdDateType:
           type: integer
           format: int32
-        sxrRowVersion:
+        sxdEndActualDateTime:
+          type: string
+          format: date-time
+        sxdEndDate:
+          type: string
+          format: date-time
+        sxdEndMinute:
+          type: integer
+          format: int32
+        sxdUniqueID:
+          type: string
+          format: uuid
+          example: 00000000-0000-0000-0000-000000000000
+        sxdGroupUniqueID:
+          type: string
+          format: uuid
+          example: 00000000-0000-0000-0000-000000000000
+        sxdMinutes:
+          maximum: 9999
+          minimum: 0
+          type: integer
+          format: int32
+        sxdResourceUniqueID:
+          type: string
+          format: uuid
+          example: 00000000-0000-0000-0000-000000000000
+        sxdRowVersion:
           type: integer
           format: int64
-        sxrScheduleBranchID:
+        sxdScheduleBranchID:
           type: integer
           format: int32
-        sxrScheduleTaskID:
+        sxdScheduleResourceLaneID:
           type: integer
           format: int32
-        sxrScheduleTreeID:
+        sxdScheduleTaskID:
           type: integer
           format: int32
-        sxrScheduleResourceLaneID:
+        sxdScheduleTreeID:
           type: integer
           format: int32
-    ERPResponseMessageDto_IList_ERPScheduleResourceLaneDto:
+        sxdScheduleAllocationID:
+          type: integer
+          format: int32
+        sxdStartActualDateTime:
+          type: string
+          format: date-time
+        sxdStartDate:
+          type: string
+          format: date-time
+        sxdStartMinute:
+          type: integer
+          format: int32
+    Error:
+      type: object
+      properties:
+        innerText:
+          type: string
+    ERPResponseMessageDto_ERPScheduleResourceLaneDto:
+      type: object
+      properties:
+        responseInfo:
+          $ref: '#/components/schemas/APIResponseMessageDto'
+        returnObject:
+          $ref: '#/components/schemas/ERPScheduleResourceLaneDto'
+        recordCount:
+          type: integer
+          format: int32
+    ERPResponseMessageDto_IList_ERPScheduleAllocationDto:
       type: object
       properties:
         responseInfo:
@@ -1863,10 +1858,15 @@ components:
         returnObject:
           type: array
           items:
-            $ref: '#/components/schemas/ERPScheduleResourceLaneDto'
+            $ref: '#/components/schemas/ERPScheduleAllocationDto'
         recordCount:
           type: integer
           format: int32
+    Warning:
+      type: object
+      properties:
+        innerText:
+          type: string
   securitySchemes:
     oauth2:
       type: oauth2

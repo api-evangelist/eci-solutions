@@ -230,7 +230,7 @@ paths:
         Accessed From: User Mgmt UI.\
 
         Description: Updates First name and/or Last name of the logged in user in both database and cognito.'
-      operationId: MeUser
+      operationId: patchApiUserMe
       requestBody:
         description: This is an object which contains details of logged in user to update the first or last name.
         content:
@@ -259,6 +259,8 @@ paths:
             text/json:
               schema:
                 $ref: '#/components/schemas/UpdateUserProfileAPIResponse'
+      x-operation-id-source: normalized
+      x-operation-id-original: MeUser
   /api/User/providers:
     get:
       tags:
@@ -442,6 +444,124 @@ paths:
                 $ref: '#/components/schemas/ERPUserResponseModelIListAPIResponse'
 components:
   schemas:
+    RegisterUser:
+      required:
+      - email
+      - roleId
+      type: object
+      properties:
+        email:
+          minLength: 1
+          pattern: .*@.*
+          type: string
+        firstName:
+          type:
+          - string
+          - 'null'
+        lastName:
+          type:
+          - string
+          - 'null'
+        companyId:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        roleId:
+          type: integer
+          format: int32
+        products:
+          type:
+          - array
+          - 'null'
+          items:
+            type: integer
+            format: int32
+        providerName:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    UserMeResponse:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+        name:
+          type:
+          - string
+          - 'null'
+        roleId:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        email:
+          type:
+          - string
+          - 'null'
+        sub:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    StringAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        result:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    ERPUserResponseModelAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        result:
+          allOf:
+          - $ref: '#/components/schemas/ERPUserResponseModel'
+      additionalProperties: false
+    ValidationError:
+      type: object
+      properties:
+        field:
+          type:
+          - string
+          - 'null'
+        message:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
     ProblemDetails:
       type: object
       properties:
@@ -467,65 +587,7 @@ components:
           - string
           - 'null'
       additionalProperties: {}
-    SsoProvider:
-      type: object
-      properties:
-        name:
-          type:
-          - string
-          - 'null'
-        description:
-          type:
-          - string
-          - 'null'
-        identifiers:
-          type:
-          - array
-          - 'null'
-          items:
-            type: string
-      additionalProperties: false
-    ApiError:
-      type: object
-      properties:
-        isError:
-          type: boolean
-        exceptionMessage:
-          type:
-          - string
-          - 'null'
-        details:
-          type:
-          - string
-          - 'null'
-        referenceErrorCode:
-          type:
-          - string
-          - 'null'
-        referenceDocumentLink:
-          type:
-          - string
-          - 'null'
-        validationErrors:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/ValidationError'
-      additionalProperties: false
-    UpdateUserProfile:
-      type: object
-      properties:
-        firstName:
-          type:
-          - string
-          - 'null'
-        lastName:
-          type:
-          - string
-          - 'null'
-      additionalProperties: false
-    LoginProviderResponseAPIResponse:
+    UpdateUserProfileAPIResponse:
       type: object
       properties:
         version:
@@ -544,7 +606,7 @@ components:
           - $ref: '#/components/schemas/ApiError'
         result:
           allOf:
-          - $ref: '#/components/schemas/LoginProviderResponse'
+          - $ref: '#/components/schemas/UpdateUserProfile'
       additionalProperties: false
     ERPUserResponseModel:
       type: object
@@ -625,177 +687,6 @@ components:
           - string
           - 'null'
       additionalProperties: false
-    UpdateUserProfileAPIResponse:
-      type: object
-      properties:
-        version:
-          type:
-          - string
-          - 'null'
-        statusCode:
-          type: integer
-          format: int32
-        message:
-          type:
-          - string
-          - 'null'
-        responseException:
-          allOf:
-          - $ref: '#/components/schemas/ApiError'
-        result:
-          allOf:
-          - $ref: '#/components/schemas/UpdateUserProfile'
-      additionalProperties: false
-    ERPUserResponseModelIListAPIResponse:
-      type: object
-      properties:
-        version:
-          type:
-          - string
-          - 'null'
-        statusCode:
-          type: integer
-          format: int32
-        message:
-          type:
-          - string
-          - 'null'
-        responseException:
-          allOf:
-          - $ref: '#/components/schemas/ApiError'
-        result:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/ERPUserResponseModel'
-      additionalProperties: false
-    StringAPIResponse:
-      type: object
-      properties:
-        version:
-          type:
-          - string
-          - 'null'
-        statusCode:
-          type: integer
-          format: int32
-        message:
-          type:
-          - string
-          - 'null'
-        responseException:
-          allOf:
-          - $ref: '#/components/schemas/ApiError'
-        result:
-          type:
-          - string
-          - 'null'
-      additionalProperties: false
-    ValidationError:
-      type: object
-      properties:
-        field:
-          type:
-          - string
-          - 'null'
-        message:
-          type:
-          - string
-          - 'null'
-      additionalProperties: false
-    RegisterUser:
-      required:
-      - email
-      - roleId
-      type: object
-      properties:
-        email:
-          minLength: 1
-          pattern: .*@.*
-          type: string
-        firstName:
-          type:
-          - string
-          - 'null'
-        lastName:
-          type:
-          - string
-          - 'null'
-        companyId:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        roleId:
-          type: integer
-          format: int32
-        products:
-          type:
-          - array
-          - 'null'
-          items:
-            type: integer
-            format: int32
-        providerName:
-          type:
-          - string
-          - 'null'
-      additionalProperties: false
-    UserMeResponse:
-      type: object
-      properties:
-        id:
-          type:
-          - string
-          - 'null'
-        name:
-          type:
-          - string
-          - 'null'
-        roleId:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        email:
-          type:
-          - string
-          - 'null'
-        sub:
-          type:
-          - string
-          - 'null'
-      additionalProperties: false
-    ERPUserResponseModelAPIResponse:
-      type: object
-      properties:
-        version:
-          type:
-          - string
-          - 'null'
-        statusCode:
-          type: integer
-          format: int32
-        message:
-          type:
-          - string
-          - 'null'
-        responseException:
-          allOf:
-          - $ref: '#/components/schemas/ApiError'
-        result:
-          allOf:
-          - $ref: '#/components/schemas/ERPUserResponseModel'
-      additionalProperties: false
-    LoginProviderResponse:
-      type: object
-      properties:
-        provider:
-          type:
-          - string
-          - 'null'
-      additionalProperties: false
     UpdateAdmins:
       type: object
       properties:
@@ -819,6 +710,14 @@ components:
           - boolean
           - 'null'
         providerName:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    LoginProviderResponse:
+      type: object
+      properties:
+        provider:
           type:
           - string
           - 'null'
@@ -895,6 +794,109 @@ components:
           - integer
           - 'null'
           format: int32
+      additionalProperties: false
+    SsoProvider:
+      type: object
+      properties:
+        name:
+          type:
+          - string
+          - 'null'
+        description:
+          type:
+          - string
+          - 'null'
+        identifiers:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+      additionalProperties: false
+    ERPUserResponseModelIListAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        result:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ERPUserResponseModel'
+      additionalProperties: false
+    ApiError:
+      type: object
+      properties:
+        isError:
+          type: boolean
+        exceptionMessage:
+          type:
+          - string
+          - 'null'
+        details:
+          type:
+          - string
+          - 'null'
+        referenceErrorCode:
+          type:
+          - string
+          - 'null'
+        referenceDocumentLink:
+          type:
+          - string
+          - 'null'
+        validationErrors:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ValidationError'
+      additionalProperties: false
+    LoginProviderResponseAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        result:
+          allOf:
+          - $ref: '#/components/schemas/LoginProviderResponse'
+      additionalProperties: false
+    UpdateUserProfile:
+      type: object
+      properties:
+        firstName:
+          type:
+          - string
+          - 'null'
+        lastName:
+          type:
+          - string
+          - 'null'
       additionalProperties: false
   securitySchemes:
     oidc:

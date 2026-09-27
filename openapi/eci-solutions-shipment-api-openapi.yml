@@ -105,6 +105,170 @@ paths:
           description: No Content
 components:
   schemas:
+    RateResponse:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+        service:
+          type:
+          - string
+          - 'null'
+        carrier:
+          type:
+          - string
+          - 'null'
+        rate:
+          type:
+          - string
+          - 'null'
+        currency:
+          type:
+          - string
+          - 'null'
+        billingType:
+          type:
+          - string
+          - 'null'
+        carrierAccountId:
+          type:
+          - string
+          - 'null'
+        deliveryDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        deliveryDateGuaranteed:
+          type:
+          - boolean
+          - 'null'
+      additionalProperties: false
+    AddressModel:
+      required:
+      - postalCode
+      type: object
+      properties:
+        carrierFacility:
+          type:
+          - string
+          - 'null'
+          description: The specific designation for the address (only relevant if the address is a carrier facility).
+        city:
+          type:
+          - string
+          - 'null'
+          description: The city the address is located in.
+        company:
+          type:
+          - string
+          - 'null'
+          description: The name of the company.
+        country:
+          type:
+          - string
+          - 'null'
+          description: The ISO 3166 code of the country the address is located in.
+        email:
+          type:
+          - string
+          - 'null'
+          description: The email address of the person or organization.
+        federalTaxId:
+          type:
+          - string
+          - 'null'
+          description: The federal tax ID of the person or organization.
+        name:
+          type:
+          - string
+          - 'null'
+          description: The name of the person or organization.
+        phone:
+          type:
+          - string
+          - 'null'
+          description: The phone number of the person or organization.
+        residential:
+          type:
+          - boolean
+          - 'null'
+          description: Whether the address is a residential address.
+        state:
+          type:
+          - string
+          - 'null'
+          description: The state the address is located in.
+        stateTaxId:
+          type:
+          - string
+          - 'null'
+          description: The state tax ID of the person or organization.
+        street1:
+          type:
+          - string
+          - 'null'
+          description: The first line of the street address.
+        street2:
+          type:
+          - string
+          - 'null'
+          description: The second line of the street address.
+        postalCode:
+          minLength: 1
+          type: string
+          description: The postal code the address is located in.
+        verify:
+          type:
+          - boolean
+          - 'null'
+          description: Indicates if the address should be requested to be verified or not.
+      additionalProperties: false
+    ParcelModel:
+      required:
+      - weight
+      - weight_uom
+      type: object
+      properties:
+        length:
+          minimum: 0.01
+          type:
+          - number
+          - 'null'
+          description: 'Length of the parcel (default: inches)'
+          format: double
+        width:
+          minimum: 0.01
+          type:
+          - number
+          - 'null'
+          description: 'Width of the parcel (default: inches)'
+          format: double
+        height:
+          minimum: 0.01
+          type:
+          - number
+          - 'null'
+          description: 'Height of the parcel (default: inches)'
+          format: double
+        weight:
+          minimum: 0.01
+          type: number
+          description: 'Weight of the parcel (default: ounces)'
+          format: double
+        weight_uom:
+          minLength: 1
+          type: string
+          description: The unit of measure for the shipping weight. See the list of supported units. The default value is 'lbs'
+        dimensions_uom:
+          type:
+          - string
+          - 'null'
+          description: The unit of measure for the shipping dimensions. See the list of supported units. The default value is 'in'
+      additionalProperties: false
+      description: Model representing a parcel's dimensions and weight
     SavedAddressModel:
       required:
       - postalCode
@@ -236,16 +400,6 @@ components:
           - string
           - 'null'
       additionalProperties: false
-    BuyShipmentRequest:
-      required:
-      - rateId
-      type: object
-      properties:
-        rateId:
-          minLength: 1
-          type: string
-          description: The id of the rate for which to buy the shipping label
-      additionalProperties: false
     AddressVerificationResult:
       type: object
       properties:
@@ -292,6 +446,16 @@ components:
           description: The time zone of the address
       additionalProperties: false
       description: Represents address verification results
+    BuyShipmentRequest:
+      required:
+      - rateId
+      type: object
+      properties:
+        rateId:
+          minLength: 1
+          type: string
+          description: The id of the rate for which to buy the shipping label
+      additionalProperties: false
     CreateShipmentRequest:
       required:
       - parcel
@@ -329,86 +493,6 @@ components:
           description: 'The shipping service to use for one-call buy. When specified, a shipment will be created and purchased in one step.
 
             One and only one carrier ID must be provided in the CarrierIds property when this is specified.'
-      additionalProperties: false
-    AddressModel:
-      required:
-      - postalCode
-      type: object
-      properties:
-        carrierFacility:
-          type:
-          - string
-          - 'null'
-          description: The specific designation for the address (only relevant if the address is a carrier facility).
-        city:
-          type:
-          - string
-          - 'null'
-          description: The city the address is located in.
-        company:
-          type:
-          - string
-          - 'null'
-          description: The name of the company.
-        country:
-          type:
-          - string
-          - 'null'
-          description: The ISO 3166 code of the country the address is located in.
-        email:
-          type:
-          - string
-          - 'null'
-          description: The email address of the person or organization.
-        federalTaxId:
-          type:
-          - string
-          - 'null'
-          description: The federal tax ID of the person or organization.
-        name:
-          type:
-          - string
-          - 'null'
-          description: The name of the person or organization.
-        phone:
-          type:
-          - string
-          - 'null'
-          description: The phone number of the person or organization.
-        residential:
-          type:
-          - boolean
-          - 'null'
-          description: Whether the address is a residential address.
-        state:
-          type:
-          - string
-          - 'null'
-          description: The state the address is located in.
-        stateTaxId:
-          type:
-          - string
-          - 'null'
-          description: The state tax ID of the person or organization.
-        street1:
-          type:
-          - string
-          - 'null'
-          description: The first line of the street address.
-        street2:
-          type:
-          - string
-          - 'null'
-          description: The second line of the street address.
-        postalCode:
-          minLength: 1
-          type: string
-          description: The postal code the address is located in.
-        verify:
-          type:
-          - boolean
-          - 'null'
-          description: Indicates if the address should be requested to be verified or not.
       additionalProperties: false
     ParcelResponse:
       required:
@@ -456,47 +540,6 @@ components:
           - string
           - 'null'
       additionalProperties: false
-    RateResponse:
-      type: object
-      properties:
-        id:
-          type:
-          - string
-          - 'null'
-        service:
-          type:
-          - string
-          - 'null'
-        carrier:
-          type:
-          - string
-          - 'null'
-        rate:
-          type:
-          - string
-          - 'null'
-        currency:
-          type:
-          - string
-          - 'null'
-        billingType:
-          type:
-          - string
-          - 'null'
-        carrierAccountId:
-          type:
-          - string
-          - 'null'
-        deliveryDate:
-          type:
-          - string
-          - 'null'
-          format: date-time
-        deliveryDateGuaranteed:
-          type:
-          - boolean
-          - 'null'
-      additionalProperties: false
     CreateShipmentResponse:
       type: object
       properties:
@@ -523,49 +566,6 @@ components:
         buyResult:
           $ref: '#/components/schemas/BuyShipmentResponse'
       additionalProperties: false
-    ParcelModel:
-      required:
-      - weight
-      - weight_uom
-      type: object
-      properties:
-        length:
-          minimum: 0.01
-          type:
-          - number
-          - 'null'
-          description: 'Length of the parcel (default: inches)'
-          format: double
-        width:
-          minimum: 0.01
-          type:
-          - number
-          - 'null'
-          description: 'Width of the parcel (default: inches)'
-          format: double
-        height:
-          minimum: 0.01
-          type:
-          - number
-          - 'null'
-          description: 'Height of the parcel (default: inches)'
-          format: double
-        weight:
-          minimum: 0.01
-          type: number
-          description: 'Weight of the parcel (default: ounces)'
-          format: double
-        weight_uom:
-          minLength: 1
-          type: string
-          description: The unit of measure for the shipping weight. See the list of supported units. The default value is 'lbs'
-        dimensions_uom:
-          type:
-          - string
-          - 'null'
-          description: The unit of measure for the shipping dimensions. See the list of supported units. The default value is 'in'
-      additionalProperties: false
-      description: Model representing a parcel's dimensions and weight
   securitySchemes:
     Bearer:
       type: oauth2

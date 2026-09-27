@@ -763,7 +763,7 @@ paths:
       - BOM/JOB
       summary: Returns JobAssembly for a given JobAssembly id
       description: This endpoint retrieves a JobAssembly based on its identifier.
-      operationId: BOMJobAssemblies_GetJobAssemblyAsync
+      operationId: getApiBOMJobGetJobAssembliesByJobId
       parameters:
       - name: jobId
         in: path
@@ -855,6 +855,8 @@ paths:
             text/xml:
               schema:
                 $ref: '#/components/schemas/APIResponseMessageDto'
+      x-operation-id-source: normalized
+      x-operation-id-original: BOMJobAssemblies_GetJobAssemblyAsync
   /api/BOM/Job/GetAllJobAssemblies/{pageSize}/{pageNumber}:
     get:
       tags:
@@ -2610,6 +2612,25 @@ paths:
                 $ref: '#/components/schemas/APIResponseMessageDto'
 components:
   schemas:
+    APIResponseMessageDto:
+      type: object
+      properties:
+        description:
+          type: string
+        status:
+          type: string
+        payloadID:
+          type: string
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+          readOnly: true
+        warnings:
+          type: array
+          items:
+            $ref: '#/components/schemas/Warning'
+          readOnly: true
     APSResponseMessageDto_CTMAPSJobDto:
       type: object
       properties:
@@ -2620,81 +2641,24 @@ components:
         recordCount:
           type: integer
           format: int32
-    CTMBOMJobMethodDto:
-      type: object
-      properties:
-        job:
-          $ref: '#/components/schemas/BOMJobDto'
-        jobmethodassemblies:
-          type: array
-          items:
-            $ref: '#/components/schemas/CTMBOMJobMethodAssemblyDto'
-    BOMTimecardLineDto:
+    APSJobOperationDto:
       required:
-      - timecardID
-      - timecardLineID
-      - employeeID
       - workCenterID
-      - timecardType
+      - schedStartDate
       type: object
       properties:
-        timecardID:
-          type: integer
-          format: int32
-        timecardLineID:
-          type: integer
-          format: int32
-        employeeID:
-          type: string
-        jobID:
-          type: string
-        jobAssemblyID:
-          type: integer
-          format: int32
-        jobOperationID:
-          type: integer
-          format: int32
-        workCenterID:
-          type: string
-        processID:
-          type: string
-        completionType:
-          type: integer
-          format: int32
-        workType:
-          type: integer
-          format: int32
-        timecardType:
-          type: integer
-          format: int32
-        goodQuantity:
-          type: number
-          format: double
-        scrapQuantity:
-          type: number
-          format: double
-        reworkQuantity:
-          type: number
-          format: double
-        actualStartTime:
-          type: string
-          format: date-time
-        actualEndTime:
-          type: string
-          format: date-time
-        machineHours:
-          type: number
-          format: double
-        laborHours:
-          type: number
-          format: double
         uniqueID:
           type: string
           format: uuid
           example: 00000000-0000-0000-0000-000000000000
-        rowVersion:
+        workCenterID:
           type: string
-          format: byte
+        schedStartDate:
+          type: string
+          format: date-time
+        schedEndDate:
+          type: string
+          format: date-time
     CTMJobDto:
       required:
       - jobID
@@ -2756,24 +2720,323 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/APSJobOperationDto'
-    APSJobOperationDto:
-      required:
-      - workCenterID
-      - schedStartDate
+    BOMJobGuidsDto:
       type: object
       properties:
+        jobs:
+          type: array
+          items:
+            $ref: '#/components/schemas/BOMJobGuidDto'
+    BOMJobOperationDto:
+      required:
+      - jobID
+      - jobAssemblyID
+      - jobOperationID
+      - operationType
+      - workCenterID
+      - processID
+      - processShortDescription
+      - standardFactor
+      - machineType
+      - quantityPerAssembly
+      - operationQuantity
+      type: object
+      properties:
+        jobID:
+          type: string
+        jobAssemblyID:
+          type: integer
+          format: int32
+        jobOperationID:
+          type: integer
+          format: int32
+        operationType:
+          type: integer
+          format: int32
+        workCenterID:
+          type: string
+        processID:
+          type: string
+        processShortDescription:
+          type: string
+        productionStandard:
+          type: number
+          format: double
+        standardFactor:
+          type: string
+        machinesToSchedule:
+          type: integer
+          format: int32
+        machineType:
+          type: integer
+          format: int32
+        quantityPerAssembly:
+          type: number
+          format: double
+        quantityComplete:
+          type: number
+          format: double
+        operationQuantity:
+          type: number
+          format: double
+        setupRate:
+          type: number
+          format: double
+        productionRate:
+          type: number
+          format: double
+        overheadRate:
+          type: number
+          format: double
+        partID:
+          type: string
+        partRevisionID:
+          type: string
+        partWarehouseLocationID:
+          type: string
+        partBinID:
+          type: string
+        unitOfMeasure:
+          type: string
+        plantID:
+          type: string
+        closed:
+          type: boolean
+        dueDate:
+          type: string
+          format: date-time
+    BOMJobAssemblyDto:
+      required:
+      - jobID
+      - jobAssemblyID
+      - level
+      - parentAssemblyID
+      - partID
+      - partShortDescription
+      - quantityPerParent
+      type: object
+      properties:
+        jobID:
+          type: string
+        jobAssemblyID:
+          type: integer
+          format: int32
+        level:
+          type: integer
+          format: int32
+        partWareHouseLocationID:
+          type: string
+        partBinID:
+          type: string
+        parentAssemblyID:
+          type: integer
+          format: int32
+        partID:
+          type: string
+        partRevisionID:
+          type: string
+        partShortDescription:
+          type: string
+        sourceMethodID:
+          type: string
+        sourceRevisionID:
+          type: string
+        quantityPerParent:
+          type: number
+          format: double
+        quantityToReturn:
+          type: number
+          format: double
+        unitOfMeasure:
+          type: string
+        orderQuantity:
+          type: number
+          format: double
+        productionQuantity:
+          type: number
+          format: double
+        quantityToMake:
+          type: number
+          format: double
+        quantityToPull:
+          type: number
+          format: double
+        scrapQuantity:
+          type: number
+          format: double
+        estimatedUnitCost:
+          type: number
+          format: double
+        overlapOperationID:
+          type: integer
+          format: int32
+        overlapType:
+          type: integer
+          format: int32
+        closed:
+          type: boolean
+        scheduledDueDate:
+          type: string
+          format: date-time
+    BOMTimecardDto:
+      required:
+      - timecardID
+      - employeeID
+      - shiftID
+      - timecardDate
+      type: object
+      properties:
+        timecardID:
+          type: integer
+          format: int32
+        employeeID:
+          type: string
+        shiftID:
+          type: integer
+          format: int32
+        timecardDate:
+          type: string
+          format: date-time
+        actualStartTime:
+          type: string
+          format: date-time
+        actualEndTime:
+          type: string
+          format: date-time
+        lastEndTime:
+          type: string
+          format: date-time
+        plantID:
+          type: string
+        plantDepartmentID:
+          type: string
+        postedDate:
+          type: string
+          format: date-time
         uniqueID:
           type: string
           format: uuid
           example: 00000000-0000-0000-0000-000000000000
-        workCenterID:
+        rowVersion:
           type: string
-        schedStartDate:
+          format: byte
+    BOMJobGuidDto:
+      type: object
+      properties:
+        jobId:
+          type: string
+        jobGuid:
+          type: string
+        partId:
+          type: string
+        partGuid:
+          type: string
+    BOMJobMaterialDto:
+      required:
+      - jobID
+      - jobAssemblyID
+      - jobMaterialID
+      - partID
+      - partShortDescription
+      - quantityPerAssembly
+      - relatedJobOperationID
+      type: object
+      properties:
+        jobID:
+          type: string
+        jobAssemblyID:
+          type: integer
+          format: int32
+        jobMaterialID:
+          type: integer
+          format: int32
+        partID:
+          type: string
+        partRevisionID:
+          type: string
+        partWarehouseLocationID:
+          type: string
+        partBinID:
+          type: string
+        unitOfMeasure:
+          type: string
+        partShortDescription:
+          type: string
+        quantityPerAssembly:
+          type: number
+          format: double
+        scrapPercent:
+          type: number
+          format: double
+        scrapQuantity:
+          type: number
+          format: double
+        estimatedQuantity:
+          type: number
+          format: double
+        estimatedUnitCost:
+          type: number
+          format: double
+        calculatedUnitCost:
+          type: number
+          format: double
+        firm:
+          type: boolean
+        supplierOrganizationID:
+          type: string
+        purchaseLocationID:
+          type: string
+        purchaseOrderID:
+          type: string
+        leadTime:
+          type: integer
+          format: int32
+        minimumCharge:
+          type: number
+          format: double
+        dueInDate:
           type: string
           format: date-time
-        schedEndDate:
+        requiredDate:
           type: string
           format: date-time
+        quantityAllocated:
+          type: number
+          format: double
+        quantityReceived:
+          type: number
+          format: double
+        scrapQuantityReceived:
+          type: number
+          format: double
+        quantityToInspect:
+          type: number
+          format: double
+        quantityToReturn:
+          type: number
+          format: double
+        receivedComplete:
+          type: boolean
+        purchaseToJobQuantity:
+          type: number
+          format: double
+        pullAllFromStock:
+          type: boolean
+        pullFromStockQuantity:
+          type: number
+          format: double
+        closed:
+          type: boolean
+        uniqueID:
+          type: string
+          format: uuid
+          example: 00000000-0000-0000-0000-000000000000
+        rowVersion:
+          type: string
+          format: byte
+        relatedJobOperationID:
+          type: integer
+          format: int32
     CTMAPSJobOperationDto:
       required:
       - jobID
@@ -2891,242 +3154,120 @@ components:
         estimatedUnitCost:
           type: number
           format: double
-    BOMTimecardDto:
-      required:
-      - timecardID
-      - employeeID
-      - shiftID
-      - timecardDate
+    Error:
       type: object
       properties:
-        timecardID:
-          type: integer
-          format: int32
-        employeeID:
+        innerText:
           type: string
-        shiftID:
-          type: integer
-          format: int32
-        timecardDate:
-          type: string
-          format: date-time
-        actualStartTime:
-          type: string
-          format: date-time
-        actualEndTime:
-          type: string
-          format: date-time
-        lastEndTime:
-          type: string
-          format: date-time
-        plantID:
-          type: string
-        plantDepartmentID:
-          type: string
-        postedDate:
-          type: string
-          format: date-time
-        uniqueID:
-          type: string
-          format: uuid
-          example: 00000000-0000-0000-0000-000000000000
-        rowVersion:
-          type: string
-          format: byte
-    BOMJobAssemblyDto:
-      required:
-      - jobID
-      - jobAssemblyID
-      - level
-      - parentAssemblyID
-      - partID
-      - partShortDescription
-      - quantityPerParent
+    CTMBOMJobMethodAssemblyDto:
+      type: object
+      properties:
+        jobAssembly:
+          $ref: '#/components/schemas/BOMJobAssemblyDto'
+        jobOperations:
+          type: array
+          items:
+            $ref: '#/components/schemas/BOMJobOperationDto'
+        jobMaterials:
+          type: array
+          items:
+            $ref: '#/components/schemas/BOMJobMaterialDto'
+    BOMJobDto:
       type: object
       properties:
         jobID:
           type: string
-        jobAssemblyID:
-          type: integer
-          format: int32
-        level:
-          type: integer
-          format: int32
-        partWareHouseLocationID:
+        plantID:
           type: string
-        partBinID:
+        productionDueDate:
           type: string
-        parentAssemblyID:
-          type: integer
-          format: int32
+          format: date-time
+        customerOrganizationID:
+          type: string
         partID:
           type: string
         partRevisionID:
           type: string
-        partShortDescription:
+        partWareHouseLocationID:
           type: string
-        sourceMethodID:
+        partBinID:
           type: string
-        sourceRevisionID:
-          type: string
-        quantityPerParent:
-          type: number
-          format: double
-        quantityToReturn:
-          type: number
-          format: double
+        jobPriorityID:
+          type: integer
+          format: int32
         unitOfMeasure:
           type: string
         orderQuantity:
           type: number
           format: double
-        productionQuantity:
-          type: number
-          format: double
-        quantityToMake:
-          type: number
-          format: double
-        quantityToPull:
+        inventoryQuantity:
           type: number
           format: double
         scrapQuantity:
           type: number
           format: double
-        estimatedUnitCost:
+        scrapQuantityCompleted:
           type: number
           format: double
-        overlapOperationID:
-          type: integer
-          format: int32
-        overlapType:
-          type: integer
-          format: int32
+        reworkQuantity:
+          type: number
+          format: double
+        reworkDate:
+          type: string
+          format: date-time
+        productionQuantity:
+          type: number
+          format: double
+        planningComplete:
+          type: boolean
+        scheduleComplete:
+          type: boolean
+        productionComplete:
+          type: boolean
+        releasedToFloor:
+          type: boolean
         closed:
+          type: boolean
+        projectAreaID:
+          type: string
+        projectID:
+          type: string
+        partForecastPeriodID:
+          type: integer
+          format: int32
+        partForecastYearID:
+          type: integer
+          format: int32
+        firm:
+          type: boolean
+        quantityShipped:
+          type: number
+          format: double
+        quantityReceivedToInventory:
+          type: number
+          format: double
+        nestlinkProcessed:
           type: boolean
         scheduledDueDate:
           type: string
           format: date-time
-    BOMJobMaterialDto:
+    BOMTimecardLineDto:
       required:
-      - jobID
-      - jobAssemblyID
-      - jobMaterialID
-      - partID
-      - partShortDescription
-      - quantityPerAssembly
-      - relatedJobOperationID
-      type: object
-      properties:
-        jobID:
-          type: string
-        jobAssemblyID:
-          type: integer
-          format: int32
-        jobMaterialID:
-          type: integer
-          format: int32
-        partID:
-          type: string
-        partRevisionID:
-          type: string
-        partWarehouseLocationID:
-          type: string
-        partBinID:
-          type: string
-        unitOfMeasure:
-          type: string
-        partShortDescription:
-          type: string
-        quantityPerAssembly:
-          type: number
-          format: double
-        scrapPercent:
-          type: number
-          format: double
-        scrapQuantity:
-          type: number
-          format: double
-        estimatedQuantity:
-          type: number
-          format: double
-        estimatedUnitCost:
-          type: number
-          format: double
-        calculatedUnitCost:
-          type: number
-          format: double
-        firm:
-          type: boolean
-        supplierOrganizationID:
-          type: string
-        purchaseLocationID:
-          type: string
-        purchaseOrderID:
-          type: string
-        leadTime:
-          type: integer
-          format: int32
-        minimumCharge:
-          type: number
-          format: double
-        dueInDate:
-          type: string
-          format: date-time
-        requiredDate:
-          type: string
-          format: date-time
-        quantityAllocated:
-          type: number
-          format: double
-        quantityReceived:
-          type: number
-          format: double
-        scrapQuantityReceived:
-          type: number
-          format: double
-        quantityToInspect:
-          type: number
-          format: double
-        quantityToReturn:
-          type: number
-          format: double
-        receivedComplete:
-          type: boolean
-        purchaseToJobQuantity:
-          type: number
-          format: double
-        pullAllFromStock:
-          type: boolean
-        pullFromStockQuantity:
-          type: number
-          format: double
-        closed:
-          type: boolean
-        uniqueID:
-          type: string
-          format: uuid
-          example: 00000000-0000-0000-0000-000000000000
-        rowVersion:
-          type: string
-          format: byte
-        relatedJobOperationID:
-          type: integer
-          format: int32
-    BOMJobOperationDto:
-      required:
-      - jobID
-      - jobAssemblyID
-      - jobOperationID
-      - operationType
+      - timecardID
+      - timecardLineID
+      - employeeID
       - workCenterID
-      - processID
-      - processShortDescription
-      - standardFactor
-      - machineType
-      - quantityPerAssembly
-      - operationQuantity
+      - timecardType
       type: object
       properties:
+        timecardID:
+          type: integer
+          format: int32
+        timecardLineID:
+          type: integer
+          format: int32
+        employeeID:
+          type: string
         jobID:
           type: string
         jobAssemblyID:
@@ -3135,61 +3276,47 @@ components:
         jobOperationID:
           type: integer
           format: int32
-        operationType:
-          type: integer
-          format: int32
         workCenterID:
           type: string
         processID:
           type: string
-        processShortDescription:
-          type: string
-        productionStandard:
-          type: number
-          format: double
-        standardFactor:
-          type: string
-        machinesToSchedule:
+        completionType:
           type: integer
           format: int32
-        machineType:
+        workType:
           type: integer
           format: int32
-        quantityPerAssembly:
+        timecardType:
+          type: integer
+          format: int32
+        goodQuantity:
           type: number
           format: double
-        quantityComplete:
+        scrapQuantity:
           type: number
           format: double
-        operationQuantity:
+        reworkQuantity:
           type: number
           format: double
-        setupRate:
-          type: number
-          format: double
-        productionRate:
-          type: number
-          format: double
-        overheadRate:
-          type: number
-          format: double
-        partID:
-          type: string
-        partRevisionID:
-          type: string
-        partWarehouseLocationID:
-          type: string
-        partBinID:
-          type: string
-        unitOfMeasure:
-          type: string
-        plantID:
-          type: string
-        closed:
-          type: boolean
-        dueDate:
+        actualStartTime:
           type: string
           format: date-time
+        actualEndTime:
+          type: string
+          format: date-time
+        machineHours:
+          type: number
+          format: double
+        laborHours:
+          type: number
+          format: double
+        uniqueID:
+          type: string
+          format: uuid
+          example: 00000000-0000-0000-0000-000000000000
+        rowVersion:
+          type: string
+          format: byte
     CTMAPSJobDto:
       type: object
       properties:
@@ -3306,140 +3433,15 @@ components:
       properties:
         innerText:
           type: string
-    BOMJobGuidDto:
+    CTMBOMJobMethodDto:
       type: object
       properties:
-        jobId:
-          type: string
-        jobGuid:
-          type: string
-        partId:
-          type: string
-        partGuid:
-          type: string
-    BOMJobDto:
-      type: object
-      properties:
-        jobID:
-          type: string
-        plantID:
-          type: string
-        productionDueDate:
-          type: string
-          format: date-time
-        customerOrganizationID:
-          type: string
-        partID:
-          type: string
-        partRevisionID:
-          type: string
-        partWareHouseLocationID:
-          type: string
-        partBinID:
-          type: string
-        jobPriorityID:
-          type: integer
-          format: int32
-        unitOfMeasure:
-          type: string
-        orderQuantity:
-          type: number
-          format: double
-        inventoryQuantity:
-          type: number
-          format: double
-        scrapQuantity:
-          type: number
-          format: double
-        scrapQuantityCompleted:
-          type: number
-          format: double
-        reworkQuantity:
-          type: number
-          format: double
-        reworkDate:
-          type: string
-          format: date-time
-        productionQuantity:
-          type: number
-          format: double
-        planningComplete:
-          type: boolean
-        scheduleComplete:
-          type: boolean
-        productionComplete:
-          type: boolean
-        releasedToFloor:
-          type: boolean
-        closed:
-          type: boolean
-        projectAreaID:
-          type: string
-        projectID:
-          type: string
-        partForecastPeriodID:
-          type: integer
-          format: int32
-        partForecastYearID:
-          type: integer
-          format: int32
-        firm:
-          type: boolean
-        quantityShipped:
-          type: number
-          format: double
-        quantityReceivedToInventory:
-          type: number
-          format: double
-        nestlinkProcessed:
-          type: boolean
-        scheduledDueDate:
-          type: string
-          format: date-time
-    BOMJobGuidsDto:
-      type: object
-      properties:
-        jobs:
+        job:
+          $ref: '#/components/schemas/BOMJobDto'
+        jobmethodassemblies:
           type: array
           items:
-            $ref: '#/components/schemas/BOMJobGuidDto'
-    APIResponseMessageDto:
-      type: object
-      properties:
-        description:
-          type: string
-        status:
-          type: string
-        payloadID:
-          type: string
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/Error'
-          readOnly: true
-        warnings:
-          type: array
-          items:
-            $ref: '#/components/schemas/Warning'
-          readOnly: true
-    CTMBOMJobMethodAssemblyDto:
-      type: object
-      properties:
-        jobAssembly:
-          $ref: '#/components/schemas/BOMJobAssemblyDto'
-        jobOperations:
-          type: array
-          items:
-            $ref: '#/components/schemas/BOMJobOperationDto'
-        jobMaterials:
-          type: array
-          items:
-            $ref: '#/components/schemas/BOMJobMaterialDto'
-    Error:
-      type: object
-      properties:
-        innerText:
-          type: string
+            $ref: '#/components/schemas/CTMBOMJobMethodAssemblyDto'
   securitySchemes:
     oauth2:
       type: oauth2

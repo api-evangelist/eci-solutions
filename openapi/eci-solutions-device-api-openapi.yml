@@ -260,41 +260,6 @@ components:
           - string
           - 'null'
       additionalProperties: {}
-    DeviceAuthorizationModel:
-      required:
-      - code
-      type: object
-      properties:
-        code:
-          minLength: 1
-          type: string
-          description: The activation code displayed on the device.
-        companyId:
-          type:
-          - string
-          - 'null'
-          description: "The Company ID of the Customer that the device is being activated for, or a string in the format 'PREFIX:VALUE' where prefix\nis CustomerID, NexusID, or a customer alias value available in Nexus by which the company can be \nidentified."
-        properties:
-          type:
-          - object
-          - 'null'
-          additionalProperties:
-            type: string
-          description: Application specific to provide the device on activation
-        credential:
-          allOf:
-          - $ref: '#/components/schemas/DeviceCredentialModel'
-          description: 'If set, this credential will be provided to the device
-
-            on activation.'
-      additionalProperties: false
-    DeviceCredentialType:
-      enum:
-      - None
-      - Token
-      - Secret
-      - TokenAndSecret
-      type: string
     DeviceModel:
       type: object
       properties:
@@ -325,6 +290,13 @@ components:
           allOf:
           - $ref: '#/components/schemas/DeviceCredentialType'
       additionalProperties: false
+    DeviceCredentialType:
+      enum:
+      - None
+      - Token
+      - Secret
+      - TokenAndSecret
+      type: string
     DeviceModelCountResponse:
       type: object
       properties:
@@ -337,6 +309,34 @@ components:
           - 'null'
           items:
             $ref: '#/components/schemas/DeviceModel'
+      additionalProperties: false
+    DeviceAuthorizationModel:
+      required:
+      - code
+      type: object
+      properties:
+        code:
+          minLength: 1
+          type: string
+          description: The activation code displayed on the device.
+        companyId:
+          type:
+          - string
+          - 'null'
+          description: "The Company ID of the Customer that the device is being activated for, or a string in the format 'PREFIX:VALUE' where prefix\nis CustomerID, NexusID, or a customer alias value available in Nexus by which the company can be \nidentified."
+        properties:
+          type:
+          - object
+          - 'null'
+          additionalProperties:
+            type: string
+          description: Application specific to provide the device on activation
+        credential:
+          allOf:
+          - $ref: '#/components/schemas/DeviceCredentialModel'
+          description: 'If set, this credential will be provided to the device
+
+            on activation.'
       additionalProperties: false
   securitySchemes:
     oidc:

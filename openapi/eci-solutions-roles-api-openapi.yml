@@ -42,17 +42,29 @@ paths:
                 $ref: '#/components/schemas/RoleIEnumerableAPIResponse'
 components:
   schemas:
-    ValidationError:
+    RoleIEnumerableAPIResponse:
       type: object
       properties:
-        field:
+        version:
           type:
           - string
           - 'null'
+        statusCode:
+          type: integer
+          format: int32
         message:
           type:
           - string
           - 'null'
+        responseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        result:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Role'
       additionalProperties: false
     ApiError:
       type: object
@@ -82,30 +94,6 @@ components:
           items:
             $ref: '#/components/schemas/ValidationError'
       additionalProperties: false
-    RoleIEnumerableAPIResponse:
-      type: object
-      properties:
-        version:
-          type:
-          - string
-          - 'null'
-        statusCode:
-          type: integer
-          format: int32
-        message:
-          type:
-          - string
-          - 'null'
-        responseException:
-          allOf:
-          - $ref: '#/components/schemas/ApiError'
-        result:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/Role'
-      additionalProperties: false
     Role:
       type: object
       properties:
@@ -127,6 +115,18 @@ components:
           items:
             type: integer
             format: int32
+      additionalProperties: false
+    ValidationError:
+      type: object
+      properties:
+        field:
+          type:
+          - string
+          - 'null'
+        message:
+          type:
+          - string
+          - 'null'
       additionalProperties: false
   securitySchemes:
     oidc:

@@ -649,7 +649,7 @@ paths:
       tags:
       - BOM/PART
       summary: Returns part and part assembly details for a given M1 method assembly GUID
-      operationId: BOMPart_GetPartAssemblyAsync
+      operationId: getApiBOMPartGetPartAssemblyByMethodAsmGuid
       parameters:
       - name: methodAsmGuid
         in: path
@@ -740,6 +740,8 @@ paths:
             text/xml:
               schema:
                 $ref: '#/components/schemas/APIResponseMessageDto'
+      x-operation-id-source: normalized
+      x-operation-id-original: BOMPart_GetPartAssemblyAsync
   /api/BOM/Part/PostPartAssembly:
     post:
       tags:
@@ -963,7 +965,7 @@ paths:
       tags:
       - BOM/PART
       summary: Deletes a part assembly for method assembly GUID.
-      operationId: BOMPart_DeletePartAssemblyAsync
+      operationId: deleteApiBOMPartDeletePartAssemblyByMethodAsmGuid
       parameters:
       - name: methodAsmGuid
         in: path
@@ -1055,6 +1057,8 @@ paths:
             text/xml:
               schema:
                 $ref: '#/components/schemas/APIResponseMessageDto'
+      x-operation-id-source: normalized
+      x-operation-id-original: BOMPart_DeletePartAssemblyAsync
   /api/BOM/Part/PostPartOperation:
     post:
       tags:
@@ -1286,7 +1290,7 @@ paths:
       tags:
       - BOM/PART
       summary: Deletes a part operation for method operation GUID.
-      operationId: BOMPart_DeletePartOperationAsync
+      operationId: deleteApiBOMPartDeletePartOperationByMethodOperationGuid
       parameters:
       - name: methodOperationGuid
         in: path
@@ -1378,6 +1382,8 @@ paths:
             text/xml:
               schema:
                 $ref: '#/components/schemas/APIResponseMessageDto'
+      x-operation-id-source: normalized
+      x-operation-id-original: BOMPart_DeletePartOperationAsync
   /api/BOM/Part/GetPartMaterial/{methodId}/{methodRevisionId}/{methodAssemblyId}:
     get:
       tags:
@@ -1503,7 +1509,7 @@ paths:
       tags:
       - BOM/PART
       summary: Returns part material for method material GUID.
-      operationId: BOMPart_GetPartMaterialAsync
+      operationId: getApiBOMPartGetPartMaterialByMethodMaterialGuid
       parameters:
       - name: methodMaterialGuid
         in: path
@@ -1603,6 +1609,8 @@ paths:
             text/xml:
               schema:
                 $ref: '#/components/schemas/APIResponseMessageDto'
+      x-operation-id-source: normalized
+      x-operation-id-original: BOMPart_GetPartMaterialAsync
   /api/BOM/Part/PostPartMaterial:
     post:
       tags:
@@ -1834,7 +1842,7 @@ paths:
       tags:
       - BOM/PART
       summary: Deletes a part material for method material GUID.
-      operationId: BOMPart_DeletePartMaterialAsync
+      operationId: deleteApiBOMPartDeletePartMaterialByMethodMaterialGuid
       parameters:
       - name: methodMaterialGuid
         in: path
@@ -1926,6 +1934,8 @@ paths:
             text/xml:
               schema:
                 $ref: '#/components/schemas/APIResponseMessageDto'
+      x-operation-id-source: normalized
+      x-operation-id-original: BOMPart_DeletePartMaterialAsync
   /api/BOM/Part/GetPartMethodBOM/{partId}/{partRevisionId}/{partAssemblyId}:
     get:
       tags:
@@ -2043,7 +2053,7 @@ paths:
       tags:
       - BOM/PART
       summary: Returns part method BOM details for a given part assembly guid.
-      operationId: BOMPart_GetPartMethodBomAsync
+      operationId: getApiBOMPartGetPartMethodBOMByPartAssemblyGuid
       parameters:
       - name: partAssemblyGuid
         in: path
@@ -2135,6 +2145,8 @@ paths:
             text/xml:
               schema:
                 $ref: '#/components/schemas/APIResponseMessageDto'
+      x-operation-id-source: normalized
+      x-operation-id-original: BOMPart_GetPartMethodBomAsync
   /api/BOM/Part/GetPartMethodGUIDs/{partId}:
     get:
       tags:
@@ -2445,227 +2457,6 @@ paths:
                 $ref: '#/components/schemas/APIResponseMessageDto'
 components:
   schemas:
-    CTMBOMPartRevisionDto:
-      required:
-      - part
-      type: object
-      properties:
-        part:
-          $ref: '#/components/schemas/BOMPartDto'
-        partRevisions:
-          type: array
-          items:
-            $ref: '#/components/schemas/BOMPartRevisionDto'
-    BOMPartMaterialDto:
-      required:
-      - methodID
-      - methodAssemblyID
-      - methodMaterialID
-      - partID
-      - partShortDescription
-      type: object
-      properties:
-        methodID:
-          type: string
-        methodRevisionID:
-          type: string
-        methodAssemblyID:
-          type: integer
-          format: int32
-        methodMaterialID:
-          type: integer
-          format: int32
-        partID:
-          type: string
-        partRevisionID:
-          type: string
-        relatedPartOperationID:
-          type: integer
-          format: int32
-        partShortDescription:
-          type: string
-        unitOfMeasure:
-          type: string
-        estimatedUnitCost:
-          type: number
-          format: double
-        leadTime:
-          type: integer
-          format: int32
-        supplierOrganizationID:
-          type: string
-        purchaseLocationID:
-          type: string
-        quantityPerParent:
-          type: number
-          format: double
-        manualPart:
-          type: boolean
-        partLongDescription:
-          type: string
-        backflush:
-          type: boolean
-        scrapQuantity:
-          type: number
-          format: double
-        scrapPercent:
-          type: number
-          format: double
-    CTMBOMPartMethodDto:
-      type: object
-      properties:
-        part:
-          $ref: '#/components/schemas/BOMPartDto'
-        partRevision:
-          $ref: '#/components/schemas/BOMPartRevisionDto'
-        partAssemblies:
-          type: array
-          items:
-            $ref: '#/components/schemas/BOMPartMethodAssemblyDto'
-    BOMPartDto:
-      required:
-      - partID
-      - shortDescription
-      - partType
-      type: object
-      properties:
-        partID:
-          type: string
-        shortDescription:
-          type: string
-        partType:
-          type: integer
-          format: int32
-        partClassID:
-          type: string
-        partGroupID:
-          type: string
-        longDescription:
-          type: string
-        deliveryType:
-          type: integer
-          format: int32
-        buyForInventory:
-          type: boolean
-        nonStockedItem:
-          type: boolean
-    CTMBOMPartMethodGuidsDto:
-      type: object
-      properties:
-        partMethodGuids:
-          type: array
-          items:
-            $ref: '#/components/schemas/CTMBOMPartMethodGuidDto'
-    Warning:
-      type: object
-      properties:
-        innerText:
-          type: string
-    BOMPartAssemblyDto:
-      required:
-      - methodID
-      - methodAssemblyID
-      - level
-      - useMethod
-      - parentAssemblyID
-      - partID
-      - partShortDescription
-      type: object
-      properties:
-        methodID:
-          type: string
-        methodRevisionID:
-          type: string
-        methodAssemblyID:
-          type: integer
-          format: int32
-        level:
-          type: integer
-          format: int32
-        useMethod:
-          type: boolean
-        parentAssemblyID:
-          type: integer
-          format: int32
-        partID:
-          type: string
-        partRevisionID:
-          type: string
-        partShortDescription:
-          type: string
-        unitOfMeasure:
-          type: string
-        quantityPerParent:
-          type: number
-          format: double
-        overlapOperationID:
-          type: integer
-          format: int32
-        partLongDescription:
-          type: string
-    CTMBOMPartAssemblyGuidDto:
-      type: object
-      properties:
-        assemblyId:
-          type: integer
-          format: int32
-        assemblyGuid:
-          type: string
-        partMaterialGuids:
-          type: array
-          items:
-            $ref: '#/components/schemas/CTMBOMPartMaterialGuidDto'
-        partOperationGuids:
-          type: array
-          items:
-            $ref: '#/components/schemas/CTMBOMPartOperationGuidDto'
-    CTMBOMPartMaterialGuidDto:
-      type: object
-      properties:
-        materialId:
-          type: integer
-          format: int32
-        materialGuid:
-          type: string
-    CTMBOMPartOperationGuidDto:
-      type: object
-      properties:
-        operationId:
-          type: integer
-          format: int32
-        operationGuid:
-          type: string
-    CTMBOMPartRevisionGuidDto:
-      type: object
-      properties:
-        revisionId:
-          type: string
-        revisionGuid:
-          type: string
-        partAssemblyGuids:
-          type: array
-          items:
-            $ref: '#/components/schemas/CTMBOMPartAssemblyGuidDto'
-    BOMResponseMessageDto_BOMPartMaterialDto:
-      type: object
-      properties:
-        responseInfo:
-          $ref: '#/components/schemas/APIResponseMessageDto'
-        returnObject:
-          $ref: '#/components/schemas/BOMPartMaterialDto'
-    BOMPartMethodAssemblyDto:
-      type: object
-      properties:
-        assembly:
-          $ref: '#/components/schemas/BOMPartAssemblyDto'
-        operations:
-          type: array
-          items:
-            $ref: '#/components/schemas/BOMPartOperationDto'
-        materials:
-          type: array
-          items:
-            $ref: '#/components/schemas/BOMPartMaterialDto'
     BOMPartRevisionDto:
       required:
       - partID
@@ -2810,6 +2601,61 @@ components:
         thickness:
           type: number
           format: double
+    BOMPartMaterialDto:
+      required:
+      - methodID
+      - methodAssemblyID
+      - methodMaterialID
+      - partID
+      - partShortDescription
+      type: object
+      properties:
+        methodID:
+          type: string
+        methodRevisionID:
+          type: string
+        methodAssemblyID:
+          type: integer
+          format: int32
+        methodMaterialID:
+          type: integer
+          format: int32
+        partID:
+          type: string
+        partRevisionID:
+          type: string
+        relatedPartOperationID:
+          type: integer
+          format: int32
+        partShortDescription:
+          type: string
+        unitOfMeasure:
+          type: string
+        estimatedUnitCost:
+          type: number
+          format: double
+        leadTime:
+          type: integer
+          format: int32
+        supplierOrganizationID:
+          type: string
+        purchaseLocationID:
+          type: string
+        quantityPerParent:
+          type: number
+          format: double
+        manualPart:
+          type: boolean
+        partLongDescription:
+          type: string
+        backflush:
+          type: boolean
+        scrapQuantity:
+          type: number
+          format: double
+        scrapPercent:
+          type: number
+          format: double
     APIResponseMessageDto:
       type: object
       properties:
@@ -2829,6 +2675,194 @@ components:
           items:
             $ref: '#/components/schemas/Warning'
           readOnly: true
+    CTMBOMPartMethodGuidDto:
+      type: object
+      properties:
+        partId:
+          type: string
+        partGuid:
+          type: string
+        partRevisionGuids:
+          type: array
+          items:
+            $ref: '#/components/schemas/CTMBOMPartRevisionGuidDto'
+    BOMPartAssemblyDto:
+      required:
+      - methodID
+      - methodAssemblyID
+      - level
+      - useMethod
+      - parentAssemblyID
+      - partID
+      - partShortDescription
+      type: object
+      properties:
+        methodID:
+          type: string
+        methodRevisionID:
+          type: string
+        methodAssemblyID:
+          type: integer
+          format: int32
+        level:
+          type: integer
+          format: int32
+        useMethod:
+          type: boolean
+        parentAssemblyID:
+          type: integer
+          format: int32
+        partID:
+          type: string
+        partRevisionID:
+          type: string
+        partShortDescription:
+          type: string
+        unitOfMeasure:
+          type: string
+        quantityPerParent:
+          type: number
+          format: double
+        overlapOperationID:
+          type: integer
+          format: int32
+        partLongDescription:
+          type: string
+    BOMPartBinDetailDto:
+      required:
+      - partID
+      type: object
+      properties:
+        partID:
+          type: string
+        partRevisionID:
+          type: string
+        partBinID:
+          type: string
+        partBinDetailID:
+          type: integer
+          format: int32
+        transactionDate:
+          type: string
+          format: date-time
+        quantityType:
+          type: integer
+          format: int32
+        originalQuantity:
+          type: number
+          format: double
+        remainingQuantity:
+          type: number
+          format: double
+        unitCost:
+          type: number
+          format: double
+        sourceTableName:
+          type: string
+        createdBy:
+          type: string
+        createdDate:
+          type: string
+          format: date-time
+        uniqueID:
+          type: string
+          format: uuid
+          example: 00000000-0000-0000-0000-000000000000
+        rowVersion:
+          type: string
+          format: byte
+        warehouseID:
+          type: string
+    BOMResponseMessageDto_BOMPartMaterialDto:
+      type: object
+      properties:
+        responseInfo:
+          $ref: '#/components/schemas/APIResponseMessageDto'
+        returnObject:
+          $ref: '#/components/schemas/BOMPartMaterialDto'
+    CTMBOMPartAssemblyGuidDto:
+      type: object
+      properties:
+        assemblyId:
+          type: integer
+          format: int32
+        assemblyGuid:
+          type: string
+        partMaterialGuids:
+          type: array
+          items:
+            $ref: '#/components/schemas/CTMBOMPartMaterialGuidDto'
+        partOperationGuids:
+          type: array
+          items:
+            $ref: '#/components/schemas/CTMBOMPartOperationGuidDto'
+    BOMPartDto:
+      required:
+      - partID
+      - shortDescription
+      - partType
+      type: object
+      properties:
+        partID:
+          type: string
+        shortDescription:
+          type: string
+        partType:
+          type: integer
+          format: int32
+        partClassID:
+          type: string
+        partGroupID:
+          type: string
+        longDescription:
+          type: string
+        deliveryType:
+          type: integer
+          format: int32
+        buyForInventory:
+          type: boolean
+        nonStockedItem:
+          type: boolean
+    Error:
+      type: object
+      properties:
+        innerText:
+          type: string
+    CTMBOMPartRevisionGuidDto:
+      type: object
+      properties:
+        revisionId:
+          type: string
+        revisionGuid:
+          type: string
+        partAssemblyGuids:
+          type: array
+          items:
+            $ref: '#/components/schemas/CTMBOMPartAssemblyGuidDto'
+    CTMBOMPartRevisionDto:
+      required:
+      - part
+      type: object
+      properties:
+        part:
+          $ref: '#/components/schemas/BOMPartDto'
+        partRevisions:
+          type: array
+          items:
+            $ref: '#/components/schemas/BOMPartRevisionDto'
+    BOMPartMethodAssemblyDto:
+      type: object
+      properties:
+        assembly:
+          $ref: '#/components/schemas/BOMPartAssemblyDto'
+        operations:
+          type: array
+          items:
+            $ref: '#/components/schemas/BOMPartOperationDto'
+        materials:
+          type: array
+          items:
+            $ref: '#/components/schemas/BOMPartMaterialDto'
     BOMPartOperationDto:
       required:
       - methodID
@@ -2876,67 +2910,45 @@ components:
         quantityPerAssembly:
           type: number
           format: double
-    CTMBOMPartMethodGuidDto:
+    CTMBOMPartMaterialGuidDto:
       type: object
       properties:
-        partId:
+        materialId:
+          type: integer
+          format: int32
+        materialGuid:
           type: string
-        partGuid:
+    CTMBOMPartOperationGuidDto:
+      type: object
+      properties:
+        operationId:
+          type: integer
+          format: int32
+        operationGuid:
           type: string
-        partRevisionGuids:
+    CTMBOMPartMethodDto:
+      type: object
+      properties:
+        part:
+          $ref: '#/components/schemas/BOMPartDto'
+        partRevision:
+          $ref: '#/components/schemas/BOMPartRevisionDto'
+        partAssemblies:
           type: array
           items:
-            $ref: '#/components/schemas/CTMBOMPartRevisionGuidDto'
-    BOMPartBinDetailDto:
-      required:
-      - partID
-      type: object
-      properties:
-        partID:
-          type: string
-        partRevisionID:
-          type: string
-        partBinID:
-          type: string
-        partBinDetailID:
-          type: integer
-          format: int32
-        transactionDate:
-          type: string
-          format: date-time
-        quantityType:
-          type: integer
-          format: int32
-        originalQuantity:
-          type: number
-          format: double
-        remainingQuantity:
-          type: number
-          format: double
-        unitCost:
-          type: number
-          format: double
-        sourceTableName:
-          type: string
-        createdBy:
-          type: string
-        createdDate:
-          type: string
-          format: date-time
-        uniqueID:
-          type: string
-          format: uuid
-          example: 00000000-0000-0000-0000-000000000000
-        rowVersion:
-          type: string
-          format: byte
-        warehouseID:
-          type: string
-    Error:
+            $ref: '#/components/schemas/BOMPartMethodAssemblyDto'
+    Warning:
       type: object
       properties:
         innerText:
           type: string
+    CTMBOMPartMethodGuidsDto:
+      type: object
+      properties:
+        partMethodGuids:
+          type: array
+          items:
+            $ref: '#/components/schemas/CTMBOMPartMethodGuidDto'
   securitySchemes:
     oauth2:
       type: oauth2

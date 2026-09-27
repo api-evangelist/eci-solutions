@@ -996,207 +996,125 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    AccountModel:
+    ChartAccountResponseModelAPIResponse:
+      type: object
+      properties:
+        Version:
+          type:
+          - string
+          - 'null'
+        StatusCode:
+          type: integer
+          format: int32
+        Message:
+          type:
+          - string
+          - 'null'
+        ResponseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        Result:
+          allOf:
+          - $ref: '#/components/schemas/ChartAccountResponseModel'
+          description: A summary record representing a GL account.
+      additionalProperties: false
+    InvoiceResponseModel:
+      type: object
+      properties:
+        invoiceId:
+          type:
+          - string
+          - 'null'
+        docNumber:
+          type:
+          - string
+          - 'null'
+        syncToken:
+          type:
+          - string
+          - 'null'
+        active:
+          type:
+          - boolean
+          - 'null'
+          description: 'IsActive for the Invoice
+
+            QBO: N/A
+
+            Xero: N/A
+
+            MYOB: N/A
+
+            Sage: N/A'
+        createDateTime:
+          type:
+          - string
+          - 'null'
+          description: 'The create date and time date for the Invoice.
+
+            QBO: MetaData.CreateTime
+
+            MYOB: Created
+
+            Xero: Date
+
+            Sage: N/A'
+          format: date-time
+        modifyDateTime:
+          type:
+          - string
+          - 'null'
+          description: 'The modify date and time date for the Invoice.
+
+            QBO: MetaData.LastUpdatedTime
+
+            MYOB: LastModified
+
+            Xero: UpdatedDateUTC
+
+            SAGE: N/A'
+          format: date-time
+      additionalProperties: false
+    InvoiceModelAPIResponse:
+      type: object
+      properties:
+        Version:
+          type:
+          - string
+          - 'null'
+        StatusCode:
+          type: integer
+          format: int32
+        Message:
+          type:
+          - string
+          - 'null'
+        ResponseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        Result:
+          allOf:
+          - $ref: '#/components/schemas/InvoiceModel'
+          description: 'This class is being used to have invoice details
+
+            Sage: https://developer.sage.com/accounting/reference/invoicing-sales/#tag/Sales-Invoices'
+      additionalProperties: false
+    ContentResponseModel:
       type: object
       properties:
         id:
           type:
           - string
           - 'null'
-          description: Unique id of the account. Provide when updating the record.
-        override:
-          type: boolean
-          description: Set to true to force an update to the record regardless of version conflict. SyncToken is not required if Override is true.
+          description: Unique id of the entity.
         syncToken:
           type:
           - string
           - 'null'
-          description: SyncToken to ensure updating the latest version of the record. Used for updating with QBO and MYOB.
-        upsert:
-          type: boolean
-          description: 'When no unique Id is provided, allow updating if a matching Account record exists, otherwise create a new record.
-
-            QBO: Update a matching record by Name.
-
-            Xero: Update a matching record by Name.
-
-            MYOB: Update a matching record by Name.
-
-            Sage: Update a matching record by Name.'
-        name:
-          type:
-          - string
-          - 'null'
-          description: 'Account name. Max chars: 60.
-
-            QBO: Name
-
-            Xero: Name
-
-            MYOB: Name
-
-            Sage: Name'
-        accountNumber:
-          type:
-          - string
-          - 'null'
-          description: 'User-defined account number to identify the account.
-
-            QBO: AcctNum. Max chars: 7 (US, UK, IN) or 20 (AU, CA)
-
-            Xero: Code. Max chars: 10
-
-            MYOB: DisplayID (6-char if ''UseAlphaAccountIdentifier'' is FALSE, 10-char if ''UseAlphaAccountIdentifier'' is TRUE. The last 4 digits must be an integer.)
-
-            Sage: Nominal_Code (Must be integer range between 1 to 99999999.)'
-        classification:
-          type:
-          - string
-          - 'null'
-          description: 'The classification of an account. Valid values are: Asset, Equity, Expense, Liability, Revenue.
-
-            QBO: Classification
-
-            Xero: Class
-
-            MYOB: Classification
-
-            Sage: Ledger_Account_Classification_Id'
-        accountType:
-          type:
-          - string
-          - 'null'
-          description: 'The detailed account type based on classification that specifies the use of this account.
-
-            QBO: AccountType
-
-            Xero: Type
-
-            MYOB: Type
-
-            Sage: N/A'
-        currentBalance:
-          type: number
-          description: 'Specifies the balance amount for the account.
-
-            QBO: CurrentBalance (Valid for Balance Sheet accounts)
-
-            Xero: N/A
-
-            MYOB: CurrentBalance
-
-            Sage: N/A'
-          format: double
-        description:
-          type:
-          - string
-          - 'null'
-          description: 'User-defined description for the account.
-
-            QBO: Description
-
-            Xero: Description (Ignored for bank account types)
-
-            MYOB: Description
-
-            Sage: N/A'
-        taxCodeRef:
-          type:
-          - string
-          - 'null'
-          description: 'Unique id for the default tax code assigned to this account.
-
-            QBO: TaxCodeRef
-
-            Xero: TaxType (Ignored for bank account types)
-
-            MYOB: TaxCode.UID
-
-            Sage: Tax_Rate_Id'
-        foreignCurrencyRef:
-          type:
-          - string
-          - 'null'
-          description: 'Unique id for the account currency.
-
-            QBO: CurrencyRef
-
-            Xero: CurrencyCode
-
-            MYOB: ForeignCurrency.UID
-
-            Sage: N/A'
-        parentAccountRef:
-          type:
-          - string
-          - 'null'
-          description: 'Unique id of the parent account.
-
-            QBO: ParentRef
-
-            Xero: N/A
-
-            MYOB: ParentAccount.UID
-
-            Sage: N/A'
-        level:
-          type: integer
-          description: 'The hierarchial level of the account.
-
-            QBO: N/A
-
-            Xero: N/A
-
-            MYOB: Level (Possible values from highest to lowest are: 1, 2, 3, 4. New accounts must be level 2 to 4.)
-
-            Sage: N/A'
-          format: int32
-        openingBalance:
-          type: number
-          description: 'Account balance as of the conversion date set for the company.
-
-            QBO: N/A
-
-            Xero: N/A
-
-            MYOB: OpeningBalance
-
-            Sage: N/A'
-          format: double
-        isHeader:
-          type:
-          - boolean
-          - 'null'
-          description: 'Whether the account is a header account to group other accounts or whether it is a detail account that can be assigned to transactions.
-
-            QBO: N/A
-
-            Xero: N/A
-
-            MYOB: IsHeader'
-        bankingDetails:
-          allOf:
-          - $ref: '#/components/schemas/AccountBankingDetailsModel'
-          description: 'Banking information for bank accounts.
-
-            QBO: N/A
-
-            Xero: See FinancialIntegration.Models.RequestModel.AccountBankingDetailsModel for information.
-
-            MYOB: See FinancialIntegration.Models.RequestModel.AccountBankingDetailsModel for information.
-
-            Sage: N/A'
+          description: SyncToken representing the version of the record.
       additionalProperties: false
-      description: 'Represents a GL Account to be saved to the financial system.
-
-        QBO: https://developer.intuit.com/app/developer/qbo/docs/api/accounting/all-entities/account
-
-        Xero: https://developer.xero.com/documentation/api/accounting/accounts
-
-        MYOB: https://developer.myob.com/api/myob-business-api/v2/generalledger/account/
-
-        Sage: https://developer.sage.com/accounting/reference/accounting-setup/#tag/Ledger-Accounts'
-    ChartAccountResponseModelListAPIResponse:
+      description: A record containing the unique id and syncToken for a saved entity.
+    TermResponseModelListAPIResponse:
       type: object
       properties:
         Version:
@@ -1218,198 +1136,7 @@ components:
           - array
           - 'null'
           items:
-            $ref: '#/components/schemas/ChartAccountResponseModel'
-      additionalProperties: false
-    SalesItemLineDetailModel:
-      type: object
-      properties:
-        qty:
-          type: number
-          description: '(ShipQuantity for Myob)
-
-            The quantity of goods shipped.'
-          format: double
-        unitPrice:
-          type: number
-          description: Unit price assigned to the item.
-          format: double
-        taxCodeRef:
-          type:
-          - string
-          - 'null'
-          description: '(TaxCode for Myob)
-
-            Tax code'
-        itemRef:
-          type:
-          - string
-          - 'null'
-          description: '(Item for Myob)
-
-            Details for an Item'
-        accountCode:
-          type:
-          - string
-          - 'null'
-          description: '(Account for Myob)
-
-            Account Code.
-
-            Max Chars : 10 (Xero: Max Chars - 10)'
-        itemAccountRef:
-          type:
-          - string
-          - 'null'
-          description: '(QBO related field)
-
-            In MYOB maps with Account.UID'
-      additionalProperties: false
-      description: Sale Item Detail Model
-    TaxRateResponseModel:
-      type: object
-      properties:
-        taxRateName:
-          type:
-          - string
-          - 'null'
-          description: Taxrate Name
-        taxRateId:
-          type:
-          - string
-          - 'null'
-          description: TaxRateId
-      additionalProperties: false
-    TaxResponseModel:
-      type: object
-      properties:
-        taxCodeId:
-          type:
-          - string
-          - 'null'
-        syncToken:
-          type:
-          - string
-          - 'null'
-          description: SyncToken representing the version of the record.
-        taxRates:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/TaxRateResponseModel'
-      additionalProperties: false
-    ChartAccountResponseModel:
-      type: object
-      properties:
-        id:
-          type:
-          - string
-          - 'null'
-          description: Unique id of the account.
-        name:
-          type:
-          - string
-          - 'null'
-          description: 'Account name.
-
-            Sage: Name'
-        description:
-          type:
-          - string
-          - 'null'
-          description: 'User-defined description for the account.
-
-            Sage: N/A'
-        accountType:
-          type:
-          - string
-          - 'null'
-          description: 'The detailed account type based on classification that specifies the use of this account.
-
-            Sage: Ledger_Account_Type.Id'
-        accountNumber:
-          type:
-          - string
-          - 'null'
-          description: 'User-defined account number to identify the account.
-
-            Sage: Nominal_Code'
-        fullyQualifiedName:
-          type:
-          - string
-          - 'null'
-          description: 'Fully qualified name of the account, including the parent account''s name if available.
-
-            Sage: Display_Name'
-        active:
-          type: boolean
-          description: 'Whether the account is active.
-
-            Sage: N/A'
-        taxCodeRef:
-          type:
-          - string
-          - 'null'
-          description: 'Unique id for the default tax code assigned to this account.
-
-            Sage: Tax_Rate.Id'
-        isHeader:
-          type: boolean
-          description: Whether the account is a header or top-level account record.
-        syncToken:
-          type:
-          - string
-          - 'null'
-          description: SyncToken representing the version of the record.
-        createDateTime:
-          type:
-          - string
-          - 'null'
-          description: 'The create date and time for the Account.
-
-            QBO: MetaData.CreateTime
-
-            MYOB: Created
-
-            Xero: N/A
-
-            Sage: N/A'
-          format: date-time
-        modifyDateTime:
-          type:
-          - string
-          - 'null'
-          description: 'The modify date and time for the Account.
-
-            QBO: MetaData.LastUpdatedTime
-
-            MYOB: LastModified
-
-            Xero: UpdatedDateUTC
-
-            SAGE: N/A'
-          format: date-time
-      additionalProperties: false
-      description: A summary record representing a GL account.
-    ValidationError:
-      type: object
-      properties:
-        Field:
-          type:
-          - string
-          - 'null'
-        Message:
-          type:
-          - string
-          - 'null'
-        ErrorCode:
-          type:
-          - string
-          - 'null'
-        Detail:
-          type:
-          - string
-          - 'null'
+            $ref: '#/components/schemas/TermResponseModel'
       additionalProperties: false
     TaxAgencyModel:
       type: object
@@ -1434,27 +1161,344 @@ components:
       description: 'Represents a Tax Agency to be saved to the financial system.
 
         QBO: https://developer.intuit.com/app/developer/qbo/docs/api/accounting/all-entities/taxagency'
-    TaxCodeResponseModelAPIResponse:
+    AddressModel:
       type: object
       properties:
-        Version:
+        line1:
           type:
           - string
           - 'null'
-        StatusCode:
-          type: integer
-          format: int32
-        Message:
+          description: 'First line of address. (Max chars: 255)
+
+            QBO: Line1
+
+            Xero: AddressLine1
+
+            MYOB: Street
+
+            Sage: Address_Line_1'
+        line2:
           type:
           - string
           - 'null'
-        ResponseException:
-          allOf:
-          - $ref: '#/components/schemas/ApiError'
-        Result:
-          allOf:
-          - $ref: '#/components/schemas/TaxCodeResponseModel'
+          description: 'Second line of address. (Max chars: 255)
+
+            QBO: Line2
+
+            Xero: AddressLine2
+
+            MYOB: Street (Will be concatenated with previous lines when saved. Total length must not exceed 255 chars)
+
+            Sage: Address_Line_2'
+        line3:
+          type:
+          - string
+          - 'null'
+          description: 'Third line of address. (Max chars: 255)
+
+            QBO: Line3
+
+            Xero: AddressLine3 (For AU employee addresses, will be concatenated with previous line when saved.)
+
+            MYOB: Street (Will be concatenated with previous lines when saved. Total length must not exceed 255 chars)'
+        line4:
+          type:
+          - string
+          - 'null'
+          description: 'Fourth line of address. (Max chars: 255)
+
+            QBO: Line4
+
+            Xero: AddressLine4 (For AU employee addresses, will be concatenated with previous line when saved.)
+
+            MYOB: N/A'
+        line5:
+          type:
+          - string
+          - 'null'
+          description: 'Fifth line of address. (Max chars: 255)
+
+            QBO: Line5
+
+            Xero: N/A
+
+            MYOB: N/A'
+        city:
+          type:
+          - string
+          - 'null'
+          description: 'City. (Max chars: 255)
+
+            QBO: City
+
+            Xero: City
+
+            MYOB: City
+
+            Sage: City'
+        stateProv:
+          type:
+          - string
+          - 'null'
+          description: 'State or province. (Max chars: 255)
+
+            QBO: CountrySubDivisionCode
+
+            Xero: Region (For AU: ACT, NSW, NT, QLD, SA, TAS, VIC, WA)
+
+            MYOB: State
+
+            Sage: Region'
+        postalCode:
+          type:
+          - string
+          - 'null'
+          description: 'Postal code. (Max chars: 11)
+
+            QBO: PostalCode
+
+            Xero: PostalCode
+
+            MYOB: PostCode
+
+            Sage: Postal_Code
+
+            Sage: Country_Id'
+        country:
+          type:
+          - string
+          - 'null'
+          description: 'Country. (Max chars: 50)
+
+            QBO: Country
+
+            Xero: Country
+
+            MYOB: Country'
       additionalProperties: false
+      description: Represents an address for a Customer, Vendor, or Employee
+    CompanyPreferencesResponseModel:
+      type: object
+      properties:
+        multiCurrencyEnabled:
+          type: boolean
+          description: 'Indicates whether multicurrency is enabled for this company.
+
+            QBO: CurrencyPrefs.MultiCurrencyEnabled'
+        homeCurrency:
+          type:
+          - string
+          - 'null'
+          description: 'Currency code of the company''s country.
+
+            QBO: CurrencyPrefs.HomeCurrency'
+        country:
+          type:
+          - string
+          - 'null'
+          description: 'Country where the company is located.
+
+            QBO: CompanyInfo.Country'
+        salesTaxEnabled:
+          type: boolean
+          description: 'Indicates whether sales tax is enabled for the company.
+
+            QBO: TaxPrefs.UsingSalesTax'
+      additionalProperties: false
+      description: 'Represents the preferences of the company connected to the financial system.
+
+        QBO: https://developer.intuit.com/app/developer/qbo/docs/api/accounting/all-entities/preferences'
+    AccountBankingDetailsModel:
+      type: object
+      properties:
+        bsbNumber:
+          type:
+          - string
+          - 'null'
+          description: '(AU only) BSB as provided by the financial institution.
+
+            QBO: N/A
+
+            Xero: N/A
+
+            MYOB: BankingDetails.BSBNumber'
+        bankAccountNumber:
+          type:
+          - string
+          - 'null'
+          description: 'Account number as provided by the financial institution.
+
+            QBO: N/A
+
+            Xero: BankAccountNumber
+
+            MYOB: BankingDetails.BankAccountNumber'
+        bankAccountName:
+          type:
+          - string
+          - 'null'
+          description: 'Bank account name.
+
+            QBO: N/A
+
+            Xero: N/A
+
+            MYOB: BankingDetails.BankAccountName'
+        companyTradingName:
+          type:
+          - string
+          - 'null'
+          description: '(AU only) Company trading name if applicable for bank account
+
+            QBO: N/A
+
+            Xero: N/A
+
+            MYOB: BankingDetails.CompanyTradingName'
+        bankCode:
+          type:
+          - string
+          - 'null'
+          description: '(AU only) Bank code as provided by the financial institution.
+
+            QBO: N/A
+
+            Xero: N/A
+
+            MYOB: BankingDetails.BankCode'
+        createBankFiles:
+          type: boolean
+          description: 'Whether the bank account will be used to create bank files (ABA).
+
+            QBO: N/A
+
+            Xero: N/A
+
+            MYOB: BankingDetails.CreateBankFiles'
+        directEntryUserId:
+          type:
+          - string
+          - 'null'
+          description: '(AU only) Direct entry user id as provided by the financial institution.
+
+            QBO: N/A
+
+            Xero: N/A
+
+            MYOB: BankingDetails.DirectEntryUserId'
+        includeSelfBalancingTransaction:
+          type: boolean
+          description: '(AU only) Whether the bank account requires a self balancing transaction.
+
+            QBO: N/A
+
+            Xero: N/A
+
+            MYOB: BankingDetails.IncludeSelfBalancingTransaction'
+        statementParticulars:
+          type:
+          - string
+          - 'null'
+          description: 'Statement particulars assigned to the bank account.
+
+            QBO: N/A
+
+            Xero: N/A
+
+            MYOB: BankingDetails.StatementParticulars'
+        statementCode:
+          type:
+          - string
+          - 'null'
+          description: '(NZ only) Code attached to electronic payment.
+
+            QBO: N/A
+
+            Xero: N/A
+
+            MYOB: BankingDetails.StatementCode'
+        statementReference:
+          type:
+          - string
+          - 'null'
+          description: '(NZ only) Reference attached to electronic payment.
+
+            QBO: N/A
+
+            Xero: N/A
+
+            MYOB: BankingDetails.StatementReference'
+      additionalProperties: false
+      description: 'Represents a GL Account''s banking details.
+
+        Xero: https://developer.xero.com/documentation/api/accounting/accounts
+
+        MYOB: https://developer.myob.com/api/myob-business-api/v2/generalledger/account/'
+    TaxServiceModel:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: Unique id of the tax code. Provide when updating the record.
+        upsert:
+          type: boolean
+          description: 'When no unique Id is provided, allow updating if a matching Tax Code record exists, otherwise create a new record
+
+            QBO: Update a matching record by TaxCode.
+
+            Xero: Update a matching record by TaxCode.
+
+            MYOB: Update a matching record by TaxCode.
+
+            Sage: N/A'
+        override:
+          type: boolean
+          description: Set to true to force an update to the record regardless of version conflict. SyncToken is not required if Override is true.
+        syncToken:
+          type:
+          - string
+          - 'null'
+          description: SyncToken to ensure updating the latest version of the record. Used for updating with QBO and MYOB.
+        taxCode:
+          type:
+          - string
+          - 'null'
+          description: 'Tax Code.
+
+            QBO: TaxCode
+
+            Xero: Name
+
+            MYOB: Code
+
+            Sage: Name'
+        taxRateDetails:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/TaxRateDetailModel'
+          description: 'Details of one or more tax rates assigned to the tax code.
+
+            QBO: See TaxRateDetailModel for information.
+
+            Xero: See TaxRateDetailModel for information.
+
+            MYOB: See TaxRateDetailModel for information. Only the first record in this array will be used.
+
+            Sage: Component_Tax_Rate (See TaxRateDetailModel for information.)'
+      additionalProperties: false
+      description: 'Represents a Tax Code and Rate(s) to be saved to the financial system.
+
+        QBO: https://developer.intuit.com/app/developer/qbo/docs/api/accounting/all-entities/taxservice
+
+        Xero: https://developer.xero.com/documentation/api/accounting/taxrates
+
+        MYOB: https://developer.myob.com/api/myob-business-api/v2/generalledger/taxcode/
+
+        Sage: https://developer.sage.com/accounting/reference/taxes/#tag/Tax-Rates/operation/postTaxRates'
     TermResponseModelAPIResponse:
       type: object
       properties:
@@ -1477,6 +1521,131 @@ components:
           - $ref: '#/components/schemas/TermResponseModel'
           description: 'QBO: https://developer.intuit.com/app/developer/qbo/docs/api/accounting/all-entities/term'
       additionalProperties: false
+    CurrencyResponseModel:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+        syncToken:
+          type:
+          - string
+          - 'null'
+        currencyCode:
+          type:
+          - string
+          - 'null'
+        name:
+          type:
+          - string
+          - 'null'
+        active:
+          type:
+          - boolean
+          - 'null'
+          description: 'IsActive for the Currency
+
+            QBO: Active
+
+            Xero: N/A
+
+            MYOB: N/A
+
+            Sage: N/A'
+        createDateTime:
+          type:
+          - string
+          - 'null'
+          description: 'The create date and time date for the Currency.
+
+            QBO: MetaData.CreateTime
+
+            MYOB: Created
+
+            Xero: N/A
+
+            Sage: N/A'
+          format: date-time
+        modifyDateTime:
+          type:
+          - string
+          - 'null'
+          description: 'The modify date and time date for the Currency.
+
+            QBO: MetaData.LastUpdatedTime
+
+            MYOB: LastModified
+
+            Xero: N/A
+
+            SAGE: N/A'
+          format: date-time
+      additionalProperties: false
+    TaxRateDetailModel:
+      type: object
+      properties:
+        taxRateName:
+          type:
+          - string
+          - 'null'
+          description: 'Tax Rate Name
+
+            QBO: TaxRateDetails.TaxRateName
+
+            Xero: TaxComponents.Name
+
+            MYOB: N/A
+
+            Sage: Component_Tax_Rate.Name'
+        rateValue:
+          type: number
+          description: 'Tax Rate Value
+
+            QBO: TaxRateDetails.RateValue
+
+            Xero: TaxComponents.Rate
+
+            MYOB: Rate
+
+            Sage: Component_Tax_Rate.Percentage'
+          format: double
+        taxAgencyId:
+          type:
+          - string
+          - 'null'
+          description: 'Tax Agency ID
+
+            QBO: TaxRateDetails.TaxAgencyId
+
+            Xero: N/A
+
+            MYOB: N/A
+
+            Sage: Component_Tax_Rate.Agency'
+        taxType:
+          type:
+          - string
+          - 'null'
+          description: 'Type specifying in which situations the tax applies.
+
+            QBO: TaxRateDetails.TaxApplicableOn
+
+            Xero: TaxType
+
+            MYOB: Type
+
+            Sage: N/A'
+      additionalProperties: false
+      description: 'Represents a tax rate associated with a tax code.
+
+        QBO: https://developer.intuit.com/app/developer/qbo/docs/api/accounting/all-entities/taxservice
+
+        Xero: https://developer.xero.com/documentation/api/accounting/taxrates
+
+        MYOB: https://developer.myob.com/api/myob-business-api/v2/generalledger/taxcode/
+
+        Sage: https://developer.sage.com/accounting/reference/taxes/#tag/Tax-Rates/operation/postTaxRates'
     InvoiceModel:
       type: object
       properties:
@@ -1720,7 +1889,28 @@ components:
       description: 'This class is being used to have invoice details
 
         Sage: https://developer.sage.com/accounting/reference/invoicing-sales/#tag/Sales-Invoices'
-    TermResponseModelListAPIResponse:
+    TaxResponseModelAPIResponse:
+      type: object
+      properties:
+        Version:
+          type:
+          - string
+          - 'null'
+        StatusCode:
+          type: integer
+          format: int32
+        Message:
+          type:
+          - string
+          - 'null'
+        ResponseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        Result:
+          allOf:
+          - $ref: '#/components/schemas/TaxResponseModel'
+      additionalProperties: false
+    ExchangeRateResponseModelListAPIResponse:
       type: object
       properties:
         Version:
@@ -1742,7 +1932,186 @@ components:
           - array
           - 'null'
           items:
-            $ref: '#/components/schemas/TermResponseModel'
+            $ref: '#/components/schemas/ExchangeRateResponseModel'
+      additionalProperties: false
+    CompanyPreferencesResponseModelAPIResponse:
+      type: object
+      properties:
+        Version:
+          type:
+          - string
+          - 'null'
+        StatusCode:
+          type: integer
+          format: int32
+        Message:
+          type:
+          - string
+          - 'null'
+        ResponseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        Result:
+          allOf:
+          - $ref: '#/components/schemas/CompanyPreferencesResponseModel'
+          description: 'Represents the preferences of the company connected to the financial system.
+
+            QBO: https://developer.intuit.com/app/developer/qbo/docs/api/accounting/all-entities/preferences'
+      additionalProperties: false
+    PaymentMethodModel:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: Unique id of the payment method. Provide when updating the record.
+        override:
+          type: boolean
+          description: Set to true to force an update to the record regardless of version conflict. SyncToken is not required if Override is true.
+        syncToken:
+          type:
+          - string
+          - 'null'
+          description: SyncToken to ensure updating the latest version of the record.
+        name:
+          maxLength: 31
+          type:
+          - string
+          - 'null'
+          description: 'Name of the payment method. Max chars: 31.
+
+            QBO: Name
+
+            Xero: N/A
+
+            MYOB: N/A'
+        type:
+          type:
+          - string
+          - 'null'
+          description: 'Type of the payment method. Valid values include CREDIT_CARD or NON_CREDIT_CARD.
+
+            QBO: Type
+
+            Xero: N/A
+
+            MYOB: N/A'
+      additionalProperties: false
+      description: 'Represents a Payment Method to be saved to the financial system.
+
+        QBO: https://developer.intuit.com/app/developer/qbo/docs/api/accounting/all-entities/paymentmethod'
+    ChartAccountResponseModelListAPIResponse:
+      type: object
+      properties:
+        Version:
+          type:
+          - string
+          - 'null'
+        StatusCode:
+          type: integer
+          format: int32
+        Message:
+          type:
+          - string
+          - 'null'
+        ResponseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        Result:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ChartAccountResponseModel'
+      additionalProperties: false
+    PaymentMethodResponseModelAPIResponse:
+      type: object
+      properties:
+        Version:
+          type:
+          - string
+          - 'null'
+        StatusCode:
+          type: integer
+          format: int32
+        Message:
+          type:
+          - string
+          - 'null'
+        ResponseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        Result:
+          allOf:
+          - $ref: '#/components/schemas/PaymentMethodResponseModel'
+      additionalProperties: false
+    ValidationError:
+      type: object
+      properties:
+        Field:
+          type:
+          - string
+          - 'null'
+        Message:
+          type:
+          - string
+          - 'null'
+        ErrorCode:
+          type:
+          - string
+          - 'null'
+        Detail:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    AccountResponseModel:
+      type: object
+      properties:
+        accountId:
+          type:
+          - string
+          - 'null'
+          description: Unique id of the account.
+        syncToken:
+          type:
+          - string
+          - 'null'
+          description: SyncToken representing the version of the record.
+      additionalProperties: false
+      description: A record containing the unique id and syncToken for a saved GL account.
+    TaxAgencyResponseModel:
+      type: object
+      properties:
+        taxAgencyId:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    EmployeePayRateResponseModelListAPIResponse:
+      type: object
+      properties:
+        Version:
+          type:
+          - string
+          - 'null'
+        StatusCode:
+          type: integer
+          format: int32
+        Message:
+          type:
+          - string
+          - 'null'
+        ResponseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        Result:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/EmployeePayRateResponseModel'
       additionalProperties: false
     CustomerTypeResponseModel:
       type: object
@@ -1790,6 +2159,26 @@ components:
             Sage: NA'
           format: date-time
       additionalProperties: false
+    EmployeePayRateResponseModel:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+        name:
+          type:
+          - string
+          - 'null'
+        type:
+          type:
+          - string
+          - 'null'
+        rateType:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
     TaxAgencyResponseModelAPIResponse:
       type: object
       properties:
@@ -1811,41 +2200,10 @@ components:
           allOf:
           - $ref: '#/components/schemas/TaxAgencyResponseModel'
       additionalProperties: false
-    CompanyPreferencesResponseModel:
+    TaxResponseModel:
       type: object
       properties:
-        multiCurrencyEnabled:
-          type: boolean
-          description: 'Indicates whether multicurrency is enabled for this company.
-
-            QBO: CurrencyPrefs.MultiCurrencyEnabled'
-        homeCurrency:
-          type:
-          - string
-          - 'null'
-          description: 'Currency code of the company''s country.
-
-            QBO: CurrencyPrefs.HomeCurrency'
-        country:
-          type:
-          - string
-          - 'null'
-          description: 'Country where the company is located.
-
-            QBO: CompanyInfo.Country'
-        salesTaxEnabled:
-          type: boolean
-          description: 'Indicates whether sales tax is enabled for the company.
-
-            QBO: TaxPrefs.UsingSalesTax'
-      additionalProperties: false
-      description: 'Represents the preferences of the company connected to the financial system.
-
-        QBO: https://developer.intuit.com/app/developer/qbo/docs/api/accounting/all-entities/preferences'
-    PaymentMethodResponseModel:
-      type: object
-      properties:
-        paymentMethodId:
+        taxCodeId:
           type:
           - string
           - 'null'
@@ -1853,26 +2211,72 @@ components:
           type:
           - string
           - 'null'
+          description: SyncToken representing the version of the record.
+        taxRates:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/TaxRateResponseModel'
       additionalProperties: false
-    EmployeePayRateResponseModel:
+    TaxRateResponseModel:
       type: object
       properties:
-        id:
+        taxRateName:
           type:
           - string
           - 'null'
-        name:
+          description: Taxrate Name
+        taxRateId:
           type:
           - string
           - 'null'
-        type:
+          description: TaxRateId
+      additionalProperties: false
+    CurrencyResponseModelListAPIResponse:
+      type: object
+      properties:
+        Version:
           type:
           - string
           - 'null'
-        rateType:
+        StatusCode:
+          type: integer
+          format: int32
+        Message:
           type:
           - string
           - 'null'
+        ResponseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        Result:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/CurrencyResponseModel'
+      additionalProperties: false
+    TaxCodeResponseModelAPIResponse:
+      type: object
+      properties:
+        Version:
+          type:
+          - string
+          - 'null'
+        StatusCode:
+          type: integer
+          format: int32
+        Message:
+          type:
+          - string
+          - 'null'
+        ResponseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        Result:
+          allOf:
+          - $ref: '#/components/schemas/TaxCodeResponseModel'
       additionalProperties: false
     AccountResponseModelAPIResponse:
       type: object
@@ -1896,89 +2300,7 @@ components:
           - $ref: '#/components/schemas/AccountResponseModel'
           description: A record containing the unique id and syncToken for a saved GL account.
       additionalProperties: false
-    PaymentMethodModel:
-      type: object
-      properties:
-        id:
-          type:
-          - string
-          - 'null'
-          description: Unique id of the payment method. Provide when updating the record.
-        override:
-          type: boolean
-          description: Set to true to force an update to the record regardless of version conflict. SyncToken is not required if Override is true.
-        syncToken:
-          type:
-          - string
-          - 'null'
-          description: SyncToken to ensure updating the latest version of the record.
-        name:
-          maxLength: 31
-          type:
-          - string
-          - 'null'
-          description: 'Name of the payment method. Max chars: 31.
-
-            QBO: Name
-
-            Xero: N/A
-
-            MYOB: N/A'
-        type:
-          type:
-          - string
-          - 'null'
-          description: 'Type of the payment method. Valid values include CREDIT_CARD or NON_CREDIT_CARD.
-
-            QBO: Type
-
-            Xero: N/A
-
-            MYOB: N/A'
-      additionalProperties: false
-      description: 'Represents a Payment Method to be saved to the financial system.
-
-        QBO: https://developer.intuit.com/app/developer/qbo/docs/api/accounting/all-entities/paymentmethod'
-    ContentResponseModel:
-      type: object
-      properties:
-        id:
-          type:
-          - string
-          - 'null'
-          description: Unique id of the entity.
-        syncToken:
-          type:
-          - string
-          - 'null'
-          description: SyncToken representing the version of the record.
-      additionalProperties: false
-      description: A record containing the unique id and syncToken for a saved entity.
-    InvoiceResponseModelListAPIResponse:
-      type: object
-      properties:
-        Version:
-          type:
-          - string
-          - 'null'
-        StatusCode:
-          type: integer
-          format: int32
-        Message:
-          type:
-          - string
-          - 'null'
-        ResponseException:
-          allOf:
-          - $ref: '#/components/schemas/ApiError'
-        Result:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/InvoiceResponseModel'
-      additionalProperties: false
-    PaymentMethodResponseModelAPIResponse:
+    CurrencyModelAPIResponse:
       type: object
       properties:
         Version:
@@ -1997,150 +2319,8 @@ components:
           - $ref: '#/components/schemas/ApiError'
         Result:
           allOf:
-          - $ref: '#/components/schemas/PaymentMethodResponseModel'
-      additionalProperties: false
-    InvoiceResponseModel:
-      type: object
-      properties:
-        invoiceId:
-          type:
-          - string
-          - 'null'
-        docNumber:
-          type:
-          - string
-          - 'null'
-        syncToken:
-          type:
-          - string
-          - 'null'
-        active:
-          type:
-          - boolean
-          - 'null'
-          description: 'IsActive for the Invoice
-
-            QBO: N/A
-
-            Xero: N/A
-
-            MYOB: N/A
-
-            Sage: N/A'
-        createDateTime:
-          type:
-          - string
-          - 'null'
-          description: 'The create date and time date for the Invoice.
-
-            QBO: MetaData.CreateTime
-
-            MYOB: Created
-
-            Xero: Date
-
-            Sage: N/A'
-          format: date-time
-        modifyDateTime:
-          type:
-          - string
-          - 'null'
-          description: 'The modify date and time date for the Invoice.
-
-            QBO: MetaData.LastUpdatedTime
-
-            MYOB: LastModified
-
-            Xero: UpdatedDateUTC
-
-            SAGE: N/A'
-          format: date-time
-      additionalProperties: false
-    TaxRateDetailModel:
-      type: object
-      properties:
-        taxRateName:
-          type:
-          - string
-          - 'null'
-          description: 'Tax Rate Name
-
-            QBO: TaxRateDetails.TaxRateName
-
-            Xero: TaxComponents.Name
-
-            MYOB: N/A
-
-            Sage: Component_Tax_Rate.Name'
-        rateValue:
-          type: number
-          description: 'Tax Rate Value
-
-            QBO: TaxRateDetails.RateValue
-
-            Xero: TaxComponents.Rate
-
-            MYOB: Rate
-
-            Sage: Component_Tax_Rate.Percentage'
-          format: double
-        taxAgencyId:
-          type:
-          - string
-          - 'null'
-          description: 'Tax Agency ID
-
-            QBO: TaxRateDetails.TaxAgencyId
-
-            Xero: N/A
-
-            MYOB: N/A
-
-            Sage: Component_Tax_Rate.Agency'
-        taxType:
-          type:
-          - string
-          - 'null'
-          description: 'Type specifying in which situations the tax applies.
-
-            QBO: TaxRateDetails.TaxApplicableOn
-
-            Xero: TaxType
-
-            MYOB: Type
-
-            Sage: N/A'
-      additionalProperties: false
-      description: 'Represents a tax rate associated with a tax code.
-
-        QBO: https://developer.intuit.com/app/developer/qbo/docs/api/accounting/all-entities/taxservice
-
-        Xero: https://developer.xero.com/documentation/api/accounting/taxrates
-
-        MYOB: https://developer.myob.com/api/myob-business-api/v2/generalledger/taxcode/
-
-        Sage: https://developer.sage.com/accounting/reference/taxes/#tag/Tax-Rates/operation/postTaxRates'
-    ContentResponseModelAPIResponse:
-      type: object
-      properties:
-        Version:
-          type:
-          - string
-          - 'null'
-        StatusCode:
-          type: integer
-          format: int32
-        Message:
-          type:
-          - string
-          - 'null'
-        ResponseException:
-          allOf:
-          - $ref: '#/components/schemas/ApiError'
-        Result:
-          allOf:
-          - $ref: '#/components/schemas/ContentResponseModel'
-          description: A record containing the unique id and syncToken for a saved entity.
+          - $ref: '#/components/schemas/CurrencyModel'
+          description: Represents a currency being saved to the financial system.
       additionalProperties: false
     CurrencyModel:
       type: object
@@ -2151,21 +2331,18 @@ components:
           - 'null'
       additionalProperties: false
       description: Represents a currency being saved to the financial system.
-    AccountResponseModel:
+    PaymentMethodResponseModel:
       type: object
       properties:
-        accountId:
+        paymentMethodId:
           type:
           - string
           - 'null'
-          description: Unique id of the account.
         syncToken:
           type:
           - string
           - 'null'
-          description: SyncToken representing the version of the record.
       additionalProperties: false
-      description: A record containing the unique id and syncToken for a saved GL account.
     TaxRateResponse:
       type: object
       properties:
@@ -2193,38 +2370,144 @@ components:
           type: boolean
           description: Indicates whether the Tax Rate applies on purchases.
       additionalProperties: false
-    TaxCodeResponseModel:
+    InvoiceResponseModelListAPIResponse:
+      type: object
+      properties:
+        Version:
+          type:
+          - string
+          - 'null'
+        StatusCode:
+          type: integer
+          format: int32
+        Message:
+          type:
+          - string
+          - 'null'
+        ResponseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        Result:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/InvoiceResponseModel'
+      additionalProperties: false
+    TaxCodeResponseModelListAPIResponse:
+      type: object
+      properties:
+        Version:
+          type:
+          - string
+          - 'null'
+        StatusCode:
+          type: integer
+          format: int32
+        Message:
+          type:
+          - string
+          - 'null'
+        ResponseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        Result:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/TaxCodeResponseModel'
+      additionalProperties: false
+    ContentResponseModelAPIResponse:
+      type: object
+      properties:
+        Version:
+          type:
+          - string
+          - 'null'
+        StatusCode:
+          type: integer
+          format: int32
+        Message:
+          type:
+          - string
+          - 'null'
+        ResponseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        Result:
+          allOf:
+          - $ref: '#/components/schemas/ContentResponseModel'
+          description: A record containing the unique id and syncToken for a saved entity.
+      additionalProperties: false
+    ChartAccountResponseModel:
       type: object
       properties:
         id:
           type:
           - string
           - 'null'
+          description: Unique id of the account.
         name:
           type:
           - string
           - 'null'
+          description: 'Account name.
+
+            Sage: Name'
         description:
           type:
           - string
           - 'null'
-        taxRates:
+          description: 'User-defined description for the account.
+
+            Sage: N/A'
+        accountType:
           type:
-          - array
+          - string
           - 'null'
-          items:
-            $ref: '#/components/schemas/TaxRateResponse'
+          description: 'The detailed account type based on classification that specifies the use of this account.
+
+            Sage: Ledger_Account_Type.Id'
+        accountNumber:
+          type:
+          - string
+          - 'null'
+          description: 'User-defined account number to identify the account.
+
+            Sage: Nominal_Code'
+        fullyQualifiedName:
+          type:
+          - string
+          - 'null'
+          description: 'Fully qualified name of the account, including the parent account''s name if available.
+
+            Sage: Display_Name'
         active:
           type: boolean
+          description: 'Whether the account is active.
+
+            Sage: N/A'
+        taxCodeRef:
+          type:
+          - string
+          - 'null'
+          description: 'Unique id for the default tax code assigned to this account.
+
+            Sage: Tax_Rate.Id'
+        isHeader:
+          type: boolean
+          description: Whether the account is a header or top-level account record.
         syncToken:
           type:
           - string
           - 'null'
+          description: SyncToken representing the version of the record.
         createDateTime:
           type:
           - string
           - 'null'
-          description: 'The create date and time for the Tax Code.
+          description: 'The create date and time for the Account.
 
             QBO: MetaData.CreateTime
 
@@ -2238,213 +2521,18 @@ components:
           type:
           - string
           - 'null'
-          description: 'The modify date and time for the Tax Code.
+          description: 'The modify date and time for the Account.
 
             QBO: MetaData.LastUpdatedTime
 
             MYOB: LastModified
 
-            Xero: N/A
+            Xero: UpdatedDateUTC
 
             SAGE: N/A'
           format: date-time
       additionalProperties: false
-    AddressModel:
-      type: object
-      properties:
-        line1:
-          type:
-          - string
-          - 'null'
-          description: 'First line of address. (Max chars: 255)
-
-            QBO: Line1
-
-            Xero: AddressLine1
-
-            MYOB: Street
-
-            Sage: Address_Line_1'
-        line2:
-          type:
-          - string
-          - 'null'
-          description: 'Second line of address. (Max chars: 255)
-
-            QBO: Line2
-
-            Xero: AddressLine2
-
-            MYOB: Street (Will be concatenated with previous lines when saved. Total length must not exceed 255 chars)
-
-            Sage: Address_Line_2'
-        line3:
-          type:
-          - string
-          - 'null'
-          description: 'Third line of address. (Max chars: 255)
-
-            QBO: Line3
-
-            Xero: AddressLine3 (For AU employee addresses, will be concatenated with previous line when saved.)
-
-            MYOB: Street (Will be concatenated with previous lines when saved. Total length must not exceed 255 chars)'
-        line4:
-          type:
-          - string
-          - 'null'
-          description: 'Fourth line of address. (Max chars: 255)
-
-            QBO: Line4
-
-            Xero: AddressLine4 (For AU employee addresses, will be concatenated with previous line when saved.)
-
-            MYOB: N/A'
-        line5:
-          type:
-          - string
-          - 'null'
-          description: 'Fifth line of address. (Max chars: 255)
-
-            QBO: Line5
-
-            Xero: N/A
-
-            MYOB: N/A'
-        city:
-          type:
-          - string
-          - 'null'
-          description: 'City. (Max chars: 255)
-
-            QBO: City
-
-            Xero: City
-
-            MYOB: City
-
-            Sage: City'
-        stateProv:
-          type:
-          - string
-          - 'null'
-          description: 'State or province. (Max chars: 255)
-
-            QBO: CountrySubDivisionCode
-
-            Xero: Region (For AU: ACT, NSW, NT, QLD, SA, TAS, VIC, WA)
-
-            MYOB: State
-
-            Sage: Region'
-        postalCode:
-          type:
-          - string
-          - 'null'
-          description: 'Postal code. (Max chars: 11)
-
-            QBO: PostalCode
-
-            Xero: PostalCode
-
-            MYOB: PostCode
-
-            Sage: Postal_Code
-
-            Sage: Country_Id'
-        country:
-          type:
-          - string
-          - 'null'
-          description: 'Country. (Max chars: 50)
-
-            QBO: Country
-
-            Xero: Country
-
-            MYOB: Country'
-      additionalProperties: false
-      description: Represents an address for a Customer, Vendor, or Employee
-    CustomerTypeResponseModelListAPIResponse:
-      type: object
-      properties:
-        Version:
-          type:
-          - string
-          - 'null'
-        StatusCode:
-          type: integer
-          format: int32
-        Message:
-          type:
-          - string
-          - 'null'
-        ResponseException:
-          allOf:
-          - $ref: '#/components/schemas/ApiError'
-        Result:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/CustomerTypeResponseModel'
-      additionalProperties: false
-    ExchangeRateResponseModelListAPIResponse:
-      type: object
-      properties:
-        Version:
-          type:
-          - string
-          - 'null'
-        StatusCode:
-          type: integer
-          format: int32
-        Message:
-          type:
-          - string
-          - 'null'
-        ResponseException:
-          allOf:
-          - $ref: '#/components/schemas/ApiError'
-        Result:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/ExchangeRateResponseModel'
-      additionalProperties: false
-    TaxAgencyResponseModel:
-      type: object
-      properties:
-        taxAgencyId:
-          type:
-          - string
-          - 'null'
-      additionalProperties: false
-    InvoiceModelAPIResponse:
-      type: object
-      properties:
-        Version:
-          type:
-          - string
-          - 'null'
-        StatusCode:
-          type: integer
-          format: int32
-        Message:
-          type:
-          - string
-          - 'null'
-        ResponseException:
-          allOf:
-          - $ref: '#/components/schemas/ApiError'
-        Result:
-          allOf:
-          - $ref: '#/components/schemas/InvoiceModel'
-          description: 'This class is being used to have invoice details
-
-            Sage: https://developer.sage.com/accounting/reference/invoicing-sales/#tag/Sales-Invoices'
-      additionalProperties: false
+      description: A summary record representing a GL account.
     TermResponseModel:
       type: object
       properties:
@@ -2539,100 +2627,51 @@ components:
           format: date-time
       additionalProperties: false
       description: 'QBO: https://developer.intuit.com/app/developer/qbo/docs/api/accounting/all-entities/term'
-    TaxCodeResponseModelListAPIResponse:
+    SalesItemLineDetailModel:
       type: object
       properties:
-        Version:
-          type:
-          - string
-          - 'null'
-        StatusCode:
-          type: integer
-          format: int32
-        Message:
-          type:
-          - string
-          - 'null'
-        ResponseException:
-          allOf:
-          - $ref: '#/components/schemas/ApiError'
-        Result:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/TaxCodeResponseModel'
-      additionalProperties: false
-    InvoiceLineModel:
-      type: object
-      properties:
-        type:
-          type:
-          - string
-          - 'null'
-          description: 'Type of the invoice or credit memo line.
+        qty:
+          type: number
+          description: '(ShipQuantity for Myob)
 
-            QBO: N/A (Should always be SalesItemLineDetail)
-
-            Xero: N/A
-
-            MYOB: N/A'
-          deprecated: true
-        amount:
-          type:
-          - number
-          - 'null'
-          description: (Total field for Myob)
+            The quantity of goods shipped.'
           format: double
-        description:
+        unitPrice:
+          type: number
+          description: Unit price assigned to the item.
+          format: double
+        taxCodeRef:
           type:
           - string
           - 'null'
-          description: 'Description text for the sale line.
+          description: '(TaxCode for Myob)
 
-            Max Chars : 1000 (QBO: Max Chars - 4000, Xero: Max Chars - 4000, MYOB: Max Chars - 1000)'
-        accountRef:
+            Tax code'
+        itemRef:
           type:
           - string
           - 'null'
-          description: MYOB field
-        salesItemLineDetail:
-          allOf:
-          - $ref: '#/components/schemas/SalesItemLineDetailModel'
-          description: Line Item Details
-        discountAmount:
+          description: '(Item for Myob)
+
+            Details for an Item'
+        accountCode:
           type:
-          - number
+          - string
           - 'null'
-          format: double
-        discountPercent:
+          description: '(Account for Myob)
+
+            Account Code.
+
+            Max Chars : 10 (Xero: Max Chars - 10)'
+        itemAccountRef:
           type:
-          - number
+          - string
           - 'null'
-          format: double
+          description: '(QBO related field)
+
+            In MYOB maps with Account.UID'
       additionalProperties: false
-      description: Line item details for customer invoices and credits.
-    TaxResponseModelAPIResponse:
-      type: object
-      properties:
-        Version:
-          type:
-          - string
-          - 'null'
-        StatusCode:
-          type: integer
-          format: int32
-        Message:
-          type:
-          - string
-          - 'null'
-        ResponseException:
-          allOf:
-          - $ref: '#/components/schemas/ApiError'
-        Result:
-          allOf:
-          - $ref: '#/components/schemas/TaxResponseModel'
-      additionalProperties: false
+      description: Sale Item Detail Model
     ExchangeRateResponseModel:
       type: object
       properties:
@@ -2651,206 +2690,6 @@ components:
           type: string
           format: date-time
       additionalProperties: false
-    ApiError:
-      type: object
-      properties:
-        ExceptionMessage:
-          type:
-          - string
-          - 'null'
-        Details:
-          type:
-          - string
-          - 'null'
-        ReferenceErrorCode:
-          type:
-          - string
-          - 'null'
-        ReferenceDocumentLink:
-          type:
-          - string
-          - 'null'
-        Errors:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/ValidationError'
-      additionalProperties: false
-    CurrencyResponseModelListAPIResponse:
-      type: object
-      properties:
-        Version:
-          type:
-          - string
-          - 'null'
-        StatusCode:
-          type: integer
-          format: int32
-        Message:
-          type:
-          - string
-          - 'null'
-        ResponseException:
-          allOf:
-          - $ref: '#/components/schemas/ApiError'
-        Result:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/CurrencyResponseModel'
-      additionalProperties: false
-    CompanyPreferencesResponseModelAPIResponse:
-      type: object
-      properties:
-        Version:
-          type:
-          - string
-          - 'null'
-        StatusCode:
-          type: integer
-          format: int32
-        Message:
-          type:
-          - string
-          - 'null'
-        ResponseException:
-          allOf:
-          - $ref: '#/components/schemas/ApiError'
-        Result:
-          allOf:
-          - $ref: '#/components/schemas/CompanyPreferencesResponseModel'
-          description: 'Represents the preferences of the company connected to the financial system.
-
-            QBO: https://developer.intuit.com/app/developer/qbo/docs/api/accounting/all-entities/preferences'
-      additionalProperties: false
-    AccountBankingDetailsModel:
-      type: object
-      properties:
-        bsbNumber:
-          type:
-          - string
-          - 'null'
-          description: '(AU only) BSB as provided by the financial institution.
-
-            QBO: N/A
-
-            Xero: N/A
-
-            MYOB: BankingDetails.BSBNumber'
-        bankAccountNumber:
-          type:
-          - string
-          - 'null'
-          description: 'Account number as provided by the financial institution.
-
-            QBO: N/A
-
-            Xero: BankAccountNumber
-
-            MYOB: BankingDetails.BankAccountNumber'
-        bankAccountName:
-          type:
-          - string
-          - 'null'
-          description: 'Bank account name.
-
-            QBO: N/A
-
-            Xero: N/A
-
-            MYOB: BankingDetails.BankAccountName'
-        companyTradingName:
-          type:
-          - string
-          - 'null'
-          description: '(AU only) Company trading name if applicable for bank account
-
-            QBO: N/A
-
-            Xero: N/A
-
-            MYOB: BankingDetails.CompanyTradingName'
-        bankCode:
-          type:
-          - string
-          - 'null'
-          description: '(AU only) Bank code as provided by the financial institution.
-
-            QBO: N/A
-
-            Xero: N/A
-
-            MYOB: BankingDetails.BankCode'
-        createBankFiles:
-          type: boolean
-          description: 'Whether the bank account will be used to create bank files (ABA).
-
-            QBO: N/A
-
-            Xero: N/A
-
-            MYOB: BankingDetails.CreateBankFiles'
-        directEntryUserId:
-          type:
-          - string
-          - 'null'
-          description: '(AU only) Direct entry user id as provided by the financial institution.
-
-            QBO: N/A
-
-            Xero: N/A
-
-            MYOB: BankingDetails.DirectEntryUserId'
-        includeSelfBalancingTransaction:
-          type: boolean
-          description: '(AU only) Whether the bank account requires a self balancing transaction.
-
-            QBO: N/A
-
-            Xero: N/A
-
-            MYOB: BankingDetails.IncludeSelfBalancingTransaction'
-        statementParticulars:
-          type:
-          - string
-          - 'null'
-          description: 'Statement particulars assigned to the bank account.
-
-            QBO: N/A
-
-            Xero: N/A
-
-            MYOB: BankingDetails.StatementParticulars'
-        statementCode:
-          type:
-          - string
-          - 'null'
-          description: '(NZ only) Code attached to electronic payment.
-
-            QBO: N/A
-
-            Xero: N/A
-
-            MYOB: BankingDetails.StatementCode'
-        statementReference:
-          type:
-          - string
-          - 'null'
-          description: '(NZ only) Reference attached to electronic payment.
-
-            QBO: N/A
-
-            Xero: N/A
-
-            MYOB: BankingDetails.StatementReference'
-      additionalProperties: false
-      description: 'Represents a GL Account''s banking details.
-
-        Xero: https://developer.xero.com/documentation/api/accounting/accounts
-
-        MYOB: https://developer.myob.com/api/myob-business-api/v2/generalledger/account/'
     ItemModel:
       type: object
       properties:
@@ -3148,28 +2987,206 @@ components:
         MYOB: https://developer.myob.com/api/myob-business-api/v2/inventory/item/
 
         Sage: https://developer.sage.com/accounting/reference/products-services/#tag/Products/operation/getProducts'
-    ChartAccountResponseModelAPIResponse:
+    AccountModel:
       type: object
       properties:
-        Version:
+        id:
           type:
           - string
           - 'null'
-        StatusCode:
+          description: Unique id of the account. Provide when updating the record.
+        override:
+          type: boolean
+          description: Set to true to force an update to the record regardless of version conflict. SyncToken is not required if Override is true.
+        syncToken:
+          type:
+          - string
+          - 'null'
+          description: SyncToken to ensure updating the latest version of the record. Used for updating with QBO and MYOB.
+        upsert:
+          type: boolean
+          description: 'When no unique Id is provided, allow updating if a matching Account record exists, otherwise create a new record.
+
+            QBO: Update a matching record by Name.
+
+            Xero: Update a matching record by Name.
+
+            MYOB: Update a matching record by Name.
+
+            Sage: Update a matching record by Name.'
+        name:
+          type:
+          - string
+          - 'null'
+          description: 'Account name. Max chars: 60.
+
+            QBO: Name
+
+            Xero: Name
+
+            MYOB: Name
+
+            Sage: Name'
+        accountNumber:
+          type:
+          - string
+          - 'null'
+          description: 'User-defined account number to identify the account.
+
+            QBO: AcctNum. Max chars: 7 (US, UK, IN) or 20 (AU, CA)
+
+            Xero: Code. Max chars: 10
+
+            MYOB: DisplayID (6-char if ''UseAlphaAccountIdentifier'' is FALSE, 10-char if ''UseAlphaAccountIdentifier'' is TRUE. The last 4 digits must be an integer.)
+
+            Sage: Nominal_Code (Must be integer range between 1 to 99999999.)'
+        classification:
+          type:
+          - string
+          - 'null'
+          description: 'The classification of an account. Valid values are: Asset, Equity, Expense, Liability, Revenue.
+
+            QBO: Classification
+
+            Xero: Class
+
+            MYOB: Classification
+
+            Sage: Ledger_Account_Classification_Id'
+        accountType:
+          type:
+          - string
+          - 'null'
+          description: 'The detailed account type based on classification that specifies the use of this account.
+
+            QBO: AccountType
+
+            Xero: Type
+
+            MYOB: Type
+
+            Sage: N/A'
+        currentBalance:
+          type: number
+          description: 'Specifies the balance amount for the account.
+
+            QBO: CurrentBalance (Valid for Balance Sheet accounts)
+
+            Xero: N/A
+
+            MYOB: CurrentBalance
+
+            Sage: N/A'
+          format: double
+        description:
+          type:
+          - string
+          - 'null'
+          description: 'User-defined description for the account.
+
+            QBO: Description
+
+            Xero: Description (Ignored for bank account types)
+
+            MYOB: Description
+
+            Sage: N/A'
+        taxCodeRef:
+          type:
+          - string
+          - 'null'
+          description: 'Unique id for the default tax code assigned to this account.
+
+            QBO: TaxCodeRef
+
+            Xero: TaxType (Ignored for bank account types)
+
+            MYOB: TaxCode.UID
+
+            Sage: Tax_Rate_Id'
+        foreignCurrencyRef:
+          type:
+          - string
+          - 'null'
+          description: 'Unique id for the account currency.
+
+            QBO: CurrencyRef
+
+            Xero: CurrencyCode
+
+            MYOB: ForeignCurrency.UID
+
+            Sage: N/A'
+        parentAccountRef:
+          type:
+          - string
+          - 'null'
+          description: 'Unique id of the parent account.
+
+            QBO: ParentRef
+
+            Xero: N/A
+
+            MYOB: ParentAccount.UID
+
+            Sage: N/A'
+        level:
           type: integer
+          description: 'The hierarchial level of the account.
+
+            QBO: N/A
+
+            Xero: N/A
+
+            MYOB: Level (Possible values from highest to lowest are: 1, 2, 3, 4. New accounts must be level 2 to 4.)
+
+            Sage: N/A'
           format: int32
-        Message:
+        openingBalance:
+          type: number
+          description: 'Account balance as of the conversion date set for the company.
+
+            QBO: N/A
+
+            Xero: N/A
+
+            MYOB: OpeningBalance
+
+            Sage: N/A'
+          format: double
+        isHeader:
           type:
-          - string
+          - boolean
           - 'null'
-        ResponseException:
+          description: 'Whether the account is a header account to group other accounts or whether it is a detail account that can be assigned to transactions.
+
+            QBO: N/A
+
+            Xero: N/A
+
+            MYOB: IsHeader'
+        bankingDetails:
           allOf:
-          - $ref: '#/components/schemas/ApiError'
-        Result:
-          allOf:
-          - $ref: '#/components/schemas/ChartAccountResponseModel'
-          description: A summary record representing a GL account.
+          - $ref: '#/components/schemas/AccountBankingDetailsModel'
+          description: 'Banking information for bank accounts.
+
+            QBO: N/A
+
+            Xero: See FinancialIntegration.Models.RequestModel.AccountBankingDetailsModel for information.
+
+            MYOB: See FinancialIntegration.Models.RequestModel.AccountBankingDetailsModel for information.
+
+            Sage: N/A'
       additionalProperties: false
+      description: 'Represents a GL Account to be saved to the financial system.
+
+        QBO: https://developer.intuit.com/app/developer/qbo/docs/api/accounting/all-entities/account
+
+        Xero: https://developer.xero.com/documentation/api/accounting/accounts
+
+        MYOB: https://developer.myob.com/api/myob-business-api/v2/generalledger/account/
+
+        Sage: https://developer.sage.com/accounting/reference/accounting-setup/#tag/Ledger-Accounts'
     StringAPIResponse:
       type: object
       properties:
@@ -3192,18 +3209,59 @@ components:
           - string
           - 'null'
       additionalProperties: false
-    CurrencyResponseModel:
+    InvoiceLineModel:
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+          description: 'Type of the invoice or credit memo line.
+
+            QBO: N/A (Should always be SalesItemLineDetail)
+
+            Xero: N/A
+
+            MYOB: N/A'
+          deprecated: true
+        amount:
+          type:
+          - number
+          - 'null'
+          description: (Total field for Myob)
+          format: double
+        description:
+          type:
+          - string
+          - 'null'
+          description: 'Description text for the sale line.
+
+            Max Chars : 1000 (QBO: Max Chars - 4000, Xero: Max Chars - 4000, MYOB: Max Chars - 1000)'
+        accountRef:
+          type:
+          - string
+          - 'null'
+          description: MYOB field
+        salesItemLineDetail:
+          allOf:
+          - $ref: '#/components/schemas/SalesItemLineDetailModel'
+          description: Line Item Details
+        discountAmount:
+          type:
+          - number
+          - 'null'
+          format: double
+        discountPercent:
+          type:
+          - number
+          - 'null'
+          format: double
+      additionalProperties: false
+      description: Line item details for customer invoices and credits.
+    TaxCodeResponseModel:
       type: object
       properties:
         id:
-          type:
-          - string
-          - 'null'
-        syncToken:
-          type:
-          - string
-          - 'null'
-        currencyCode:
           type:
           - string
           - 'null'
@@ -3211,24 +3269,27 @@ components:
           type:
           - string
           - 'null'
-        active:
+        description:
           type:
-          - boolean
+          - string
           - 'null'
-          description: 'IsActive for the Currency
-
-            QBO: Active
-
-            Xero: N/A
-
-            MYOB: N/A
-
-            Sage: N/A'
+        taxRates:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/TaxRateResponse'
+        active:
+          type: boolean
+        syncToken:
+          type:
+          - string
+          - 'null'
         createDateTime:
           type:
           - string
           - 'null'
-          description: 'The create date and time date for the Currency.
+          description: 'The create date and time for the Tax Code.
 
             QBO: MetaData.CreateTime
 
@@ -3242,7 +3303,7 @@ components:
           type:
           - string
           - 'null'
-          description: 'The modify date and time date for the Currency.
+          description: 'The modify date and time for the Tax Code.
 
             QBO: MetaData.LastUpdatedTime
 
@@ -3253,94 +3314,33 @@ components:
             SAGE: N/A'
           format: date-time
       additionalProperties: false
-    TaxServiceModel:
+    ApiError:
       type: object
       properties:
-        id:
+        ExceptionMessage:
           type:
           - string
           - 'null'
-          description: Unique id of the tax code. Provide when updating the record.
-        upsert:
-          type: boolean
-          description: 'When no unique Id is provided, allow updating if a matching Tax Code record exists, otherwise create a new record
-
-            QBO: Update a matching record by TaxCode.
-
-            Xero: Update a matching record by TaxCode.
-
-            MYOB: Update a matching record by TaxCode.
-
-            Sage: N/A'
-        override:
-          type: boolean
-          description: Set to true to force an update to the record regardless of version conflict. SyncToken is not required if Override is true.
-        syncToken:
+        Details:
           type:
           - string
           - 'null'
-          description: SyncToken to ensure updating the latest version of the record. Used for updating with QBO and MYOB.
-        taxCode:
+        ReferenceErrorCode:
           type:
           - string
           - 'null'
-          description: 'Tax Code.
-
-            QBO: TaxCode
-
-            Xero: Name
-
-            MYOB: Code
-
-            Sage: Name'
-        taxRateDetails:
+        ReferenceDocumentLink:
+          type:
+          - string
+          - 'null'
+        Errors:
           type:
           - array
           - 'null'
           items:
-            $ref: '#/components/schemas/TaxRateDetailModel'
-          description: 'Details of one or more tax rates assigned to the tax code.
-
-            QBO: See TaxRateDetailModel for information.
-
-            Xero: See TaxRateDetailModel for information.
-
-            MYOB: See TaxRateDetailModel for information. Only the first record in this array will be used.
-
-            Sage: Component_Tax_Rate (See TaxRateDetailModel for information.)'
+            $ref: '#/components/schemas/ValidationError'
       additionalProperties: false
-      description: 'Represents a Tax Code and Rate(s) to be saved to the financial system.
-
-        QBO: https://developer.intuit.com/app/developer/qbo/docs/api/accounting/all-entities/taxservice
-
-        Xero: https://developer.xero.com/documentation/api/accounting/taxrates
-
-        MYOB: https://developer.myob.com/api/myob-business-api/v2/generalledger/taxcode/
-
-        Sage: https://developer.sage.com/accounting/reference/taxes/#tag/Tax-Rates/operation/postTaxRates'
-    CurrencyModelAPIResponse:
-      type: object
-      properties:
-        Version:
-          type:
-          - string
-          - 'null'
-        StatusCode:
-          type: integer
-          format: int32
-        Message:
-          type:
-          - string
-          - 'null'
-        ResponseException:
-          allOf:
-          - $ref: '#/components/schemas/ApiError'
-        Result:
-          allOf:
-          - $ref: '#/components/schemas/CurrencyModel'
-          description: Represents a currency being saved to the financial system.
-      additionalProperties: false
-    EmployeePayRateResponseModelListAPIResponse:
+    CustomerTypeResponseModelListAPIResponse:
       type: object
       properties:
         Version:
@@ -3362,7 +3362,7 @@ components:
           - array
           - 'null'
           items:
-            $ref: '#/components/schemas/EmployeePayRateResponseModel'
+            $ref: '#/components/schemas/CustomerTypeResponseModel'
       additionalProperties: false
   securitySchemes:
     Bearer:
