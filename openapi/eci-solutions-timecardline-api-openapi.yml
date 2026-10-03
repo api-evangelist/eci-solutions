@@ -368,6 +368,108 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
+    Process:
+      title: Process
+      type: object
+      properties:
+        processID:
+          type: string
+        shortDesc:
+          type: string
+        setupRate:
+          type: string
+        productionRate:
+          type: string
+        uniqueID:
+          type: string
+        rowVersion:
+          type: integer
+          format: int64
+    TimecardLineDetailCreateModel:
+      required:
+      - jobID
+      type: object
+      properties:
+        jobID:
+          minLength: 1
+          type: string
+        jobOperationSeq:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        elapsedTime:
+          type:
+          - number
+          - 'null'
+          format: double
+        setupTime:
+          type:
+          - number
+          - 'null'
+          format: double
+        machineHours:
+          type:
+          - number
+          - 'null'
+          description: Not used for JobBOSS²
+          format: double
+        laborHours:
+          type:
+          - number
+          - 'null'
+          description: Not used for JobBOSS²
+          format: double
+        processID:
+          type:
+          - string
+          - 'null'
+        workCenterID:
+          type:
+          - string
+          - 'null'
+        goodQty:
+          type:
+          - number
+          - 'null'
+          format: double
+        scrapQty:
+          type:
+          - number
+          - 'null'
+          format: double
+        comments:
+          type:
+          - string
+          - 'null'
+        startTime:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        endTime:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        jobOperationID:
+          type:
+          - string
+          - 'null'
+        timecardID:
+          type:
+          - string
+          - 'null'
+        employeeID:
+          type:
+          - string
+          - 'null'
+        timecardDate:
+          type:
+          - string
+          - 'null'
+          format: date
+      additionalProperties: false
     Job:
       title: Job
       type: object
@@ -478,6 +580,116 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/JobOperation'
+    TimecardLineListResponse:
+      type: object
+      properties:
+        data:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/TimecardLine'
+          readOnly: true
+        resultCount:
+          type: integer
+          format: int32
+      additionalProperties: false
+    SalesOrderDelivery:
+      title: SalesOrderDelivery
+      type: object
+      properties:
+        salesOrderID:
+          type: string
+        orderLine:
+          type: integer
+        orderLineDelivery:
+          type: string
+        promisedDate:
+          type: string
+          format: date-time
+        promisedQty:
+          type: number
+          format: double
+        shippedDate:
+          type: string
+          format: date-time
+        shippedQty:
+          type: number
+          format: double
+        uniqueID:
+          type: string
+        rowVersion:
+          type: integer
+          format: int64
+        deliveryTypeCode:
+          type: string
+        salesOrderType:
+          type: string
+        salesOrderJobs:
+          type: array
+          items:
+            $ref: '#/components/schemas/SalesOrderJob'
+    Department:
+      title: Department
+      type: object
+      properties:
+        deptID:
+          type: string
+        shortDesc:
+          type: string
+        uniqueID:
+          type: string
+        rowVersion:
+          type: integer
+          format: int64
+    SalesOrderJob:
+      title: SalesOrderJob
+      type: object
+      properties:
+        salesOrderID:
+          type: string
+        orderLine:
+          type: integer
+        orderLineDelivery:
+          type: string
+        jobID:
+          type: string
+        orderJobSeq:
+          type: integer
+          format: int32
+        uniqueID:
+          type: string
+        rowVersion:
+          type: integer
+          format: int64
+    Employee:
+      title: Employee
+      type: object
+      properties:
+        employeeID:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        title:
+          type: string
+        supervisorEmployeeID:
+          type: string
+        payRate:
+          type: number
+          format: double
+        deptID:
+          type: string
+        shiftID:
+          type: string
+        isActive:
+          type: boolean
+        uniqueID:
+          type: string
+        rowVersion:
+          type: integer
+          format: int64
     JobOperation:
       title: JobOperation
       type: object
@@ -631,103 +843,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Shift'
-    Employee:
-      title: Employee
-      type: object
-      properties:
-        employeeID:
-          type: string
-        firstName:
-          type: string
-        lastName:
-          type: string
-        title:
-          type: string
-        supervisorEmployeeID:
-          type: string
-        payRate:
-          type: number
-          format: double
-        deptID:
-          type: string
-        shiftID:
-          type: string
-        isActive:
-          type: boolean
-        uniqueID:
-          type: string
-        rowVersion:
-          type: integer
-          format: int64
-    Department:
-      title: Department
-      type: object
-      properties:
-        deptID:
-          type: string
-        shortDesc:
-          type: string
-        uniqueID:
-          type: string
-        rowVersion:
-          type: integer
-          format: int64
-    Shift:
-      title: Shift
-      type: object
-      properties:
-        shiftID:
-          type: number
-          format: float
-        shortDesc:
-          type: string
-        inactiveDate:
-          type: string
-          format: date-time
-        uniqueID:
-          type: string
-        rowVersion:
-          type: integer
-          format: int64
-        shiftDays:
-          type: array
-          items:
-            $ref: '#/components/schemas/ShiftDay'
-    SalesOrderDelivery:
-      title: SalesOrderDelivery
-      type: object
-      properties:
-        salesOrderID:
-          type: string
-        orderLine:
-          type: integer
-        orderLineDelivery:
-          type: string
-        promisedDate:
-          type: string
-          format: date-time
-        promisedQty:
-          type: number
-          format: double
-        shippedDate:
-          type: string
-          format: date-time
-        shippedQty:
-          type: number
-          format: double
-        uniqueID:
-          type: string
-        rowVersion:
-          type: integer
-          format: int64
-        deliveryTypeCode:
-          type: string
-        salesOrderType:
-          type: string
-        salesOrderJobs:
-          type: array
-          items:
-            $ref: '#/components/schemas/SalesOrderJob'
     TimecardLine:
       title: TimecardLine
       type: object
@@ -818,26 +933,41 @@ components:
           $ref: '#/components/schemas/SalesOrderJob'
         salesOrderJob:
           $ref: '#/components/schemas/SalesOrderJob'
-    SalesOrderJob:
-      title: SalesOrderJob
+    Shift:
+      title: Shift
       type: object
       properties:
-        salesOrderID:
+        shiftID:
+          type: number
+          format: float
+        shortDesc:
           type: string
-        orderLine:
-          type: integer
-        orderLineDelivery:
+        inactiveDate:
           type: string
-        jobID:
-          type: string
-        orderJobSeq:
-          type: integer
-          format: int32
+          format: date-time
         uniqueID:
           type: string
         rowVersion:
           type: integer
           format: int64
+        shiftDays:
+          type: array
+          items:
+            $ref: '#/components/schemas/ShiftDay'
+    TimecardLineUpdateModel:
+      type: object
+      properties:
+        goodQty:
+          type:
+          - number
+          - 'null'
+          format: double
+        scrapQty:
+          type:
+          - number
+          - 'null'
+          format: double
+      additionalProperties: false
     ShiftDay:
       title: ShiftDay
       type: object
@@ -857,119 +987,6 @@ components:
         rowVersion:
           type: integer
           format: int64
-    TimecardLineUpdateModel:
-      type: object
-      properties:
-        goodQty:
-          type:
-          - number
-          - 'null'
-          format: double
-        scrapQty:
-          type:
-          - number
-          - 'null'
-          format: double
-      additionalProperties: false
-    TimecardLineListResponse:
-      type: object
-      properties:
-        data:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/TimecardLine'
-          readOnly: true
-        resultCount:
-          type: integer
-          format: int32
-      additionalProperties: false
-    TimecardLineDetailCreateModel:
-      required:
-      - jobID
-      type: object
-      properties:
-        jobID:
-          minLength: 1
-          type: string
-        jobOperationSeq:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        elapsedTime:
-          type:
-          - number
-          - 'null'
-          format: double
-        setupTime:
-          type:
-          - number
-          - 'null'
-          format: double
-        machineHours:
-          type:
-          - number
-          - 'null'
-          description: Not used for JobBOSS²
-          format: double
-        laborHours:
-          type:
-          - number
-          - 'null'
-          description: Not used for JobBOSS²
-          format: double
-        processID:
-          type:
-          - string
-          - 'null'
-        workCenterID:
-          type:
-          - string
-          - 'null'
-        goodQty:
-          type:
-          - number
-          - 'null'
-          format: double
-        scrapQty:
-          type:
-          - number
-          - 'null'
-          format: double
-        comments:
-          type:
-          - string
-          - 'null'
-        startTime:
-          type:
-          - string
-          - 'null'
-          format: date-time
-        endTime:
-          type:
-          - string
-          - 'null'
-          format: date-time
-        jobOperationID:
-          type:
-          - string
-          - 'null'
-        timecardID:
-          type:
-          - string
-          - 'null'
-        employeeID:
-          type:
-          - string
-          - 'null'
-        timecardDate:
-          type:
-          - string
-          - 'null'
-          format: date
-      additionalProperties: false
     Timecard:
       title: Timecard
       type: object
@@ -997,23 +1014,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Employee'
-    Process:
-      title: Process
-      type: object
-      properties:
-        processID:
-          type: string
-        shortDesc:
-          type: string
-        setupRate:
-          type: string
-        productionRate:
-          type: string
-        uniqueID:
-          type: string
-        rowVersion:
-          type: integer
-          format: int64
   securitySchemes:
     Bearer:
       type: oauth2

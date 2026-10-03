@@ -238,70 +238,27 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    Part:
-      title: Part
-      type: object
-      properties:
-        partClassID:
-          type: string
-        partGroupID:
-          type: string
-        cycleCodeID:
-          type: string
-        partType:
-          type: integer
-          format: int32
-        partID:
-          type: string
-        alternatePartID:
-          type: string
-        uniqueID:
-          type: string
-        rowVersion:
-          type: integer
-          format: int64
-        isActive:
-          type: boolean
-        partClass:
-          $ref: '#/components/schemas/PartClass'
-        partGroup:
-          $ref: '#/components/schemas/PartGroup'
-    PartRevisionCreateModel:
+    PartPriceBreakCreateModel:
       required:
       - partID
-      - partRevisionID
-      - shortDesc
+      - quantity
+      - unitPrice
       type: object
       properties:
         partID:
           minLength: 1
           type: string
-          description: The ID or code identifying the part.
         partRevisionID:
-          type: string
-          description: The ID or code identifying the part revision.
-        shortDesc:
-          minLength: 1
-          type: string
-          description: The short description for the part revision.
-        supplierOrganizationID:
           type:
           - string
           - 'null'
-          description: The ID of the primary supplier of the part revision.
-        leadTime:
-          type:
-          - integer
-          - 'null'
-          description: The expected lead time in days for the part revision.
-          format: int32
-        pricingUnitOfMeasure:
-          type:
-          - string
-          - 'null'
-          description: The unit of measure used when pricing the part revision.
+        quantity:
+          type: number
+          format: double
+        unitPrice:
+          type: number
+          format: double
       additionalProperties: false
-      description: A model used to create new part revisions.
     PartOperationCreateModel:
       required:
       - partID
@@ -390,24 +347,164 @@ components:
           - string
           - 'null'
       additionalProperties: false
-    OrganizationPartCreateModel:
-      required:
-      - organizationID
-      - organizationTypes
+    PartGroup:
+      title: PartGroup
       type: object
       properties:
-        organizationID:
+        uniqueID:
+          type: string
+        rowVersion:
+          type: integer
+          format: int64
+        partGroupID:
+          type: string
+        parentPartGroupID:
+          type: string
+        description:
+          type: string
+        isActive:
+          type: boolean
+        inactiveDate:
+          type: string
+          format: date
+    PartPriceCreateModel:
+      required:
+      - partID
+      - priceBreaks
+      type: object
+      properties:
+        partID:
           minLength: 1
           type: string
-          description: The ID or code identifying the organization being assigned to a part.
-        organizationTypes:
-          minItems: 1
+        partRevisionID:
+          type:
+          - string
+          - 'null'
+        priceBreaks:
           type: array
           items:
-            $ref: '#/components/schemas/OrganizationType'
-          description: The type(s) of the organization being assigned to a part.
+            $ref: '#/components/schemas/PartPriceBreakCreateModel'
       additionalProperties: false
-      description: A model used to create new organization parts.
+    PartMaterialCreateModel:
+      required:
+      - materialPartID
+      - partID
+      type: object
+      properties:
+        partID:
+          minLength: 1
+          type: string
+        partRevisionID:
+          type:
+          - string
+          - 'null'
+        partOperationSeq:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        materialPartID:
+          minLength: 1
+          type: string
+        materialPartRevisionID:
+          type:
+          - string
+          - 'null'
+        quantity:
+          type:
+          - number
+          - 'null'
+          format: double
+        unitOfMeasure:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    OrganizationType:
+      enum:
+      - 0
+      - 1
+      - 2
+      type: integer
+      format: int32
+    PartListResponse:
+      type: object
+      properties:
+        data:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Part'
+          readOnly: true
+        resultCount:
+          type: integer
+          format: int32
+      additionalProperties: false
+    PartRevisionCreateModel:
+      required:
+      - partID
+      - partRevisionID
+      - shortDesc
+      type: object
+      properties:
+        partID:
+          minLength: 1
+          type: string
+          description: The ID or code identifying the part.
+        partRevisionID:
+          type: string
+          description: The ID or code identifying the part revision.
+        shortDesc:
+          minLength: 1
+          type: string
+          description: The short description for the part revision.
+        supplierOrganizationID:
+          type:
+          - string
+          - 'null'
+          description: The ID of the primary supplier of the part revision.
+        leadTime:
+          type:
+          - integer
+          - 'null'
+          description: The expected lead time in days for the part revision.
+          format: int32
+        pricingUnitOfMeasure:
+          type:
+          - string
+          - 'null'
+          description: The unit of measure used when pricing the part revision.
+      additionalProperties: false
+      description: A model used to create new part revisions.
+    Part:
+      title: Part
+      type: object
+      properties:
+        partClassID:
+          type: string
+        partGroupID:
+          type: string
+        cycleCodeID:
+          type: string
+        partType:
+          type: integer
+          format: int32
+        partID:
+          type: string
+        alternatePartID:
+          type: string
+        uniqueID:
+          type: string
+        rowVersion:
+          type: integer
+          format: int64
+        isActive:
+          type: boolean
+        partClass:
+          $ref: '#/components/schemas/PartClass'
+        partGroup:
+          $ref: '#/components/schemas/PartGroup'
     PartCreateModel:
       required:
       - partID
@@ -475,27 +572,24 @@ components:
           description: The organizations linked to the part.
       additionalProperties: false
       description: A model used to create new parts.
-    PartPriceBreakCreateModel:
+    OrganizationPartCreateModel:
       required:
-      - partID
-      - quantity
-      - unitPrice
+      - organizationID
+      - organizationTypes
       type: object
       properties:
-        partID:
+        organizationID:
           minLength: 1
           type: string
-        partRevisionID:
-          type:
-          - string
-          - 'null'
-        quantity:
-          type: number
-          format: double
-        unitPrice:
-          type: number
-          format: double
+          description: The ID or code identifying the organization being assigned to a part.
+        organizationTypes:
+          minItems: 1
+          type: array
+          items:
+            $ref: '#/components/schemas/OrganizationType'
+          description: The type(s) of the organization being assigned to a part.
       additionalProperties: false
+      description: A model used to create new organization parts.
     PartClass:
       title: PartClass
       type: object
@@ -511,100 +605,6 @@ components:
           type: string
         isActive:
           type: boolean
-    PartGroup:
-      title: PartGroup
-      type: object
-      properties:
-        uniqueID:
-          type: string
-        rowVersion:
-          type: integer
-          format: int64
-        partGroupID:
-          type: string
-        parentPartGroupID:
-          type: string
-        description:
-          type: string
-        isActive:
-          type: boolean
-        inactiveDate:
-          type: string
-          format: date
-    PartPriceCreateModel:
-      required:
-      - partID
-      - priceBreaks
-      type: object
-      properties:
-        partID:
-          minLength: 1
-          type: string
-        partRevisionID:
-          type:
-          - string
-          - 'null'
-        priceBreaks:
-          type: array
-          items:
-            $ref: '#/components/schemas/PartPriceBreakCreateModel'
-      additionalProperties: false
-    PartListResponse:
-      type: object
-      properties:
-        data:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/Part'
-          readOnly: true
-        resultCount:
-          type: integer
-          format: int32
-      additionalProperties: false
-    PartMaterialCreateModel:
-      required:
-      - materialPartID
-      - partID
-      type: object
-      properties:
-        partID:
-          minLength: 1
-          type: string
-        partRevisionID:
-          type:
-          - string
-          - 'null'
-        partOperationSeq:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        materialPartID:
-          minLength: 1
-          type: string
-        materialPartRevisionID:
-          type:
-          - string
-          - 'null'
-        quantity:
-          type:
-          - number
-          - 'null'
-          format: double
-        unitOfMeasure:
-          type:
-          - string
-          - 'null'
-      additionalProperties: false
-    OrganizationType:
-      enum:
-      - 0
-      - 1
-      - 2
-      type: integer
-      format: int32
   securitySchemes:
     Bearer:
       type: oauth2

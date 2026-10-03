@@ -44,33 +44,50 @@ paths:
         500:
           $ref: '#/components/responses/InternalServerError'
 components:
-  parameters:
-    Cursor:
-      name: cursor
-      in: query
-      schema:
-        type: string
-      description: 'A cursor for the next batch of registrants is providing in the metadata of the body. Provide the `next` cursor as a query parameter in your next request to access the next batch of registrants.
-
-        It''s a base64 encoded json object with the fields `v` for version, `o` for offset and `l` for limit. You don''t have to create the cursor object as it is embedded in the `next` link provided in the result set.
-
-        Version is an integer that indicates the layout of the cursor. Future layouts may provide a different way to access parts of a result set, e.g. by providing a primary key as a reference point. This prevents the missing/repeated data issue with paged results, if the result set is modified during paging (e.g. a registrant is added while on page 2, and when loading page 3, the last registrant from page is pushed down to be the first registrant on page three and being included in two result pages. The opposite happens if a registrant is deleted, one result will be skipped.)'
   schemas:
-    ProjectAppointments:
+    Project:
+      title: Project
       type: object
-      title: Project Appointments
       properties:
-        items:
-          type: array
-          items:
-            $ref: '#/components/schemas/ProjectAppointment'
-        links:
-          type: object
-          properties:
-            next:
-              type: string
-              description: Link to the next page of appointments
-              example: /appointments?cursor=ewogICJ2IjogIjEuMCIsCiAgIm8iOiAiMTIzIiwKICAibCI6ICIxMDAiCn0=
+        name:
+          type: string
+          example: Birch Towers
+        projectId:
+          type: string
+          example: 123
+    PhoneRead:
+      type: object
+      title: Phone Read
+      properties:
+        phoneId:
+          type: string
+          example: 123
+        phone:
+          type: string
+          example: 123-456-7890
+        type:
+          type: string
+          example: Mobile
+        primary:
+          type: boolean
+          example: true
+    SalesRepRead:
+      type: object
+      title: SalesRep Read Model
+      description: Describes a sales rep, typically assigned to a set of registrants.
+      properties:
+        userId:
+          type: string
+          example: 123
+        firstName:
+          type: string
+          example: Lasso
+        lastName:
+          type: string
+          example: Autobot
+        isPrimary:
+          type: boolean
+          example: true
     ProjectAppointment:
       title: Project Appointment
       type: object
@@ -132,6 +149,57 @@ components:
           type: string
           description: Details of the error
           example: Details of the error
+    AddressRead:
+      type: object
+      title: Address Read
+      properties:
+        addressId:
+          type: string
+          example: 123
+        address:
+          type: string
+          example: 350 Fifth Avenue
+        city:
+          type: string
+          example: New York
+        country:
+          type: string
+          example: USA
+        state:
+          type: string
+          example: NY
+        zipCode:
+          type: string
+          example: '10118'
+        type:
+          type: string
+          example: Mobile
+        primary:
+          type: boolean
+          example: true
+    EmailRead:
+      type: object
+      title: Email Read
+      properties:
+        emailId:
+          type: string
+          example: 123
+        email:
+          type: string
+          example: test_registrant@lassocrm.com
+        type:
+          type: string
+          example: Personal
+        primary:
+          type: boolean
+          example: true
+        optedStatus:
+          type: string
+          enum:
+          - opted_in
+          - opted_out
+          - non_opted
+          example: opted_in
     Creator:
       type: object
       title: Creator
@@ -154,6 +222,21 @@ components:
         userId:
           type: string
           example: 123
+    ProjectAppointments:
+      type: object
+      title: Project Appointments
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProjectAppointment'
+        links:
+          type: object
+          properties:
+            next:
+              type: string
+              description: Link to the next page of appointments
+              example: /appointments?cursor=ewogICJ2IjogIjEuMCIsCiAgIm8iOiAiMTIzIiwKICAibCI6ICIxMDAiCn0=
     AppointmentRegistrant:
       type: object
       title: Appointment Registrant
@@ -184,46 +267,17 @@ components:
             $ref: '#/components/schemas/SalesRepRead'
         _links:
           $ref: '#/components/schemas/RegistrantLinks'
-    EmailRead:
+    RegistrantLinks:
       type: object
-      title: Email Read
       properties:
-        emailId:
+        self:
           type: string
-          example: 123
-        email:
+          description: Link to the registrant
+          example: /registrants/123
+        update:
           type: string
-          example: test_registrant@lassocrm.com
-        type:
-          type: string
-          example: Personal
-        primary:
-          type: boolean
-          example: true
-        optedStatus:
-          type: string
-          enum:
-          - opted_in
-          - opted_out
-          - non_opted
-          example: opted_in
-    SalesRepRead:
-      type: object
-      title: SalesRep Read Model
-      description: Describes a sales rep, typically assigned to a set of registrants.
-      properties:
-        userId:
-          type: string
-          example: 123
-        firstName:
-          type: string
-          example: Lasso
-        lastName:
-          type: string
-          example: Autobot
-        isPrimary:
-          type: boolean
-          example: true
+          description: Link to update the registrant
+          example: /registrants/123
     RegistrantPersonalInfo:
       type: object
       title: Registrant Personal Info
@@ -278,71 +332,6 @@ components:
           type: string
           description: The social insurance number or social security number. Please ensure that you are allowed to collect this information in your jurisdiction.
           example: 046 454 286
-    RegistrantLinks:
-      type: object
-      properties:
-        self:
-          type: string
-          description: Link to the registrant
-          example: /registrants/123
-        update:
-          type: string
-          description: Link to update the registrant
-          example: /registrants/123
-    AddressRead:
-      type: object
-      title: Address Read
-      properties:
-        addressId:
-          type: string
-          example: 123
-        address:
-          type: string
-          example: 350 Fifth Avenue
-        city:
-          type: string
-          example: New York
-        country:
-          type: string
-          example: USA
-        state:
-          type: string
-          example: NY
-        zipCode:
-          type: string
-          example: '10118'
-        type:
-          type: string
-          example: Mobile
-        primary:
-          type: boolean
-          example: true
-    Project:
-      title: Project
-      type: object
-      properties:
-        name:
-          type: string
-          example: Birch Towers
-        projectId:
-          type: string
-          example: 123
-    PhoneRead:
-      type: object
-      title: Phone Read
-      properties:
-        phoneId:
-          type: string
-          example: 123
-        phone:
-          type: string
-          example: 123-456-7890
-        type:
-          type: string
-          example: Mobile
-        primary:
-          type: boolean
-          example: true
   responses:
     InternalServerError:
       description: Receiving a 5xx response indicates an error on Lasso's end. Please contact us to report the problem
@@ -358,6 +347,17 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/StandardError'
+  parameters:
+    Cursor:
+      name: cursor
+      in: query
+      schema:
+        type: string
+      description: 'A cursor for the next batch of registrants is providing in the metadata of the body. Provide the `next` cursor as a query parameter in your next request to access the next batch of registrants.
+
+        It''s a base64 encoded json object with the fields `v` for version, `o` for offset and `l` for limit. You don''t have to create the cursor object as it is embedded in the `next` link provided in the result set.
+
+        Version is an integer that indicates the layout of the cursor. Future layouts may provide a different way to access parts of a result set, e.g. by providing a primary key as a reference point. This prevents the missing/repeated data issue with paged results, if the result set is modified during paging (e.g. a registrant is added while on page 2, and when loading page 3, the last registrant from page is pushed down to be the first registrant on page three and being included in two result pages. The opposite happens if a registrant is deleted, one result will be skipped.)'
   securitySchemes:
     JwtAuthorizer:
       type: http

@@ -221,6 +221,70 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
+    AsyncAcceptedResponse:
+      type: object
+      properties:
+        requestId:
+          type: string
+          description: 'A unique identifier for the asynchronous request.
+
+            This ID can be used in a follow-up request (via the async-request-id header) to retrieve the result of the original operation once processing is complete.'
+          format: uuid
+      additionalProperties: false
+      description: Represents the response returned when an asynchronous request is accepted for processing.
+    TaxCode:
+      required:
+      - code
+      type: object
+      properties:
+        name:
+          type:
+          - string
+          - 'null'
+          description: 'The name of the tax code.
+
+            * ECI Financials: n/a
+
+            * Xero: TaxCode.Name
+
+            * TripleTex: n/a
+
+            * AccountView: n/a
+
+            * PowerOfficeGo: VatCode.Name
+
+            * Sage50Uk: TaxCode.Description
+
+            * Adsolut: TaxCode.Name'
+        isActive:
+          type:
+          - boolean
+          - 'null'
+          description: 'Indicates if the tax code is active.
+
+            * ECI Financials: n/a
+
+            * Xero: TaxCode.Status
+
+            * TripleTex: Always True
+
+            * AccountView: n/a
+
+            * PowerOfficeGo: VatCode.IsActive
+
+            * Sage50Uk: n/a
+
+            * Adsolut: n/a'
+        code:
+          allOf:
+          - $ref: '#/components/schemas/Entity'
+          description: "The identifier of the tax rate.\n* ECI Financials: n/a\n* Xero: Code = TaxCode.TaxType\n* TripleTex: \n    - Code = VatType.Number\n    - Id = VatType.Id\n* AccountView: n/a\n* PowerOfficeGo:\n    - Code = VatCode.Code\n    - Id = VatCode.Id\n* Sage50Uk: Id = TaxCode.Index\n* Adsolut: Id = TaxCode.Id"
+        rates:
+          type: array
+          items:
+            $ref: '#/components/schemas/TaxRate'
+      additionalProperties: false
+      description: <h2>Model for Tax data, also known as VAT.</h2>
     TaxRate:
       type: object
       properties:
@@ -290,6 +354,173 @@ components:
           - 'null'
       additionalProperties: false
       description: Definition of [RFC7807](https://tools.ietf.org/html/rfc7807) problem detail
+    GeneralJournalEntry:
+      type: object
+      properties:
+        syncToken:
+          type:
+          - string
+          - 'null'
+          description: 'SyncToken to ensure updating the latest version of the record.
+
+            * ECI Financials: JournalEntry.Stamp
+
+            * Xero: n/a
+
+            * TripleTex: n/a
+
+            * AccountView: JournalEntry.Stamp
+
+            * PowerOfficeGo: n/a
+
+            * AfasSB: n/a
+
+            * Sage50Uk: n/a
+
+            * Adsolut: n/a'
+        docNumber:
+          type:
+          - string
+          - 'null'
+          description: 'The journal entry number
+
+            * ECI Financials: JournalEntry.Number
+
+            * Xero: ManualJournal.Narration
+
+            * TripleTex: Voucher.ExternalVoucherNumber
+
+            * AccountView: JournalEntry.Number
+
+            * PowerOfficeGo: JournalEntry.Description
+
+            * AfasSB: n/a
+
+            * Sage50Uk: JournalEntry.InvRef
+
+            * Adsolut: JournalEntry.InvoiceNumber'
+        description:
+          type:
+          - string
+          - 'null'
+          description: '* ECI Financials: JournalEntry.Description
+
+            * Xero: n/a
+
+            * TripleTex: Voucher.Description
+
+            * AccountView: JournalEntry.Description
+
+            * PowerOfficeGo: n/a
+
+            * AfasSB: FinancialJournalEntry.Description
+
+            * Sage50Uk: n/a
+
+            * Adsolut: JournalEntry.Description'
+        date:
+          type:
+          - string
+          - 'null'
+          description: "The date of the journal entry.  \n* ECI Financials: JournalEntry.Date\n* Xero: ManualJournal.Date\n* TripleTex: Voucher.Date\n* AccountView: JournalEntry.Date\n* PowerOfficeGo: JournalEntry.VoucherDate\n* AfasSB: FinancialJournalEntry.EntryDate\n* Sage50Uk: JournalEntry.Date\n* Adsolut: JournalEntry.DocumentDate"
+          format: date-time
+        period:
+          type:
+          - string
+          - 'null'
+          description: 'Financial period
+
+            * ECI Financials: JournalEntry.Period
+
+            * Xero: n/a
+
+            * TripleTex: n/a
+
+            * AccountView: JournalEntry.Period
+
+            * PowerOfficeGo: n/a
+
+            * AfasSB: n/a
+
+            * Sage50Uk: JournalEntry.AccountingPeriod'
+        year:
+          type:
+          - integer
+          - 'null'
+          description: 'Financial year
+
+            * ECI Financials: JournalEntry.Year
+
+            * Xero: n/a
+
+            * TripleTex: Voucher.Year
+
+            * AccountView: JournalEntry.Year
+
+            * PowerOfficeGo: n/a
+
+            * AfasSB: n/a
+
+            * Sage50Uk: n/a
+
+            * Adsolut: JournalEntry.Year'
+          format: int32
+        journal:
+          type:
+          - string
+          - 'null'
+          description: 'Journal code
+
+            * ECI Financials: JournalEntry.Journal
+
+            * Xero: n/a
+
+            * TripleTex: Voucher.Number
+
+            * AccountView: JournalEntry.Journal
+
+            * PowerOfficeGo: n/a
+
+            * AfasSB: n/a
+
+            * Sage50Uk: n/a
+
+            * Adsolut: JournalEntry.JournalCode'
+        lines:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/JournalEntryLine'
+          description: 'A collection of line information for the journal.
+
+            * ECI Financials: JournalEntry.Lines
+
+            * Xero: ManualJournal.Lines
+
+            * TripleTex: n/a
+
+            * AccountView: JournalEntry.Lines
+
+            * PowerOfficeGo: JournalEntry.VoucherLines
+
+            * AfasSB: FinancialJournalEntry.EntryLine
+
+            * Sage50Uk: JournalEntry.Lines
+
+            * Adsolut: JournalEntry.Lines'
+        code:
+          type:
+          - string
+          - 'null'
+          description: The natural key of this entity.
+        id:
+          type:
+          - string
+          - 'null'
+          description: The unique Id of this entity.
+      additionalProperties: false
+      description: "Represents a GL Journal to be saved to or existing in the financial system.\n* Id: Unique id of the journal. Provide when updating the record. \n    + ECI Financials: JournalEntry.Id\n    + Xero: ManualJournal.ManualJournalID\n    + TripleTex: n/a\n    + AccountView: JournalEntry.Id\n    + PowerOfficeGo: JournalEntry.Id\n    + AfasSB: n/a\n    + Sage50Uk: n/a\n    + Adsolut: n/a"
     Entity:
       type: object
       properties:
@@ -304,70 +535,6 @@ components:
           - 'null'
           description: The unique Id of this entity.
       additionalProperties: false
-    AsyncAcceptedResponse:
-      type: object
-      properties:
-        requestId:
-          type: string
-          description: 'A unique identifier for the asynchronous request.
-
-            This ID can be used in a follow-up request (via the async-request-id header) to retrieve the result of the original operation once processing is complete.'
-          format: uuid
-      additionalProperties: false
-      description: Represents the response returned when an asynchronous request is accepted for processing.
-    TaxCode:
-      required:
-      - code
-      type: object
-      properties:
-        name:
-          type:
-          - string
-          - 'null'
-          description: 'The name of the tax code.
-
-            * ECI Financials: n/a
-
-            * Xero: TaxCode.Name
-
-            * TripleTex: n/a
-
-            * AccountView: n/a
-
-            * PowerOfficeGo: VatCode.Name
-
-            * Sage50Uk: TaxCode.Description
-
-            * Adsolut: TaxCode.Name'
-        isActive:
-          type:
-          - boolean
-          - 'null'
-          description: 'Indicates if the tax code is active.
-
-            * ECI Financials: n/a
-
-            * Xero: TaxCode.Status
-
-            * TripleTex: Always True
-
-            * AccountView: n/a
-
-            * PowerOfficeGo: VatCode.IsActive
-
-            * Sage50Uk: n/a
-
-            * Adsolut: n/a'
-        code:
-          allOf:
-          - $ref: '#/components/schemas/Entity'
-          description: "The identifier of the tax rate.\n* ECI Financials: n/a\n* Xero: Code = TaxCode.TaxType\n* TripleTex: \n    - Code = VatType.Number\n    - Id = VatType.Id\n* AccountView: n/a\n* PowerOfficeGo:\n    - Code = VatCode.Code\n    - Id = VatCode.Id\n* Sage50Uk: Id = TaxCode.Index\n* Adsolut: Id = TaxCode.Id"
-        rates:
-          type: array
-          items:
-            $ref: '#/components/schemas/TaxRate'
-      additionalProperties: false
-      description: <h2>Model for Tax data, also known as VAT.</h2>
     JournalEntryLine:
       type: object
       properties:
@@ -545,173 +712,6 @@ components:
           format: double
       additionalProperties: false
       description: Represents an individual line of a GL Journal to be saved to or existing in the financial system.
-    GeneralJournalEntry:
-      type: object
-      properties:
-        syncToken:
-          type:
-          - string
-          - 'null'
-          description: 'SyncToken to ensure updating the latest version of the record.
-
-            * ECI Financials: JournalEntry.Stamp
-
-            * Xero: n/a
-
-            * TripleTex: n/a
-
-            * AccountView: JournalEntry.Stamp
-
-            * PowerOfficeGo: n/a
-
-            * AfasSB: n/a
-
-            * Sage50Uk: n/a
-
-            * Adsolut: n/a'
-        docNumber:
-          type:
-          - string
-          - 'null'
-          description: 'The journal entry number
-
-            * ECI Financials: JournalEntry.Number
-
-            * Xero: ManualJournal.Narration
-
-            * TripleTex: Voucher.ExternalVoucherNumber
-
-            * AccountView: JournalEntry.Number
-
-            * PowerOfficeGo: JournalEntry.Description
-
-            * AfasSB: n/a
-
-            * Sage50Uk: JournalEntry.InvRef
-
-            * Adsolut: JournalEntry.InvoiceNumber'
-        description:
-          type:
-          - string
-          - 'null'
-          description: '* ECI Financials: JournalEntry.Description
-
-            * Xero: n/a
-
-            * TripleTex: Voucher.Description
-
-            * AccountView: JournalEntry.Description
-
-            * PowerOfficeGo: n/a
-
-            * AfasSB: FinancialJournalEntry.Description
-
-            * Sage50Uk: n/a
-
-            * Adsolut: JournalEntry.Description'
-        date:
-          type:
-          - string
-          - 'null'
-          description: "The date of the journal entry.  \n* ECI Financials: JournalEntry.Date\n* Xero: ManualJournal.Date\n* TripleTex: Voucher.Date\n* AccountView: JournalEntry.Date\n* PowerOfficeGo: JournalEntry.VoucherDate\n* AfasSB: FinancialJournalEntry.EntryDate\n* Sage50Uk: JournalEntry.Date\n* Adsolut: JournalEntry.DocumentDate"
-          format: date-time
-        period:
-          type:
-          - string
-          - 'null'
-          description: 'Financial period
-
-            * ECI Financials: JournalEntry.Period
-
-            * Xero: n/a
-
-            * TripleTex: n/a
-
-            * AccountView: JournalEntry.Period
-
-            * PowerOfficeGo: n/a
-
-            * AfasSB: n/a
-
-            * Sage50Uk: JournalEntry.AccountingPeriod'
-        year:
-          type:
-          - integer
-          - 'null'
-          description: 'Financial year
-
-            * ECI Financials: JournalEntry.Year
-
-            * Xero: n/a
-
-            * TripleTex: Voucher.Year
-
-            * AccountView: JournalEntry.Year
-
-            * PowerOfficeGo: n/a
-
-            * AfasSB: n/a
-
-            * Sage50Uk: n/a
-
-            * Adsolut: JournalEntry.Year'
-          format: int32
-        journal:
-          type:
-          - string
-          - 'null'
-          description: 'Journal code
-
-            * ECI Financials: JournalEntry.Journal
-
-            * Xero: n/a
-
-            * TripleTex: Voucher.Number
-
-            * AccountView: JournalEntry.Journal
-
-            * PowerOfficeGo: n/a
-
-            * AfasSB: n/a
-
-            * Sage50Uk: n/a
-
-            * Adsolut: JournalEntry.JournalCode'
-        lines:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/JournalEntryLine'
-          description: 'A collection of line information for the journal.
-
-            * ECI Financials: JournalEntry.Lines
-
-            * Xero: ManualJournal.Lines
-
-            * TripleTex: n/a
-
-            * AccountView: JournalEntry.Lines
-
-            * PowerOfficeGo: JournalEntry.VoucherLines
-
-            * AfasSB: FinancialJournalEntry.EntryLine
-
-            * Sage50Uk: JournalEntry.Lines
-
-            * Adsolut: JournalEntry.Lines'
-        code:
-          type:
-          - string
-          - 'null'
-          description: The natural key of this entity.
-        id:
-          type:
-          - string
-          - 'null'
-          description: The unique Id of this entity.
-      additionalProperties: false
-      description: "Represents a GL Journal to be saved to or existing in the financial system.\n* Id: Unique id of the journal. Provide when updating the record. \n    + ECI Financials: JournalEntry.Id\n    + Xero: ManualJournal.ManualJournalID\n    + TripleTex: n/a\n    + AccountView: JournalEntry.Id\n    + PowerOfficeGo: JournalEntry.Id\n    + AfasSB: n/a\n    + Sage50Uk: n/a\n    + Adsolut: n/a"
   securitySchemes:
     Bearer:
       type: oauth2

@@ -2770,143 +2770,6 @@ paths:
                 $ref: '#/components/schemas/APIResponseMessageDto'
 components:
   schemas:
-    BOMQuoteLineDto:
-      required:
-      - quoteID
-      - quoteLineID
-      - partID
-      - partRevisionID
-      - partShortDescription
-      - quoteMarkupType
-      type: object
-      properties:
-        quoteID:
-          type: string
-        quoteLineID:
-          type: integer
-          format: int32
-        partID:
-          type: string
-        partRevisionID:
-          type: string
-        unitOfMeasure:
-          type: string
-        partGroupID:
-          type: string
-        partShortDescription:
-          type: string
-        orgPartShortDescription:
-          type: string
-        resolutionReasonID:
-          type: string
-        quoteMarkupType:
-          type: integer
-          format: int32
-        purchaseToOrder:
-          type: boolean
-        purchaseUnitCostForeign:
-          type: number
-          format: double
-        supplierOrganizationID:
-          type: string
-        purchaseLocationID:
-          type: string
-        firm:
-          type: boolean
-        projectID:
-          type: string
-        projectAreaID:
-          type: string
-        closed:
-          type: boolean
-        createdBy:
-          type: string
-        createdDate:
-          type: string
-          format: date-time
-        uniqueID:
-          type: string
-          format: uuid
-          example: 00000000-0000-0000-0000-000000000000
-        rowVersion:
-          type: string
-          format: byte
-    BOMQuoteDto:
-      required:
-      - quoteID
-      - customerOrganizationID
-      - quoterEmployeeID
-      - dueDate
-      type: object
-      properties:
-        quoteID:
-          type: string
-        customerOrganizationID:
-          type: string
-        plantID:
-          type: string
-        quoterEmployeeID:
-          type: string
-        quoteDate:
-          type: string
-          format: date-time
-        dueDate:
-          type: string
-          format: date-time
-        expirationDate:
-          type: string
-          format: date-time
-        projectID:
-          type: string
-        closed:
-          type: boolean
-        closedDate:
-          type: string
-          format: date-time
-        paymentTermID:
-          type: string
-        shippingMethodID:
-          type: string
-        createdBy:
-          type: string
-        createdDate:
-          type: string
-          format: date-time
-        uniqueID:
-          type: string
-          format: uuid
-          example: 00000000-0000-0000-0000-000000000000
-        rowVersion:
-          type: string
-          format: byte
-    BOMCreateQuoteLineDto:
-      required:
-      - quoteID
-      - quoteLineID
-      - partID
-      - unitOfMeasure
-      type: object
-      properties:
-        quoteID:
-          type: string
-        quoteLineID:
-          type: integer
-          format: int32
-        partID:
-          type: string
-        partRevisionID:
-          type: string
-        unitOfMeasure:
-          type: string
-        supplierOrganizationID:
-          type: string
-        purchaseLocationID:
-          type: string
-        purchaseUnitCostBase:
-          type: number
-          format: double
-        firm:
-          type: boolean
     BOMQuoteOperationDto:
       required:
       - quoteID
@@ -2996,16 +2859,14 @@ components:
         rowVersion:
           type: string
           format: byte
-    BOMQuoteAssemblyDto:
+    BOMQuoteLineDto:
       required:
       - quoteID
       - quoteLineID
-      - quoteAssemblyID
-      - level
       - partID
       - partRevisionID
       - partShortDescription
-      - quantityPerParent
+      - quoteMarkupType
       type: object
       properties:
         quoteID:
@@ -3013,33 +2874,39 @@ components:
         quoteLineID:
           type: integer
           format: int32
-        quoteAssemblyID:
-          type: integer
-          format: int32
-        parentAssemblyID:
-          type: integer
-          format: int32
-        level:
-          type: integer
-          format: int32
-        sourceMethodID:
-          type: string
-        sourceRevisionID:
-          type: string
         partID:
           type: string
         partRevisionID:
           type: string
         unitOfMeasure:
           type: string
+        partGroupID:
+          type: string
         partShortDescription:
           type: string
-        quantityPerParent:
+        orgPartShortDescription:
+          type: string
+        resolutionReasonID:
+          type: string
+        quoteMarkupType:
+          type: integer
+          format: int32
+        purchaseToOrder:
+          type: boolean
+        purchaseUnitCostForeign:
           type: number
           format: double
-        closed:
+        supplierOrganizationID:
+          type: string
+        purchaseLocationID:
+          type: string
+        firm:
           type: boolean
-        pullAllFromStock:
+        projectID:
+          type: string
+        projectAreaID:
+          type: string
+        closed:
           type: boolean
         createdBy:
           type: string
@@ -3053,25 +2920,6 @@ components:
         rowVersion:
           type: string
           format: byte
-    APIResponseMessageDto:
-      type: object
-      properties:
-        description:
-          type: string
-        status:
-          type: string
-        payloadID:
-          type: string
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/Error'
-          readOnly: true
-        warnings:
-          type: array
-          items:
-            $ref: '#/components/schemas/Warning'
-          readOnly: true
     BOMQuoteMaterialDto:
       required:
       - quoteID
@@ -3143,28 +2991,135 @@ components:
         rowVersion:
           type: string
           format: byte
-    BOMCreateQuoteDto:
-      required:
-      - quoteID
-      - customerOrganizationID
-      - shipOrganizationID
+    APIResponseMessageDto:
       type: object
       properties:
-        quoteID:
+        description:
           type: string
-        customerOrganizationID:
+        status:
           type: string
-        shipOrganizationID:
+        payloadID:
           type: string
-        quoterEmployeeID:
-          type: string
-        currencyRateID:
-          type: string
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+          readOnly: true
+        warnings:
+          type: array
+          items:
+            $ref: '#/components/schemas/Warning'
+          readOnly: true
     Error:
       type: object
       properties:
         innerText:
           type: string
+    BOMCreateQuoteAssemblyDto:
+      required:
+      - quoteID
+      - quoteLineID
+      - quoteAssemblyID
+      - parentAssemblyID
+      - level
+      - partID
+      - unitOfMeasure
+      - quantityPerParent
+      type: object
+      properties:
+        quoteID:
+          type: string
+        quoteLineID:
+          type: integer
+          format: int32
+        quoteAssemblyID:
+          type: integer
+          format: int32
+        parentAssemblyID:
+          type: integer
+          format: int32
+        level:
+          type: integer
+          format: int32
+        partID:
+          type: string
+        partRevisionID:
+          type: string
+        unitOfMeasure:
+          type: string
+        quantityPerParent:
+          type: number
+          format: double
+        pullAllFromStock:
+          type: boolean
+    CTMBOMQuoteLineDto:
+      required:
+      - quote
+      type: object
+      properties:
+        quote:
+          $ref: '#/components/schemas/BOMQuoteDto'
+        quoteLines:
+          type: array
+          items:
+            $ref: '#/components/schemas/BOMQuoteLineDto'
+    BOMQuoteAssemblyDto:
+      required:
+      - quoteID
+      - quoteLineID
+      - quoteAssemblyID
+      - level
+      - partID
+      - partRevisionID
+      - partShortDescription
+      - quantityPerParent
+      type: object
+      properties:
+        quoteID:
+          type: string
+        quoteLineID:
+          type: integer
+          format: int32
+        quoteAssemblyID:
+          type: integer
+          format: int32
+        parentAssemblyID:
+          type: integer
+          format: int32
+        level:
+          type: integer
+          format: int32
+        sourceMethodID:
+          type: string
+        sourceRevisionID:
+          type: string
+        partID:
+          type: string
+        partRevisionID:
+          type: string
+        unitOfMeasure:
+          type: string
+        partShortDescription:
+          type: string
+        quantityPerParent:
+          type: number
+          format: double
+        closed:
+          type: boolean
+        pullAllFromStock:
+          type: boolean
+        createdBy:
+          type: string
+        createdDate:
+          type: string
+          format: date-time
+        uniqueID:
+          type: string
+          format: uuid
+          example: 00000000-0000-0000-0000-000000000000
+        rowVersion:
+          type: string
+          format: byte
     BOMQuoteQuantityDto:
       required:
       - quoteID
@@ -3307,17 +3262,109 @@ components:
         rowVersion:
           type: string
           format: byte
-    CTMBOMQuoteLineDto:
-      required:
-      - quote
+    Warning:
       type: object
       properties:
-        quote:
-          $ref: '#/components/schemas/BOMQuoteDto'
-        quoteLines:
-          type: array
-          items:
-            $ref: '#/components/schemas/BOMQuoteLineDto'
+        innerText:
+          type: string
+    BOMQuoteDto:
+      required:
+      - quoteID
+      - customerOrganizationID
+      - quoterEmployeeID
+      - dueDate
+      type: object
+      properties:
+        quoteID:
+          type: string
+        customerOrganizationID:
+          type: string
+        plantID:
+          type: string
+        quoterEmployeeID:
+          type: string
+        quoteDate:
+          type: string
+          format: date-time
+        dueDate:
+          type: string
+          format: date-time
+        expirationDate:
+          type: string
+          format: date-time
+        projectID:
+          type: string
+        closed:
+          type: boolean
+        closedDate:
+          type: string
+          format: date-time
+        paymentTermID:
+          type: string
+        shippingMethodID:
+          type: string
+        createdBy:
+          type: string
+        createdDate:
+          type: string
+          format: date-time
+        uniqueID:
+          type: string
+          format: uuid
+          example: 00000000-0000-0000-0000-000000000000
+        rowVersion:
+          type: string
+          format: byte
+    BOMCreateQuoteDto:
+      required:
+      - quoteID
+      - customerOrganizationID
+      - shipOrganizationID
+      type: object
+      properties:
+        quoteID:
+          type: string
+        customerOrganizationID:
+          type: string
+        shipOrganizationID:
+          type: string
+        quoterEmployeeID:
+          type: string
+        currencyRateID:
+          type: string
+    BOMCreateQuoteMaterialDto:
+      required:
+      - quoteID
+      - quoteLineID
+      - quoteMaterialID
+      - partID
+      - unitOfMeasure
+      type: object
+      properties:
+        quoteID:
+          type: string
+        quoteLineID:
+          type: integer
+          format: int32
+        quoteAssemblyID:
+          type: integer
+          format: int32
+        quoteMaterialID:
+          type: integer
+          format: int32
+        partID:
+          type: string
+        partRevisionID:
+          type: string
+        unitOfMeasure:
+          type: string
+        quantityPerAssembly:
+          type: number
+          format: double
+        supplierOrganizationID:
+          type: string
+        purchaseLocationID:
+          type: string
     BOMSalesOrderDto:
       required:
       - salesOrderID
@@ -3418,53 +3465,10 @@ components:
         totalOrderWeight:
           type: number
           format: double
-    Warning:
-      type: object
-      properties:
-        innerText:
-          type: string
-    BOMCreateQuoteAssemblyDto:
+    BOMCreateQuoteLineDto:
       required:
       - quoteID
       - quoteLineID
-      - quoteAssemblyID
-      - parentAssemblyID
-      - level
-      - partID
-      - unitOfMeasure
-      - quantityPerParent
-      type: object
-      properties:
-        quoteID:
-          type: string
-        quoteLineID:
-          type: integer
-          format: int32
-        quoteAssemblyID:
-          type: integer
-          format: int32
-        parentAssemblyID:
-          type: integer
-          format: int32
-        level:
-          type: integer
-          format: int32
-        partID:
-          type: string
-        partRevisionID:
-          type: string
-        unitOfMeasure:
-          type: string
-        quantityPerParent:
-          type: number
-          format: double
-        pullAllFromStock:
-          type: boolean
-    BOMCreateQuoteMaterialDto:
-      required:
-      - quoteID
-      - quoteLineID
-      - quoteMaterialID
       - partID
       - unitOfMeasure
       type: object
@@ -3474,25 +3478,21 @@ components:
         quoteLineID:
           type: integer
           format: int32
-        quoteAssemblyID:
-          type: integer
-          format: int32
-        quoteMaterialID:
-          type: integer
-          format: int32
         partID:
           type: string
         partRevisionID:
           type: string
         unitOfMeasure:
           type: string
-        quantityPerAssembly:
-          type: number
-          format: double
         supplierOrganizationID:
           type: string
         purchaseLocationID:
           type: string
+        purchaseUnitCostBase:
+          type: number
+          format: double
+        firm:
+          type: boolean
   securitySchemes:
     oauth2:
       type: oauth2

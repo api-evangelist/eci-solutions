@@ -353,7 +353,118 @@ paths:
                 $ref: '#/components/schemas/StringAPIResponse'
 components:
   schemas:
-    ReportPostData:
+    ApiError:
+      type: object
+      properties:
+        isError:
+          type: boolean
+        exceptionMessage:
+          type:
+          - string
+          - 'null'
+        details:
+          type:
+          - string
+          - 'null'
+        referenceErrorCode:
+          type:
+          - string
+          - 'null'
+        referenceDocumentLink:
+          type:
+          - string
+          - 'null'
+        validationErrors:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ValidationError'
+      additionalProperties: false
+    ValidationError:
+      type: object
+      properties:
+        field:
+          type:
+          - string
+          - 'null'
+        message:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    ReportResponseModelAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        result:
+          allOf:
+          - $ref: '#/components/schemas/ReportResponseModel'
+      additionalProperties: false
+    ReportParameterResponseModel:
+      type: object
+      properties:
+        reportParameterId:
+          type: integer
+          format: int32
+        displayName:
+          type:
+          - string
+          - 'null'
+        dataType:
+          type:
+          - string
+          - 'null'
+        maxValue:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        minValue:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        validationPattern:
+          type:
+          - string
+          - 'null'
+        validationPatternMessage:
+          type:
+          - string
+          - 'null'
+        dropDownValue:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+        dropdownType:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        parameterName:
+          type:
+          - string
+          - 'null'
+        isRequired:
+          type: boolean
+      additionalProperties: false
+    AddUpdateReportResponseModel:
       type: object
       properties:
         id:
@@ -367,30 +478,31 @@ components:
           type:
           - string
           - 'null'
-        integrationId:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        queryType:
-          type:
-          - string
-          - 'null'
-        queryText:
-          type:
-          - string
-          - 'null'
-        roles:
-          type:
-          - array
-          - 'null'
-          items:
-            type: integer
-            format: int32
         isActive:
           type: boolean
         useDateRange:
           type: boolean
+      additionalProperties: false
+    ReportParameterResponseModelAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        result:
+          allOf:
+          - $ref: '#/components/schemas/ReportParameterResponseModel'
       additionalProperties: false
     ReportParameterListResponseModelAPIResponse:
       type: object
@@ -413,50 +525,15 @@ components:
           allOf:
           - $ref: '#/components/schemas/ReportParameterListResponseModel'
       additionalProperties: false
-    DropdownList:
+    ReportRequestModel:
       type: object
       properties:
-        value:
-          type:
-          - string
-          - 'null'
-        description:
-          type:
-          - string
-          - 'null'
-      additionalProperties: false
-    ReportListResponseModelAPIResponse:
-      type: object
-      properties:
-        version:
-          type:
-          - string
-          - 'null'
-        statusCode:
+        sourceId:
           type: integer
           format: int32
-        message:
-          type:
-          - string
-          - 'null'
-        responseException:
+        data:
           allOf:
-          - $ref: '#/components/schemas/ApiError'
-        result:
-          allOf:
-          - $ref: '#/components/schemas/ReportListResponseModel'
-      additionalProperties: false
-    ValidationError:
-      type: object
-      properties:
-        field:
-          type:
-          - string
-          - 'null'
-        message:
-          type:
-          - string
-          - 'null'
+          - $ref: '#/components/schemas/ReportPostData'
       additionalProperties: false
     AddReportParametersResponseModelAPIResponse:
       type: object
@@ -530,6 +607,244 @@ components:
         isRequired:
           type: boolean
       additionalProperties: false
+    StringAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        result:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    ReportParameterResModel:
+      type: object
+      properties:
+        reportParameterId:
+          type: integer
+          format: int32
+        displayName:
+          type:
+          - string
+          - 'null'
+        dataType:
+          type:
+          - string
+          - 'null'
+        maxValue:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        minValue:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        validationPattern:
+          type:
+          - string
+          - 'null'
+        validationPatternMessage:
+          type:
+          - string
+          - 'null'
+        dropDownValue:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/DropdownList'
+        dropdownType:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        parameterName:
+          type:
+          - string
+          - 'null'
+        isRequired:
+          type: boolean
+      additionalProperties: false
+    ReportPostData:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        reportName:
+          type:
+          - string
+          - 'null'
+        sourceName:
+          type:
+          - string
+          - 'null'
+        integrationId:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        queryType:
+          type:
+          - string
+          - 'null'
+        queryText:
+          type:
+          - string
+          - 'null'
+        roles:
+          type:
+          - array
+          - 'null'
+          items:
+            type: integer
+            format: int32
+        isActive:
+          type: boolean
+        useDateRange:
+          type: boolean
+      additionalProperties: false
+    DropdownList:
+      type: object
+      properties:
+        value:
+          type:
+          - string
+          - 'null'
+        description:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    ReportResponseModel:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        reportName:
+          type:
+          - string
+          - 'null'
+        queryType:
+          type:
+          - string
+          - 'null'
+        integrationId:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        integrationName:
+          type:
+          - string
+          - 'null'
+        roles:
+          type:
+          - array
+          - 'null'
+          items:
+            type: integer
+            format: int32
+        isActive:
+          type: boolean
+        useDateRange:
+          type: boolean
+        sourceName:
+          type:
+          - string
+          - 'null'
+        queryText:
+          type:
+          - string
+          - 'null'
+        reportParameters:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ReportParameterResponseModel'
+      additionalProperties: false
+    ReportListResponseModelAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        result:
+          allOf:
+          - $ref: '#/components/schemas/ReportListResponseModel'
+      additionalProperties: false
+    ReportListResponseModel:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        reportName:
+          type:
+          - string
+          - 'null'
+        queryType:
+          type:
+          - string
+          - 'null'
+        integrationId:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        integrationName:
+          type:
+          - string
+          - 'null'
+        roles:
+          type:
+          - array
+          - 'null'
+          items:
+            type: integer
+            format: int32
+        isActive:
+          type: boolean
+        useDateRange:
+          type: boolean
+      additionalProperties: false
+    ReportParameterListResponseModel:
+      type: object
+      properties:
+        reportParameters:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ReportParameterResModel'
+      additionalProperties: false
     AddUpdateReportResponseModelAPIResponse:
       type: object
       properties:
@@ -602,321 +917,6 @@ components:
           - 'null'
           items:
             type: string
-        isRequired:
-          type: boolean
-      additionalProperties: false
-    ReportResponseModelAPIResponse:
-      type: object
-      properties:
-        version:
-          type:
-          - string
-          - 'null'
-        statusCode:
-          type: integer
-          format: int32
-        message:
-          type:
-          - string
-          - 'null'
-        responseException:
-          allOf:
-          - $ref: '#/components/schemas/ApiError'
-        result:
-          allOf:
-          - $ref: '#/components/schemas/ReportResponseModel'
-      additionalProperties: false
-    ReportParameterResponseModelAPIResponse:
-      type: object
-      properties:
-        version:
-          type:
-          - string
-          - 'null'
-        statusCode:
-          type: integer
-          format: int32
-        message:
-          type:
-          - string
-          - 'null'
-        responseException:
-          allOf:
-          - $ref: '#/components/schemas/ApiError'
-        result:
-          allOf:
-          - $ref: '#/components/schemas/ReportParameterResponseModel'
-      additionalProperties: false
-    ReportListResponseModel:
-      type: object
-      properties:
-        id:
-          type: integer
-          format: int32
-        reportName:
-          type:
-          - string
-          - 'null'
-        queryType:
-          type:
-          - string
-          - 'null'
-        integrationId:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        integrationName:
-          type:
-          - string
-          - 'null'
-        roles:
-          type:
-          - array
-          - 'null'
-          items:
-            type: integer
-            format: int32
-        isActive:
-          type: boolean
-        useDateRange:
-          type: boolean
-      additionalProperties: false
-    ReportResponseModel:
-      type: object
-      properties:
-        id:
-          type: integer
-          format: int32
-        reportName:
-          type:
-          - string
-          - 'null'
-        queryType:
-          type:
-          - string
-          - 'null'
-        integrationId:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        integrationName:
-          type:
-          - string
-          - 'null'
-        roles:
-          type:
-          - array
-          - 'null'
-          items:
-            type: integer
-            format: int32
-        isActive:
-          type: boolean
-        useDateRange:
-          type: boolean
-        sourceName:
-          type:
-          - string
-          - 'null'
-        queryText:
-          type:
-          - string
-          - 'null'
-        reportParameters:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/ReportParameterResponseModel'
-      additionalProperties: false
-    ReportParameterListResponseModel:
-      type: object
-      properties:
-        reportParameters:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/ReportParameterResModel'
-      additionalProperties: false
-    ReportParameterResModel:
-      type: object
-      properties:
-        reportParameterId:
-          type: integer
-          format: int32
-        displayName:
-          type:
-          - string
-          - 'null'
-        dataType:
-          type:
-          - string
-          - 'null'
-        maxValue:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        minValue:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        validationPattern:
-          type:
-          - string
-          - 'null'
-        validationPatternMessage:
-          type:
-          - string
-          - 'null'
-        dropDownValue:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/DropdownList'
-        dropdownType:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        parameterName:
-          type:
-          - string
-          - 'null'
-        isRequired:
-          type: boolean
-      additionalProperties: false
-    StringAPIResponse:
-      type: object
-      properties:
-        version:
-          type:
-          - string
-          - 'null'
-        statusCode:
-          type: integer
-          format: int32
-        message:
-          type:
-          - string
-          - 'null'
-        responseException:
-          allOf:
-          - $ref: '#/components/schemas/ApiError'
-        result:
-          type:
-          - string
-          - 'null'
-      additionalProperties: false
-    AddUpdateReportResponseModel:
-      type: object
-      properties:
-        id:
-          type: integer
-          format: int32
-        reportName:
-          type:
-          - string
-          - 'null'
-        sourceName:
-          type:
-          - string
-          - 'null'
-        isActive:
-          type: boolean
-        useDateRange:
-          type: boolean
-      additionalProperties: false
-    ApiError:
-      type: object
-      properties:
-        isError:
-          type: boolean
-        exceptionMessage:
-          type:
-          - string
-          - 'null'
-        details:
-          type:
-          - string
-          - 'null'
-        referenceErrorCode:
-          type:
-          - string
-          - 'null'
-        referenceDocumentLink:
-          type:
-          - string
-          - 'null'
-        validationErrors:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/ValidationError'
-      additionalProperties: false
-    ReportRequestModel:
-      type: object
-      properties:
-        sourceId:
-          type: integer
-          format: int32
-        data:
-          allOf:
-          - $ref: '#/components/schemas/ReportPostData'
-      additionalProperties: false
-    ReportParameterResponseModel:
-      type: object
-      properties:
-        reportParameterId:
-          type: integer
-          format: int32
-        displayName:
-          type:
-          - string
-          - 'null'
-        dataType:
-          type:
-          - string
-          - 'null'
-        maxValue:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        minValue:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        validationPattern:
-          type:
-          - string
-          - 'null'
-        validationPatternMessage:
-          type:
-          - string
-          - 'null'
-        dropDownValue:
-          type:
-          - array
-          - 'null'
-          items:
-            type: string
-        dropdownType:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        parameterName:
-          type:
-          - string
-          - 'null'
         isRequired:
           type: boolean
       additionalProperties: false

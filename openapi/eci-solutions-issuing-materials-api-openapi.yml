@@ -187,6 +187,28 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
+    StockToJobMaterialCreate:
+      required:
+      - bins
+      - partNumber
+      - quantityToMake
+      type: object
+      properties:
+        partNumber:
+          type: string
+        quantityToMake:
+          type: number
+          format: double
+        stepNo:
+          type:
+          - number
+          - 'null'
+          format: double
+        bins:
+          type: array
+          items:
+            $ref: '#/components/schemas/StockToJobBinCreate'
+      additionalProperties: false
     StockToJobBinCreate:
       required:
       - qty2Use
@@ -221,53 +243,11 @@ components:
           items:
             $ref: '#/components/schemas/StockToJobMaterialCreate'
       additionalProperties: false
-    StockToJobMaterialCreate:
-      required:
-      - bins
-      - partNumber
-      - quantityToMake
-      type: object
-      properties:
-        partNumber:
-          type: string
-        quantityToMake:
-          type: number
-          format: double
-        stepNo:
-          type:
-          - number
-          - 'null'
-          format: double
-        bins:
-          type: array
-          items:
-            $ref: '#/components/schemas/StockToJobBinCreate'
-      additionalProperties: false
     StockToJobTransferResultSuccessResponse:
       type: object
       properties:
         Data:
           $ref: '#/components/schemas/StockToJobTransferResult'
-      additionalProperties: false
-    StockToJobMaterialResultSchema:
-      type: object
-      properties:
-        partNumber:
-          type:
-          - string
-          - 'null'
-        quantityRequested:
-          type: number
-          format: double
-        quantityTransferred:
-          type: number
-          format: double
-        quantityCapped:
-          type: number
-          format: double
-        quantityRemainingToBuy:
-          type: number
-          format: double
       additionalProperties: false
     StockToJobTransferResult:
       type: object
@@ -288,6 +268,26 @@ components:
           - 'null'
           items:
             type: string
+      additionalProperties: false
+    StockToJobMaterialResultSchema:
+      type: object
+      properties:
+        partNumber:
+          type:
+          - string
+          - 'null'
+        quantityRequested:
+          type: number
+          format: double
+        quantityTransferred:
+          type: number
+          format: double
+        quantityCapped:
+          type: number
+          format: double
+        quantityRemainingToBuy:
+          type: number
+          format: double
       additionalProperties: false
   securitySchemes:
     Bearer:

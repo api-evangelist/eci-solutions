@@ -548,19 +548,27 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/JobOperation'
-    JobListResponse:
+    JobOperationUpdateModelData:
       type: object
       properties:
-        data:
+        uniqueID:
           type:
-          - array
+          - string
           - 'null'
-          items:
-            $ref: '#/components/schemas/Job'
-          readOnly: true
-        resultCount:
-          type: integer
-          format: int32
+        workCenterID:
+          type:
+          - string
+          - 'null'
+        schedStartDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        schedEndDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
       additionalProperties: false
     JobOperation:
       title: JobOperation
@@ -680,47 +688,19 @@ components:
         jobClosedDate:
           type: string
           format: date-time
-    JobOperationUpdateModelData:
+    JobListResponse:
       type: object
       properties:
-        uniqueID:
-          type:
-          - string
-          - 'null'
-        workCenterID:
-          type:
-          - string
-          - 'null'
-        schedStartDate:
-          type:
-          - string
-          - 'null'
-          format: date-time
-        schedEndDate:
-          type:
-          - string
-          - 'null'
-          format: date-time
-      additionalProperties: false
-    JobUpdateModel:
-      type: object
-      properties:
-        schedStartDate:
-          type:
-          - string
-          - 'null'
-          format: date-time
-        schedEndDate:
-          type:
-          - string
-          - 'null'
-          format: date-time
-        jobOperations:
+        data:
           type:
           - array
           - 'null'
           items:
-            $ref: '#/components/schemas/JobOperationUpdateModelData'
+            $ref: '#/components/schemas/Job'
+          readOnly: true
+        resultCount:
+          type: integer
+          format: int32
       additionalProperties: false
     JobPartProduction:
       required:
@@ -781,6 +761,26 @@ components:
           items:
             type: number
             format: double
+      additionalProperties: false
+    JobUpdateModel:
+      type: object
+      properties:
+        schedStartDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        schedEndDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        jobOperations:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/JobOperationUpdateModelData'
       additionalProperties: false
   securitySchemes:
     Bearer:

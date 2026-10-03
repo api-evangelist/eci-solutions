@@ -2457,6 +2457,354 @@ paths:
                 $ref: '#/components/schemas/APIResponseMessageDto'
 components:
   schemas:
+    APIResponseMessageDto:
+      type: object
+      properties:
+        description:
+          type: string
+        status:
+          type: string
+        payloadID:
+          type: string
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+          readOnly: true
+        warnings:
+          type: array
+          items:
+            $ref: '#/components/schemas/Warning'
+          readOnly: true
+    CTMBOMPartMethodDto:
+      type: object
+      properties:
+        part:
+          $ref: '#/components/schemas/BOMPartDto'
+        partRevision:
+          $ref: '#/components/schemas/BOMPartRevisionDto'
+        partAssemblies:
+          type: array
+          items:
+            $ref: '#/components/schemas/BOMPartMethodAssemblyDto'
+    CTMBOMPartMaterialGuidDto:
+      type: object
+      properties:
+        materialId:
+          type: integer
+          format: int32
+        materialGuid:
+          type: string
+    CTMBOMPartMethodGuidDto:
+      type: object
+      properties:
+        partId:
+          type: string
+        partGuid:
+          type: string
+        partRevisionGuids:
+          type: array
+          items:
+            $ref: '#/components/schemas/CTMBOMPartRevisionGuidDto'
+    Warning:
+      type: object
+      properties:
+        innerText:
+          type: string
+    BOMPartOperationDto:
+      required:
+      - methodID
+      - methodAssemblyID
+      - methodOperationID
+      - operationType
+      - workCenterID
+      - processID
+      - processShortDescription
+      - standardFactor
+      - machineType
+      - quantityPerAssembly
+      type: object
+      properties:
+        methodID:
+          type: string
+        methodRevisionID:
+          type: string
+        methodAssemblyID:
+          type: integer
+          format: int32
+        methodOperationID:
+          type: integer
+          format: int32
+        operationType:
+          type: integer
+          format: int32
+        workCenterID:
+          type: string
+        processID:
+          type: string
+        processShortDescription:
+          type: string
+        productionStandard:
+          type: number
+          format: double
+        standardFactor:
+          type: string
+        machinesToSchedule:
+          type: integer
+          format: int32
+        machineType:
+          type: integer
+          format: int32
+        quantityPerAssembly:
+          type: number
+          format: double
+    Error:
+      type: object
+      properties:
+        innerText:
+          type: string
+    CTMBOMPartMethodGuidsDto:
+      type: object
+      properties:
+        partMethodGuids:
+          type: array
+          items:
+            $ref: '#/components/schemas/CTMBOMPartMethodGuidDto'
+    BOMPartMaterialDto:
+      required:
+      - methodID
+      - methodAssemblyID
+      - methodMaterialID
+      - partID
+      - partShortDescription
+      type: object
+      properties:
+        methodID:
+          type: string
+        methodRevisionID:
+          type: string
+        methodAssemblyID:
+          type: integer
+          format: int32
+        methodMaterialID:
+          type: integer
+          format: int32
+        partID:
+          type: string
+        partRevisionID:
+          type: string
+        relatedPartOperationID:
+          type: integer
+          format: int32
+        partShortDescription:
+          type: string
+        unitOfMeasure:
+          type: string
+        estimatedUnitCost:
+          type: number
+          format: double
+        leadTime:
+          type: integer
+          format: int32
+        supplierOrganizationID:
+          type: string
+        purchaseLocationID:
+          type: string
+        quantityPerParent:
+          type: number
+          format: double
+        manualPart:
+          type: boolean
+        partLongDescription:
+          type: string
+        backflush:
+          type: boolean
+        scrapQuantity:
+          type: number
+          format: double
+        scrapPercent:
+          type: number
+          format: double
+    BOMPartDto:
+      required:
+      - partID
+      - shortDescription
+      - partType
+      type: object
+      properties:
+        partID:
+          type: string
+        shortDescription:
+          type: string
+        partType:
+          type: integer
+          format: int32
+        partClassID:
+          type: string
+        partGroupID:
+          type: string
+        longDescription:
+          type: string
+        deliveryType:
+          type: integer
+          format: int32
+        buyForInventory:
+          type: boolean
+        nonStockedItem:
+          type: boolean
+    BOMPartBinDetailDto:
+      required:
+      - partID
+      type: object
+      properties:
+        partID:
+          type: string
+        partRevisionID:
+          type: string
+        partBinID:
+          type: string
+        partBinDetailID:
+          type: integer
+          format: int32
+        transactionDate:
+          type: string
+          format: date-time
+        quantityType:
+          type: integer
+          format: int32
+        originalQuantity:
+          type: number
+          format: double
+        remainingQuantity:
+          type: number
+          format: double
+        unitCost:
+          type: number
+          format: double
+        sourceTableName:
+          type: string
+        createdBy:
+          type: string
+        createdDate:
+          type: string
+          format: date-time
+        uniqueID:
+          type: string
+          format: uuid
+          example: 00000000-0000-0000-0000-000000000000
+        rowVersion:
+          type: string
+          format: byte
+        warehouseID:
+          type: string
+    CTMBOMPartAssemblyGuidDto:
+      type: object
+      properties:
+        assemblyId:
+          type: integer
+          format: int32
+        assemblyGuid:
+          type: string
+        partMaterialGuids:
+          type: array
+          items:
+            $ref: '#/components/schemas/CTMBOMPartMaterialGuidDto'
+        partOperationGuids:
+          type: array
+          items:
+            $ref: '#/components/schemas/CTMBOMPartOperationGuidDto'
+    CTMBOMPartRevisionGuidDto:
+      type: object
+      properties:
+        revisionId:
+          type: string
+        revisionGuid:
+          type: string
+        partAssemblyGuids:
+          type: array
+          items:
+            $ref: '#/components/schemas/CTMBOMPartAssemblyGuidDto'
+    BOMPartAssemblyDto:
+      required:
+      - methodID
+      - methodAssemblyID
+      - level
+      - useMethod
+      - parentAssemblyID
+      - partID
+      - partShortDescription
+      type: object
+      properties:
+        methodID:
+          type: string
+        methodRevisionID:
+          type: string
+        methodAssemblyID:
+          type: integer
+          format: int32
+        level:
+          type: integer
+          format: int32
+        useMethod:
+          type: boolean
+        parentAssemblyID:
+          type: integer
+          format: int32
+        partID:
+          type: string
+        partRevisionID:
+          type: string
+        partShortDescription:
+          type: string
+        unitOfMeasure:
+          type: string
+        quantityPerParent:
+          type: number
+          format: double
+        overlapOperationID:
+          type: integer
+          format: int32
+        partLongDescription:
+          type: string
+    BOMPartMethodAssemblyDto:
+      type: object
+      properties:
+        assembly:
+          $ref: '#/components/schemas/BOMPartAssemblyDto'
+        operations:
+          type: array
+          items:
+            $ref: '#/components/schemas/BOMPartOperationDto'
+        materials:
+          type: array
+          items:
+            $ref: '#/components/schemas/BOMPartMaterialDto'
+    CTMBOMPartOperationGuidDto:
+      type: object
+      properties:
+        operationId:
+          type: integer
+          format: int32
+        operationGuid:
+          type: string
+    BOMResponseMessageDto_BOMPartMaterialDto:
+      type: object
+      properties:
+        responseInfo:
+          $ref: '#/components/schemas/APIResponseMessageDto'
+        returnObject:
+          $ref: '#/components/schemas/BOMPartMaterialDto'
+    CTMBOMPartRevisionDto:
+      required:
+      - part
+      type: object
+      properties:
+        part:
+          $ref: '#/components/schemas/BOMPartDto'
+        partRevisions:
+          type: array
+          items:
+            $ref: '#/components/schemas/BOMPartRevisionDto'
     BOMPartRevisionDto:
       required:
       - partID
@@ -2601,354 +2949,6 @@ components:
         thickness:
           type: number
           format: double
-    BOMPartMaterialDto:
-      required:
-      - methodID
-      - methodAssemblyID
-      - methodMaterialID
-      - partID
-      - partShortDescription
-      type: object
-      properties:
-        methodID:
-          type: string
-        methodRevisionID:
-          type: string
-        methodAssemblyID:
-          type: integer
-          format: int32
-        methodMaterialID:
-          type: integer
-          format: int32
-        partID:
-          type: string
-        partRevisionID:
-          type: string
-        relatedPartOperationID:
-          type: integer
-          format: int32
-        partShortDescription:
-          type: string
-        unitOfMeasure:
-          type: string
-        estimatedUnitCost:
-          type: number
-          format: double
-        leadTime:
-          type: integer
-          format: int32
-        supplierOrganizationID:
-          type: string
-        purchaseLocationID:
-          type: string
-        quantityPerParent:
-          type: number
-          format: double
-        manualPart:
-          type: boolean
-        partLongDescription:
-          type: string
-        backflush:
-          type: boolean
-        scrapQuantity:
-          type: number
-          format: double
-        scrapPercent:
-          type: number
-          format: double
-    APIResponseMessageDto:
-      type: object
-      properties:
-        description:
-          type: string
-        status:
-          type: string
-        payloadID:
-          type: string
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/Error'
-          readOnly: true
-        warnings:
-          type: array
-          items:
-            $ref: '#/components/schemas/Warning'
-          readOnly: true
-    CTMBOMPartMethodGuidDto:
-      type: object
-      properties:
-        partId:
-          type: string
-        partGuid:
-          type: string
-        partRevisionGuids:
-          type: array
-          items:
-            $ref: '#/components/schemas/CTMBOMPartRevisionGuidDto'
-    BOMPartAssemblyDto:
-      required:
-      - methodID
-      - methodAssemblyID
-      - level
-      - useMethod
-      - parentAssemblyID
-      - partID
-      - partShortDescription
-      type: object
-      properties:
-        methodID:
-          type: string
-        methodRevisionID:
-          type: string
-        methodAssemblyID:
-          type: integer
-          format: int32
-        level:
-          type: integer
-          format: int32
-        useMethod:
-          type: boolean
-        parentAssemblyID:
-          type: integer
-          format: int32
-        partID:
-          type: string
-        partRevisionID:
-          type: string
-        partShortDescription:
-          type: string
-        unitOfMeasure:
-          type: string
-        quantityPerParent:
-          type: number
-          format: double
-        overlapOperationID:
-          type: integer
-          format: int32
-        partLongDescription:
-          type: string
-    BOMPartBinDetailDto:
-      required:
-      - partID
-      type: object
-      properties:
-        partID:
-          type: string
-        partRevisionID:
-          type: string
-        partBinID:
-          type: string
-        partBinDetailID:
-          type: integer
-          format: int32
-        transactionDate:
-          type: string
-          format: date-time
-        quantityType:
-          type: integer
-          format: int32
-        originalQuantity:
-          type: number
-          format: double
-        remainingQuantity:
-          type: number
-          format: double
-        unitCost:
-          type: number
-          format: double
-        sourceTableName:
-          type: string
-        createdBy:
-          type: string
-        createdDate:
-          type: string
-          format: date-time
-        uniqueID:
-          type: string
-          format: uuid
-          example: 00000000-0000-0000-0000-000000000000
-        rowVersion:
-          type: string
-          format: byte
-        warehouseID:
-          type: string
-    BOMResponseMessageDto_BOMPartMaterialDto:
-      type: object
-      properties:
-        responseInfo:
-          $ref: '#/components/schemas/APIResponseMessageDto'
-        returnObject:
-          $ref: '#/components/schemas/BOMPartMaterialDto'
-    CTMBOMPartAssemblyGuidDto:
-      type: object
-      properties:
-        assemblyId:
-          type: integer
-          format: int32
-        assemblyGuid:
-          type: string
-        partMaterialGuids:
-          type: array
-          items:
-            $ref: '#/components/schemas/CTMBOMPartMaterialGuidDto'
-        partOperationGuids:
-          type: array
-          items:
-            $ref: '#/components/schemas/CTMBOMPartOperationGuidDto'
-    BOMPartDto:
-      required:
-      - partID
-      - shortDescription
-      - partType
-      type: object
-      properties:
-        partID:
-          type: string
-        shortDescription:
-          type: string
-        partType:
-          type: integer
-          format: int32
-        partClassID:
-          type: string
-        partGroupID:
-          type: string
-        longDescription:
-          type: string
-        deliveryType:
-          type: integer
-          format: int32
-        buyForInventory:
-          type: boolean
-        nonStockedItem:
-          type: boolean
-    Error:
-      type: object
-      properties:
-        innerText:
-          type: string
-    CTMBOMPartRevisionGuidDto:
-      type: object
-      properties:
-        revisionId:
-          type: string
-        revisionGuid:
-          type: string
-        partAssemblyGuids:
-          type: array
-          items:
-            $ref: '#/components/schemas/CTMBOMPartAssemblyGuidDto'
-    CTMBOMPartRevisionDto:
-      required:
-      - part
-      type: object
-      properties:
-        part:
-          $ref: '#/components/schemas/BOMPartDto'
-        partRevisions:
-          type: array
-          items:
-            $ref: '#/components/schemas/BOMPartRevisionDto'
-    BOMPartMethodAssemblyDto:
-      type: object
-      properties:
-        assembly:
-          $ref: '#/components/schemas/BOMPartAssemblyDto'
-        operations:
-          type: array
-          items:
-            $ref: '#/components/schemas/BOMPartOperationDto'
-        materials:
-          type: array
-          items:
-            $ref: '#/components/schemas/BOMPartMaterialDto'
-    BOMPartOperationDto:
-      required:
-      - methodID
-      - methodAssemblyID
-      - methodOperationID
-      - operationType
-      - workCenterID
-      - processID
-      - processShortDescription
-      - standardFactor
-      - machineType
-      - quantityPerAssembly
-      type: object
-      properties:
-        methodID:
-          type: string
-        methodRevisionID:
-          type: string
-        methodAssemblyID:
-          type: integer
-          format: int32
-        methodOperationID:
-          type: integer
-          format: int32
-        operationType:
-          type: integer
-          format: int32
-        workCenterID:
-          type: string
-        processID:
-          type: string
-        processShortDescription:
-          type: string
-        productionStandard:
-          type: number
-          format: double
-        standardFactor:
-          type: string
-        machinesToSchedule:
-          type: integer
-          format: int32
-        machineType:
-          type: integer
-          format: int32
-        quantityPerAssembly:
-          type: number
-          format: double
-    CTMBOMPartMaterialGuidDto:
-      type: object
-      properties:
-        materialId:
-          type: integer
-          format: int32
-        materialGuid:
-          type: string
-    CTMBOMPartOperationGuidDto:
-      type: object
-      properties:
-        operationId:
-          type: integer
-          format: int32
-        operationGuid:
-          type: string
-    CTMBOMPartMethodDto:
-      type: object
-      properties:
-        part:
-          $ref: '#/components/schemas/BOMPartDto'
-        partRevision:
-          $ref: '#/components/schemas/BOMPartRevisionDto'
-        partAssemblies:
-          type: array
-          items:
-            $ref: '#/components/schemas/BOMPartMethodAssemblyDto'
-    Warning:
-      type: object
-      properties:
-        innerText:
-          type: string
-    CTMBOMPartMethodGuidsDto:
-      type: object
-      properties:
-        partMethodGuids:
-          type: array
-          items:
-            $ref: '#/components/schemas/CTMBOMPartMethodGuidDto'
   securitySchemes:
     oauth2:
       type: oauth2

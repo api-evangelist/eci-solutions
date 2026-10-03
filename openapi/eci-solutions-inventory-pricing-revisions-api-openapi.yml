@@ -76,39 +76,27 @@ paths:
       summary: Post inventory pricing revisions
       x-summary-source: derived
 components:
-  schemas:
-    StandardError:
-      type: object
-      title: Standard Error
-      description: A standard error response format.
-      properties:
-        errorCode:
-          type: integer
-          example: 4xx
-        error:
-          type: string
-          description: A summary of the error
-          example: A summary of the error
-        errorMessage:
-          type: string
-          description: Details of the error
-          example: Details of the error
-    PricingRevision:
-      title: PricingRevision
-      type: object
-      required:
-      - name
-      - amount
-      properties:
-        name:
-          type: string
-          example: Adapt to higher mortgage rates
-        amount:
-          type: number
-          example: '-100000'
   responses:
+    NotFound:
+      description: The specified resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/StandardError'
+    Forbidden:
+      description: The provided authentication credentials does not have sufficient privileges to access this resource
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/StandardError'
     InternalServerError:
       description: Receiving a 5xx response indicates an error on Lasso's end. Please contact us to report the problem
+    Unauthorized:
+      description: The request has not been fulfilled because it lacks valid authentication credentials
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/StandardError'
     BadRequest:
       description: 'The request could not be processed due to invalid input:
 
@@ -130,24 +118,36 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/StandardError'
-    Unauthorized:
-      description: The request has not been fulfilled because it lacks valid authentication credentials
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/StandardError'
-    NotFound:
-      description: The specified resource was not found
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/StandardError'
-    Forbidden:
-      description: The provided authentication credentials does not have sufficient privileges to access this resource
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/StandardError'
+  schemas:
+    PricingRevision:
+      title: PricingRevision
+      type: object
+      required:
+      - name
+      - amount
+      properties:
+        name:
+          type: string
+          example: Adapt to higher mortgage rates
+        amount:
+          type: number
+          example: '-100000'
+    StandardError:
+      type: object
+      title: Standard Error
+      description: A standard error response format.
+      properties:
+        errorCode:
+          type: integer
+          example: 4xx
+        error:
+          type: string
+          description: A summary of the error
+          example: A summary of the error
+        errorMessage:
+          type: string
+          description: Details of the error
+          example: Details of the error
   securitySchemes:
     JwtAuthorizer:
       type: http

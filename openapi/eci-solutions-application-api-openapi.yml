@@ -244,125 +244,33 @@ paths:
                 $ref: '#/components/schemas/ApplicationSecretValueResponseAPIResponse'
 components:
   schemas:
-    ApplicationSecretValueResponseAPIResponse:
+    ApiError:
       type: object
       properties:
-        version:
-          type:
-          - string
-          - 'null'
-        statusCode:
-          type: integer
-          format: int32
-        message:
-          type:
-          - string
-          - 'null'
-        responseException:
-          allOf:
-          - $ref: '#/components/schemas/ApiError'
-        result:
-          allOf:
-          - $ref: '#/components/schemas/ApplicationSecretValueResponse'
-      additionalProperties: false
-    ApplicationRequestModel:
-      required:
-      - description
-      - roleId
-      type: object
-      properties:
-        description:
-          minLength: 1
-          type: string
-        roleId:
-          type: integer
-          format: int32
-        productId:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        companyId:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        integrationId:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        redirectUris:
-          type:
-          - string
-          - 'null'
-          description: "A list of possible redirect URIs for authentication flows. \nMultiple values should be separated with line feeds (\\n)."
-        isActive:
+        isError:
           type: boolean
-        displayName:
+        exceptionMessage:
           type:
           - string
           - 'null'
-          description: 'Display name for the partner shown during connection flow.
-
-            Only applicable when RoleId = Partner (6).'
-        logoUrl:
+        details:
           type:
           - string
           - 'null'
-          description: 'URL to the partner''s logo for branding purposes.
-
-            Only applicable when RoleId = Partner (6).'
-        terms:
+        referenceErrorCode:
           type:
           - string
           - 'null'
-          description: 'Terms and conditions text (supports HTML) shown during authorization.
-
-            Only applicable when RoleId = Partner (6).'
-      additionalProperties: false
-    CreatedApplicationResponseAPIResponse:
-      type: object
-      properties:
-        version:
+        referenceDocumentLink:
           type:
           - string
           - 'null'
-        statusCode:
-          type: integer
-          format: int32
-        message:
+        validationErrors:
           type:
-          - string
+          - array
           - 'null'
-        responseException:
-          allOf:
-          - $ref: '#/components/schemas/ApiError'
-        result:
-          allOf:
-          - $ref: '#/components/schemas/CreatedApplicationResponse'
-      additionalProperties: false
-    StringAPIResponse:
-      type: object
-      properties:
-        version:
-          type:
-          - string
-          - 'null'
-        statusCode:
-          type: integer
-          format: int32
-        message:
-          type:
-          - string
-          - 'null'
-        responseException:
-          allOf:
-          - $ref: '#/components/schemas/ApiError'
-        result:
-          type:
-          - string
-          - 'null'
+          items:
+            $ref: '#/components/schemas/ValidationError'
       additionalProperties: false
     ValidationError:
       type: object
@@ -375,30 +283,6 @@ components:
           type:
           - string
           - 'null'
-      additionalProperties: false
-    ApplicationResponseIListAPIResponse:
-      type: object
-      properties:
-        version:
-          type:
-          - string
-          - 'null'
-        statusCode:
-          type: integer
-          format: int32
-        message:
-          type:
-          - string
-          - 'null'
-        responseException:
-          allOf:
-          - $ref: '#/components/schemas/ApiError'
-        result:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/ApplicationResponse'
       additionalProperties: false
     CreatedApplicationResponse:
       type: object
@@ -468,63 +352,6 @@ components:
           description: 'Terms and conditions text (supports HTML) shown during authorization.
 
             Only applicable when RoleId = Partner (6).'
-      additionalProperties: false
-    ApplicationSecretValueResponse:
-      type: object
-      properties:
-        clientSecret:
-          type:
-          - string
-          - 'null'
-      additionalProperties: false
-    ApplicationResponseAPIResponse:
-      type: object
-      properties:
-        version:
-          type:
-          - string
-          - 'null'
-        statusCode:
-          type: integer
-          format: int32
-        message:
-          type:
-          - string
-          - 'null'
-        responseException:
-          allOf:
-          - $ref: '#/components/schemas/ApiError'
-        result:
-          allOf:
-          - $ref: '#/components/schemas/ApplicationResponse'
-      additionalProperties: false
-    ApiError:
-      type: object
-      properties:
-        isError:
-          type: boolean
-        exceptionMessage:
-          type:
-          - string
-          - 'null'
-        details:
-          type:
-          - string
-          - 'null'
-        referenceErrorCode:
-          type:
-          - string
-          - 'null'
-        referenceDocumentLink:
-          type:
-          - string
-          - 'null'
-        validationErrors:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/ValidationError'
       additionalProperties: false
     ApplicationResponse:
       type: object
@@ -617,6 +444,179 @@ components:
           description: 'Terms and conditions text (supports HTML) shown during authorization.
 
             Only applicable when RoleId = Partner (6).'
+      additionalProperties: false
+    ApplicationResponseAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        result:
+          allOf:
+          - $ref: '#/components/schemas/ApplicationResponse'
+      additionalProperties: false
+    ApplicationSecretValueResponseAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        result:
+          allOf:
+          - $ref: '#/components/schemas/ApplicationSecretValueResponse'
+      additionalProperties: false
+    ApplicationRequestModel:
+      required:
+      - description
+      - roleId
+      type: object
+      properties:
+        description:
+          minLength: 1
+          type: string
+        roleId:
+          type: integer
+          format: int32
+        productId:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        companyId:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        integrationId:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        redirectUris:
+          type:
+          - string
+          - 'null'
+          description: "A list of possible redirect URIs for authentication flows. \nMultiple values should be separated with line feeds (\\n)."
+        isActive:
+          type: boolean
+        displayName:
+          type:
+          - string
+          - 'null'
+          description: 'Display name for the partner shown during connection flow.
+
+            Only applicable when RoleId = Partner (6).'
+        logoUrl:
+          type:
+          - string
+          - 'null'
+          description: 'URL to the partner''s logo for branding purposes.
+
+            Only applicable when RoleId = Partner (6).'
+        terms:
+          type:
+          - string
+          - 'null'
+          description: 'Terms and conditions text (supports HTML) shown during authorization.
+
+            Only applicable when RoleId = Partner (6).'
+      additionalProperties: false
+    StringAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        result:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    ApplicationSecretValueResponse:
+      type: object
+      properties:
+        clientSecret:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    CreatedApplicationResponseAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        result:
+          allOf:
+          - $ref: '#/components/schemas/CreatedApplicationResponse'
+      additionalProperties: false
+    ApplicationResponseIListAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        result:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ApplicationResponse'
       additionalProperties: false
   securitySchemes:
     oidc:

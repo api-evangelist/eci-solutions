@@ -399,25 +399,52 @@ paths:
                 $ref: '#/components/schemas/TraceMessageResponseListAPIResponse'
 components:
   schemas:
-    CustomReportLogViewModel:
+    ProductEnum:
+      enum:
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+      - 8
+      - 9
+      - 10
+      - 11
+      - 12
+      - 13
+      - 14
+      - 15
+      type: integer
+      format: int32
+    ApiError:
       type: object
       properties:
-        totalCount:
-          type: integer
-          format: int32
-        headers:
+        isError:
+          type: boolean
+        exceptionMessage:
+          type:
+          - string
+          - 'null'
+        details:
+          type:
+          - string
+          - 'null'
+        referenceErrorCode:
+          type:
+          - string
+          - 'null'
+        referenceDocumentLink:
+          type:
+          - string
+          - 'null'
+        validationErrors:
           type:
           - array
           - 'null'
           items:
-            type: string
-        data:
-          type:
-          - array
-          - 'null'
-          items:
-            type: object
-            additionalProperties: {}
+            $ref: '#/components/schemas/ValidationError'
       additionalProperties: false
     ValidationError:
       type: object
@@ -431,84 +458,29 @@ components:
           - string
           - 'null'
       additionalProperties: false
-    AuditLogResponse:
+    TraceMessageResponseListAPIResponse:
       type: object
       properties:
-        id:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
           type: integer
           format: int32
-        userType:
+        message:
           type:
           - string
           - 'null'
-        userId:
-          type:
-          - string
-          - 'null'
-          format: uuid
-        userAgent:
-          type:
-          - string
-          - 'null'
-        traceId:
-          type:
-          - string
-          - 'null'
-        sourceAddress:
-          type:
-          - string
-          - 'null'
-        recordId:
-          type:
-          - string
-          - 'null'
-        recordDescription:
-          type:
-          - string
-          - 'null'
-        companyId:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        action:
-          type:
-          - string
-          - 'null'
-        dateStamp:
-          type: string
-          format: date-time
-        companyName:
-          type:
-          - string
-          - 'null'
-        productId:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        productName:
-          type:
-          - string
-          - 'null'
-        userName:
-          type:
-          - string
-          - 'null'
-        jsonData:
-          type:
-          - string
-          - 'null'
-        userRole:
-          type:
-          - string
-          - 'null'
-        changedValuesList:
+        responseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        result:
           type:
           - array
           - 'null'
           items:
-            $ref: '#/components/schemas/ChangedValue'
+            $ref: '#/components/schemas/TraceMessageResponse'
       additionalProperties: false
     TraceMessageResponse:
       type: object
@@ -687,49 +659,6 @@ components:
           items:
             $ref: '#/components/schemas/AuditLogResponse'
       additionalProperties: false
-    ProductEnum:
-      enum:
-      - 1
-      - 2
-      - 3
-      - 4
-      - 5
-      - 6
-      - 7
-      - 8
-      - 9
-      - 10
-      - 11
-      - 12
-      - 13
-      - 14
-      - 15
-      type: integer
-      format: int32
-    TraceMessageResponseListAPIResponse:
-      type: object
-      properties:
-        version:
-          type:
-          - string
-          - 'null'
-        statusCode:
-          type: integer
-          format: int32
-        message:
-          type:
-          - string
-          - 'null'
-        responseException:
-          allOf:
-          - $ref: '#/components/schemas/ApiError'
-        result:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/TraceMessageResponse'
-      additionalProperties: false
     ChangedValue:
       type: object
       properties:
@@ -749,34 +678,6 @@ components:
           type:
           - boolean
           - 'null'
-      additionalProperties: false
-    ApiError:
-      type: object
-      properties:
-        isError:
-          type: boolean
-        exceptionMessage:
-          type:
-          - string
-          - 'null'
-        details:
-          type:
-          - string
-          - 'null'
-        referenceErrorCode:
-          type:
-          - string
-          - 'null'
-        referenceDocumentLink:
-          type:
-          - string
-          - 'null'
-        validationErrors:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/ValidationError'
       additionalProperties: false
     ApiRequestLog:
       type: object
@@ -914,6 +815,105 @@ components:
           type:
           - string
           - 'null'
+      additionalProperties: false
+    AuditLogResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        userType:
+          type:
+          - string
+          - 'null'
+        userId:
+          type:
+          - string
+          - 'null'
+          format: uuid
+        userAgent:
+          type:
+          - string
+          - 'null'
+        traceId:
+          type:
+          - string
+          - 'null'
+        sourceAddress:
+          type:
+          - string
+          - 'null'
+        recordId:
+          type:
+          - string
+          - 'null'
+        recordDescription:
+          type:
+          - string
+          - 'null'
+        companyId:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        action:
+          type:
+          - string
+          - 'null'
+        dateStamp:
+          type: string
+          format: date-time
+        companyName:
+          type:
+          - string
+          - 'null'
+        productId:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        productName:
+          type:
+          - string
+          - 'null'
+        userName:
+          type:
+          - string
+          - 'null'
+        jsonData:
+          type:
+          - string
+          - 'null'
+        userRole:
+          type:
+          - string
+          - 'null'
+        changedValuesList:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ChangedValue'
+      additionalProperties: false
+    CustomReportLogViewModel:
+      type: object
+      properties:
+        totalCount:
+          type: integer
+          format: int32
+        headers:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+        data:
+          type:
+          - array
+          - 'null'
+          items:
+            type: object
+            additionalProperties: {}
       additionalProperties: false
   securitySchemes:
     oidc:

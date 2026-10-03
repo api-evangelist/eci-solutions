@@ -658,16 +658,21 @@ paths:
                 $ref: '#/components/schemas/APIResponseMessageDto'
 components:
   schemas:
-    WorkCenterDto:
+    WarehouseBinDto:
       required:
-      - workCenterID
+      - warehouseID
+      - warehouseBinID
       - description
       type: object
       properties:
-        workCenterID:
+        warehouseID:
+          type: string
+        warehouseBinID:
           type: string
         description:
           type: string
+        defaultBin:
+          type: boolean
     CTMPartGroupsDto:
       type: object
       properties:
@@ -675,20 +680,23 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/PartGroupDto'
-    CTMPartClassesDto:
+    CTMWarehousesDto:
       type: object
       properties:
-        partClasses:
+        warehouses:
           type: array
           items:
-            $ref: '#/components/schemas/PartClassDto'
-    CTMWarehouseBinsDto:
+            $ref: '#/components/schemas/WarehouseDto'
+    ProcessDto:
+      required:
+      - processID
+      - shortDescription
       type: object
       properties:
-        warehouseBins:
-          type: array
-          items:
-            $ref: '#/components/schemas/WarehouseBinDto'
+        processID:
+          type: string
+        shortDescription:
+          type: string
     APIResponseMessageDto:
       type: object
       properties:
@@ -708,20 +716,6 @@ components:
           items:
             $ref: '#/components/schemas/Warning'
           readOnly: true
-    CTMWorkCenterDto:
-      type: object
-      properties:
-        workCenters:
-          type: array
-          items:
-            $ref: '#/components/schemas/WorkCenterDto'
-    CTMWarehousesDto:
-      type: object
-      properties:
-        warehouses:
-          type: array
-          items:
-            $ref: '#/components/schemas/WarehouseDto'
     WarehouseDto:
       required:
       - warehouseID
@@ -736,26 +730,35 @@ components:
           type: string
         defaultWarehouse:
           type: boolean
-    Error:
+    WorkCenterDto:
+      required:
+      - workCenterID
+      - description
+      type: object
+      properties:
+        workCenterID:
+          type: string
+        description:
+          type: string
+    CTMPartClassesDto:
+      type: object
+      properties:
+        partClasses:
+          type: array
+          items:
+            $ref: '#/components/schemas/PartClassDto'
+    CTMProcessDto:
+      type: object
+      properties:
+        processes:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProcessDto'
+    Warning:
       type: object
       properties:
         innerText:
           type: string
-    WarehouseBinDto:
-      required:
-      - warehouseID
-      - warehouseBinID
-      - description
-      type: object
-      properties:
-        warehouseID:
-          type: string
-        warehouseBinID:
-          type: string
-        description:
-          type: string
-        defaultBin:
-          type: boolean
     PartGroupDto:
       required:
       - partGroupID
@@ -766,18 +769,6 @@ components:
           type: string
         description:
           type: string
-    Warning:
-      type: object
-      properties:
-        innerText:
-          type: string
-    CTMProcessDto:
-      type: object
-      properties:
-        processes:
-          type: array
-          items:
-            $ref: '#/components/schemas/ProcessDto'
     PartClassDto:
       required:
       - partClassID
@@ -788,16 +779,25 @@ components:
           type: string
         description:
           type: string
-    ProcessDto:
-      required:
-      - processID
-      - shortDescription
+    Error:
       type: object
       properties:
-        processID:
+        innerText:
           type: string
-        shortDescription:
-          type: string
+    CTMWarehouseBinsDto:
+      type: object
+      properties:
+        warehouseBins:
+          type: array
+          items:
+            $ref: '#/components/schemas/WarehouseBinDto'
+    CTMWorkCenterDto:
+      type: object
+      properties:
+        workCenters:
+          type: array
+          items:
+            $ref: '#/components/schemas/WorkCenterDto'
   securitySchemes:
     oauth2:
       type: oauth2

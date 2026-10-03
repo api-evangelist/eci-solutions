@@ -275,6 +275,70 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
+    Organization:
+      title: Organization
+      type: object
+      properties:
+        uniqueID:
+          type: string
+        rowVersion:
+          type: integer
+          format: int64
+        name:
+          type: string
+        organizationID:
+          type: string
+        country:
+          type: string
+        isActive:
+          type: boolean
+        organizationTypes:
+          type: array
+          items:
+            type: integer
+            format: int32
+        phoneNumber:
+          type: string
+        customerPaymentTermID:
+          type: string
+        customerTaxCodeID:
+          type: string
+        supplierPaymentTermID:
+          type: string
+        supplierTaxCodeID:
+          type: string
+        currencyCode:
+          type: string
+        websiteUrl:
+          type: string
+        comments:
+          type: string
+        salesAccountID:
+          type: string
+        leadTimeDays:
+          type: integer
+          format: int32
+        minimumOrderAmount:
+          type: number
+          format: double
+        customerStatus:
+          type: integer
+        supplierStatus:
+          type: integer
+    OrganizationListResponse:
+      type: object
+      properties:
+        data:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Organization'
+          readOnly: true
+        resultCount:
+          type: integer
+          format: int32
+      additionalProperties: false
     ContactCreateModel:
       type: object
       properties:
@@ -312,6 +376,75 @@ components:
           description: Comments or notes about the contact.
       additionalProperties: false
       description: A model used to create new contacts.
+    OrganizationType:
+      enum:
+      - 0
+      - 1
+      - 2
+      type: integer
+      format: int32
+    LocationType:
+      enum:
+      - 1
+      - 2
+      - 3
+      type: integer
+      format: int32
+    LocationCreateModel:
+      required:
+      - addressLine1
+      - locationTypes
+      - name
+      type: object
+      properties:
+        locationID:
+          type:
+          - string
+          - 'null'
+        locationTypes:
+          minItems: 1
+          type: array
+          items:
+            $ref: '#/components/schemas/LocationType'
+        name:
+          minLength: 1
+          type: string
+        addressLine1:
+          minLength: 1
+          type: string
+        addressLine2:
+          type:
+          - string
+          - 'null'
+        addressLine3:
+          type:
+          - string
+          - 'null'
+        city:
+          type:
+          - string
+          - 'null'
+        county:
+          type:
+          - string
+          - 'null'
+        country:
+          type:
+          - string
+          - 'null'
+        postalCode:
+          type:
+          - string
+          - 'null'
+        state:
+          type:
+          - string
+          - 'null'
+        organizationID:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
     OrganizationCreateModel:
       required:
       - name
@@ -406,139 +539,6 @@ components:
           $ref: '#/components/schemas/ContactCreateModel'
       additionalProperties: false
       description: A model used to create new organizations.
-    Organization:
-      title: Organization
-      type: object
-      properties:
-        uniqueID:
-          type: string
-        rowVersion:
-          type: integer
-          format: int64
-        name:
-          type: string
-        organizationID:
-          type: string
-        country:
-          type: string
-        isActive:
-          type: boolean
-        organizationTypes:
-          type: array
-          items:
-            type: integer
-            format: int32
-        phoneNumber:
-          type: string
-        customerPaymentTermID:
-          type: string
-        customerTaxCodeID:
-          type: string
-        supplierPaymentTermID:
-          type: string
-        supplierTaxCodeID:
-          type: string
-        currencyCode:
-          type: string
-        websiteUrl:
-          type: string
-        comments:
-          type: string
-        salesAccountID:
-          type: string
-        leadTimeDays:
-          type: integer
-          format: int32
-        minimumOrderAmount:
-          type: number
-          format: double
-        customerStatus:
-          type: integer
-        supplierStatus:
-          type: integer
-    OrganizationListResponse:
-      type: object
-      properties:
-        data:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/Organization'
-          readOnly: true
-        resultCount:
-          type: integer
-          format: int32
-      additionalProperties: false
-    LocationCreateModel:
-      required:
-      - addressLine1
-      - locationTypes
-      - name
-      type: object
-      properties:
-        locationID:
-          type:
-          - string
-          - 'null'
-        locationTypes:
-          minItems: 1
-          type: array
-          items:
-            $ref: '#/components/schemas/LocationType'
-        name:
-          minLength: 1
-          type: string
-        addressLine1:
-          minLength: 1
-          type: string
-        addressLine2:
-          type:
-          - string
-          - 'null'
-        addressLine3:
-          type:
-          - string
-          - 'null'
-        city:
-          type:
-          - string
-          - 'null'
-        county:
-          type:
-          - string
-          - 'null'
-        country:
-          type:
-          - string
-          - 'null'
-        postalCode:
-          type:
-          - string
-          - 'null'
-        state:
-          type:
-          - string
-          - 'null'
-        organizationID:
-          type:
-          - string
-          - 'null'
-      additionalProperties: false
-    LocationType:
-      enum:
-      - 1
-      - 2
-      - 3
-      type: integer
-      format: int32
-    OrganizationType:
-      enum:
-      - 0
-      - 1
-      - 2
-      type: integer
-      format: int32
   securitySchemes:
     Bearer:
       type: oauth2

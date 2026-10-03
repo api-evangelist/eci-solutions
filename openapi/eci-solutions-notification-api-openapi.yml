@@ -464,6 +464,77 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
+    MessagesResponse:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: The unique identifier of the message
+        notificationId:
+          type:
+          - string
+          - 'null'
+          description: The unique identifier of the notification that this message belongs to
+        applicationId:
+          type: integer
+          description: Application identifier associated with the message
+          format: int32
+        applicationDeploymentId:
+          type:
+          - integer
+          - 'null'
+          description: Application deployment identifier associated with the message
+          format: int32
+        body:
+          type:
+          - string
+          - 'null'
+          description: The body content of the message
+        subject:
+          type:
+          - string
+          - 'null'
+          description: The subject of the message
+        createdDate:
+          type: string
+          description: The creation date of the message
+          format: date-time
+        deliveryMethods:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: Delivery methods used for filtering the messages
+        importance:
+          $ref: '#/components/schemas/ImportanceLevel'
+        email:
+          $ref: '#/components/schemas/EmailDeliveryPropertiesResponse'
+        app:
+          $ref: '#/components/schemas/AppDeliveryPropertiesResponse'
+      additionalProperties: false
+      description: Response for message details
+    DeliveryStatusInfo:
+      type: object
+      properties:
+        email:
+          $ref: '#/components/schemas/EmailDeliveryInfo'
+        app:
+          $ref: '#/components/schemas/AppDeliveryInfo'
+      additionalProperties: false
+      description: Delivery status information for a specific user
+    EmailStatus:
+      enum:
+      - None
+      - Sent
+      - Rejected
+      - Delivered
+      - Bounced
+      - Delayed
+      type: string
+      description: Status of the email
     EmailDeliveryInfo:
       type: object
       properties:
@@ -484,6 +555,158 @@ components:
           description: Additional details
       additionalProperties: false
       description: Email delivery status
+    AppDeliveryInfo:
+      type: object
+      properties:
+        status:
+          type:
+          - string
+          - 'null'
+          description: Delivery status
+        appDeliveryId:
+          type:
+          - string
+          - 'null'
+          description: App delivery ID
+      additionalProperties: false
+      description: App delivery details
+    MessagesResponseListResponse:
+      type: object
+      properties:
+        value:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/MessagesResponse'
+          description: The collection of items in the response
+      additionalProperties: false
+      description: Object representing a list response
+    Format:
+      enum:
+      - Plain
+      - HTML
+      type: string
+      description: Format of the content
+    CreateNotificationResponse:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: The created notification ID
+        status:
+          type:
+          - string
+          - 'null'
+          description: Overall status of the notification
+        deliveryStatus:
+          type:
+          - object
+          - 'null'
+          additionalProperties:
+            $ref: '#/components/schemas/DeliveryStatusInfo'
+          description: Delivery status information per user
+      additionalProperties: false
+      description: Response model for creating a notification
+    MarkMessageReadRequest:
+      type: object
+      properties:
+        isRead:
+          type:
+          - boolean
+          - 'null'
+          description: Indicates whether the message should be marked as read (true) or unread (false).
+      additionalProperties: false
+      description: Request model for marking a message as read or unread
+    EmailDeliveryPropertiesResponse:
+      type: object
+      properties:
+        status:
+          $ref: '#/components/schemas/EmailStatus'
+        statusUpdatedDate:
+          type:
+          - string
+          - 'null'
+          description: The date when the status was last updated
+          format: date-time
+        statusMessage:
+          type:
+          - string
+          - 'null'
+          description: The status message associated with the email delivery
+        failureDate:
+          type:
+          - string
+          - 'null'
+          description: The failure date if the email delivery failed
+          format: date-time
+        failureStatus:
+          type:
+          - string
+          - 'null'
+          description: The failure status if the email delivery failed
+        failureReason:
+          type:
+          - string
+          - 'null'
+          description: The failure reason if the email delivery failed
+        hasComplaint:
+          type: boolean
+          description: Property indicating if the email is compliant to email regulations
+        isOpened:
+          type: boolean
+          description: Property indicating whether the email has been opened.
+        isClicked:
+          type: boolean
+          description: Property indicating whether the email has been clicked.
+        isUnsubscribed:
+          type: boolean
+          description: Property indicating whether the email has been unsubscribed.
+      additionalProperties: false
+      description: Email delivery properties response model
+    ValidationProblemDetails:
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+        title:
+          type:
+          - string
+          - 'null'
+        status:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        detail:
+          type:
+          - string
+          - 'null'
+        instance:
+          type:
+          - string
+          - 'null'
+        errors:
+          type:
+          - object
+          - 'null'
+          additionalProperties:
+            type: array
+            items:
+              type: string
+      additionalProperties: {}
+    AppDeliveryPropertiesResponse:
+      type: object
+      properties:
+        isRead:
+          type: boolean
+          description: Property indicating whether the message has been read.
+      additionalProperties: false
+      description: Response object for application delivery properties
     CreateNotificationRequest:
       required:
       - applicationId
@@ -540,68 +763,6 @@ components:
           description: List of Nexus user IDs to receive the notification (required)
       additionalProperties: false
       description: Request model for creating a notification.
-    EmailStatus:
-      enum:
-      - None
-      - Sent
-      - Rejected
-      - Delivered
-      - Bounced
-      - Delayed
-      type: string
-      description: Status of the email
-    MarkMessageReadRequest:
-      type: object
-      properties:
-        isRead:
-          type:
-          - boolean
-          - 'null'
-          description: Indicates whether the message should be marked as read (true) or unread (false).
-      additionalProperties: false
-      description: Request model for marking a message as read or unread
-    DeliveryStatusInfo:
-      type: object
-      properties:
-        email:
-          $ref: '#/components/schemas/EmailDeliveryInfo'
-        app:
-          $ref: '#/components/schemas/AppDeliveryInfo'
-      additionalProperties: false
-      description: Delivery status information for a specific user
-    ValidationProblemDetails:
-      type: object
-      properties:
-        type:
-          type:
-          - string
-          - 'null'
-        title:
-          type:
-          - string
-          - 'null'
-        status:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        detail:
-          type:
-          - string
-          - 'null'
-        instance:
-          type:
-          - string
-          - 'null'
-        errors:
-          type:
-          - object
-          - 'null'
-          additionalProperties:
-            type: array
-            items:
-              type: string
-      additionalProperties: {}
     ProblemDetails:
       type: object
       properties:
@@ -627,98 +788,6 @@ components:
           - string
           - 'null'
       additionalProperties: {}
-    Format:
-      enum:
-      - Plain
-      - HTML
-      type: string
-      description: Format of the content
-    MessagesResponseListResponse:
-      type: object
-      properties:
-        value:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/MessagesResponse'
-          description: The collection of items in the response
-      additionalProperties: false
-      description: Object representing a list response
-    CreateNotificationResponse:
-      type: object
-      properties:
-        id:
-          type:
-          - string
-          - 'null'
-          description: The created notification ID
-        status:
-          type:
-          - string
-          - 'null'
-          description: Overall status of the notification
-        deliveryStatus:
-          type:
-          - object
-          - 'null'
-          additionalProperties:
-            $ref: '#/components/schemas/DeliveryStatusInfo'
-          description: Delivery status information per user
-      additionalProperties: false
-      description: Response model for creating a notification
-    MessagesResponse:
-      type: object
-      properties:
-        id:
-          type:
-          - string
-          - 'null'
-          description: The unique identifier of the message
-        notificationId:
-          type:
-          - string
-          - 'null'
-          description: The unique identifier of the notification that this message belongs to
-        applicationId:
-          type: integer
-          description: Application identifier associated with the message
-          format: int32
-        applicationDeploymentId:
-          type:
-          - integer
-          - 'null'
-          description: Application deployment identifier associated with the message
-          format: int32
-        body:
-          type:
-          - string
-          - 'null'
-          description: The body content of the message
-        subject:
-          type:
-          - string
-          - 'null'
-          description: The subject of the message
-        createdDate:
-          type: string
-          description: The creation date of the message
-          format: date-time
-        deliveryMethods:
-          type:
-          - array
-          - 'null'
-          items:
-            type: string
-          description: Delivery methods used for filtering the messages
-        importance:
-          $ref: '#/components/schemas/ImportanceLevel'
-        email:
-          $ref: '#/components/schemas/EmailDeliveryPropertiesResponse'
-        app:
-          $ref: '#/components/schemas/AppDeliveryPropertiesResponse'
-      additionalProperties: false
-      description: Response for message details
     ImportanceLevel:
       enum:
       - Low
@@ -726,75 +795,6 @@ components:
       - High
       type: string
       description: Importance level of the notification
-    EmailDeliveryPropertiesResponse:
-      type: object
-      properties:
-        status:
-          $ref: '#/components/schemas/EmailStatus'
-        statusUpdatedDate:
-          type:
-          - string
-          - 'null'
-          description: The date when the status was last updated
-          format: date-time
-        statusMessage:
-          type:
-          - string
-          - 'null'
-          description: The status message associated with the email delivery
-        failureDate:
-          type:
-          - string
-          - 'null'
-          description: The failure date if the email delivery failed
-          format: date-time
-        failureStatus:
-          type:
-          - string
-          - 'null'
-          description: The failure status if the email delivery failed
-        failureReason:
-          type:
-          - string
-          - 'null'
-          description: The failure reason if the email delivery failed
-        hasComplaint:
-          type: boolean
-          description: Property indicating if the email is compliant to email regulations
-        isOpened:
-          type: boolean
-          description: Property indicating whether the email has been opened.
-        isClicked:
-          type: boolean
-          description: Property indicating whether the email has been clicked.
-        isUnsubscribed:
-          type: boolean
-          description: Property indicating whether the email has been unsubscribed.
-      additionalProperties: false
-      description: Email delivery properties response model
-    AppDeliveryPropertiesResponse:
-      type: object
-      properties:
-        isRead:
-          type: boolean
-          description: Property indicating whether the message has been read.
-      additionalProperties: false
-      description: Response object for application delivery properties
-    AppDeliveryInfo:
-      type: object
-      properties:
-        status:
-          type:
-          - string
-          - 'null'
-          description: Delivery status
-        appDeliveryId:
-          type:
-          - string
-          - 'null'
-          description: App delivery ID
-      additionalProperties: false
-      description: App delivery details
   securitySchemes:
     Auth0:
       type: http

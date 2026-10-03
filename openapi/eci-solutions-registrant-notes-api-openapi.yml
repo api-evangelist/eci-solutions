@@ -79,7 +79,83 @@ paths:
       summary: Delete registrants notes by id
       x-summary-source: derived
 components:
+  responses:
+    NotFound:
+      description: The specified resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/StandardError'
+    Forbidden:
+      description: The provided authentication credentials does not have sufficient privileges to access this resource
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/StandardError'
+    InternalServerError:
+      description: Receiving a 5xx response indicates an error on Lasso's end. Please contact us to report the problem
+    Unauthorized:
+      description: The request has not been fulfilled because it lacks valid authentication credentials
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/StandardError'
+    BadRequest:
+      description: 'The request could not be processed due to invalid input:
+
+        - Is the request payload malformed?
+
+        - Are all required fields present?
+
+        - Are field values of the expected type (ie, number format, date format)?
+
+        - Are field values within the expected constraints (ie, greater than max size of string)?
+
+        - Are query params of the expected format?
+
+
+        Check the body model for more documentation on field constraints and limits.
+
+        '
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/StandardError'
   schemas:
+    RegistrantNoteWrite:
+      type: object
+      title: Note Write
+      description: 'Contains a free-form text field.
+
+
+        Limitations: 4-byte UTF-8 characters are not supported and will be stripped during write.
+
+        This means that some emoticons and foreign language characters are unsupported.
+
+        '
+      properties:
+        note:
+          type: string
+          example: Offer a $10.000 credit
+        createdBy:
+          $ref: '#/components/schemas/Creator'
+        _links:
+          $ref: '#/components/schemas/RegistrantNoteLinks'
+    RegistrantNoteRead:
+      type: object
+      title: Note Read
+      description: Contains a free-form text field
+      properties:
+        noteId:
+          type: string
+          example: 123
+        note:
+          type: string
+          example: Offer a $10.000 credit
+        createdBy:
+          $ref: '#/components/schemas/Creator'
+        _links:
+          $ref: '#/components/schemas/RegistrantNoteLinks'
     StandardError:
       type: object
       title: Standard Error
@@ -96,6 +172,12 @@ components:
           type: string
           description: Details of the error
           example: Details of the error
+    RegistrantNoteLinks:
+      type: object
+      properties:
+        delete:
+          type: string
+          example: /registrants/123/notes/123
     Creator:
       type: object
       title: Creator
@@ -118,88 +200,6 @@ components:
         userId:
           type: string
           example: 123
-    RegistrantNoteRead:
-      type: object
-      title: Note Read
-      description: Contains a free-form text field
-      properties:
-        noteId:
-          type: string
-          example: 123
-        note:
-          type: string
-          example: Offer a $10.000 credit
-        createdBy:
-          $ref: '#/components/schemas/Creator'
-        _links:
-          $ref: '#/components/schemas/RegistrantNoteLinks'
-    RegistrantNoteWrite:
-      type: object
-      title: Note Write
-      description: 'Contains a free-form text field.
-
-
-        Limitations: 4-byte UTF-8 characters are not supported and will be stripped during write.
-
-        This means that some emoticons and foreign language characters are unsupported.
-
-        '
-      properties:
-        note:
-          type: string
-          example: Offer a $10.000 credit
-        createdBy:
-          $ref: '#/components/schemas/Creator'
-        _links:
-          $ref: '#/components/schemas/RegistrantNoteLinks'
-    RegistrantNoteLinks:
-      type: object
-      properties:
-        delete:
-          type: string
-          example: /registrants/123/notes/123
-  responses:
-    InternalServerError:
-      description: Receiving a 5xx response indicates an error on Lasso's end. Please contact us to report the problem
-    BadRequest:
-      description: 'The request could not be processed due to invalid input:
-
-        - Is the request payload malformed?
-
-        - Are all required fields present?
-
-        - Are field values of the expected type (ie, number format, date format)?
-
-        - Are field values within the expected constraints (ie, greater than max size of string)?
-
-        - Are query params of the expected format?
-
-
-        Check the body model for more documentation on field constraints and limits.
-
-        '
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/StandardError'
-    Unauthorized:
-      description: The request has not been fulfilled because it lacks valid authentication credentials
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/StandardError'
-    NotFound:
-      description: The specified resource was not found
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/StandardError'
-    Forbidden:
-      description: The provided authentication credentials does not have sufficient privileges to access this resource
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/StandardError'
   securitySchemes:
     JwtAuthorizer:
       type: http

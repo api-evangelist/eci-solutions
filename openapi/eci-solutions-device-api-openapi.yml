@@ -185,6 +185,13 @@ paths:
                 $ref: '#/components/schemas/ProblemDetails'
 components:
   schemas:
+    DeviceCredentialType:
+      enum:
+      - None
+      - Token
+      - Secret
+      - TokenAndSecret
+      type: string
     DeviceCredentialModel:
       type: object
       properties:
@@ -235,31 +242,6 @@ components:
           - string
           - 'null'
       additionalProperties: false
-    ProblemDetails:
-      type: object
-      properties:
-        type:
-          type:
-          - string
-          - 'null'
-        title:
-          type:
-          - string
-          - 'null'
-        status:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        detail:
-          type:
-          - string
-          - 'null'
-        instance:
-          type:
-          - string
-          - 'null'
-      additionalProperties: {}
     DeviceModel:
       type: object
       properties:
@@ -290,26 +272,6 @@ components:
           allOf:
           - $ref: '#/components/schemas/DeviceCredentialType'
       additionalProperties: false
-    DeviceCredentialType:
-      enum:
-      - None
-      - Token
-      - Secret
-      - TokenAndSecret
-      type: string
-    DeviceModelCountResponse:
-      type: object
-      properties:
-        count:
-          type: integer
-          format: int64
-        value:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/DeviceModel'
-      additionalProperties: false
     DeviceAuthorizationModel:
       required:
       - code
@@ -338,6 +300,44 @@ components:
 
             on activation.'
       additionalProperties: false
+    DeviceModelCountResponse:
+      type: object
+      properties:
+        count:
+          type: integer
+          format: int64
+        value:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/DeviceModel'
+      additionalProperties: false
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+        title:
+          type:
+          - string
+          - 'null'
+        status:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        detail:
+          type:
+          - string
+          - 'null'
+        instance:
+          type:
+          - string
+          - 'null'
+      additionalProperties: {}
   securitySchemes:
     oidc:
       type: openIdConnect

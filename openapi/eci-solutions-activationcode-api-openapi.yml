@@ -138,6 +138,62 @@ paths:
                 $ref: '#/components/schemas/ActivationCodeResponseModelAPIResponse'
 components:
   schemas:
+    ApiError:
+      type: object
+      properties:
+        isError:
+          type: boolean
+        exceptionMessage:
+          type:
+          - string
+          - 'null'
+        details:
+          type:
+          - string
+          - 'null'
+        referenceErrorCode:
+          type:
+          - string
+          - 'null'
+        referenceDocumentLink:
+          type:
+          - string
+          - 'null'
+        validationErrors:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ValidationError'
+      additionalProperties: false
+    ActivationCodeRequestModel:
+      required:
+      - activationCode
+      type: object
+      properties:
+        integrationId:
+          type: integer
+          format: int32
+        productId:
+          type: integer
+          format: int32
+        activationCode:
+          maxLength: 64
+          minLength: 24
+          type: string
+      additionalProperties: false
+    ValidationError:
+      type: object
+      properties:
+        field:
+          type:
+          - string
+          - 'null'
+        message:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
     ActivationCodeResponseModelIListAPIResponse:
       type: object
       properties:
@@ -183,18 +239,6 @@ components:
           allOf:
           - $ref: '#/components/schemas/ActivationCodeResponseModel'
       additionalProperties: false
-    ValidationError:
-      type: object
-      properties:
-        field:
-          type:
-          - string
-          - 'null'
-        message:
-          type:
-          - string
-          - 'null'
-      additionalProperties: false
     ActivationCodeResponseModel:
       type: object
       properties:
@@ -228,50 +272,6 @@ components:
           - string
           - 'null'
           format: date-time
-      additionalProperties: false
-    ActivationCodeRequestModel:
-      required:
-      - activationCode
-      type: object
-      properties:
-        integrationId:
-          type: integer
-          format: int32
-        productId:
-          type: integer
-          format: int32
-        activationCode:
-          maxLength: 64
-          minLength: 24
-          type: string
-      additionalProperties: false
-    ApiError:
-      type: object
-      properties:
-        isError:
-          type: boolean
-        exceptionMessage:
-          type:
-          - string
-          - 'null'
-        details:
-          type:
-          - string
-          - 'null'
-        referenceErrorCode:
-          type:
-          - string
-          - 'null'
-        referenceDocumentLink:
-          type:
-          - string
-          - 'null'
-        validationErrors:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/ValidationError'
       additionalProperties: false
     GenerateActivationCodeRequestModel:
       required:

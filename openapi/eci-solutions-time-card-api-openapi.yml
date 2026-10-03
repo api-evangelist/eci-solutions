@@ -313,6 +313,23 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
+    Process:
+      title: Process
+      type: object
+      properties:
+        processID:
+          type: string
+        shortDesc:
+          type: string
+        setupRate:
+          type: string
+        productionRate:
+          type: string
+        uniqueID:
+          type: string
+        rowVersion:
+          type: integer
+          format: int64
     Job:
       title: Job
       type: object
@@ -423,6 +440,132 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/JobOperation'
+    ClockSession:
+      type: object
+      properties:
+        clockSessionID:
+          type:
+          - string
+          - 'null'
+        employeeID:
+          type:
+          - string
+          - 'null'
+        clockInTime:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        clockOutTime:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        shiftID:
+          type:
+          - string
+          - 'null'
+        uniqueID:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    SalesOrderDelivery:
+      title: SalesOrderDelivery
+      type: object
+      properties:
+        salesOrderID:
+          type: string
+        orderLine:
+          type: integer
+        orderLineDelivery:
+          type: string
+        promisedDate:
+          type: string
+          format: date-time
+        promisedQty:
+          type: number
+          format: double
+        shippedDate:
+          type: string
+          format: date-time
+        shippedQty:
+          type: number
+          format: double
+        uniqueID:
+          type: string
+        rowVersion:
+          type: integer
+          format: int64
+        deliveryTypeCode:
+          type: string
+        salesOrderType:
+          type: string
+        salesOrderJobs:
+          type: array
+          items:
+            $ref: '#/components/schemas/SalesOrderJob'
+    Department:
+      title: Department
+      type: object
+      properties:
+        deptID:
+          type: string
+        shortDesc:
+          type: string
+        uniqueID:
+          type: string
+        rowVersion:
+          type: integer
+          format: int64
+    SalesOrderJob:
+      title: SalesOrderJob
+      type: object
+      properties:
+        salesOrderID:
+          type: string
+        orderLine:
+          type: integer
+        orderLineDelivery:
+          type: string
+        jobID:
+          type: string
+        orderJobSeq:
+          type: integer
+          format: int32
+        uniqueID:
+          type: string
+        rowVersion:
+          type: integer
+          format: int64
+    Employee:
+      title: Employee
+      type: object
+      properties:
+        employeeID:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        title:
+          type: string
+        supervisorEmployeeID:
+          type: string
+        payRate:
+          type: number
+          format: double
+        deptID:
+          type: string
+        shiftID:
+          type: string
+        isActive:
+          type: boolean
+        uniqueID:
+          type: string
+        rowVersion:
+          type: integer
+          format: int64
     JobOperation:
       title: JobOperation
       type: object
@@ -541,58 +684,6 @@ components:
         jobClosedDate:
           type: string
           format: date-time
-    WorkCenter:
-      title: WorkCenter
-      type: object
-      properties:
-        workCenterID:
-          type: string
-        shortDesc:
-          type: string
-        deptID:
-          type: string
-        overHeadRate:
-          type: string
-        quoteRate:
-          type: string
-        processID:
-          type: string
-        parentWorkCenterID:
-          type: string
-        shiftID:
-          type: string
-        uniqueID:
-          type: string
-        rowVersion:
-          type: integer
-          format: int64
-        laborRate:
-          type: string
-        departments:
-          type: array
-          items:
-            $ref: '#/components/schemas/Department'
-        shifts:
-          type: array
-          items:
-            $ref: '#/components/schemas/Shift'
-    ClockInModel:
-      required:
-      - clockInTime
-      - employeeID
-      type: object
-      properties:
-        employeeID:
-          minLength: 1
-          type: string
-        clockInTime:
-          type: string
-          format: date-time
-        shiftID:
-          type:
-          - string
-          - 'null'
-      additionalProperties: false
     TimecardLineCreateModel:
       required:
       - jobID
@@ -665,103 +756,6 @@ components:
           - string
           - 'null'
       additionalProperties: false
-    Employee:
-      title: Employee
-      type: object
-      properties:
-        employeeID:
-          type: string
-        firstName:
-          type: string
-        lastName:
-          type: string
-        title:
-          type: string
-        supervisorEmployeeID:
-          type: string
-        payRate:
-          type: number
-          format: double
-        deptID:
-          type: string
-        shiftID:
-          type: string
-        isActive:
-          type: boolean
-        uniqueID:
-          type: string
-        rowVersion:
-          type: integer
-          format: int64
-    Department:
-      title: Department
-      type: object
-      properties:
-        deptID:
-          type: string
-        shortDesc:
-          type: string
-        uniqueID:
-          type: string
-        rowVersion:
-          type: integer
-          format: int64
-    Shift:
-      title: Shift
-      type: object
-      properties:
-        shiftID:
-          type: number
-          format: float
-        shortDesc:
-          type: string
-        inactiveDate:
-          type: string
-          format: date-time
-        uniqueID:
-          type: string
-        rowVersion:
-          type: integer
-          format: int64
-        shiftDays:
-          type: array
-          items:
-            $ref: '#/components/schemas/ShiftDay'
-    SalesOrderDelivery:
-      title: SalesOrderDelivery
-      type: object
-      properties:
-        salesOrderID:
-          type: string
-        orderLine:
-          type: integer
-        orderLineDelivery:
-          type: string
-        promisedDate:
-          type: string
-          format: date-time
-        promisedQty:
-          type: number
-          format: double
-        shippedDate:
-          type: string
-          format: date-time
-        shippedQty:
-          type: number
-          format: double
-        uniqueID:
-          type: string
-        rowVersion:
-          type: integer
-          format: int64
-        deliveryTypeCode:
-          type: string
-        salesOrderType:
-          type: string
-        salesOrderJobs:
-          type: array
-          items:
-            $ref: '#/components/schemas/SalesOrderJob'
     ClockOutModel:
       required:
       - clockOutTime
@@ -775,6 +769,55 @@ components:
           type: string
           format: date-time
       additionalProperties: false
+    TimecardListResponse:
+      type: object
+      properties:
+        data:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Timecard'
+          readOnly: true
+        resultCount:
+          type: integer
+          format: int32
+      additionalProperties: false
+    WorkCenter:
+      title: WorkCenter
+      type: object
+      properties:
+        workCenterID:
+          type: string
+        shortDesc:
+          type: string
+        deptID:
+          type: string
+        overHeadRate:
+          type: string
+        quoteRate:
+          type: string
+        processID:
+          type: string
+        parentWorkCenterID:
+          type: string
+        shiftID:
+          type: string
+        uniqueID:
+          type: string
+        rowVersion:
+          type: integer
+          format: int64
+        laborRate:
+          type: string
+        departments:
+          type: array
+          items:
+            $ref: '#/components/schemas/Department'
+        shifts:
+          type: array
+          items:
+            $ref: '#/components/schemas/Shift'
     TimecardLine:
       title: TimecardLine
       type: object
@@ -865,26 +908,27 @@ components:
           $ref: '#/components/schemas/SalesOrderJob'
         salesOrderJob:
           $ref: '#/components/schemas/SalesOrderJob'
-    SalesOrderJob:
-      title: SalesOrderJob
+    Shift:
+      title: Shift
       type: object
       properties:
-        salesOrderID:
+        shiftID:
+          type: number
+          format: float
+        shortDesc:
           type: string
-        orderLine:
-          type: integer
-        orderLineDelivery:
+        inactiveDate:
           type: string
-        jobID:
-          type: string
-        orderJobSeq:
-          type: integer
-          format: int32
+          format: date-time
         uniqueID:
           type: string
         rowVersion:
           type: integer
           format: int64
+        shiftDays:
+          type: array
+          items:
+            $ref: '#/components/schemas/ShiftDay'
     ShiftDay:
       title: ShiftDay
       type: object
@@ -927,6 +971,23 @@ components:
           items:
             $ref: '#/components/schemas/TimecardLineCreateModel'
       additionalProperties: false
+    ClockInModel:
+      required:
+      - clockInTime
+      - employeeID
+      type: object
+      properties:
+        employeeID:
+          minLength: 1
+          type: string
+        clockInTime:
+          type: string
+          format: date-time
+        shiftID:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
     Timecard:
       title: Timecard
       type: object
@@ -954,67 +1015,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Employee'
-    Process:
-      title: Process
-      type: object
-      properties:
-        processID:
-          type: string
-        shortDesc:
-          type: string
-        setupRate:
-          type: string
-        productionRate:
-          type: string
-        uniqueID:
-          type: string
-        rowVersion:
-          type: integer
-          format: int64
-    TimecardListResponse:
-      type: object
-      properties:
-        data:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/Timecard'
-          readOnly: true
-        resultCount:
-          type: integer
-          format: int32
-      additionalProperties: false
-    ClockSession:
-      type: object
-      properties:
-        clockSessionID:
-          type:
-          - string
-          - 'null'
-        employeeID:
-          type:
-          - string
-          - 'null'
-        clockInTime:
-          type:
-          - string
-          - 'null'
-          format: date-time
-        clockOutTime:
-          type:
-          - string
-          - 'null'
-          format: date-time
-        shiftID:
-          type:
-          - string
-          - 'null'
-        uniqueID:
-          type:
-          - string
-          - 'null'
-      additionalProperties: false
   securitySchemes:
     Bearer:
       type: oauth2

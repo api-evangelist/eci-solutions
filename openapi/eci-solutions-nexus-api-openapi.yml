@@ -167,30 +167,6 @@ paths:
                 $ref: '#/components/schemas/NexusAliasCompaniesResponseModelIReadOnlyListAPIResponse'
 components:
   schemas:
-    NexusAliasCompaniesResponseModelIReadOnlyListAPIResponse:
-      type: object
-      properties:
-        version:
-          type:
-          - string
-          - 'null'
-        statusCode:
-          type: integer
-          format: int32
-        message:
-          type:
-          - string
-          - 'null'
-        responseException:
-          allOf:
-          - $ref: '#/components/schemas/ApiError'
-        result:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/NexusAliasCompaniesResponseModel'
-      additionalProperties: false
     ApiError:
       type: object
       properties:
@@ -219,6 +195,39 @@ components:
           items:
             $ref: '#/components/schemas/ValidationError'
       additionalProperties: false
+    NexusCompanyResponseModelAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        result:
+          allOf:
+          - $ref: '#/components/schemas/NexusCompanyResponseModel'
+      additionalProperties: false
+    ValidationError:
+      type: object
+      properties:
+        field:
+          type:
+          - string
+          - 'null'
+        message:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
     AddNexusCompanyResponseModelAPIResponse:
       type: object
       properties:
@@ -240,17 +249,54 @@ components:
           allOf:
           - $ref: '#/components/schemas/AddNexusCompanyResponseModel'
       additionalProperties: false
-    ValidationError:
+    NexusCompanyResponseModel:
       type: object
       properties:
-        field:
+        id:
+          type: integer
+          format: int32
+        displayName:
           type:
           - string
           - 'null'
-        message:
+        defaultCustomerId:
           type:
           - string
           - 'null'
+        isActive:
+          type:
+          - boolean
+          - 'null'
+        aliases:
+          type:
+          - object
+          - 'null'
+          additionalProperties:
+            type:
+            - string
+            - 'null'
+      additionalProperties: false
+    NexusCompanyRequestModel:
+      required:
+      - companyName
+      - customerId
+      - nexusId
+      - productId
+      type: object
+      properties:
+        productId:
+          type: integer
+          format: int32
+        companyName:
+          maxLength: 150
+          minLength: 0
+          type: string
+        customerId:
+          minLength: 1
+          type: string
+        nexusId:
+          type: integer
+          format: int32
       additionalProperties: false
     AddNexusCompanyResponseModel:
       type: object
@@ -272,6 +318,30 @@ components:
         nexusId:
           type: integer
           format: int32
+      additionalProperties: false
+    NexusCompaniesResponseModelListAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        result:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/NexusCompaniesResponseModel'
       additionalProperties: false
     NexusAliasCompaniesResponseModel:
       type: object
@@ -306,55 +376,7 @@ components:
           - string
           - 'null'
       additionalProperties: false
-    NexusCompanyResponseModel:
-      type: object
-      properties:
-        id:
-          type: integer
-          format: int32
-        displayName:
-          type:
-          - string
-          - 'null'
-        defaultCustomerId:
-          type:
-          - string
-          - 'null'
-        isActive:
-          type:
-          - boolean
-          - 'null'
-        aliases:
-          type:
-          - object
-          - 'null'
-          additionalProperties:
-            type:
-            - string
-            - 'null'
-      additionalProperties: false
-    NexusCompanyResponseModelAPIResponse:
-      type: object
-      properties:
-        version:
-          type:
-          - string
-          - 'null'
-        statusCode:
-          type: integer
-          format: int32
-        message:
-          type:
-          - string
-          - 'null'
-        responseException:
-          allOf:
-          - $ref: '#/components/schemas/ApiError'
-        result:
-          allOf:
-          - $ref: '#/components/schemas/NexusCompanyResponseModel'
-      additionalProperties: false
-    NexusCompaniesResponseModelListAPIResponse:
+    NexusAliasCompaniesResponseModelIReadOnlyListAPIResponse:
       type: object
       properties:
         version:
@@ -376,29 +398,7 @@ components:
           - array
           - 'null'
           items:
-            $ref: '#/components/schemas/NexusCompaniesResponseModel'
-      additionalProperties: false
-    NexusCompanyRequestModel:
-      required:
-      - companyName
-      - customerId
-      - nexusId
-      - productId
-      type: object
-      properties:
-        productId:
-          type: integer
-          format: int32
-        companyName:
-          maxLength: 150
-          minLength: 0
-          type: string
-        customerId:
-          minLength: 1
-          type: string
-        nexusId:
-          type: integer
-          format: int32
+            $ref: '#/components/schemas/NexusAliasCompaniesResponseModel'
       additionalProperties: false
   securitySchemes:
     oidc:
