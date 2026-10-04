@@ -1,0 +1,514 @@
+slug: eci-solutions
+provider: ECI Solutions
+generated_by: planning/capability-mapping/scripts/classify_capabilities.py
+model: claude-opus-5
+frame:
+- Software & Technology
+min_confidence: 0.7
+capability_model:
+  source: https://github.com/vincentmakes/turbo-ea-capabilities
+  license: CC-BY-4.0
+  attribution: Turbo EA Capabilities by Vincent Verdet — Turbo EA, https://github.com/vincentmakes/turbo-ea-capabilities,
+    CC BY 4.0
+  notice: NOTICE
+edge_count: 49
+edges:
+- tag: AP Checks
+  spec_file: eci-solutions-ap-checks-api-openapi.yml
+  capability_id: BC-200.20
+  capability_id_l1: BC-200
+  capability_name: Accounts Payable Management
+  confidence: 0.9
+  evidence: GET /api/v1/ap-checks "Gets a list of AP Checks"; POST /api/v1/ap-checks "Creates a new AP
+    Check"
+  reason: Accounts-payable check issuance and retrieval in an ERP — plainly vendor payment processing
+    under Accounts Payable Management.
+- tag: ERP/FINANCIAL
+  spec_file: eci-solutions-erp-financial-api-openapi.yml
+  capability_id: BC-200
+  capability_id_l1: BC-200
+  capability_name: Financial Management
+  confidence: 0.9
+  evidence: GET /api/ERP/APInvoiceLines, ERPARInvoiceLineDto, ERPGLAccountDto, ERPGLFiscalYearOpeningBalanceDto,
+    ERPBankAccountDto, ERPAgingBucketDto
+  reason: The resources are AP invoices and payments, AR invoices and payments, GL accounts and fiscal-year
+    balances, assets and payment terms — the finance module of the ERP. Spans AP, AR, GL and fixed assets
+    so the L1 is the honest level.
+- tag: ERP/PURCHASEORDERS
+  spec_file: eci-solutions-erp-purchaseorders-api-openapi.yml
+  capability_id: BC-500.30
+  capability_id_l1: BC-500
+  capability_name: Purchase Order Management
+  confidence: 0.9
+  evidence: ERPPurchaseOrderApprovals_PutPurchaseOrderApprovalAsync 'Creates or updates a single PurchaseOrderApproval
+    record'; schemas ERPPurchaseOrderLineDto, ERPRFQSupplierDto
+  reason: Purchase order headers, lines, approvals plus RFQ and purchase-planner objects — clearly PO
+    creation/approval/execution in procurement.
+- tag: Purchase Orders
+  spec_file: eci-solutions-purchase-orders-api-openapi.yml
+  capability_id: BC-500.30
+  capability_id_l1: BC-500
+  capability_name: Purchase Order Management
+  confidence: 0.9
+  evidence: '''Gets a Purchase Order by PO number''; ''Updates a Purchase Order''; schemas PurchaseOrder,
+    PurchaseOrderUpdate'
+  reason: Direct CRUD-style access to purchase order headers in a manufacturing ERP — purchase order management.
+- tag: AR Invoices
+  spec_file: eci-solutions-ar-invoices-api-openapi.yml
+  capability_id: BC-200.30
+  capability_id_l1: BC-200
+  capability_name: Accounts Receivable Management
+  confidence: 0.88
+  evidence: GET /api/v1/ar-invoices "Gets a list of AR Invoices"; schema ARInvoiceListSuccessResponse
+  reason: Customer AR invoice retrieval in an ERP maps directly to Accounts Receivable Management.
+- tag: ERP/INVENTORY
+  spec_file: eci-solutions-erp-inventory-api-openapi.yml
+  capability_id: BC-530
+  capability_id_l1: BC-530
+  capability_name: Inventory Management
+  confidence: 0.88
+  evidence: GET /api/ERP/InventoryCounts, ERPInventoryCountLineDto, ERPQuantityAdjustmentDto, ERPWarehouseTransferLineDto,
+    ERPLotNumberStatusDto, ERPPartTransactionDto
+  reason: Operations cover inventory counts and cycle codes, quantity adjustments, warehouse transfers
+    and receipts, part transactions and lot tracking — stock management across the network. Breadth spans
+    counting accuracy, allocation and movement, so only L1 is asserted.
+- tag: Non Conformances
+  spec_file: eci-solutions-non-conformances-api-openapi.yml
+  capability_id: BC-720.40
+  capability_id_l1: BC-720
+  capability_name: Non-Conformance Management
+  confidence: 0.88
+  evidence: GET /api/v1/non-conformances 'Gets a list of Non-Conformances'; GET /api/v1/non-conformances/{ncNumber}
+    'Gets Non-Conformance by number'; schema NonConformance
+  reason: Explicit non-conformance (NCR) records in a manufacturing ERP, which is precisely Non-Conformance
+    Management under Quality Management.
+- tag: Purchase
+  spec_file: eci-solutions-purchase-api-openapi.yml
+  capability_id: BC-200.20
+  capability_id_l1: BC-200
+  capability_name: Accounts Payable Management
+  confidence: 0.88
+  evidence: POST /api/v2/bills  Create (or update) a bill; POST /api/v2/paymentblockstatus  Update the
+    payment block status of a bill; GET /api/v2/purchase-paymentinfo/{docNumber}  Get payment information
+    for a purchase invoice; POST /api/v2/suppliers  Create a new supplier
+  reason: Supplier bill capture, purchase invoice payment information, payment blocking and purchase journal
+    entries are core accounts payable processing within the financial package.
+- tag: AR Invoice Details
+  spec_file: eci-solutions-ar-invoice-details-api-openapi.yml
+  capability_id: BC-200.30
+  capability_id_l1: BC-200
+  capability_name: Accounts Receivable Management
+  confidence: 0.85
+  evidence: GET /api/v1/ar-invoice-details "Gets a list of AR Invoice Details"; schema ARInvoiceDetail
+  reason: Accounts-receivable invoice line detail retrieval from the ERP — customer invoicing data under
+    Accounts Receivable Management.
+- tag: Carriers
+  spec_file: eci-solutions-carriers-api-openapi.yml
+  capability_id: BC-520.50
+  capability_id_l1: BC-520
+  capability_name: Logistics Operations Management
+  confidence: 0.85
+  evidence: '"Shipping Service API which provides integration with shipping services for shipping rates,
+    purchasing labels, and tracking shipments"; GetCarrierTypeServiceLevels "Gets Service Levels"'
+  reason: The document is explicitly a shipping-carrier integration (rates, labels, tracking) and the
+    tag exposes carriers and their service levels — transport execution within the supply chain, i.e.
+    Logistics Operations Management.
+- tag: Corrective Preventative Actions
+  spec_file: eci-solutions-corrective-preventative-actions-api-openapi.yml
+  capability_id: BC-720.40
+  capability_id_l1: BC-720
+  capability_name: Non-Conformance Management
+  confidence: 0.85
+  evidence: GET /api/v1/corrective-preventive-actions "Gets a list of corrective actions"; schema "CorrectiveActionListSuccessResponse"
+  reason: CAPA records in a manufacturing ERP are the canonical artefact of Non-Conformance Management
+    (NCR, deviations, CAPA). The schema names confirm corrective-action entities rather than any other
+    reading.
+- tag: ERP/QUALITY
+  spec_file: eci-solutions-erp-quality-api-openapi.yml
+  capability_id: BC-720
+  capability_id_l1: BC-720
+  capability_name: Quality Management
+  confidence: 0.85
+  evidence: ERPCorrectiveActionCategories_GetAllCorrectiveActionCategoryAsync; ERPDMRClaimComponentDto;
+    ERPResponseMessageDto_ERPInspectionLineApprovalDto; ERPRMAClaimLineDto
+  reason: Corrective actions, defective-material-report claims, inspections and RMA claims are quality
+    management constructs; evidence spans non-conformance, inspection and customer-quality so the L1 is
+    the honest level.
+- tag: General
+  spec_file: eci-solutions-general-api-openapi.yml
+  capability_id: BC-200.10
+  capability_id_l1: BC-200
+  capability_name: General Ledger Management
+  confidence: 0.85
+  evidence: POST /api/v2/general-journal-entries "Create (or update) general journal entry"; schemas GeneralJournalEntry,
+    JournalEntryLine
+  reason: Posting general journal entries is core general-ledger accounting; the accompanying tax-code
+    lookup is supporting reference data for those postings rather than a separate tax capability.
+- tag: Purchase Order Line Items
+  spec_file: eci-solutions-purchase-order-line-items-api-openapi.yml
+  capability_id: BC-500.30
+  capability_id_l1: BC-500
+  capability_name: Purchase Order Management
+  confidence: 0.85
+  evidence: GET /api/v1/purchase-order-line-items 'Gets a list of Purchase Order Line Items'; PATCH ...
+    'Updates a Purchase Order Line Item'; schema PurchaseOrderLineItem
+  reason: ERP surface exposing purchase order line records for read and update — purchase order creation/maintenance
+    within procurement, not a technical object.
+- tag: Quotes
+  spec_file: eci-solutions-quotes-api-openapi.yml
+  capability_id: BC-410.40
+  capability_id_l1: BC-410
+  capability_name: Quote & Configuration Management
+  confidence: 0.85
+  evidence: '''Creates a Quote''; ''Gets a Quote by order number''; ''Updates a Quote''; schemas QuoteCreate,
+    QuoteUpdate, QuoteLineItemCreate'
+  reason: Full lifecycle of customer quotes (create, read, update) with line items — quote management
+    preceding order capture.
+- tag: VendorPayment
+  spec_file: eci-solutions-vendorpayment-api-openapi.yml
+  capability_id: BC-200.20
+  capability_id_l1: BC-200
+  capability_name: Accounts Payable Management
+  confidence: 0.85
+  evidence: GET /api/v1/vendor-payments  Get a list of payments; GET /api/v1/vendor-payment-methods  Get
+    a list of payment methods and their lead times
+  reason: Endpoints retrieve and delete vendor payment records and payment methods, with VendorPaymentInvoice
+    schemas linking payments to invoices — supplier payment execution, i.e. Accounts Payable Management.
+- tag: ERP/QUOTATIONS
+  spec_file: eci-solutions-erp-quotations-api-openapi.yml
+  capability_id: BC-410.40
+  capability_id_l1: BC-410
+  capability_name: Quote & Configuration Management
+  confidence: 0.82
+  evidence: GET /api/ERP/QuoteLines; schemas ERPQuoteDto, ERPQuoteMaterialDto, ERPQuoteOperationDto, ERPResponseMessageDto_ERPQuoteSalesPersonDto
+  reason: Customer quotation documents with lines, quantities, materials/operations costing and assigned
+    salesperson — configure-price-quote surface in the sales lead-to-order flow.
+- tag: Purchase Order
+  spec_file: eci-solutions-purchase-order-api-openapi.yml
+  capability_id: BC-500.30
+  capability_id_l1: BC-500
+  capability_name: Purchase Order Management
+  confidence: 0.82
+  evidence: GET /api/v2.1/purchase-orders  Get a list of PurchaseOrders from the ERP system that match
+    the given filters
+  reason: Direct access to ERP purchase order records, which is purchase order management. Read-only surface
+    (no create/approve) slightly tempers confidence.
+- tag: Shipment
+  spec_file: eci-solutions-shipment-api-openapi.yml
+  capability_id: BC-520.50
+  capability_id_l1: BC-520
+  capability_name: Logistics Operations Management
+  confidence: 0.82
+  evidence: '"Shipping Service API which provides integration with shipping services for shipping rates,
+    purchasing labels, and tracking shipments"; POST /api/v1/shipments/{id}/buy  BuyShipmentLabel'
+  reason: Operations create shipments, purchase carrier labels and handle refunds — outbound transport
+    execution, i.e. logistics operations within the supply chain. Not a payment/financial capability despite
+    'buy'/'refund'.
+- tag: CustomerPayment
+  spec_file: eci-solutions-customerpayment-api-openapi.yml
+  capability_id: BC-200.30
+  capability_id_l1: BC-200
+  capability_name: Accounts Receivable Management
+  confidence: 0.8
+  evidence: '"Get a customer''s payment record by payment id"; schemas CustomerPaymentInvoice, CustomerPaymentSalesOrder,
+    CustomerPaymentPreAuthDetails'
+  reason: Payments received from customers tied to invoices and sales orders is accounts receivable /
+    cash application, not a technical object.
+- tag: Customers
+  spec_file: eci-solutions-customers-api-openapi.yml
+  capability_id: BC-420.10
+  capability_id_l1: BC-420
+  capability_name: Customer Data Management
+  confidence: 0.8
+  evidence: '"Creates a Customer", "Updates a Customer", "Gets a Customer by customer code"; schemas CustomerCreate,
+    CustomerUpdate, CustomerShippingAddressCreate'
+  reason: Full CRUD over the ERP customer master record — customer data/master record management. Could
+    equally be read as master data management, but customer-specific CRUD fits Customer Data Management.
+- tag: ERP/SHIPPING
+  spec_file: eci-solutions-erp-shipping-api-openapi.yml
+  capability_id: BC-520.50
+  capability_id_l1: BC-520
+  capability_name: Logistics Operations Management
+  confidence: 0.8
+  evidence: ERPFreightPackageRates_GetAllFreightPackageRateAsync; schemas ERPFreightShipmentDto, ERPShipmentPackageDto,
+    ERPShippingMethodDto
+  reason: Shipments, packages, freight rates and shipping methods — outbound transport/shipping execution,
+    i.e. logistics operations within the supply chain.
+- tag: GL Codes
+  spec_file: eci-solutions-gl-codes-api-openapi.yml
+  capability_id: BC-200.10
+  capability_id_l1: BC-200
+  capability_name: General Ledger Management
+  confidence: 0.8
+  evidence: GET /api/v1/gl-codes "Gets a list of GL Codes"; GET /api/v1/gl-codes/{GLAccountNumber} "Gets
+    a GL Code by GL Account Number"; schema GLAccount
+  reason: Read access to the general ledger account structure (chart of accounts) in the ERP, which is
+    squarely General Ledger Management. Read-only scope keeps confidence just below the top band.
+- tag: GLCode
+  spec_file: eci-solutions-glcode-api-openapi.yml
+  capability_id: BC-200.10
+  capability_id_l1: BC-200
+  capability_name: General Ledger Management
+  confidence: 0.8
+  evidence: GET /api/v2.1/gl-codes "Get a list of GLCodes from the ERP system that match the given filters";
+    schemas GLCode, GLCodeListResponse
+  reason: Exposes the ERP's general ledger account codes, i.e. chart-of-accounts data under General Ledger
+    Management. Single read operation limits confidence slightly.
+- tag: PurchaseOrderLine
+  spec_file: eci-solutions-purchaseorderline-api-openapi.yml
+  capability_id: BC-500.30
+  capability_id_l1: BC-500
+  capability_name: Purchase Order Management
+  confidence: 0.8
+  evidence: '''Get a list of PurchaseOrderLines from the ERP system that match the given…''; schemas PurchaseOrder,
+    PurchaseOrderLine'
+  reason: ERP purchase order line retrieval; same procurement PO domain as the JobBOSS² PO endpoints.
+- tag: Quote
+  spec_file: eci-solutions-quote-api-openapi.yml
+  capability_id: BC-410.40
+  capability_id_l1: BC-410
+  capability_name: Quote & Configuration Management
+  confidence: 0.8
+  evidence: '''Get a list of Quotes from the ERP system that match the given filters''; schemas Quote,
+    Organization, Contact, Project'
+  reason: Customer-facing sales quotes linked to organizations/contacts in an ERP — quote management in
+    the lead-to-order flow.
+- tag: Quote Line Items
+  spec_file: eci-solutions-quote-line-items-api-openapi.yml
+  capability_id: BC-410.40
+  capability_id_l1: BC-410
+  capability_name: Quote & Configuration Management
+  confidence: 0.8
+  evidence: '''Creates a Quote Line Item''; ''Updates a Quote Line Item''; schemas QuoteLineItemCreate,
+    QuoteLineItemUpdate'
+  reason: Create/update of priced quote lines — configuration and quoting of customer offers.
+- tag: Registrant Contact Information
+  spec_file: eci-solutions-registrant-contact-information-api-openapi.yml
+  capability_id: BC-420.10
+  capability_id_l1: BC-420
+  capability_name: Customer Data Management
+  confidence: 0.8
+  evidence: '''Retrieve all of a registrant''s contact information''; schemas ContactInformation, EmailWrite,
+    PhoneWrite, AddressWrite'
+  reason: CRUD over emails, phones and addresses of CRM contact records is customer master/contact data
+    maintenance.
+- tag: Sales
+  spec_file: eci-solutions-sales-api-openapi.yml
+  capability_id: BC-200.30
+  capability_id_l1: BC-200
+  capability_name: Accounts Receivable Management
+  confidence: 0.8
+  evidence: POST /api/v2/invoices 'Create (or update) a sales invoice'; GET /api/v2/sales-outstanding-items
+    'Get a list of outstanding items for sales'; GET /api/v2/sales-paymentinfo/{docNumber} 'Get payment
+    information for a sales invoice'
+  reason: A financial integration surface that creates customers, sales invoices, sales journal entries
+    and reads outstanding items and payment info — this is customer invoicing and receivables accounting,
+    i.e. Accounts Receivable Management.
+- tag: BOM/SALES
+  spec_file: eci-solutions-bom-sales-api-openapi.yml
+  capability_id: BC-410.40
+  capability_id_l1: BC-410
+  capability_name: Quote & Configuration Management
+  confidence: 0.78
+  evidence: BOMQuoteLines_GetQuoteLinesAsync  Returns quote and quote lines details for a given M1 quote
+    id or GUID; POST /api/BOM/Sales/PostQuoteLine; schemas BOMCreateQuoteDto, BOMSalesOrderDto
+  reason: Operations create and read customer quotes, quote lines, quote assemblies, quote materials and
+    quantities — configure/price/quote activity in the sales process. Mapped to Quote & Configuration
+    Management; a sales-order schema also appears, hence slight ambiguity.
+- tag: ProductLocationQuantity
+  spec_file: eci-solutions-productlocationquantity-api-openapi.yml
+  capability_id: BC-530
+  capability_id_l1: BC-530
+  capability_name: Inventory Management
+  confidence: 0.78
+  evidence: 'PUT /api/v1/product-location-quantities  AddUpdateProductInventory  The bulk create or update
+    product inventory; schema: EcommerceProductInventoryRequest'
+  reason: Maintains on-hand product quantities per location, which is inventory stock record management.
+    L1 asserted confidently; the single bulk upsert does not distinguish stock-level setting from accuracy
+    adjustment, so no L2.
+- tag: User
+  spec_file: eci-solutions-user-api-openapi.yml
+  capability_id: BC-620.20
+  capability_id_l1: BC-620
+  capability_name: Identity & Access Management
+  confidence: 0.78
+  evidence: POST /api/User  RegisterUser  Create a new User; GET /api/User/providers  Gets the list of
+    authentication providers available for admin users; PATCH /api/User/{id}  Updates the Active status,
+    First name, Last name and Product list
+  reason: 'Operations create, update, deactivate and delete user accounts and enumerate SSO/login providers
+    for an integration platform — account provisioning and federated authentication, i.e. Identity & Access
+    Management. Not HR employee records: the entities are application logins with roles and product entitlements.'
+- tag: Vendor
+  spec_file: eci-solutions-vendor-api-openapi.yml
+  capability_id: BC-200.20
+  capability_id_l1: BC-200
+  capability_name: Accounts Payable Management
+  confidence: 0.76
+  evidence: POST /api/v1/vendors/{id}/invoices  CreateVendorInvoice  Create a vendor invoice; POST /api/v1/vendors/{id}/payments  CreatePayment  Create
+    vendor payments
+  reason: Beyond vendor record CRUD, the surface creates and maintains vendor invoices and vendor payments
+    in an AP/AR commerce integration — classic accounts payable invoice processing and vendor payment
+    accounting.
+- tag: ERP/CRM
+  spec_file: eci-solutions-erp-crm-api-openapi.yml
+  capability_id: BC-420
+  capability_id_l1: BC-420
+  capability_name: Customer Relationship Management
+  confidence: 0.75
+  evidence: ERPCustomerGroupDto, ERPContactMethodDto, ERPContactTitleDto, ERPLeadMemoDto, ERPLeadSalesPersonDto,
+    ERPLeadCompetitorDto, ERPOrganizationLocationDto
+  reason: Operations manage customers, contacts, organizations, calls/call memos and leads with sales
+    people — a classic ERP CRM module. Spans customer data and lead/pipeline handling, so only the L1
+    is asserted; no single L2 fits the mixed surface.
+- tag: ERP/PURCHASERECEIPTS
+  spec_file: eci-solutions-erp-purchasereceipts-api-openapi.yml
+  capability_id: BC-500.40
+  capability_id_l1: BC-500
+  capability_name: Procure-to-Pay Operations Management
+  confidence: 0.75
+  evidence: GET /api/ERP/Receipts 'Returns all existing Receipts'; ERPReceiptLineDto, ERPReceiptComponentDto
+  reason: Goods receipt records against purchases — day-to-day procure-to-pay operations (receipts). Slight
+    ambiguity versus inventory receiving, hence moderate confidence.
+- tag: Employee Trainings
+  spec_file: eci-solutions-employee-trainings-api-openapi.yml
+  capability_id: BC-300.40
+  capability_id_l1: BC-300
+  capability_name: Learning & Development Management
+  confidence: 0.75
+  evidence: GET /api/v1/employee-trainings 'Gets a list of Employee Trainings'; schema EmployeeTraining
+  reason: Exposes employee training records, i.e. training/certification tracking under learning and development.
+    Single read operation limits confidence.
+- tag: Issuing Materials
+  spec_file: eci-solutions-issuing-materials-api-openapi.yml
+  capability_id: BC-530
+  capability_id_l1: BC-530
+  capability_name: Inventory Management
+  confidence: 0.75
+  evidence: GET /api/v1/issuing-materials/bin-locations 'Gets a list of parts with bin locations and quantity
+    on hand'; POST '/stock-to-job-transfer' 'Transfer stock materials to a job'
+  reason: Operations expose on-hand stock by bin location and move stock out of inventory to a production
+    job — stock tracking and allocation/issue, i.e. Inventory Management.
+- tag: OtelLogs
+  spec_file: eci-solutions-otellogs-api-openapi.yml
+  capability_id: BC-4220.20
+  capability_id_l1: BC-4220
+  capability_name: Observability Management
+  confidence: 0.75
+  evidence: POST /api/otel/logs "Ingests logs in OTLP HTTP/JSON format"; schemas OtelLogRecord, ResourceLog,
+    InstrumentationScope
+  reason: OpenTelemetry log ingestion endpoint for the MFG Integration Engine — telemetry/observability
+    plumbing for the running service, matching Observability Management (logs, metrics, traces). Not an
+    ERP business function.
+- tag: Purchase Order Releases
+  spec_file: eci-solutions-purchase-order-releases-api-openapi.yml
+  capability_id: BC-500.30
+  capability_id_l1: BC-500
+  capability_name: Purchase Order Management
+  confidence: 0.75
+  evidence: GET /api/v1/purchase-order-releases 'Gets a list of Purchase Order Releases'; schema PurchaseOrderRelease
+  reason: PO releases (scheduled release lines against a purchase order) are part of purchase order execution
+    in the ERP; read-only but clearly procurement PO data.
+- tag: QuoteLine
+  spec_file: eci-solutions-quoteline-api-openapi.yml
+  capability_id: BC-410.40
+  capability_id_l1: BC-410
+  capability_name: Quote & Configuration Management
+  confidence: 0.75
+  evidence: '''Get a list of QuoteLines from the ERP system that match the given filters''; schemas QuoteLine,
+    Quote, PartGroup, Organization'
+  reason: Quote line detail (part/price level) for customer quotes in the ERP — quoting capability.
+- tag: ERP/EMPLOYEE
+  spec_file: eci-solutions-erp-employee-api-openapi.yml
+  capability_id: BC-300.70
+  capability_id_l1: BC-300
+  capability_name: HR Operations Management
+  confidence: 0.72
+  evidence: GET /api/ERP/EmployeePersonalData ... 'Creates or updates a single EmployeePersonalDatum record';
+    ERPEmployeeSkillDto, ERPEmployeeSkillCompetencyDto, ERPShiftBreakDto
+  reason: Maintains employee master records, personal data, memos, attachments, shifts and skills — employee
+    record keeping and HR data administration. Skills/competency schemas touch talent management, so L2
+    is given at moderate confidence.
+- tag: Attendance Ticket Details
+  spec_file: eci-solutions-attendance-ticket-details-api-openapi.yml
+  capability_id: BC-300.70
+  capability_id_l1: BC-300
+  capability_name: HR Operations Management
+  confidence: 0.7
+  evidence: POST /api/v1/attendance-tickets/{ticketDate}/employees/{employeeCode}/attendance-ticket-details;
+    schema TimeAndAttendanceDetail
+  reason: Operations create and update time-and-attendance detail records keyed by employee code and date
+    — employee time recording, an HR operations/payroll-administration activity. Some chance it is used
+    primarily for shop-floor labour costing, so confidence is tempered.
+- tag: Attendance Tickets
+  spec_file: eci-solutions-attendance-tickets-api-openapi.yml
+  capability_id: BC-300.70
+  capability_id_l1: BC-300
+  capability_name: HR Operations Management
+  confidence: 0.7
+  evidence: GET /api/v1/attendance-tickets/{ticketDate}/employees/{employeeCode}; schemas AttendanceTicketCreate,
+    TimeAndAttendance
+  reason: Attendance tickets per employee per date are employee time-and-attendance records maintained
+    in the ERP, which realises HR Operations (employee records / payroll administration input).
+- tag: BOM/PART
+  spec_file: eci-solutions-bom-part-api-openapi.yml
+  capability_id: BC-820.30
+  capability_id_l1: BC-820
+  capability_name: Product Specification Management
+  confidence: 0.7
+  evidence: Returns part and part revision details for a given M1 part id or GUID; POST /api/BOM/Part/PostPartAssembly  Creates
+    a part assembly based on input parameter; POST /api/BOM/Part/PostPartOperation
+  reason: Parts, part revisions, part assemblies, materials and operations are bill-of-material and routing
+    definition for manufactured products, matching Product Specification Management (specifications, requirements,
+    BOM definition). Some overlap with configuration/variant management, so not maximal confidence.
+- tag: Contacts
+  spec_file: eci-solutions-contacts-api-openapi.yml
+  capability_id: BC-420.10
+  capability_id_l1: BC-420
+  capability_name: Customer Data Management
+  confidence: 0.7
+  evidence: POST /api/v1/contacts "Creates a Contact"; PATCH .../{object}/{contactCode}/{contact} "Updates
+    a Contact"; schemas ContactCreate, ContactUpdate
+  reason: Straightforward create/read/update of contact records attached to ERP objects (customers, vendors)
+    — customer/party master data maintenance. It is reference-data CRUD rather than relationship processes,
+    so Customer Data Management is the fitting narrow capability.
+- tag: Customer
+  spec_file: eci-solutions-customer-api-openapi.yml
+  capability_id: BC-420.10
+  capability_id_l1: BC-420
+  capability_name: Customer Data Management
+  confidence: 0.7
+  evidence: POST /api/v1/customers "Create a customer", PATCH /api/v1/customers/{id} "Update a customer",
+    DELETE "Delete a customer by customer id"; schemas CustomerRequestModel, CustomerResponse
+  reason: The core of the tag is full lifecycle CRUD over the customer record (plus addresses and contract
+    pricing), i.e. customer master data. Sub-resources for invoices and sales orders pull slightly toward
+    AR and order management, which is why confidence is moderate rather than high.
+- tag: QuoteQuantity
+  spec_file: eci-solutions-quotequantity-api-openapi.yml
+  capability_id: BC-410.40
+  capability_id_l1: BC-410
+  capability_name: Quote & Configuration Management
+  confidence: 0.7
+  evidence: '''Get a list of Quote Quantities from the ERP system that match the given filters''; schemas
+    QuoteQuantity, QuoteLine, Quote'
+  reason: Quantity-break pricing tiers attached to quote lines — part of the configure/price/quote surface,
+    though read-only and thin.
+- tag: Registrant Assigned Sales Reps
+  spec_file: eci-solutions-registrant-assigned-sales-reps-api-openapi.yml
+  capability_id: BC-410
+  capability_id_l1: BC-410
+  capability_name: Sales Management
+  confidence: 0.7
+  evidence: '''Get registrants assigned sales reps'' / ''Put registrants assigned sales reps'', schemas
+    SalesRepRead, SalesRepWrite'
+  reason: Assignment of sales representatives to leads/prospects in a CRM is lead routing — clearly Sales
+    Management, but ambiguous between pipeline management and sales operations, so L1 only.
+- tag: Registrant Sales Details
+  spec_file: eci-solutions-registrant-sales-details-api-openapi.yml
+  capability_id: BC-410.30
+  capability_id_l1: BC-410
+  capability_name: Opportunity & Pipeline Management
+  confidence: 0.7
+  evidence: '''Put registrants rating'', ''Put registrants follow up process'', ''Put registrants source
+    type''; schemas Rating, FollowUpProcess, SourceType'
+  reason: Lead rating, lead source and follow-up process are core lead qualification and progression attributes
+    — opportunity/lead lifecycle management in a sales CRM.
