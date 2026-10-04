@@ -451,23 +451,9 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    WorkCenterSuccessResponse:
-      type: object
-      properties:
-        Data:
-          $ref: '#/components/schemas/WorkCenter'
-      additionalProperties: false
-    WorkCenterListSuccessResponse:
-      type: object
-      properties:
-        Data:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/WorkCenter'
-      additionalProperties: false
-    WorkCenterUpdate:
+    WorkCenterCreate:
+      required:
+      - shortName
       type: object
       properties:
         active:
@@ -481,6 +467,11 @@ components:
           - number
           - 'null'
           format: double
+        capacityFactor:
+          type:
+          - number
+          - 'null'
+          format: float
         cycle1:
           type:
           - number
@@ -602,6 +593,8 @@ components:
           - number
           - 'null'
           format: double
+        shortName:
+          type: string
         user_Currency1:
           type:
           - number
@@ -662,6 +655,11 @@ components:
           type:
           - string
           - 'null'
+        workCenter:
+          type:
+          - integer
+          - 'null'
+          format: int32
       additionalProperties: false
     WorkCenter:
       type: object
@@ -1079,9 +1077,17 @@ components:
           type: boolean
           readOnly: true
       additionalProperties: false
-    WorkCenterCreate:
-      required:
-      - shortName
+    WorkCenterListSuccessResponse:
+      type: object
+      properties:
+        Data:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/WorkCenter'
+      additionalProperties: false
+    WorkCenterUpdate:
       type: object
       properties:
         active:
@@ -1095,11 +1101,6 @@ components:
           - number
           - 'null'
           format: double
-        capacityFactor:
-          type:
-          - number
-          - 'null'
-          format: float
         cycle1:
           type:
           - number
@@ -1221,8 +1222,6 @@ components:
           - number
           - 'null'
           format: double
-        shortName:
-          type: string
         user_Currency1:
           type:
           - number
@@ -1283,11 +1282,12 @@ components:
           type:
           - string
           - 'null'
-        workCenter:
-          type:
-          - integer
-          - 'null'
-          format: int32
+      additionalProperties: false
+    WorkCenterSuccessResponse:
+      type: object
+      properties:
+        Data:
+          $ref: '#/components/schemas/WorkCenter'
       additionalProperties: false
   securitySchemes:
     Bearer:

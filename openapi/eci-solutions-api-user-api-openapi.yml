@@ -846,241 +846,6 @@ paths:
       x-operation-id-original: TestConnectionApiUser
 components:
   schemas:
-    ApiError:
-      type: object
-      properties:
-        isError:
-          type: boolean
-        exceptionMessage:
-          type:
-          - string
-          - 'null'
-        details:
-          type:
-          - string
-          - 'null'
-        referenceErrorCode:
-          type:
-          - string
-          - 'null'
-        referenceDocumentLink:
-          type:
-          - string
-          - 'null'
-        validationErrors:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/ValidationError'
-      additionalProperties: false
-    ValidationError:
-      type: object
-      properties:
-        field:
-          type:
-          - string
-          - 'null'
-        message:
-          type:
-          - string
-          - 'null'
-      additionalProperties: false
-    ApiUserResponseModelAPIResponse:
-      type: object
-      properties:
-        version:
-          type:
-          - string
-          - 'null'
-        statusCode:
-          type: integer
-          format: int32
-        message:
-          type:
-          - string
-          - 'null'
-        responseException:
-          allOf:
-          - $ref: '#/components/schemas/ApiError'
-        result:
-          allOf:
-          - $ref: '#/components/schemas/ApiUserResponseModel'
-      additionalProperties: false
-    FinancialIntegrationApiUserProperties:
-      type: object
-      properties:
-        financialCompanyId:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        financialCompanyName:
-          type:
-          - string
-          - 'null'
-        financialCompanyExternalId:
-          type:
-          - string
-          - 'null'
-        financialSystemBaseUrl:
-          type:
-          - string
-          - 'null'
-        clientId:
-          type:
-          - string
-          - 'null'
-        clientSecret:
-          type:
-          - string
-          - 'null'
-        environment:
-          type:
-          - string
-          - 'null'
-      additionalProperties: false
-    AuthenticateUserResponse:
-      type: object
-      properties:
-        accessToken:
-          type:
-          - string
-          - 'null'
-        idToken:
-          type:
-          - string
-          - 'null'
-        refreshToken:
-          type:
-          - string
-          - 'null'
-        expiresIn:
-          type: integer
-          format: int32
-        isPasswordChangeRequired:
-          type: boolean
-      additionalProperties: false
-    TestConnectionRequestModel:
-      type: object
-      properties:
-        financialCompanyId:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        erpApiSettingId:
-          type:
-          - array
-          - 'null'
-          items:
-            type: integer
-            format: int32
-      additionalProperties: false
-    TestConnectionResponseDetail:
-      type: object
-      properties:
-        step:
-          type: integer
-          format: int32
-        description:
-          type:
-          - string
-          - 'null'
-        passed:
-          type: boolean
-        failureReason:
-          type:
-          - string
-          - 'null'
-      additionalProperties: false
-    UpdateConnectionModel:
-      required:
-      - properties
-      type: object
-      properties:
-        properties:
-          type: object
-          additionalProperties:
-            type: string
-          description: The properties that are being updated. This payload varies by the type of integration/system.
-      additionalProperties: false
-    UpdateApiUserRequestModel:
-      required:
-      - firstName
-      - username
-      type: object
-      properties:
-        username:
-          minLength: 1
-          type: string
-        firstName:
-          minLength: 1
-          type: string
-        lastName:
-          type:
-          - string
-          - 'null'
-        email:
-          type:
-          - string
-          - 'null'
-        keyIds:
-          type:
-          - array
-          - 'null'
-          items:
-            type: integer
-            format: int32
-        isPasswordChanged:
-          type: boolean
-        companyId:
-          type: integer
-          format: int32
-        financialCompanyId:
-          type: integer
-          format: int32
-        userType:
-          type: integer
-          format: int32
-        expireType:
-          type: integer
-          format: int32
-        days:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        expireDateTime:
-          type:
-          - string
-          - 'null'
-        environment:
-          type:
-          - string
-          - 'null'
-      additionalProperties: false
-    GetApiUserResponseModelAPIResponse:
-      type: object
-      properties:
-        version:
-          type:
-          - string
-          - 'null'
-        statusCode:
-          type: integer
-          format: int32
-        message:
-          type:
-          - string
-          - 'null'
-        responseException:
-          allOf:
-          - $ref: '#/components/schemas/ApiError'
-        result:
-          allOf:
-          - $ref: '#/components/schemas/GetApiUserResponseModel'
-      additionalProperties: false
     ApiUserResponseModel:
       type: object
       properties:
@@ -1230,47 +995,158 @@ components:
           - string
           - 'null'
       additionalProperties: false
-    TestConnectionResponseModelAPIResponse:
+    AuthenticateAPIUser:
+      required:
+      - password
+      - username
       type: object
       properties:
-        version:
-          type:
-          - string
-          - 'null'
-        statusCode:
-          type: integer
-          format: int32
-        message:
-          type:
-          - string
-          - 'null'
-        responseException:
-          allOf:
-          - $ref: '#/components/schemas/ApiError'
-        result:
-          allOf:
-          - $ref: '#/components/schemas/TestConnectionResponseModel'
+        username:
+          minLength: 1
+          type: string
+        password:
+          minLength: 1
+          type: string
       additionalProperties: false
-    AuthenticateUserResponseAPIResponse:
+    UpdateApiUserRequestModel:
+      required:
+      - firstName
+      - username
       type: object
       properties:
-        version:
+        username:
+          minLength: 1
+          type: string
+        firstName:
+          minLength: 1
+          type: string
+        lastName:
           type:
           - string
           - 'null'
-        statusCode:
+        email:
+          type:
+          - string
+          - 'null'
+        keyIds:
+          type:
+          - array
+          - 'null'
+          items:
+            type: integer
+            format: int32
+        isPasswordChanged:
+          type: boolean
+        companyId:
           type: integer
           format: int32
-        message:
+        financialCompanyId:
+          type: integer
+          format: int32
+        userType:
+          type: integer
+          format: int32
+        expireType:
+          type: integer
+          format: int32
+        days:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        expireDateTime:
           type:
           - string
           - 'null'
-        responseException:
-          allOf:
-          - $ref: '#/components/schemas/ApiError'
-        result:
-          allOf:
-          - $ref: '#/components/schemas/AuthenticateUserResponse'
+        environment:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    ErpApiUser:
+      required:
+      - companyId
+      - eciIntegrationId
+      - enablePasswordReset
+      - expireType
+      - firstName
+      - isAdmin
+      - systemId
+      - userType
+      type: object
+      properties:
+        username:
+          type:
+          - string
+          - 'null'
+        password:
+          type:
+          - string
+          - 'null'
+        email:
+          pattern: ^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$
+          type:
+          - string
+          - 'null'
+        firstName:
+          maxLength: 50
+          minLength: 2
+          type: string
+        lastName:
+          type:
+          - string
+          - 'null'
+        eciIntegrationId:
+          type: integer
+          format: int32
+        systemName:
+          type:
+          - string
+          - 'null'
+        userType:
+          type: integer
+          description: 1 = Person, 2 = System (default)
+          format: int32
+        keyIds:
+          type:
+          - array
+          - 'null'
+          items:
+            type: integer
+            format: int32
+        systemId:
+          type: integer
+          format: int32
+        companyId:
+          type: integer
+          format: int32
+        isAdmin:
+          type: boolean
+        enablePasswordReset:
+          type: boolean
+        expireType:
+          type: integer
+          format: int32
+        days:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        expireDateTime:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    UpdateConnectionModel:
+      required:
+      - properties
+      type: object
+      properties:
+        properties:
+          type: object
+          additionalProperties:
+            type: string
+          description: The properties that are being updated. This payload varies by the type of integration/system.
       additionalProperties: false
     StringAPIResponse:
       type: object
@@ -1293,6 +1169,111 @@ components:
           type:
           - string
           - 'null'
+      additionalProperties: false
+    AuthenticateUserResponse:
+      type: object
+      properties:
+        accessToken:
+          type:
+          - string
+          - 'null'
+        idToken:
+          type:
+          - string
+          - 'null'
+        refreshToken:
+          type:
+          - string
+          - 'null'
+        expiresIn:
+          type: integer
+          format: int32
+        isPasswordChangeRequired:
+          type: boolean
+      additionalProperties: false
+    TestConnectionResponseModelAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        result:
+          allOf:
+          - $ref: '#/components/schemas/TestConnectionResponseModel'
+      additionalProperties: false
+    TestConnectionResponseDetail:
+      type: object
+      properties:
+        step:
+          type: integer
+          format: int32
+        description:
+          type:
+          - string
+          - 'null'
+        passed:
+          type: boolean
+        failureReason:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    ValidationError:
+      type: object
+      properties:
+        field:
+          type:
+          - string
+          - 'null'
+        message:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    RateLimits:
+      type: object
+      properties:
+        ip:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        ipPeriod:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        company:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        companyPeriod:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        user:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        userPeriod:
+          type:
+          - integer
+          - 'null'
+          format: int32
       additionalProperties: false
     ApiIntegrationApiUserProperty:
       type: object
@@ -1318,6 +1299,152 @@ components:
         displayOrdinal:
           type: integer
           format: int32
+      additionalProperties: false
+    AuthenticateUserResponseAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        result:
+          allOf:
+          - $ref: '#/components/schemas/AuthenticateUserResponse'
+      additionalProperties: false
+    GetApiUserResponseModelAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        result:
+          allOf:
+          - $ref: '#/components/schemas/GetApiUserResponseModel'
+      additionalProperties: false
+    ToggleEntityModel:
+      type: object
+      properties:
+        isActive:
+          type: boolean
+      additionalProperties: false
+    ApiError:
+      type: object
+      properties:
+        isError:
+          type: boolean
+        exceptionMessage:
+          type:
+          - string
+          - 'null'
+        details:
+          type:
+          - string
+          - 'null'
+        referenceErrorCode:
+          type:
+          - string
+          - 'null'
+        referenceDocumentLink:
+          type:
+          - string
+          - 'null'
+        validationErrors:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ValidationError'
+      additionalProperties: false
+    FinancialIntegrationApiUserProperties:
+      type: object
+      properties:
+        financialCompanyId:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        financialCompanyName:
+          type:
+          - string
+          - 'null'
+        financialCompanyExternalId:
+          type:
+          - string
+          - 'null'
+        financialSystemBaseUrl:
+          type:
+          - string
+          - 'null'
+        clientId:
+          type:
+          - string
+          - 'null'
+        clientSecret:
+          type:
+          - string
+          - 'null'
+        environment:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    ApiUserResponseModelAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        result:
+          allOf:
+          - $ref: '#/components/schemas/ApiUserResponseModel'
+      additionalProperties: false
+    TestConnectionRequestModel:
+      type: object
+      properties:
+        financialCompanyId:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        erpApiSettingId:
+          type:
+          - array
+          - 'null'
+          items:
+            type: integer
+            format: int32
       additionalProperties: false
     GetApiUserResponseModel:
       type: object
@@ -1444,25 +1571,6 @@ components:
           items:
             $ref: '#/components/schemas/ApiIntegrationApiUserProperty'
       additionalProperties: false
-    ToggleEntityModel:
-      type: object
-      properties:
-        isActive:
-          type: boolean
-      additionalProperties: false
-    AuthenticateAPIUser:
-      required:
-      - password
-      - username
-      type: object
-      properties:
-        username:
-          minLength: 1
-          type: string
-        password:
-          minLength: 1
-          type: string
-      additionalProperties: false
     TestConnectionResponseModel:
       type: object
       properties:
@@ -1474,114 +1582,6 @@ components:
           - 'null'
           items:
             $ref: '#/components/schemas/TestConnectionResponseDetail'
-      additionalProperties: false
-    RateLimits:
-      type: object
-      properties:
-        ip:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        ipPeriod:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        company:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        companyPeriod:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        user:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        userPeriod:
-          type:
-          - integer
-          - 'null'
-          format: int32
-      additionalProperties: false
-    ErpApiUser:
-      required:
-      - companyId
-      - eciIntegrationId
-      - enablePasswordReset
-      - expireType
-      - firstName
-      - isAdmin
-      - systemId
-      - userType
-      type: object
-      properties:
-        username:
-          type:
-          - string
-          - 'null'
-        password:
-          type:
-          - string
-          - 'null'
-        email:
-          pattern: ^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$
-          type:
-          - string
-          - 'null'
-        firstName:
-          maxLength: 50
-          minLength: 2
-          type: string
-        lastName:
-          type:
-          - string
-          - 'null'
-        eciIntegrationId:
-          type: integer
-          format: int32
-        systemName:
-          type:
-          - string
-          - 'null'
-        userType:
-          type: integer
-          description: 1 = Person, 2 = System (default)
-          format: int32
-        keyIds:
-          type:
-          - array
-          - 'null'
-          items:
-            type: integer
-            format: int32
-        systemId:
-          type: integer
-          format: int32
-        companyId:
-          type: integer
-          format: int32
-        isAdmin:
-          type: boolean
-        enablePasswordReset:
-          type: boolean
-        expireType:
-          type: integer
-          format: int32
-        days:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        expireDateTime:
-          type:
-          - string
-          - 'null'
       additionalProperties: false
   securitySchemes:
     oidc:

@@ -806,818 +806,15 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    Order:
+    ListContext:
+      required:
+      - links
       type: object
       properties:
-        description:
-          type:
-          - string
-          - 'null'
-          description: 'The description of the order.
-
-            * ECI Financials: Project.Name
-
-            * Xero: n/a
-
-            * TripleTex: n/a
-
-            * AccountView: Project.Name
-
-            * PowerOfficeGo: n/a
-
-            * Sage50Uk: n/a
-
-            * Adsolut: n/a'
-        status:
-          type:
-          - string
-          - 'null'
-          description: 'The status of the order.
-
-            * ECI Financials: Project.Status
-
-            * Xero: n/a
-
-            * TripleTex: n/a
-
-            * AccountView: Project.Status
-
-            * PowerOfficeGo: n/a
-
-            * Sage50Uk: n/a
-
-            * Adsolut: n/a'
-        startDate:
-          type:
-          - string
-          - 'null'
-          description: 'The start date of the order.
-
-            * ECI Financials: Project.StartDate
-
-            * Xero: n/a
-
-            * TripleTex: n/a
-
-            * AccountView: Project.StartDate
-
-            * PowerOfficeGo: n/a
-
-            * Sage50Uk: n/a
-
-            * Adsolut: n/a'
-          format: date-time
-        endDate:
-          type:
-          - string
-          - 'null'
-          description: 'The end date of the order.
-
-            * ECI Financials: Project.EndDate
-
-            * Xero: n/a
-
-            * TripleTex: n/a
-
-            * AccountView: Project.EndDate
-
-            * PowerOfficeGo: n/a
-
-            * Sage50Uk: n/a
-
-            * Adsolut: n/a'
-          format: date-time
-        dueDate:
-          type:
-          - string
-          - 'null'
-          description: 'The due date of the order.
-
-            * ECI Financials: Project.DueDate
-
-            * Xero: n/a
-
-            * TripleTex: n/a
-
-            * AccountView: Project.DueDate
-
-            * PowerOfficeGo: n/a
-
-            * Sage50Uk: n/a
-
-            * Adsolut: n/a'
-          format: date-time
-        active:
-          type:
-          - boolean
-          - 'null'
-          description: 'Is the project active or inactive?
-
-            * ECI Financials: Project.Active
-
-            * Xero: n/a
-
-            * TripleTex: n/a
-
-            * AccountView: Project.Active
-
-            * PowerOfficeGo: n/a
-
-            * Sage50Uk: n/a
-
-            * Adsolut: n/a'
-        customer:
+        links:
           allOf:
-          - $ref: '#/components/schemas/Entity'
-          description: 'Customer for which this order is.
-
-            * ECI Financials: n/a
-
-            * Xero: n/a
-
-            * TripleTex: n/a
-
-            * AccountView: n/a
-
-            * PowerOfficeGo: n/a
-
-            * Sage50Uk: n/a
-
-            * Adsolut: n/a'
-        company:
-          allOf:
-          - $ref: '#/components/schemas/Entity'
-          description: 'To be used when creditor and debtor are the same record in the financial package
-
-            * ECI Financials: Project.Customer
-
-            * Xero: n/a
-
-            * TripleTex: n/a
-
-            * AccountView: Project.Customer
-
-            * PowerOfficeGo: n/a
-
-            * Sage50Uk: n/a
-
-            * Adsolut: n/a'
-        syncToken:
-          type:
-          - string
-          - 'null'
-          description: "The date/time stamp of the order. This value is\nrequired when sending a PUT request and its value must\nmatch the timestamp of the order in the database. If\nthe value is different it means the order has been\nmodified by another user.\n* ECI Financials: Project.Stamp\n* Xero: n/a\n* TripleTex: n/a               \n* AccountView: Project.Stamp               \n* PowerOfficeGo: n/a\n* Sage50Uk: n/a\n* Adsolut: n/a"
-        code:
-          type:
-          - string
-          - 'null'
-          description: The natural key of this entity.
-        id:
-          type:
-          - string
-          - 'null'
-          description: The unique Id of this entity.
+          - $ref: '#/components/schemas/Links'
       additionalProperties: false
-      description: <h2>An order object, sometimes also used for projects.</h2>
-    JournalEntryLine:
-      type: object
-      properties:
-        id:
-          type:
-          - string
-          - 'null'
-          description: '* ECI Financials: n/a
-
-            * Xero: n/a
-
-            * TripleTex: n/a
-
-            * AccountView: n/a
-
-            * PowerOfficeGo: n/a
-
-            * AfasSB: n/a
-
-            * Sage50Uk: n/a
-
-            * Adsolut: n/a'
-        amount:
-          type: number
-          description: 'Amount excluding VAT amount
-
-            * ECI Financials: Lines.Amount / Lines.Debet / Lines.Credit
-
-            * Xero: ManualJournalLine.LineAmount
-
-            * TripleTex: Posting.AmountGross
-
-            * AccountView: Lines.Amount / Lines.Debet / Lines.Credit
-
-            * PowerOfficeGo: JournalEntryVoucherLine.Amount
-
-            * AfasSB: InvoiceLine.AmountExcludingVat / InvoiceLine2.AmountIncludingVat / EntryLine.AmountCredit / EntryLine.AmountDebit
-
-            * Sage50Uk: JournalEntryLine.NetAmount
-
-            * Adsolut: JournalEntryLine.NetAmount'
-          format: double
-        account:
-          allOf:
-          - $ref: '#/components/schemas/Entity'
-          description: "* ECI Financials: Lines.Account\n* Xero:\n    * Code = ManualJournalLine.AccountCode\n    * Id = ManualJournalLine.AccountId\n* TripleTex:\n    * Id = Posting.Account.Id\n    * Code = Posting.Account.Number\n* AccountView: Lines.Account\n* PowerOfficeGo:\n    * Id = n/a\n    * Code = JournalEntryVoucherLine.DebitAccountCode / JournalEntryVoucherLine.CreditAccountCode\n* AfasSB: InvoiceLine.LedgerAccountId / InvoiceLine2.LedgerAccountId / EntryLine.LedgerAccountId\n* Sage50Uk: JournalEntryLine.Account\n    - Code = Account.NominalCode\n    - Id = n/a\n* Adsolut: JournalEntryLine.Account\n    - Code = GeneralLedger.Code\n    - Id = n/a"
-        taxAmount:
-          type: number
-          description: 'VAT amount
-
-            * ECI Financials: n/a
-
-            * Xero: ManualJournalLine.TaxAmount
-
-            * TripleTex: n/a
-
-            * AccountView: n/a
-
-            * PowerOfficeGo: n/a
-
-            * AfasSB: InvoiceLine.AmountVat / InvoiceLine2.AmountVat
-
-            * Sage50Uk: JournalEntryLine.TaxAmount
-
-            * Adsolut: JournalEntryLine.VatAmount'
-          format: double
-        type:
-          enum:
-          - 0
-          - 1
-          type:
-          - integer
-          - 'null'
-          description: 'The balance side.
-
-            * ECI Financials: Based on type either Lines.Debet or Lines.Credit is set
-
-            * Xero: Calculated (based on ManualJournalLine.LineAmount)
-
-            * TripleTex: n/a
-
-            * AccountView: Based on type either Lines.Debet or Lines.Credit is set
-
-            * PowerOfficeGo: JournalEntryVoucherLine.Type
-
-            * AfasSB: n/a
-
-            * Sage50Uk: JournalEntryLine.Type
-
-            * Adsolut: Based on  JournalEntryLineType either Credit or Debit'
-          format: int32
-        taxCode:
-          allOf:
-          - $ref: '#/components/schemas/Entity'
-          description: "* ECI Financials: n/a\n* Xero:\n    * Code = ManualJournalLine.TaxType\n    * Id = n/a\n* TripleTex:\n    * Code = Posting.VatType.Number\n    * Id = Posting.VatType.Id\n* Acountview: n/a\n* PowerOfficeGo:\n    * Code = JournalEntryVoucherLine.DebitVatCode / JournalEntryVoucherLine.CreditVatCode\n    * Id = n/a\n* AfasSB: \n    * Id = n/a\n    * Code = InvoiceLine.VatType / InvoiceLine2.VatType / EntryLine.VatType\n* Sage50Uk:\n    * Code = JournalEntryLine.TaxCode\n    * Id = n/a\n* Adsolut:\n    * Code = JournalEntryLine.VatPercentage.Id\n    * Id = n/a"
-        description:
-          type:
-          - string
-          - 'null'
-          description: '* ECI Financials: Lines.Title
-
-            * Xero: ManualJournalLine.Description
-
-            * TripleTex: Posting.Description
-
-            * AccountView: Lines.Title
-
-            * PowerOfficeGo: JournalEntryVoucherLine.Description
-
-            * AfasSB: InvoiceLine.Description / InvoiceLine2.Description / EntryLine.Description
-
-            * Sage50Uk: JournalEntryLine.Details
-
-            * Adsolut: JournalEntryLine.Description'
-        taxShifted:
-          type:
-          - boolean
-          - 'null'
-          description: 'Indicates whether the VAT is shifted (reverse charge).
-
-            * ECI Financials: n/a
-
-            * Xero: n/a
-
-            * TripleTex: n/a
-
-            * AccountView: n/a
-
-            * PowerOfficeGo: n/a
-
-            * AfasSB: InvoiceLine.VatShifted / InvoiceLine2.VatShifted
-
-            * Sage50Uk: n/a
-
-            * Adsolut: n/a'
-        amountForeignCurrency:
-          type:
-          - number
-          - 'null'
-          description: 'Amount excluding VAT amount in foreign currency
-
-            * ECI Financials: n/a
-
-            * Xero: n/a
-
-            * TripleTex: n/a
-
-            * AccountView: n/a
-
-            * PowerOfficeGo: n/a
-
-            * AfasSB: n/a
-
-            * Sage50Uk: n/a'
-          format: double
-        taxAmountForeignCurrency:
-          type:
-          - number
-          - 'null'
-          description: 'Tax (Vat) Amount in foreign currency
-
-            * ECI Financials: n/a
-
-            * Xero: n/a
-
-            * TripleTex: n/a
-
-            * AccountView: n/a
-
-            * PowerOfficeGo: n/a
-
-            * AfasSB: n/a
-
-            * Sage50Uk: n/a'
-          format: double
-      additionalProperties: false
-      description: Represents an individual line of a GL Journal to be saved to or existing in the financial system.
-    AsyncAcceptedResponse:
-      type: object
-      properties:
-        requestId:
-          type: string
-          description: 'A unique identifier for the asynchronous request.
-
-            This ID can be used in a follow-up request (via the async-request-id header) to retrieve the result of the original operation once processing is complete.'
-          format: uuid
-      additionalProperties: false
-      description: Represents the response returned when an asynchronous request is accepted for processing.
-    SalesJournalEntry:
-      type: object
-      properties:
-        syncToken:
-          type:
-          - string
-          - 'null'
-          description: 'SyncToken to ensure updating the latest version of the record.
-
-            * ECI Financials: n/a
-
-            * Xero: n/a
-
-            * TripleTex: n/a
-
-            * AccountView: n/a
-
-            * PowerOfficeGo: n/a
-
-            * AfasSB: n/a
-
-            * Sage50Uk: n/a
-
-            * Adsolut: n/a'
-        docNumber:
-          type:
-          - string
-          - 'null'
-          description: 'The journal entry number
-
-            * ECI Financials: n/a
-
-            * Xero: n/a
-
-            * TripleTex: n/a
-
-            * AccountView: n/a
-
-            * PowerOfficeGo: n/a
-
-            * AfasSB: Salesjournalentry.InvoiceNumber
-
-            * Sage50Uk: n/a
-
-            * Adsolut: SalesJournalEntry.InvoiceNumber'
-        description:
-          type:
-          - string
-          - 'null'
-          description: 'The description of the journal entry.
-
-            * ECI Financials: n/a
-
-            * Xero: n/a
-
-            * TripleTex: n/a
-
-            * AccountView: n/a
-
-            * PowerOfficeGo: n/a
-
-            * AfasSB: Salesjournalentry.Description
-
-            * Sage50Uk: n/a
-
-            * Adsolut: n/a'
-        date:
-          type:
-          - string
-          - 'null'
-          description: '* ECI Financials: n/a
-
-            * Xero: n/a
-
-            * TripleTex: n/a
-
-            * AccountView: n/a
-
-            * PowerOfficeGo: n/a
-
-            * AfasSB: Salesjournalentry.InvoiceDate
-
-            * Sage50Uk: n/a
-
-            * Adsolut: SalesJournalEntry.DocumentDate'
-          format: date-time
-        dueDate:
-          type:
-          - string
-          - 'null'
-          description: 'Date when the payment of the transaction is due.
-
-            * ECI Financials: n/a
-
-            * Xero: n/a
-
-            * TripleTex: n/a
-
-            * AccountView: n/a
-
-            * PowerOfficeGo: n/a
-
-            * AfasSB: n/a
-
-            * Sage50Uk: n/a
-
-            * Adsolut: SalesJournalEntry.DueDate'
-          format: date-time
-        period:
-          type:
-          - string
-          - 'null'
-          description: 'Financial period
-
-            * ECI Financials: n/a
-
-            * Xero: n/a
-
-            * TripleTex: n/a
-
-            * AccountView: n/a
-
-            * PowerOfficeGo: n/a
-
-            * AfasSB: n/a
-
-            * Sage50Uk: n/a
-
-            * Adsolut: SalesJournalEntry.AccountingPeriod.Number'
-        year:
-          type:
-          - integer
-          - 'null'
-          description: 'Financial year
-
-            * ECI Financials: n/a
-
-            * Xero: n/a
-
-            * TripleTex: n/a
-
-            * AccountView: n/a
-
-            * PowerOfficeGo: n/a
-
-            * AfasSB: n/a
-
-            * Sage50Uk: n/a
-
-            * Adsolut: SalesJournalEntry.Year'
-          format: int32
-        journal:
-          type:
-          - string
-          - 'null'
-          description: 'Journal code
-
-            * ECI Financials: n/a
-
-            * Xero: n/a
-
-            * TripleTex: n/a
-
-            * AccountView: n/a
-
-            * PowerOfficeGo: n/a
-
-            * AfasSB: n/a
-
-            * Sage50Uk: n/a
-
-            * Adsolut: SalesJournalEntry.JournalCode (2 letter code)'
-        exchangeRate:
-          type:
-          - number
-          - 'null'
-          description: "The exchange rate \n* ECI Financials: n/a\n* Xero: n/a\n* TripleTex: n/a\n* AccountView: n/a\n* PowerOfficeGo: n/a\n* AfasSB: n/a\n* Sage50Uk: n/a\n* Adsolut: n/a"
-          format: double
-        paymentTerm:
-          allOf:
-          - $ref: '#/components/schemas/Entity'
-          description: 'The payment term associated with the transaction.
-
-            * ECI Financials: n/a
-
-            * Xero: n/a
-
-            * TripleTex: n/a
-
-            * AccountView: n/a
-
-            * PowerOfficeGo: n/a
-
-            * AfasSB: n/a
-
-            * Sage50Uk: n/a
-
-            * Adsolut: n/a'
-        paymentReference:
-          type:
-          - string
-          - 'null'
-          description: 'External payment reference.
-
-            * ECI Financials: n/a
-
-            * Xero: n/a
-
-            * TripleTex: n/a
-
-            * AccountView: n/a
-
-            * PowerOfficeGo: n/a
-
-            * AfasSB: Salesjournalentry.Reference
-
-            * Sage50Uk: n/a
-
-            * Adsolut: SalesJournalEntry.ExternalDocumentId'
-        customer:
-          allOf:
-          - $ref: '#/components/schemas/Entity'
-          description: 'Customer Reference
-
-            * ECI Financials: n/a
-
-            * Xero: n/a
-
-            * PowerOfficeGo: n/a
-
-            * TripleTex: n/a
-
-            * AccountView: n/a
-
-            * AfasSB: Salesjournalentry.RelationId
-
-            * Sage50Uk: n/a
-
-            * Adsolut: SalesJournalEntry.Customer.Number'
-        lines:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/JournalEntryLine'
-          description: 'A collection of line information for the journal.
-
-            * ECI Financials: n/a
-
-            * Xero: n/a
-
-            * TripleTex: n/a
-
-            * AccountView: n/a
-
-            * PowerOfficeGo: n/a
-
-            * AfasSB: Salesjournalentry.InvoiceLine
-
-            * Sage50Uk: n/a
-
-            * Adsolut: SalesJournalEntry.Lines'
-        currencyCode:
-          type:
-          - string
-          - 'null'
-          description: 'The (ISO 4217) currency code for the purchase journal entry.
-
-            * ECI Financials: n/a
-
-            * Xero: n/a
-
-            * TripleTex: n/a
-
-            * AccountView: n/a
-
-            * PowerOfficeGo: n/a
-
-            * AfasSB: n/a
-
-            * Sage50Uk: n/a'
-        id:
-          type:
-          - string
-          - 'null'
-          description: The unique Id of this entity.
-      additionalProperties: false
-      description: "Represents a GL Journal to be saved to or existing in the financial system.\n- Id: Unique id of the journal. Provide when updating the record. \n    * ECI Financials: n/a\n    * Xero: n/a\n    * TripleTex: n/a\n    * AccountView: n/a\n    * PowerOfficeGo: n/a\n    * AfasSB: n/a\n    * Sage50Uk: n/a\n    * Adsolut: n/a"
-    PaymentInfo:
-      type: object
-      properties:
-        docNumber:
-          type: string
-          description: 'Journal entry number
-
-            * ECI Financials: AccountsReceivable.ExternalId or AccountsPayable.ExternalId
-
-            * Xero: n/a
-
-            * TripleTex: n/a
-
-            * AccountView: AccountsReceivable.ExternalId or AccountsPayable.ExternalId
-
-            * PowerOfficeGo: n/a
-
-            * Sage50Uk: n/a'
-        datePaid:
-          type:
-          - string
-          - 'null'
-          description: 'The date when the invoice was paid.
-
-            * ECI Financials: n/a
-
-            * Xero: n/a
-
-            * TripleTex: n/a
-
-            * AccountView: n/a
-
-            * PowerOfficeGo: n/a
-
-            * Sage50Uk: n/a'
-          format: date-time
-      additionalProperties: false
-      description: <h2>Information about payment of an invoice</h2>
-    Attachment:
-      type: object
-      properties:
-        id:
-          type:
-          - string
-          - 'null'
-          description: 'The unique id of the attachment.
-
-            * ECI Financials: Document.Id
-
-            * Xero: Attachment.AttachmentID
-
-            * TripleTex: n/a
-
-            * AccountView: Document.Id
-
-            * PowerOfficeGo: n/a
-
-            * Sage50Uk: n/a
-
-            * Adsolut: n/a'
-        name:
-          type: string
-          description: 'The filename (without extension) of the attachment.
-
-            * ECI Financials: Document.Name
-
-            * Xero: Attachment.FileName
-
-            * TripleTex: FileParameter.FileName
-
-            * AccountView: Document.Name
-
-            * PowerOfficeGo: FileParameter.FileName
-
-            * Sage50Uk: n/a
-
-            * Adsolut: n/a'
-        date:
-          type:
-          - string
-          - 'null'
-          description: 'The date the attachment was added or updated.
-
-            * ECI Financials: Document.Date
-
-            * Xero: n/a
-
-            * TripleTex: (Today''s date is always used)
-
-            * AccountView: Document.Date
-
-            * PowerOfficeGo: (Today''s date is always used)
-
-            * Sage50Uk: n/a
-
-            * Adsolut: n/a'
-          format: date-time
-        type:
-          type: string
-          description: 'The attachment type (filename extension including period).
-
-            * ECI Financials: Document.Type
-
-            * Xero: Attachment.MimeType
-
-            * TripleTex: FileParameter.Filename (extension)
-
-            * AccountView: Document.Type
-
-            * PowerOfficeGo: FileParameter.Filename (extension)
-
-            * Sage50Uk: n/a
-
-            * Adsolut: n/a'
-        size:
-          type:
-          - integer
-          - 'null'
-          description: 'The size of the  attachment in bytes
-
-            * ECI Financials: Document.Size
-
-            * Xero: Attachment.ContentLength
-
-            * TripleTex: FileParameter.Data.Length
-
-            * AccountView: Document.Size
-
-            * PowerOfficeGo: FileParameter.Data.Length
-
-            * Sage50Uk: n/a
-
-            * Adsolut: n/a'
-          format: int64
-        syncToken:
-          type:
-          - string
-          - 'null'
-          description: 'The date/time stamp of the attachment. This value is
-
-            required when sending a PUT request and its value must
-
-            match the timestamp of the attachment in the database.
-
-            If the value is different it means the  attachmenthas
-
-            been modified by another user.
-
-            * ECI Financials: Document.Stamp
-
-            * Xero: n/a
-
-            * TripleTex: n/a
-
-            * AccountView: Document.Stamp
-
-            * PowerOfficeGo: n/a
-
-            * Sage50Uk: n/a
-
-            * Adsolut: n/a'
-      additionalProperties: false
-      description: <h2>A attachment info object.</h2>
     BankAccount:
       type: object
       properties:
@@ -1780,35 +977,16 @@ components:
           description: The name of the bank account.
       additionalProperties: false
       description: Represents a bank account of a supplier or customer.
-    SalesOutstandingItem:
+    Invoice:
       type: object
       properties:
-        id:
-          type:
-          - string
-          - 'null'
-          description: 'Unique id of the outstanding item.
-
-            * ECI Financials: AccountsReceivable.Id
-
-            * Xero: Invoice.InvoiceID
-
-            * TripleTex: Invoice.Id
-
-            * AccountView: AccountsReceivable.Id
-
-            * PowerOfficeGo: OutgoingInvoiceListItem.Id
-
-            * AfasSB: n/a
-
-            * Sage50Uk: n/a
-
-            * Adsolut: n/a'
         syncToken:
           type:
           - string
           - 'null'
-          description: 'SyncToken to ensure updating the latest version of the record.
+          description: 'SyncToken to ensure updating the latest version of the
+
+            record.
 
             * ECI Financials: n/a
 
@@ -1819,236 +997,411 @@ components:
             * AccountView: n/a
 
             * PowerOfficeGo: n/a
-
-            * AfasSB: n/a
 
             * Sage50Uk: n/a
 
             * Adsolut: n/a'
         docNumber:
-          type: string
-          description: 'Journal entry number
+          type:
+          - string
+          - 'null'
+          description: 'Reference number for the transaction.
 
-            * ECI Financials: AccountsReceivable.ExternalId or AccountsReceivable.YourInvoiceNr or AccountsReceivable.InvoiceNr or AccountsReceivable.Id
+            * ECI Financials: SalesInvoice.ExternalId
 
-            * Xero: Invoice.InvoiceNumber
+            * Xero: Invoice.InvoiceNumber / CreditNote.CreditNoteNumber
 
             * TripleTex: Invoice.InvoiceNumber
 
-            * AccountView: AccountsReceivable.ExternalId or AccountsReceivable.YourInvoiceNr or AccountsReceivable.InvoiceNr or AccountsReceivable.Id
+            * AccountView: SalesInvoice.ExternalId
 
-            * PowerOfficeGo: OutgoingInvoiceListItem.DocumentNo
+            * PowerOfficeGo: Invoice.InvoiceNo
 
-            * AfasSB: Debtorinvoicebalance.InvoiceNumber
+            * Sage50Uk: Transaction.Details
 
-            * Sage50Uk: Invoice.Analysis1
-
-            * Adsolut: OpenTransaction.DocumentNumber'
+            * Adsolut: n/a'
         customer:
           allOf:
           - $ref: '#/components/schemas/Entity'
-          description: "The customer who owes us this amount;\n* ECI Financials: n/a\n* Xero: n/a\n* PowerOfficeGo: n/a\n* TripleTex:\n    - Id = Invoice.Customer.Id\n    - Code = Invoice.Customer.CustomerNumber\n* AccountView: n/a\n* AfasSB: \n    - Id = n/a\n    - Code = Debtorinvoicebalance.RelationName\n* Sage50Uk:\n    - Id = n/a\n    - Code = Invoice.AccountRef\n* Adsolut:\n    - Id = n/a\n    - Code = OpenTransaction.Customer.Number"
+          description: "Customer Reference\n* ECI Financials: n/a\n* Xero: n/a\n* PowerOfficeGo: n/a\n* TripleTex:\n    - Id = Customer.Id\n    - Code = Customer.CustomerNumber\n* AccountView: n/a\n* Sage50UK: \n    - Id = n/a\n    - Code = Customer.AccountRef\n* Adsolut: n/a"
         company:
           allOf:
           - $ref: '#/components/schemas/Entity'
-          description: "Can be the same for creditor and debtor.\n* ECI Financials: AccountsReceivable.Company.Code\n* Xero:\n    - Id = Invoice.Contact.ContactID\n    - Code = Invoice.Contact.ContactNumber\n* TripleTex: n/a\n* TripleTex: n/a\n* AccountView: AccountsReceivable.Company.Code\n* TripleTex:\n    - Id = Invoice.Customer.Id\n    - Code = Invoice.Customer.CustomerNumber\n* PowerOfficeGo:\n    - Id = n/a\n    - Code = OutgoingInvoiceListItem.Customer.ExternalCode\n* AfasSB: n/a\n* Sage50Uk: n/a\n* Adsolut: n/a"
-        invoice:
-          allOf:
-          - $ref: '#/components/schemas/Entity'
-          description: "The Invoice for which Credit Memo is issued.\n* ECI Financials: n/a\n* Xero:\n    - Id = Invoice.InvoiceID\n    - Code = Invoice.InvoiceNumber\n* TripleTex:\n    - Id = Invoice.Id\n    - Code = Invoice.InvoiceNumber\n* AccountView: n/a\n* PowerOfficeGo:\n    - Id = n/a\n    - Code = OutgoingInvoiceListItem.InvoiceNo\n* AfasSB: n/a\n* Sage50Uk: n/a\n* * Adsolut: n/a"
-        invoiceDate:
-          type: string
-          description: 'The invoice date.
-
-            * ECI Financials: AccountsReceivable.InvoiceDate
-
-            * Xero: Invoice.Date
-
-            * TripleTex: Invoice.InvoiceDate
-
-            * AccountView: AccountsReceivable.InvoiceDate
-
-            * PowerOfficeGo: OutgoingInvoiceListItem.VoucherDate
-
-            * AfasSB: Debtorinvoicebalance.InvoiceDate
-
-            * Sage50Uk: Invoice.InvoiceDate
-
-            * Adsolut: OpenTransaction.DocumentDate'
-          format: date-time
-        dueDate:
+          description: "To be used when creditor and debtor are the same record in the financial package\n* ECI Financials: SalesInvoice.Customer\n* Xero:\n    - Id = Contact.ContactID\n    - Code = Contact.ContactNumber\n* TripleTex: n/a\n* TripleTex: n/a\n* AccountView: SalesInvoice.Customer\n* TripleTex: \n    - Id = Customer.Id\n    - Code = Customer.CustomerNumber\n* PowerOfficeGo:\n    - Id = n/a\n    - Code = Invoice.CustomerCode\n* Sage50Uk: n/a\n* Adsolut: n/a"
+        currencyCode:
           type:
           - string
           - 'null'
-          description: 'The invoice expiration date.
+          description: 'ISO 4217 currency code.
 
-            * ECI Financials: AccountsReceivable.ExpiryDate
+            * ECI Financials: SalesInvoice.Currency
 
-            * Xero: Invoice.DueDate
+            * Xero: Invoice.CurrencyCode / CreditNote.CurrencyCode
 
-            * TripleTex: Invoice.InvoiceDueDate
+            * TripleTex: Invoice.Currency.Code
 
-            * AccountView: AccountsReceivable.ExpiryDate
+            * AccountView: SalesInvoice.Currency
 
-            * PowerOfficeGo: OutgoingInvoiceListItem.DueDate
+            * PowerOfficeGo: Invoice.CurrencyCode
 
-            * AfasSB: Debtorinvoicebalance.DueDate
+            * Sage50Uk: (Used in childe lines) TransactionLine.CurrencyCode
 
-            * Sage50Uk: Invoice.DueDate
-
-            * Adsolut: OpenTransaction.DueDate'
-          format: date-time
-        expectedPaymentDate:
+            * Adsolut: n/a'
+        baseCurrency:
           type:
           - string
           - 'null'
-          description: 'The expected or agreed payment date.
+          description: 'Misc. field to determine if Currency code is home
 
-            * ECI Financials: AccountsReceivable.ReminderDate
+            currency or foreign currency
+
+            * ECI Financials: n/a
 
             * Xero: n/a
 
             * TripleTex: n/a
-
-            * AccountView: AccountsReceivable.ReminderDate
-
-            * PowerOfficeGo: n/a
-
-            * AfasSB: n/a
-
-            * Sage50Uk: n/a
-
-            * Adsolut: n/a'
-          format: date-time
-        paymentDate:
-          type:
-          - string
-          - 'null'
-          description: 'The actual invoice payment date. When not specified, the import date when the balance is 0 is to be used.
-
-            * ECI Financials: n/a
-
-            * Xero: Invoice.ExpectedPaymentDate
-
-            * TripleTex: Invoice.Posting.Date (Max posting date is used)
 
             * AccountView: n/a
 
             * PowerOfficeGo: n/a
 
-            * AfasSB: n/a
-
             * Sage50Uk: n/a
 
             * Adsolut: n/a'
-          format: date-time
-        baseBalance:
-          type: number
-          description: 'The outstanding liability in home currency
-
-            * ECI Financials: AccountsReceivable.Balance
-
-            * Xero: Invoice.AmountDue
-
-            * TripleTex: Invoice.amountOutstanding
-
-            * AccountView: AccountsReceivable.Balance
-
-            * PowerOfficeGo: OutgoingInvoiceListItem.Balance / OutgoingInvoiceListItem.CurrencyExchangeRate
-
-            * AfasSB: Debtorinvoicebalance.OutstandingAmount
-
-            * Sage50Uk: Invoice.Outstanding
-
-            * Adsolut: OpenTransaction.TotalAmount - OpenTransaction.PaidAmount'
-          format: double
-        foreignBalance:
+        invoiceDate:
           type:
-          - number
+          - string
           - 'null'
-          description: 'The outstanding liability in foreign currency
+          description: 'The date of the invoice
 
-            * ECI Financials: AccountsReceivable.BalanceCur
+            * ECI Financials: SalesInvoice.Date
+
+            * Xero: Invoice.Date / CreditNote.Date
+
+            * TripleTex: Invoice.InvoiceDate
+
+            * AccountView: SalesInvoice.Date
+
+            * PowerOfficeGo: Invoice.VoucherDate
+
+            * Sage50Uk: Transaction.Date
+
+            * Adsolut: n/a'
+          format: date-time
+        dueDate:
+          type:
+          - string
+          - 'null'
+          description: 'Date when the payment of the transaction is due. If date is not provided, the number of days specified in SalesTermRef added the transaction date will be used.
+
+            * ECI Financials: SalesInvoice.ExpiryDate
+
+            * Xero: Invoice.DueDate / CreditNote.DueDate
+
+            * TripleTex: Invoice.InvoiceDueDate
+
+            * AccountView: SalesInvoice.ExpiryDate
+
+            * PowerOfficeGo: Invoice.DueDate
+
+            * Sage50Uk: Transaction.DueDate
+
+            * Adsolut: n/a'
+          format: date-time
+        paymentTerm:
+          allOf:
+          - $ref: '#/components/schemas/Entity'
+          description: 'Reference to the sales term associated with the transaction. Query the Term name list resource to determine the appropriate Term object for this reference.
+
+            * ECI Financials: SalesInvoice.PaymentTerms
 
             * Xero: n/a
 
             * TripleTex: n/a
 
-            * AccountView: AccountsReceivable.BalanceCur
+            * AccountView: SalesInvoice.PaymentTerms
 
-            * PowerOfficeGo: OutgoingInvoiceListItem.Balance
-
-            * AfasSB: n/a
+            * PowerOfficeGo: n/a
 
             * Sage50Uk: n/a
 
-            * Adsolut: OpenTransaction.CurrencyTotalAmount - OpenTransaction.CurrencyPaidAmount'
-          format: double
-        currencyCode:
+            * Adsolut: n/a'
+        status:
           type:
           - string
           - 'null'
-          description: 'The (ISO 4217) currency code for the foreign balance.
+          description: 'Invoice Status
 
-            * ECI Financials: AccountsReceivable.Currency
+            * ECI Financials: n/a
 
-            * Xero: Invoice.CurrencyCode
+            * Xero: Invoice.status / CreditNote.status
 
-            * TripleTex: Invoice.Currency.Code
+            * TripleTex: n/a
 
-            * AccountView: AccountsReceivable.Currency
+            * AccountView: n/a
 
-            * PowerOfficeGo: OutgoingInvoiceListItem.CurrencyCode
-
-            * AfasSB: n/a
-
-            * Sage50Uk: Invoice.Currency.Code
-
-            * Adsolut: OpenTransaction.Currency.Code.Id'
-        invoiceAmount:
-          type: number
-          description: 'The total amount of the invoice in the home currency
-
-            * ECI Financials: AccountsReceivable.Amount
-
-            * Xero: Invoice.Total
-
-            * TripleTex: Invoice.Amount
-
-            * AccountView: AccountsReceivable.Amount
-
-            * PowerOfficeGo: OutgoingInvoiceListItem.TotalAmount
-
-            * AfasSB: Debtorinvoicebalance.TotalAmount
-
-            * Sage50Uk: Invoice.GrossAmount
-
-            * Adsolut: OpenTransaction.TotalAmount'
-          format: double
-        foreignInvoiceAmount:
-          type:
-          - number
-          - 'null'
-          description: 'The total amount of the invoice in the foreign currency
-
-            * ECI Financials: AccountsReceivable.AmountCur
-
-            * Xero: n/a
-
-            * TripleTex: Invoice.AmountCurrency
-
-            * AccountView: AccountsReceivable.AmountCur
-
-            * PowerOfficeGo: OutgoingInvoiceListItem.TotalAmount * OutgoingInvoiceListItem.CurrencyExchangeRate
-
-            * AfasSB: n/a
+            * PowerOfficeGo: n/a
 
             * Sage50Uk: n/a
 
-            * Adsolut: OpenTransaction.CurrencyTotalAmount'
+            * Adsolut: n/a'
+        referenceNumber:
+          type:
+          - string
+          - 'null'
+          description: 'Payment Reference number for the invoice, e.g., customer purchase order number.
+
+            * ECI Financials: SalesInvoice.Reference
+
+            * Xero: Invoice.Reference / CreditNote.Reference
+
+            * TripleTex: Invoice.Kid
+
+            * AccountView: SalesInvoice.Reference
+
+            * PowerOfficeGo: Invoice.CustomerReference
+
+            * Sage50Uk: Used in childe lines) TransactionLine.ExRef
+
+            * Adsolut: n/a'
+        shipAddr:
+          allOf:
+          - $ref: '#/components/schemas/Address'
+          description: 'Shipping address of the invoice
+
+            * ECI Financials: n/a
+
+            * Xero: n/a
+
+            * TripleTex: Invoice.Order.DeliveryAddress
+
+            * AccountView: n/a
+
+            * PowerOfficeGo: n/a (automaticaly chosen based on customer address)
+
+            * Sage50Uk: n/a
+
+            * Adsolut: n/a'
+        frozenAccountAmount:
+          type: number
+          description: 'A G-account is a frozen bank account that is used to pay payroll taxes or VAT payments to the Dutch Tax and Customs Administration.
+
+            It is a blocked bank account that is managed jointly by the employment agency and the Tax and Customs Administration.
+
+            * ECI Financials: n/a
+
+            * Xero: n/a
+
+            * TripleTex: n/a
+
+            * AccountView: n/a
+
+            * PowerOfficeGo: n/a
+
+            * Sage50Uk: n/a
+
+            * Adsolut: n/a'
           format: double
+        lines:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/InvoiceLine'
+          description: 'An array of line invoice information
+
+            * ECI Financials: SalesInvoice.Lines
+
+            * Xero: Invoice.LineItems
+
+            * TripleTex: Invoice.Order.OrderLines
+
+            * AccountView: SalesInvoice.Lines
+
+            * PowerOfficeGo: Invoice.OutgoingInvoiceLines
+
+            * Sage50Uk: Transaction.Items
+
+            * Adsolut: n/a'
+        journal:
+          type:
+          - string
+          - 'null'
+          description: 'Journal code
+
+            * ECI Financials: SalesInvoice.Journal
+
+            * Xero: n/a
+
+            * TripleTex: n/a
+
+            * AccountView: SalesInvoice.Journal
+
+            * PowerOfficeGo: n/a
+
+            * Sage50Uk: n/a
+
+            * Adsolut: n/a'
+        description:
+          type:
+          - string
+          - 'null'
+          description: '* ECI Financials: SalesInvoice.Title
+
+            * Xero: n/a
+
+            * TripleTex: Invoice.Comment
+
+            * AccountView: SalesInvoice.Title
+
+            * PowerOfficeGo: n/a
+
+            * Sage50Uk: n/a
+
+            * Adsolut: n/a'
+        id:
+          type:
+          - string
+          - 'null'
+          description: The unique Id of this entity.
       additionalProperties: false
-      description: Outstanding liabilities for customers. These are the invoices that still have to be paid by customers. In the V1 API, this is called CreditMemoModel.
+      description: "This class is used for sales invoices. \n* Id Unique id of the invoice. \n    * Xero: Invoice.InvoiceId / CreditNote.CreditNoteId\n    * TripleTex: Invoice.Id\n    * PowerOfficeGo: Invoice.Id"
+    Links:
+      type: object
+      properties:
+        self:
+          type: string
+        next:
+          type: string
+        prev:
+          type: string
+      additionalProperties: false
+    InvoiceLine:
+      type: object
+      properties:
+        amountExcludingTax:
+          type:
+          - number
+          - 'null'
+          description: 'Total amount of the line excluding tax/VAT.
+
+            * ECI Financials: InvoiceLine.AmountExcl
+
+            * Xero: LineItem.LineAmount
+
+            * TripleTex: OrderLine.UnitPriceExcludingVatCurrency
+
+            * AccountView: InvoiceLine.AmountExcl
+
+            * PowerOfficeGo: InvoiceLine.UnitPrice
+
+            * Sage50Uk: TransactionLine.ForeignAmount
+
+            * Adsolut: n/a'
+          format: double
+        description:
+          type:
+          - string
+          - 'null'
+          description: 'Description text for the sale line.
+
+            * ECI Financials: SalesInvoice.Title
+
+            * Xero: LineItem.Description
+
+            * TripleTex: OrderLine.Description
+
+            * AccountView: SalesInvoice.Title
+
+            * PowerOfficeGo: InvoiceLine.Description
+
+            * Sage50Uk: TransactionLine.Details
+
+            * Adsolut: n/a'
+        account:
+          allOf:
+          - $ref: '#/components/schemas/Entity'
+          description: "The general ledger account for the line.\n* ECI Financials: InvoiceLine.Account\n* Xero:\n    - Code = LineItem.AccountCode\n    - Id = LineItem.AccountId\n* TripleTex: n/a\n* AccountView: InvoiceLine.Account\n* PowerOfficeGo: \n    - Code = InvoiceLine.Account\n    - Id = n/a\n* Sage50Uk: InvoiceItem.Account\n    - Code = Account.NominalCode\n    - Id = n/a\n* Adsolut: n/a"
+        taxCode:
+          allOf:
+          - $ref: '#/components/schemas/Entity'
+          description: "Tax code reference. This is the tax or VAT code that is\nexpected by the AFM.\n* ECI Financials: InvoiceLine.VatRate\n* Xero:\n    - Id = n/a\n    - Code = LineItem.TaxType\n* TripleTex: \n    - Id = VatType.Id\n    - Code = VatType.Number\n* AccountView: InvoiceLine.VatRate\n* PowerOfficeGo: n/a\n* Sage50Uk: InvoiceItem.VatCode\n    - Code = TaxCode\n    - Id = n/a\n* Adsolut: n/a"
+        taxAmount:
+          type:
+          - number
+          - 'null'
+          description: 'VAT amount
+
+            * ECI Financials: InvoiceLine.VatAmount
+
+            * Xero: LineItem.TaxAmount
+
+            * TripleTex: n/a
+
+            * AccountView: InvoiceLine.VatAmount
+
+            * PowerOfficeGo: n/a
+
+            * Sage50Uk: TransactionLine.ForeignTaxAmount
+
+            * Adsolut: n/a'
+          format: double
+        costCarrier:
+          allOf:
+          - $ref: '#/components/schemas/Entity'
+          description: 'Cost carrier
+
+            * ECI Financials: InvoiceLine.CostCarrier
+
+            * Xero: n/a
+
+            * TripleTex: n/a
+
+            * AccountView: InvoiceLine.CostCarrier
+
+            * PowerOfficeGo: n/a
+
+            * Sage50Uk: n/a
+
+            * Adsolut: n/a'
+        costUnit:
+          allOf:
+          - $ref: '#/components/schemas/Entity'
+          description: 'Cost unit
+
+            * ECI Financials: InvoiceLine.CostUnit
+
+            * Xero: n/a
+
+            * TripleTex: n/a
+
+            * AccountView: InvoiceLine.CostUnit
+
+            * PowerOfficeGo: n/a
+
+            * Sage50Uk: n/a
+
+            * Adsolut: n/a'
+        order:
+          allOf:
+          - $ref: '#/components/schemas/Entity'
+          description: 'Order
+
+            * ECI Financials: PurchasesInvoiceLine.Order
+
+            * Xero: n/a
+
+            * TripleTex: n/a
+
+            * AccountView: PurchasesInvoiceLine.Order
+
+            * PowerOfficeGo: n/a
+
+            * Sage50Uk: n/a
+
+            * Adsolut: n/a'
+      additionalProperties: false
+      description: Line item details for customer invoices and credits.
     Customer:
       required:
       - name
@@ -2413,114 +1766,84 @@ components:
           description: The unique Id of this entity.
       additionalProperties: false
       description: "Model for customer data, also known as debtor.\n* Code: \n    + ECI Financials: Company.OldDebtorCode\n    + Xero: Accountnumber\n    + PowerOfficeGo: n/a\n    + TripleTex: Customer.CustomerNumber\n    + AccountView: Company.OldDebtorCode\n    + AfasSB: Organisation.Name\n    + Sage50Uk: Customer.AccountRef\n    + Adsolut: Customer.Code"
-    Invoice:
+    Order:
       type: object
       properties:
-        syncToken:
+        description:
           type:
           - string
           - 'null'
-          description: 'SyncToken to ensure updating the latest version of the
+          description: 'The description of the order.
 
-            record.
-
-            * ECI Financials: n/a
+            * ECI Financials: Project.Name
 
             * Xero: n/a
 
             * TripleTex: n/a
 
-            * AccountView: n/a
+            * AccountView: Project.Name
 
             * PowerOfficeGo: n/a
 
             * Sage50Uk: n/a
 
             * Adsolut: n/a'
-        docNumber:
+        status:
           type:
           - string
           - 'null'
-          description: 'Reference number for the transaction.
+          description: 'The status of the order.
 
-            * ECI Financials: SalesInvoice.ExternalId
-
-            * Xero: Invoice.InvoiceNumber / CreditNote.CreditNoteNumber
-
-            * TripleTex: Invoice.InvoiceNumber
-
-            * AccountView: SalesInvoice.ExternalId
-
-            * PowerOfficeGo: Invoice.InvoiceNo
-
-            * Sage50Uk: Transaction.Details
-
-            * Adsolut: n/a'
-        customer:
-          allOf:
-          - $ref: '#/components/schemas/Entity'
-          description: "Customer Reference\n* ECI Financials: n/a\n* Xero: n/a\n* PowerOfficeGo: n/a\n* TripleTex:\n    - Id = Customer.Id\n    - Code = Customer.CustomerNumber\n* AccountView: n/a\n* Sage50UK: \n    - Id = n/a\n    - Code = Customer.AccountRef\n* Adsolut: n/a"
-        company:
-          allOf:
-          - $ref: '#/components/schemas/Entity'
-          description: "To be used when creditor and debtor are the same record in the financial package\n* ECI Financials: SalesInvoice.Customer\n* Xero:\n    - Id = Contact.ContactID\n    - Code = Contact.ContactNumber\n* TripleTex: n/a\n* TripleTex: n/a\n* AccountView: SalesInvoice.Customer\n* TripleTex: \n    - Id = Customer.Id\n    - Code = Customer.CustomerNumber\n* PowerOfficeGo:\n    - Id = n/a\n    - Code = Invoice.CustomerCode\n* Sage50Uk: n/a\n* Adsolut: n/a"
-        currencyCode:
-          type:
-          - string
-          - 'null'
-          description: 'ISO 4217 currency code.
-
-            * ECI Financials: SalesInvoice.Currency
-
-            * Xero: Invoice.CurrencyCode / CreditNote.CurrencyCode
-
-            * TripleTex: Invoice.Currency.Code
-
-            * AccountView: SalesInvoice.Currency
-
-            * PowerOfficeGo: Invoice.CurrencyCode
-
-            * Sage50Uk: (Used in childe lines) TransactionLine.CurrencyCode
-
-            * Adsolut: n/a'
-        baseCurrency:
-          type:
-          - string
-          - 'null'
-          description: 'Misc. field to determine if Currency code is home
-
-            currency or foreign currency
-
-            * ECI Financials: n/a
+            * ECI Financials: Project.Status
 
             * Xero: n/a
 
             * TripleTex: n/a
 
-            * AccountView: n/a
+            * AccountView: Project.Status
 
             * PowerOfficeGo: n/a
 
             * Sage50Uk: n/a
 
             * Adsolut: n/a'
-        invoiceDate:
+        startDate:
           type:
           - string
           - 'null'
-          description: 'The date of the invoice
+          description: 'The start date of the order.
 
-            * ECI Financials: SalesInvoice.Date
+            * ECI Financials: Project.StartDate
 
-            * Xero: Invoice.Date / CreditNote.Date
+            * Xero: n/a
 
-            * TripleTex: Invoice.InvoiceDate
+            * TripleTex: n/a
 
-            * AccountView: SalesInvoice.Date
+            * AccountView: Project.StartDate
 
-            * PowerOfficeGo: Invoice.VoucherDate
+            * PowerOfficeGo: n/a
 
-            * Sage50Uk: Transaction.Date
+            * Sage50Uk: n/a
+
+            * Adsolut: n/a'
+          format: date-time
+        endDate:
+          type:
+          - string
+          - 'null'
+          description: 'The end date of the order.
+
+            * ECI Financials: Project.EndDate
+
+            * Xero: n/a
+
+            * TripleTex: n/a
+
+            * AccountView: Project.EndDate
+
+            * PowerOfficeGo: n/a
+
+            * Sage50Uk: n/a
 
             * Adsolut: n/a'
           format: date-time
@@ -2528,49 +1851,49 @@ components:
           type:
           - string
           - 'null'
-          description: 'Date when the payment of the transaction is due. If date is not provided, the number of days specified in SalesTermRef added the transaction date will be used.
+          description: 'The due date of the order.
 
-            * ECI Financials: SalesInvoice.ExpiryDate
+            * ECI Financials: Project.DueDate
 
-            * Xero: Invoice.DueDate / CreditNote.DueDate
+            * Xero: n/a
 
-            * TripleTex: Invoice.InvoiceDueDate
+            * TripleTex: n/a
 
-            * AccountView: SalesInvoice.ExpiryDate
+            * AccountView: Project.DueDate
 
-            * PowerOfficeGo: Invoice.DueDate
+            * PowerOfficeGo: n/a
 
-            * Sage50Uk: Transaction.DueDate
+            * Sage50Uk: n/a
 
             * Adsolut: n/a'
           format: date-time
-        paymentTerm:
+        active:
+          type:
+          - boolean
+          - 'null'
+          description: 'Is the project active or inactive?
+
+            * ECI Financials: Project.Active
+
+            * Xero: n/a
+
+            * TripleTex: n/a
+
+            * AccountView: Project.Active
+
+            * PowerOfficeGo: n/a
+
+            * Sage50Uk: n/a
+
+            * Adsolut: n/a'
+        customer:
           allOf:
           - $ref: '#/components/schemas/Entity'
-          description: 'Reference to the sales term associated with the transaction. Query the Term name list resource to determine the appropriate Term object for this reference.
-
-            * ECI Financials: SalesInvoice.PaymentTerms
-
-            * Xero: n/a
-
-            * TripleTex: n/a
-
-            * AccountView: SalesInvoice.PaymentTerms
-
-            * PowerOfficeGo: n/a
-
-            * Sage50Uk: n/a
-
-            * Adsolut: n/a'
-        status:
-          type:
-          - string
-          - 'null'
-          description: 'Invoice Status
+          description: 'Customer for which this order is.
 
             * ECI Financials: n/a
 
-            * Xero: Invoice.status / CreditNote.status
+            * Xero: n/a
 
             * TripleTex: n/a
 
@@ -2581,175 +1904,85 @@ components:
             * Sage50Uk: n/a
 
             * Adsolut: n/a'
-        referenceNumber:
-          type:
-          - string
-          - 'null'
-          description: 'Payment Reference number for the invoice, e.g., customer purchase order number.
-
-            * ECI Financials: SalesInvoice.Reference
-
-            * Xero: Invoice.Reference / CreditNote.Reference
-
-            * TripleTex: Invoice.Kid
-
-            * AccountView: SalesInvoice.Reference
-
-            * PowerOfficeGo: Invoice.CustomerReference
-
-            * Sage50Uk: Used in childe lines) TransactionLine.ExRef
-
-            * Adsolut: n/a'
-        shipAddr:
+        company:
           allOf:
-          - $ref: '#/components/schemas/Address'
-          description: 'Shipping address of the invoice
+          - $ref: '#/components/schemas/Entity'
+          description: 'To be used when creditor and debtor are the same record in the financial package
 
-            * ECI Financials: n/a
-
-            * Xero: n/a
-
-            * TripleTex: Invoice.Order.DeliveryAddress
-
-            * AccountView: n/a
-
-            * PowerOfficeGo: n/a (automaticaly chosen based on customer address)
-
-            * Sage50Uk: n/a
-
-            * Adsolut: n/a'
-        frozenAccountAmount:
-          type: number
-          description: 'A G-account is a frozen bank account that is used to pay payroll taxes or VAT payments to the Dutch Tax and Customs Administration.
-
-            It is a blocked bank account that is managed jointly by the employment agency and the Tax and Customs Administration.
-
-            * ECI Financials: n/a
+            * ECI Financials: Project.Customer
 
             * Xero: n/a
 
             * TripleTex: n/a
 
-            * AccountView: n/a
+            * AccountView: Project.Customer
 
             * PowerOfficeGo: n/a
 
             * Sage50Uk: n/a
 
             * Adsolut: n/a'
-          format: double
-        lines:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/InvoiceLine'
-          description: 'An array of line invoice information
-
-            * ECI Financials: SalesInvoice.Lines
-
-            * Xero: Invoice.LineItems
-
-            * TripleTex: Invoice.Order.OrderLines
-
-            * AccountView: SalesInvoice.Lines
-
-            * PowerOfficeGo: Invoice.OutgoingInvoiceLines
-
-            * Sage50Uk: Transaction.Items
-
-            * Adsolut: n/a'
-        journal:
+        syncToken:
           type:
           - string
           - 'null'
-          description: 'Journal code
-
-            * ECI Financials: SalesInvoice.Journal
-
-            * Xero: n/a
-
-            * TripleTex: n/a
-
-            * AccountView: SalesInvoice.Journal
-
-            * PowerOfficeGo: n/a
-
-            * Sage50Uk: n/a
-
-            * Adsolut: n/a'
-        description:
+          description: "The date/time stamp of the order. This value is\nrequired when sending a PUT request and its value must\nmatch the timestamp of the order in the database. If\nthe value is different it means the order has been\nmodified by another user.\n* ECI Financials: Project.Stamp\n* Xero: n/a\n* TripleTex: n/a               \n* AccountView: Project.Stamp               \n* PowerOfficeGo: n/a\n* Sage50Uk: n/a\n* Adsolut: n/a"
+        code:
           type:
           - string
           - 'null'
-          description: '* ECI Financials: SalesInvoice.Title
-
-            * Xero: n/a
-
-            * TripleTex: Invoice.Comment
-
-            * AccountView: SalesInvoice.Title
-
-            * PowerOfficeGo: n/a
-
-            * Sage50Uk: n/a
-
-            * Adsolut: n/a'
+          description: The natural key of this entity.
         id:
           type:
           - string
           - 'null'
           description: The unique Id of this entity.
       additionalProperties: false
-      description: "This class is used for sales invoices. \n* Id Unique id of the invoice. \n    * Xero: Invoice.InvoiceId / CreditNote.CreditNoteId\n    * TripleTex: Invoice.Id\n    * PowerOfficeGo: Invoice.Id"
-    SalesOutstandingItemList:
-      required:
-      - data
-      - listContext
+      description: <h2>An order object, sometimes also used for projects.</h2>
+    PaymentCondition:
       type: object
       properties:
-        listContext:
-          allOf:
-          - $ref: '#/components/schemas/ListContext'
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/SalesOutstandingItem'
-      additionalProperties: false
-    Problem:
-      required:
-      - detail
-      - title
-      type: object
-      properties:
-        type:
-          type:
-          - string
-          - 'null'
-        title:
-          type: string
-        status:
+        paymentTerm:
           type:
           - integer
           - 'null'
+          description: 'The number of days in which payment is due.
+
+            * ECI Financials: n/a
+
+            * Xero: PaymentTerm.Sales.Days
+
+            * TripleTex: Customer.InvoucesDueIn
+
+            * AccountView: n/a
+
+            * PowerOfficeGo: n/a
+
+            * Sage50Uk: n/a'
           format: int32
-        detail:
-          type: string
-        instance:
+        code:
           type:
           - string
           - 'null'
-      additionalProperties: false
-      description: Definition of [RFC7807](https://tools.ietf.org/html/rfc7807) problem detail
-    ListContext:
-      required:
-      - links
+          description: The natural key of this entity.
+        id:
+          type:
+          - string
+          - 'null'
+          description: The unique Id of this entity.
+      additionalProperties: {}
+      description: "<h2>Model for payment conditions</h2>\n* code \n    + ECI Financials: Customer.PaymentTerms / Supplier.PaymentTerms\n    + Xero: n/a\n    + TripleTex: n/a\n    + AccountView: Customer.PaymentTerms / Supplier.PaymentTerms"
+    AsyncAcceptedResponse:
       type: object
       properties:
-        links:
-          allOf:
-          - $ref: '#/components/schemas/Links'
+        requestId:
+          type: string
+          description: 'A unique identifier for the asynchronous request.
+
+            This ID can be used in a follow-up request (via the async-request-id header) to retrieve the result of the original operation once processing is complete.'
+          format: uuid
       additionalProperties: false
+      description: Represents the response returned when an asynchronous request is accepted for processing.
     Address:
       type: object
       properties:
@@ -2967,6 +2200,452 @@ components:
             * Adsolut: n/a'
       additionalProperties: false
       description: Represents an address
+    SalesOutstandingItem:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: 'Unique id of the outstanding item.
+
+            * ECI Financials: AccountsReceivable.Id
+
+            * Xero: Invoice.InvoiceID
+
+            * TripleTex: Invoice.Id
+
+            * AccountView: AccountsReceivable.Id
+
+            * PowerOfficeGo: OutgoingInvoiceListItem.Id
+
+            * AfasSB: n/a
+
+            * Sage50Uk: n/a
+
+            * Adsolut: n/a'
+        syncToken:
+          type:
+          - string
+          - 'null'
+          description: 'SyncToken to ensure updating the latest version of the record.
+
+            * ECI Financials: n/a
+
+            * Xero: n/a
+
+            * TripleTex: n/a
+
+            * AccountView: n/a
+
+            * PowerOfficeGo: n/a
+
+            * AfasSB: n/a
+
+            * Sage50Uk: n/a
+
+            * Adsolut: n/a'
+        docNumber:
+          type: string
+          description: 'Journal entry number
+
+            * ECI Financials: AccountsReceivable.ExternalId or AccountsReceivable.YourInvoiceNr or AccountsReceivable.InvoiceNr or AccountsReceivable.Id
+
+            * Xero: Invoice.InvoiceNumber
+
+            * TripleTex: Invoice.InvoiceNumber
+
+            * AccountView: AccountsReceivable.ExternalId or AccountsReceivable.YourInvoiceNr or AccountsReceivable.InvoiceNr or AccountsReceivable.Id
+
+            * PowerOfficeGo: OutgoingInvoiceListItem.DocumentNo
+
+            * AfasSB: Debtorinvoicebalance.InvoiceNumber
+
+            * Sage50Uk: Invoice.Analysis1
+
+            * Adsolut: OpenTransaction.DocumentNumber'
+        customer:
+          allOf:
+          - $ref: '#/components/schemas/Entity'
+          description: "The customer who owes us this amount;\n* ECI Financials: n/a\n* Xero: n/a\n* PowerOfficeGo: n/a\n* TripleTex:\n    - Id = Invoice.Customer.Id\n    - Code = Invoice.Customer.CustomerNumber\n* AccountView: n/a\n* AfasSB: \n    - Id = n/a\n    - Code = Debtorinvoicebalance.RelationName\n* Sage50Uk:\n    - Id = n/a\n    - Code = Invoice.AccountRef\n* Adsolut:\n    - Id = n/a\n    - Code = OpenTransaction.Customer.Number"
+        company:
+          allOf:
+          - $ref: '#/components/schemas/Entity'
+          description: "Can be the same for creditor and debtor.\n* ECI Financials: AccountsReceivable.Company.Code\n* Xero:\n    - Id = Invoice.Contact.ContactID\n    - Code = Invoice.Contact.ContactNumber\n* TripleTex: n/a\n* TripleTex: n/a\n* AccountView: AccountsReceivable.Company.Code\n* TripleTex:\n    - Id = Invoice.Customer.Id\n    - Code = Invoice.Customer.CustomerNumber\n* PowerOfficeGo:\n    - Id = n/a\n    - Code = OutgoingInvoiceListItem.Customer.ExternalCode\n* AfasSB: n/a\n* Sage50Uk: n/a\n* Adsolut: n/a"
+        invoice:
+          allOf:
+          - $ref: '#/components/schemas/Entity'
+          description: "The Invoice for which Credit Memo is issued.\n* ECI Financials: n/a\n* Xero:\n    - Id = Invoice.InvoiceID\n    - Code = Invoice.InvoiceNumber\n* TripleTex:\n    - Id = Invoice.Id\n    - Code = Invoice.InvoiceNumber\n* AccountView: n/a\n* PowerOfficeGo:\n    - Id = n/a\n    - Code = OutgoingInvoiceListItem.InvoiceNo\n* AfasSB: n/a\n* Sage50Uk: n/a\n* * Adsolut: n/a"
+        invoiceDate:
+          type: string
+          description: 'The invoice date.
+
+            * ECI Financials: AccountsReceivable.InvoiceDate
+
+            * Xero: Invoice.Date
+
+            * TripleTex: Invoice.InvoiceDate
+
+            * AccountView: AccountsReceivable.InvoiceDate
+
+            * PowerOfficeGo: OutgoingInvoiceListItem.VoucherDate
+
+            * AfasSB: Debtorinvoicebalance.InvoiceDate
+
+            * Sage50Uk: Invoice.InvoiceDate
+
+            * Adsolut: OpenTransaction.DocumentDate'
+          format: date-time
+        dueDate:
+          type:
+          - string
+          - 'null'
+          description: 'The invoice expiration date.
+
+            * ECI Financials: AccountsReceivable.ExpiryDate
+
+            * Xero: Invoice.DueDate
+
+            * TripleTex: Invoice.InvoiceDueDate
+
+            * AccountView: AccountsReceivable.ExpiryDate
+
+            * PowerOfficeGo: OutgoingInvoiceListItem.DueDate
+
+            * AfasSB: Debtorinvoicebalance.DueDate
+
+            * Sage50Uk: Invoice.DueDate
+
+            * Adsolut: OpenTransaction.DueDate'
+          format: date-time
+        expectedPaymentDate:
+          type:
+          - string
+          - 'null'
+          description: 'The expected or agreed payment date.
+
+            * ECI Financials: AccountsReceivable.ReminderDate
+
+            * Xero: n/a
+
+            * TripleTex: n/a
+
+            * AccountView: AccountsReceivable.ReminderDate
+
+            * PowerOfficeGo: n/a
+
+            * AfasSB: n/a
+
+            * Sage50Uk: n/a
+
+            * Adsolut: n/a'
+          format: date-time
+        paymentDate:
+          type:
+          - string
+          - 'null'
+          description: 'The actual invoice payment date. When not specified, the import date when the balance is 0 is to be used.
+
+            * ECI Financials: n/a
+
+            * Xero: Invoice.ExpectedPaymentDate
+
+            * TripleTex: Invoice.Posting.Date (Max posting date is used)
+
+            * AccountView: n/a
+
+            * PowerOfficeGo: n/a
+
+            * AfasSB: n/a
+
+            * Sage50Uk: n/a
+
+            * Adsolut: n/a'
+          format: date-time
+        baseBalance:
+          type: number
+          description: 'The outstanding liability in home currency
+
+            * ECI Financials: AccountsReceivable.Balance
+
+            * Xero: Invoice.AmountDue
+
+            * TripleTex: Invoice.amountOutstanding
+
+            * AccountView: AccountsReceivable.Balance
+
+            * PowerOfficeGo: OutgoingInvoiceListItem.Balance / OutgoingInvoiceListItem.CurrencyExchangeRate
+
+            * AfasSB: Debtorinvoicebalance.OutstandingAmount
+
+            * Sage50Uk: Invoice.Outstanding
+
+            * Adsolut: OpenTransaction.TotalAmount - OpenTransaction.PaidAmount'
+          format: double
+        foreignBalance:
+          type:
+          - number
+          - 'null'
+          description: 'The outstanding liability in foreign currency
+
+            * ECI Financials: AccountsReceivable.BalanceCur
+
+            * Xero: n/a
+
+            * TripleTex: n/a
+
+            * AccountView: AccountsReceivable.BalanceCur
+
+            * PowerOfficeGo: OutgoingInvoiceListItem.Balance
+
+            * AfasSB: n/a
+
+            * Sage50Uk: n/a
+
+            * Adsolut: OpenTransaction.CurrencyTotalAmount - OpenTransaction.CurrencyPaidAmount'
+          format: double
+        currencyCode:
+          type:
+          - string
+          - 'null'
+          description: 'The (ISO 4217) currency code for the foreign balance.
+
+            * ECI Financials: AccountsReceivable.Currency
+
+            * Xero: Invoice.CurrencyCode
+
+            * TripleTex: Invoice.Currency.Code
+
+            * AccountView: AccountsReceivable.Currency
+
+            * PowerOfficeGo: OutgoingInvoiceListItem.CurrencyCode
+
+            * AfasSB: n/a
+
+            * Sage50Uk: Invoice.Currency.Code
+
+            * Adsolut: OpenTransaction.Currency.Code.Id'
+        invoiceAmount:
+          type: number
+          description: 'The total amount of the invoice in the home currency
+
+            * ECI Financials: AccountsReceivable.Amount
+
+            * Xero: Invoice.Total
+
+            * TripleTex: Invoice.Amount
+
+            * AccountView: AccountsReceivable.Amount
+
+            * PowerOfficeGo: OutgoingInvoiceListItem.TotalAmount
+
+            * AfasSB: Debtorinvoicebalance.TotalAmount
+
+            * Sage50Uk: Invoice.GrossAmount
+
+            * Adsolut: OpenTransaction.TotalAmount'
+          format: double
+        foreignInvoiceAmount:
+          type:
+          - number
+          - 'null'
+          description: 'The total amount of the invoice in the foreign currency
+
+            * ECI Financials: AccountsReceivable.AmountCur
+
+            * Xero: n/a
+
+            * TripleTex: Invoice.AmountCurrency
+
+            * AccountView: AccountsReceivable.AmountCur
+
+            * PowerOfficeGo: OutgoingInvoiceListItem.TotalAmount * OutgoingInvoiceListItem.CurrencyExchangeRate
+
+            * AfasSB: n/a
+
+            * Sage50Uk: n/a
+
+            * Adsolut: OpenTransaction.CurrencyTotalAmount'
+          format: double
+      additionalProperties: false
+      description: Outstanding liabilities for customers. These are the invoices that still have to be paid by customers. In the V1 API, this is called CreditMemoModel.
+    JournalEntryLine:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: '* ECI Financials: n/a
+
+            * Xero: n/a
+
+            * TripleTex: n/a
+
+            * AccountView: n/a
+
+            * PowerOfficeGo: n/a
+
+            * AfasSB: n/a
+
+            * Sage50Uk: n/a
+
+            * Adsolut: n/a'
+        amount:
+          type: number
+          description: 'Amount excluding VAT amount
+
+            * ECI Financials: Lines.Amount / Lines.Debet / Lines.Credit
+
+            * Xero: ManualJournalLine.LineAmount
+
+            * TripleTex: Posting.AmountGross
+
+            * AccountView: Lines.Amount / Lines.Debet / Lines.Credit
+
+            * PowerOfficeGo: JournalEntryVoucherLine.Amount
+
+            * AfasSB: InvoiceLine.AmountExcludingVat / InvoiceLine2.AmountIncludingVat / EntryLine.AmountCredit / EntryLine.AmountDebit
+
+            * Sage50Uk: JournalEntryLine.NetAmount
+
+            * Adsolut: JournalEntryLine.NetAmount'
+          format: double
+        account:
+          allOf:
+          - $ref: '#/components/schemas/Entity'
+          description: "* ECI Financials: Lines.Account\n* Xero:\n    * Code = ManualJournalLine.AccountCode\n    * Id = ManualJournalLine.AccountId\n* TripleTex:\n    * Id = Posting.Account.Id\n    * Code = Posting.Account.Number\n* AccountView: Lines.Account\n* PowerOfficeGo:\n    * Id = n/a\n    * Code = JournalEntryVoucherLine.DebitAccountCode / JournalEntryVoucherLine.CreditAccountCode\n* AfasSB: InvoiceLine.LedgerAccountId / InvoiceLine2.LedgerAccountId / EntryLine.LedgerAccountId\n* Sage50Uk: JournalEntryLine.Account\n    - Code = Account.NominalCode\n    - Id = n/a\n* Adsolut: JournalEntryLine.Account\n    - Code = GeneralLedger.Code\n    - Id = n/a"
+        taxAmount:
+          type: number
+          description: 'VAT amount
+
+            * ECI Financials: n/a
+
+            * Xero: ManualJournalLine.TaxAmount
+
+            * TripleTex: n/a
+
+            * AccountView: n/a
+
+            * PowerOfficeGo: n/a
+
+            * AfasSB: InvoiceLine.AmountVat / InvoiceLine2.AmountVat
+
+            * Sage50Uk: JournalEntryLine.TaxAmount
+
+            * Adsolut: JournalEntryLine.VatAmount'
+          format: double
+        type:
+          enum:
+          - 0
+          - 1
+          type:
+          - integer
+          - 'null'
+          description: 'The balance side.
+
+            * ECI Financials: Based on type either Lines.Debet or Lines.Credit is set
+
+            * Xero: Calculated (based on ManualJournalLine.LineAmount)
+
+            * TripleTex: n/a
+
+            * AccountView: Based on type either Lines.Debet or Lines.Credit is set
+
+            * PowerOfficeGo: JournalEntryVoucherLine.Type
+
+            * AfasSB: n/a
+
+            * Sage50Uk: JournalEntryLine.Type
+
+            * Adsolut: Based on  JournalEntryLineType either Credit or Debit'
+          format: int32
+        taxCode:
+          allOf:
+          - $ref: '#/components/schemas/Entity'
+          description: "* ECI Financials: n/a\n* Xero:\n    * Code = ManualJournalLine.TaxType\n    * Id = n/a\n* TripleTex:\n    * Code = Posting.VatType.Number\n    * Id = Posting.VatType.Id\n* Acountview: n/a\n* PowerOfficeGo:\n    * Code = JournalEntryVoucherLine.DebitVatCode / JournalEntryVoucherLine.CreditVatCode\n    * Id = n/a\n* AfasSB: \n    * Id = n/a\n    * Code = InvoiceLine.VatType / InvoiceLine2.VatType / EntryLine.VatType\n* Sage50Uk:\n    * Code = JournalEntryLine.TaxCode\n    * Id = n/a\n* Adsolut:\n    * Code = JournalEntryLine.VatPercentage.Id\n    * Id = n/a"
+        description:
+          type:
+          - string
+          - 'null'
+          description: '* ECI Financials: Lines.Title
+
+            * Xero: ManualJournalLine.Description
+
+            * TripleTex: Posting.Description
+
+            * AccountView: Lines.Title
+
+            * PowerOfficeGo: JournalEntryVoucherLine.Description
+
+            * AfasSB: InvoiceLine.Description / InvoiceLine2.Description / EntryLine.Description
+
+            * Sage50Uk: JournalEntryLine.Details
+
+            * Adsolut: JournalEntryLine.Description'
+        taxShifted:
+          type:
+          - boolean
+          - 'null'
+          description: 'Indicates whether the VAT is shifted (reverse charge).
+
+            * ECI Financials: n/a
+
+            * Xero: n/a
+
+            * TripleTex: n/a
+
+            * AccountView: n/a
+
+            * PowerOfficeGo: n/a
+
+            * AfasSB: InvoiceLine.VatShifted / InvoiceLine2.VatShifted
+
+            * Sage50Uk: n/a
+
+            * Adsolut: n/a'
+        amountForeignCurrency:
+          type:
+          - number
+          - 'null'
+          description: 'Amount excluding VAT amount in foreign currency
+
+            * ECI Financials: n/a
+
+            * Xero: n/a
+
+            * TripleTex: n/a
+
+            * AccountView: n/a
+
+            * PowerOfficeGo: n/a
+
+            * AfasSB: n/a
+
+            * Sage50Uk: n/a'
+          format: double
+        taxAmountForeignCurrency:
+          type:
+          - number
+          - 'null'
+          description: 'Tax (Vat) Amount in foreign currency
+
+            * ECI Financials: n/a
+
+            * Xero: n/a
+
+            * TripleTex: n/a
+
+            * AccountView: n/a
+
+            * PowerOfficeGo: n/a
+
+            * AfasSB: n/a
+
+            * Sage50Uk: n/a'
+          format: double
+      additionalProperties: false
+      description: Represents an individual line of a GL Journal to be saved to or existing in the financial system.
     Contact:
       type: object
       properties:
@@ -3231,142 +2910,482 @@ components:
           description: The unique Id of this entity.
       additionalProperties: false
       description: Represents the contact details of a supplier or customer
-    InvoiceLine:
+    PaymentInfo:
       type: object
       properties:
-        amountExcludingTax:
+        docNumber:
+          type: string
+          description: 'Journal entry number
+
+            * ECI Financials: AccountsReceivable.ExternalId or AccountsPayable.ExternalId
+
+            * Xero: n/a
+
+            * TripleTex: n/a
+
+            * AccountView: AccountsReceivable.ExternalId or AccountsPayable.ExternalId
+
+            * PowerOfficeGo: n/a
+
+            * Sage50Uk: n/a'
+        datePaid:
           type:
-          - number
+          - string
           - 'null'
-          description: 'Total amount of the line excluding tax/VAT.
+          description: 'The date when the invoice was paid.
 
-            * ECI Financials: InvoiceLine.AmountExcl
+            * ECI Financials: n/a
 
-            * Xero: LineItem.LineAmount
+            * Xero: n/a
 
-            * TripleTex: OrderLine.UnitPriceExcludingVatCurrency
+            * TripleTex: n/a
 
-            * AccountView: InvoiceLine.AmountExcl
+            * AccountView: n/a
 
-            * PowerOfficeGo: InvoiceLine.UnitPrice
+            * PowerOfficeGo: n/a
 
-            * Sage50Uk: TransactionLine.ForeignAmount
+            * Sage50Uk: n/a'
+          format: date-time
+      additionalProperties: false
+      description: <h2>Information about payment of an invoice</h2>
+    Attachment:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: 'The unique id of the attachment.
+
+            * ECI Financials: Document.Id
+
+            * Xero: Attachment.AttachmentID
+
+            * TripleTex: n/a
+
+            * AccountView: Document.Id
+
+            * PowerOfficeGo: n/a
+
+            * Sage50Uk: n/a
 
             * Adsolut: n/a'
-          format: double
+        name:
+          type: string
+          description: 'The filename (without extension) of the attachment.
+
+            * ECI Financials: Document.Name
+
+            * Xero: Attachment.FileName
+
+            * TripleTex: FileParameter.FileName
+
+            * AccountView: Document.Name
+
+            * PowerOfficeGo: FileParameter.FileName
+
+            * Sage50Uk: n/a
+
+            * Adsolut: n/a'
+        date:
+          type:
+          - string
+          - 'null'
+          description: 'The date the attachment was added or updated.
+
+            * ECI Financials: Document.Date
+
+            * Xero: n/a
+
+            * TripleTex: (Today''s date is always used)
+
+            * AccountView: Document.Date
+
+            * PowerOfficeGo: (Today''s date is always used)
+
+            * Sage50Uk: n/a
+
+            * Adsolut: n/a'
+          format: date-time
+        type:
+          type: string
+          description: 'The attachment type (filename extension including period).
+
+            * ECI Financials: Document.Type
+
+            * Xero: Attachment.MimeType
+
+            * TripleTex: FileParameter.Filename (extension)
+
+            * AccountView: Document.Type
+
+            * PowerOfficeGo: FileParameter.Filename (extension)
+
+            * Sage50Uk: n/a
+
+            * Adsolut: n/a'
+        size:
+          type:
+          - integer
+          - 'null'
+          description: 'The size of the  attachment in bytes
+
+            * ECI Financials: Document.Size
+
+            * Xero: Attachment.ContentLength
+
+            * TripleTex: FileParameter.Data.Length
+
+            * AccountView: Document.Size
+
+            * PowerOfficeGo: FileParameter.Data.Length
+
+            * Sage50Uk: n/a
+
+            * Adsolut: n/a'
+          format: int64
+        syncToken:
+          type:
+          - string
+          - 'null'
+          description: 'The date/time stamp of the attachment. This value is
+
+            required when sending a PUT request and its value must
+
+            match the timestamp of the attachment in the database.
+
+            If the value is different it means the  attachmenthas
+
+            been modified by another user.
+
+            * ECI Financials: Document.Stamp
+
+            * Xero: n/a
+
+            * TripleTex: n/a
+
+            * AccountView: Document.Stamp
+
+            * PowerOfficeGo: n/a
+
+            * Sage50Uk: n/a
+
+            * Adsolut: n/a'
+      additionalProperties: false
+      description: <h2>A attachment info object.</h2>
+    SalesJournalEntry:
+      type: object
+      properties:
+        syncToken:
+          type:
+          - string
+          - 'null'
+          description: 'SyncToken to ensure updating the latest version of the record.
+
+            * ECI Financials: n/a
+
+            * Xero: n/a
+
+            * TripleTex: n/a
+
+            * AccountView: n/a
+
+            * PowerOfficeGo: n/a
+
+            * AfasSB: n/a
+
+            * Sage50Uk: n/a
+
+            * Adsolut: n/a'
+        docNumber:
+          type:
+          - string
+          - 'null'
+          description: 'The journal entry number
+
+            * ECI Financials: n/a
+
+            * Xero: n/a
+
+            * TripleTex: n/a
+
+            * AccountView: n/a
+
+            * PowerOfficeGo: n/a
+
+            * AfasSB: Salesjournalentry.InvoiceNumber
+
+            * Sage50Uk: n/a
+
+            * Adsolut: SalesJournalEntry.InvoiceNumber'
         description:
           type:
           - string
           - 'null'
-          description: 'Description text for the sale line.
+          description: 'The description of the journal entry.
 
-            * ECI Financials: SalesInvoice.Title
+            * ECI Financials: n/a
 
-            * Xero: LineItem.Description
+            * Xero: n/a
 
-            * TripleTex: OrderLine.Description
+            * TripleTex: n/a
 
-            * AccountView: SalesInvoice.Title
+            * AccountView: n/a
 
-            * PowerOfficeGo: InvoiceLine.Description
+            * PowerOfficeGo: n/a
 
-            * Sage50Uk: TransactionLine.Details
+            * AfasSB: Salesjournalentry.Description
+
+            * Sage50Uk: n/a
 
             * Adsolut: n/a'
-        account:
-          allOf:
-          - $ref: '#/components/schemas/Entity'
-          description: "The general ledger account for the line.\n* ECI Financials: InvoiceLine.Account\n* Xero:\n    - Code = LineItem.AccountCode\n    - Id = LineItem.AccountId\n* TripleTex: n/a\n* AccountView: InvoiceLine.Account\n* PowerOfficeGo: \n    - Code = InvoiceLine.Account\n    - Id = n/a\n* Sage50Uk: InvoiceItem.Account\n    - Code = Account.NominalCode\n    - Id = n/a\n* Adsolut: n/a"
-        taxCode:
-          allOf:
-          - $ref: '#/components/schemas/Entity'
-          description: "Tax code reference. This is the tax or VAT code that is\nexpected by the AFM.\n* ECI Financials: InvoiceLine.VatRate\n* Xero:\n    - Id = n/a\n    - Code = LineItem.TaxType\n* TripleTex: \n    - Id = VatType.Id\n    - Code = VatType.Number\n* AccountView: InvoiceLine.VatRate\n* PowerOfficeGo: n/a\n* Sage50Uk: InvoiceItem.VatCode\n    - Code = TaxCode\n    - Id = n/a\n* Adsolut: n/a"
-        taxAmount:
+        date:
+          type:
+          - string
+          - 'null'
+          description: '* ECI Financials: n/a
+
+            * Xero: n/a
+
+            * TripleTex: n/a
+
+            * AccountView: n/a
+
+            * PowerOfficeGo: n/a
+
+            * AfasSB: Salesjournalentry.InvoiceDate
+
+            * Sage50Uk: n/a
+
+            * Adsolut: SalesJournalEntry.DocumentDate'
+          format: date-time
+        dueDate:
+          type:
+          - string
+          - 'null'
+          description: 'Date when the payment of the transaction is due.
+
+            * ECI Financials: n/a
+
+            * Xero: n/a
+
+            * TripleTex: n/a
+
+            * AccountView: n/a
+
+            * PowerOfficeGo: n/a
+
+            * AfasSB: n/a
+
+            * Sage50Uk: n/a
+
+            * Adsolut: SalesJournalEntry.DueDate'
+          format: date-time
+        period:
+          type:
+          - string
+          - 'null'
+          description: 'Financial period
+
+            * ECI Financials: n/a
+
+            * Xero: n/a
+
+            * TripleTex: n/a
+
+            * AccountView: n/a
+
+            * PowerOfficeGo: n/a
+
+            * AfasSB: n/a
+
+            * Sage50Uk: n/a
+
+            * Adsolut: SalesJournalEntry.AccountingPeriod.Number'
+        year:
+          type:
+          - integer
+          - 'null'
+          description: 'Financial year
+
+            * ECI Financials: n/a
+
+            * Xero: n/a
+
+            * TripleTex: n/a
+
+            * AccountView: n/a
+
+            * PowerOfficeGo: n/a
+
+            * AfasSB: n/a
+
+            * Sage50Uk: n/a
+
+            * Adsolut: SalesJournalEntry.Year'
+          format: int32
+        journal:
+          type:
+          - string
+          - 'null'
+          description: 'Journal code
+
+            * ECI Financials: n/a
+
+            * Xero: n/a
+
+            * TripleTex: n/a
+
+            * AccountView: n/a
+
+            * PowerOfficeGo: n/a
+
+            * AfasSB: n/a
+
+            * Sage50Uk: n/a
+
+            * Adsolut: SalesJournalEntry.JournalCode (2 letter code)'
+        exchangeRate:
           type:
           - number
           - 'null'
-          description: 'VAT amount
-
-            * ECI Financials: InvoiceLine.VatAmount
-
-            * Xero: LineItem.TaxAmount
-
-            * TripleTex: n/a
-
-            * AccountView: InvoiceLine.VatAmount
-
-            * PowerOfficeGo: n/a
-
-            * Sage50Uk: TransactionLine.ForeignTaxAmount
-
-            * Adsolut: n/a'
+          description: "The exchange rate \n* ECI Financials: n/a\n* Xero: n/a\n* TripleTex: n/a\n* AccountView: n/a\n* PowerOfficeGo: n/a\n* AfasSB: n/a\n* Sage50Uk: n/a\n* Adsolut: n/a"
           format: double
-        costCarrier:
+        paymentTerm:
           allOf:
           - $ref: '#/components/schemas/Entity'
-          description: 'Cost carrier
+          description: 'The payment term associated with the transaction.
 
-            * ECI Financials: InvoiceLine.CostCarrier
+            * ECI Financials: n/a
 
             * Xero: n/a
 
             * TripleTex: n/a
 
-            * AccountView: InvoiceLine.CostCarrier
+            * AccountView: n/a
 
             * PowerOfficeGo: n/a
+
+            * AfasSB: n/a
 
             * Sage50Uk: n/a
 
             * Adsolut: n/a'
-        costUnit:
-          allOf:
-          - $ref: '#/components/schemas/Entity'
-          description: 'Cost unit
+        paymentReference:
+          type:
+          - string
+          - 'null'
+          description: 'External payment reference.
 
-            * ECI Financials: InvoiceLine.CostUnit
+            * ECI Financials: n/a
 
             * Xero: n/a
 
             * TripleTex: n/a
 
-            * AccountView: InvoiceLine.CostUnit
+            * AccountView: n/a
 
             * PowerOfficeGo: n/a
 
+            * AfasSB: Salesjournalentry.Reference
+
             * Sage50Uk: n/a
 
-            * Adsolut: n/a'
-        order:
+            * Adsolut: SalesJournalEntry.ExternalDocumentId'
+        customer:
           allOf:
           - $ref: '#/components/schemas/Entity'
-          description: 'Order
+          description: 'Customer Reference
 
-            * ECI Financials: PurchasesInvoiceLine.Order
+            * ECI Financials: n/a
+
+            * Xero: n/a
+
+            * PowerOfficeGo: n/a
+
+            * TripleTex: n/a
+
+            * AccountView: n/a
+
+            * AfasSB: Salesjournalentry.RelationId
+
+            * Sage50Uk: n/a
+
+            * Adsolut: SalesJournalEntry.Customer.Number'
+        lines:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/JournalEntryLine'
+          description: 'A collection of line information for the journal.
+
+            * ECI Financials: n/a
 
             * Xero: n/a
 
             * TripleTex: n/a
 
-            * AccountView: PurchasesInvoiceLine.Order
+            * AccountView: n/a
 
             * PowerOfficeGo: n/a
 
+            * AfasSB: Salesjournalentry.InvoiceLine
+
             * Sage50Uk: n/a
 
-            * Adsolut: n/a'
+            * Adsolut: SalesJournalEntry.Lines'
+        currencyCode:
+          type:
+          - string
+          - 'null'
+          description: 'The (ISO 4217) currency code for the purchase journal entry.
+
+            * ECI Financials: n/a
+
+            * Xero: n/a
+
+            * TripleTex: n/a
+
+            * AccountView: n/a
+
+            * PowerOfficeGo: n/a
+
+            * AfasSB: n/a
+
+            * Sage50Uk: n/a'
+        id:
+          type:
+          - string
+          - 'null'
+          description: The unique Id of this entity.
       additionalProperties: false
-      description: Line item details for customer invoices and credits.
-    Links:
+      description: "Represents a GL Journal to be saved to or existing in the financial system.\n- Id: Unique id of the journal. Provide when updating the record. \n    * ECI Financials: n/a\n    * Xero: n/a\n    * TripleTex: n/a\n    * AccountView: n/a\n    * PowerOfficeGo: n/a\n    * AfasSB: n/a\n    * Sage50Uk: n/a\n    * Adsolut: n/a"
+    Problem:
+      required:
+      - detail
+      - title
       type: object
       properties:
-        self:
+        type:
+          type:
+          - string
+          - 'null'
+        title:
           type: string
-        next:
+        status:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        detail:
           type: string
-        prev:
-          type: string
+        instance:
+          type:
+          - string
+          - 'null'
       additionalProperties: false
+      description: Definition of [RFC7807](https://tools.ietf.org/html/rfc7807) problem detail
     Entity:
       type: object
       properties:
@@ -3381,39 +3400,20 @@ components:
           - 'null'
           description: The unique Id of this entity.
       additionalProperties: false
-    PaymentCondition:
+    SalesOutstandingItemList:
+      required:
+      - data
+      - listContext
       type: object
       properties:
-        paymentTerm:
-          type:
-          - integer
-          - 'null'
-          description: 'The number of days in which payment is due.
-
-            * ECI Financials: n/a
-
-            * Xero: PaymentTerm.Sales.Days
-
-            * TripleTex: Customer.InvoucesDueIn
-
-            * AccountView: n/a
-
-            * PowerOfficeGo: n/a
-
-            * Sage50Uk: n/a'
-          format: int32
-        code:
-          type:
-          - string
-          - 'null'
-          description: The natural key of this entity.
-        id:
-          type:
-          - string
-          - 'null'
-          description: The unique Id of this entity.
-      additionalProperties: {}
-      description: "<h2>Model for payment conditions</h2>\n* code \n    + ECI Financials: Customer.PaymentTerms / Supplier.PaymentTerms\n    + Xero: n/a\n    + TripleTex: n/a\n    + AccountView: Customer.PaymentTerms / Supplier.PaymentTerms"
+        listContext:
+          allOf:
+          - $ref: '#/components/schemas/ListContext'
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/SalesOutstandingItem'
+      additionalProperties: false
   securitySchemes:
     Bearer:
       type: oauth2

@@ -1974,6 +1974,66 @@ paths:
                 $ref: '#/components/schemas/APIResponseMessageDto'
 components:
   schemas:
+    MesTimecardDto:
+      type: object
+      properties:
+        employeeId:
+          type: string
+        timecardDate:
+          type: string
+          format: date-time
+        shiftID:
+          type: integer
+          format: int32
+        timecardLines:
+          type: array
+          items:
+            $ref: '#/components/schemas/MesTimecardLineDto'
+    ERPResponseMessageDto_IList_ERPIndirectLaborCodeDto:
+      type: object
+      properties:
+        responseInfo:
+          $ref: '#/components/schemas/APIResponseMessageDto'
+        returnObject:
+          type: array
+          items:
+            $ref: '#/components/schemas/ERPIndirectLaborCodeDto'
+        recordCount:
+          type: integer
+          format: int32
+    MesTimecardLineDto:
+      type: object
+      properties:
+        jobID:
+          type: string
+        erpJobOperationId:
+          type: string
+          format: uuid
+          example: 00000000-0000-0000-0000-000000000000
+        elapsedTime:
+          type: number
+          format: double
+        setupTime:
+          type: number
+          format: double
+        machineHours:
+          type: number
+          format: double
+        laborHours:
+          type: number
+          format: double
+        processID:
+          type: string
+        workCenterID:
+          type: string
+        goodQty:
+          type: number
+          format: double
+        scrapQty:
+          type: number
+          format: double
+        comments:
+          type: string
     ERPResponseMessageDto_ERPTimecardDto:
       type: object
       properties:
@@ -1984,32 +2044,15 @@ components:
         recordCount:
           type: integer
           format: int32
-    APIResponseMessageDto:
-      type: object
-      properties:
-        description:
-          type: string
-        status:
-          type: string
-        payloadID:
-          type: string
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/Error'
-          readOnly: true
-        warnings:
-          type: array
-          items:
-            $ref: '#/components/schemas/Warning'
-          readOnly: true
-    ERPResponseMessageDto_ERPTimecardLineDto:
+    ERPResponseMessageDto_IList_ERPExpenseDto:
       type: object
       properties:
         responseInfo:
           $ref: '#/components/schemas/APIResponseMessageDto'
         returnObject:
-          $ref: '#/components/schemas/ERPTimecardLineDto'
+          type: array
+          items:
+            $ref: '#/components/schemas/ERPExpenseDto'
         recordCount:
           type: integer
           format: int32
@@ -2045,6 +2088,18 @@ components:
         lmxRowVersion:
           type: integer
           format: int64
+    ERPResponseMessageDto_IList_ERPTimecardLineDto:
+      type: object
+      properties:
+        responseInfo:
+          $ref: '#/components/schemas/APIResponseMessageDto'
+        returnObject:
+          type: array
+          items:
+            $ref: '#/components/schemas/ERPTimecardLineDto'
+        recordCount:
+          type: integer
+          format: int32
     ERPResponseMessageDto_IList_ERPTimecardDto:
       type: object
       properties:
@@ -2077,281 +2132,16 @@ components:
         recordCount:
           type: integer
           format: int32
-    ERPResponseMessageDto_IList_ERPExpenseDto:
+    ERPResponseMessageDto_ERPTimecardLineDto:
       type: object
       properties:
         responseInfo:
           $ref: '#/components/schemas/APIResponseMessageDto'
         returnObject:
-          type: array
-          items:
-            $ref: '#/components/schemas/ERPExpenseDto'
+          $ref: '#/components/schemas/ERPTimecardLineDto'
         recordCount:
           type: integer
           format: int32
-    ERPResponseMessageDto_ERPIndirectLaborCodeDto:
-      type: object
-      properties:
-        responseInfo:
-          $ref: '#/components/schemas/APIResponseMessageDto'
-        returnObject:
-          $ref: '#/components/schemas/ERPIndirectLaborCodeDto'
-        recordCount:
-          type: integer
-          format: int32
-    MesTimecardDto:
-      type: object
-      properties:
-        employeeId:
-          type: string
-        timecardDate:
-          type: string
-          format: date-time
-        shiftID:
-          type: integer
-          format: int32
-        timecardLines:
-          type: array
-          items:
-            $ref: '#/components/schemas/MesTimecardLineDto'
-    ERPIndirectLaborCodeDto:
-      required:
-      - lmiDescription
-      - lmiIndirectLaborID
-      type: object
-      properties:
-        lmiCreatedBy:
-          type: string
-        lmiCreatedDate:
-          type: string
-          format: date-time
-        lmiDescription:
-          type: string
-        lmiUniqueID:
-          type: string
-          format: uuid
-          example: 00000000-0000-0000-0000-000000000000
-        lmiInactiveDate:
-          type: string
-          format: date-time
-        lmiIndirectLaborID:
-          type: string
-        lmiIndirectLaborType:
-          type: integer
-          format: int32
-        lmiInactive:
-          type: boolean
-        lmiRowVersion:
-          type: integer
-          format: int64
-    ERPResponseMessageDto_IList_ERPTimecardLineDto:
-      type: object
-      properties:
-        responseInfo:
-          $ref: '#/components/schemas/APIResponseMessageDto'
-        returnObject:
-          type: array
-          items:
-            $ref: '#/components/schemas/ERPTimecardLineDto'
-        recordCount:
-          type: integer
-          format: int32
-    ERPTimecardLineDto:
-      required:
-      - lmlEmployeeID
-      - lmlExpenseID
-      - lmlTimecardLineID
-      - lmlSource
-      - lmlTimecardID
-      - lmlTimecardType
-      - lmlWorkCenterID
-      type: object
-      properties:
-        lmlActualEndTime:
-          type: string
-          format: date-time
-        lmlActualStartTime:
-          type: string
-          format: date-time
-        lmlCompletionType:
-          type: integer
-          format: int32
-        lmlCreatedBy:
-          type: string
-        lmlCreatedDate:
-          type: string
-          format: date-time
-        lmlEmployeeID:
-          type: string
-        lmlUniqueID:
-          type: string
-          format: uuid
-          example: 00000000-0000-0000-0000-000000000000
-        lmlExpenseID:
-          type: string
-        lmlGoodQuantity:
-          minimum: 0
-          type: number
-          format: double
-        lmlIndirectLaborID:
-          type: string
-        lmlActive:
-          type: boolean
-        lmlCreatedFromPayrollSession:
-          type: boolean
-        lmlLaborHoursCalculated:
-          type: boolean
-        lmlMachineHoursCalculated:
-          type: boolean
-        lmlPostedToWip:
-          type: boolean
-        lmlSuspended:
-          type: boolean
-        lmlTransferredToPayroll:
-          type: boolean
-        lmlJobAssemblyID:
-          type: integer
-          format: int32
-        lmlJobID:
-          type: string
-        lmlJobOperationID:
-          type: integer
-          format: int32
-        lmlLaborCost:
-          minimum: 0
-          type: number
-          format: double
-        lmlLaborDescriptionRtf:
-          type: string
-        lmlLaborDescriptionText:
-          type: string
-        lmlLaborHours:
-          minimum: 0
-          type: number
-          format: double
-        lmlMachineHours:
-          minimum: 0
-          type: number
-          format: double
-        lmlOverheadCost:
-          minimum: 0
-          type: number
-          format: double
-        lmlProcessID:
-          type: string
-        lmlProjectAreaID:
-          type: string
-        lmlProjectID:
-          type: string
-        lmlReworkQuantity:
-          minimum: 0
-          type: number
-          format: double
-        lmlReworkReasonID:
-          type: string
-        lmlRoundedEndTime:
-          type: string
-          format: date-time
-        lmlRoundedStartTime:
-          type: string
-          format: date-time
-        lmlRowVersion:
-          type: integer
-          format: int64
-        lmlScrapQuantity:
-          minimum: 0
-          type: number
-          format: double
-        lmlScrapReasonID:
-          type: string
-        lmlTimecardLineID:
-          type: integer
-          format: int32
-        lmlSetupPercentCompleted:
-          type: integer
-          format: int32
-        lmlShiftID:
-          type: integer
-          format: int32
-        lmlSource:
-          type: integer
-          format: int32
-        lmlTimecardID:
-          type: integer
-          format: int32
-        lmlTimecardType:
-          type: integer
-          format: int32
-        lmlWorkCenterID:
-          type: string
-        lmlWorkType:
-          type: integer
-          format: int32
-    ERPResponseMessageDto_IList_ERPIndirectLaborCodeDto:
-      type: object
-      properties:
-        responseInfo:
-          $ref: '#/components/schemas/APIResponseMessageDto'
-        returnObject:
-          type: array
-          items:
-            $ref: '#/components/schemas/ERPIndirectLaborCodeDto'
-        recordCount:
-          type: integer
-          format: int32
-    MesIntegrationTransactionQueueInformationDto:
-      type: object
-      properties:
-        itqApIAction:
-          type: string
-        itqCreatedBy:
-          type: string
-        itqCreatedDate:
-          type: string
-          format: date-time
-        itqEntityType:
-          type: string
-        itqUniqueID:
-          type: string
-          format: uuid
-          example: 00000000-0000-0000-0000-000000000000
-        itqErrorCode:
-          type: string
-        itqErrorMessage:
-          type: string
-        itqIntegrationType:
-          type: string
-        itqNextRetryTime:
-          type: string
-          format: date-time
-        itqParentUniqueID:
-          type: string
-          format: uuid
-          example: 00000000-0000-0000-0000-000000000000
-        itqRequest:
-          type: string
-        itqResponse:
-          type: string
-        itqRetryCount:
-          type: integer
-          format: int32
-        itqSourceTableName:
-          type: string
-        itqSourceTableUniqueID:
-          type: string
-          format: uuid
-          example: 00000000-0000-0000-0000-000000000000
-        itqStatus:
-          type: string
-        itqStatusUpdatedDate:
-          type: string
-          format: date-time
-        itqTransactionType:
-          type: string
-        customFields:
-          type: object
-          additionalProperties:
-            type: object
     ERPTimecardDto:
       required:
       - lmpEmployeeID
@@ -2491,39 +2281,249 @@ components:
         lmpUtcOffset:
           type: integer
           format: int32
-    MesTimecardLineDto:
+    APIResponseMessageDto:
       type: object
       properties:
-        jobID:
+        description:
           type: string
-        erpJobOperationId:
+        status:
+          type: string
+        payloadID:
+          type: string
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+          readOnly: true
+        warnings:
+          type: array
+          items:
+            $ref: '#/components/schemas/Warning'
+          readOnly: true
+    ERPIndirectLaborCodeDto:
+      required:
+      - lmiDescription
+      - lmiIndirectLaborID
+      type: object
+      properties:
+        lmiCreatedBy:
+          type: string
+        lmiCreatedDate:
+          type: string
+          format: date-time
+        lmiDescription:
+          type: string
+        lmiUniqueID:
           type: string
           format: uuid
           example: 00000000-0000-0000-0000-000000000000
-        elapsedTime:
-          type: number
-          format: double
-        setupTime:
-          type: number
-          format: double
-        machineHours:
-          type: number
-          format: double
-        laborHours:
-          type: number
-          format: double
-        processID:
+        lmiInactiveDate:
           type: string
-        workCenterID:
+          format: date-time
+        lmiIndirectLaborID:
           type: string
-        goodQty:
+        lmiIndirectLaborType:
+          type: integer
+          format: int32
+        lmiInactive:
+          type: boolean
+        lmiRowVersion:
+          type: integer
+          format: int64
+    ERPTimecardLineDto:
+      required:
+      - lmlEmployeeID
+      - lmlExpenseID
+      - lmlTimecardLineID
+      - lmlSource
+      - lmlTimecardID
+      - lmlTimecardType
+      - lmlWorkCenterID
+      type: object
+      properties:
+        lmlActualEndTime:
+          type: string
+          format: date-time
+        lmlActualStartTime:
+          type: string
+          format: date-time
+        lmlCompletionType:
+          type: integer
+          format: int32
+        lmlCreatedBy:
+          type: string
+        lmlCreatedDate:
+          type: string
+          format: date-time
+        lmlEmployeeID:
+          type: string
+        lmlUniqueID:
+          type: string
+          format: uuid
+          example: 00000000-0000-0000-0000-000000000000
+        lmlExpenseID:
+          type: string
+        lmlGoodQuantity:
+          minimum: 0
           type: number
           format: double
-        scrapQty:
+        lmlIndirectLaborID:
+          type: string
+        lmlActive:
+          type: boolean
+        lmlCreatedFromPayrollSession:
+          type: boolean
+        lmlLaborHoursCalculated:
+          type: boolean
+        lmlMachineHoursCalculated:
+          type: boolean
+        lmlPostedToWip:
+          type: boolean
+        lmlSuspended:
+          type: boolean
+        lmlTransferredToPayroll:
+          type: boolean
+        lmlJobAssemblyID:
+          type: integer
+          format: int32
+        lmlJobID:
+          type: string
+        lmlJobOperationID:
+          type: integer
+          format: int32
+        lmlLaborCost:
+          minimum: 0
           type: number
           format: double
-        comments:
+        lmlLaborDescriptionRtf:
           type: string
+        lmlLaborDescriptionText:
+          type: string
+        lmlLaborHours:
+          minimum: 0
+          type: number
+          format: double
+        lmlMachineHours:
+          minimum: 0
+          type: number
+          format: double
+        lmlOverheadCost:
+          minimum: 0
+          type: number
+          format: double
+        lmlProcessID:
+          type: string
+        lmlProjectAreaID:
+          type: string
+        lmlProjectID:
+          type: string
+        lmlReworkQuantity:
+          minimum: 0
+          type: number
+          format: double
+        lmlReworkReasonID:
+          type: string
+        lmlRoundedEndTime:
+          type: string
+          format: date-time
+        lmlRoundedStartTime:
+          type: string
+          format: date-time
+        lmlRowVersion:
+          type: integer
+          format: int64
+        lmlScrapQuantity:
+          minimum: 0
+          type: number
+          format: double
+        lmlScrapReasonID:
+          type: string
+        lmlTimecardLineID:
+          type: integer
+          format: int32
+        lmlSetupPercentCompleted:
+          type: integer
+          format: int32
+        lmlShiftID:
+          type: integer
+          format: int32
+        lmlSource:
+          type: integer
+          format: int32
+        lmlTimecardID:
+          type: integer
+          format: int32
+        lmlTimecardType:
+          type: integer
+          format: int32
+        lmlWorkCenterID:
+          type: string
+        lmlWorkType:
+          type: integer
+          format: int32
+    ERPResponseMessageDto_ERPIndirectLaborCodeDto:
+      type: object
+      properties:
+        responseInfo:
+          $ref: '#/components/schemas/APIResponseMessageDto'
+        returnObject:
+          $ref: '#/components/schemas/ERPIndirectLaborCodeDto'
+        recordCount:
+          type: integer
+          format: int32
+    MesIntegrationTransactionQueueInformationDto:
+      type: object
+      properties:
+        itqApIAction:
+          type: string
+        itqCreatedBy:
+          type: string
+        itqCreatedDate:
+          type: string
+          format: date-time
+        itqEntityType:
+          type: string
+        itqUniqueID:
+          type: string
+          format: uuid
+          example: 00000000-0000-0000-0000-000000000000
+        itqErrorCode:
+          type: string
+        itqErrorMessage:
+          type: string
+        itqIntegrationType:
+          type: string
+        itqNextRetryTime:
+          type: string
+          format: date-time
+        itqParentUniqueID:
+          type: string
+          format: uuid
+          example: 00000000-0000-0000-0000-000000000000
+        itqRequest:
+          type: string
+        itqResponse:
+          type: string
+        itqRetryCount:
+          type: integer
+          format: int32
+        itqSourceTableName:
+          type: string
+        itqSourceTableUniqueID:
+          type: string
+          format: uuid
+          example: 00000000-0000-0000-0000-000000000000
+        itqStatus:
+          type: string
+        itqStatusUpdatedDate:
+          type: string
+          format: date-time
+        itqTransactionType:
+          type: string
+        customFields:
+          type: object
+          additionalProperties:
+            type: object
   securitySchemes:
     oauth2:
       type: oauth2

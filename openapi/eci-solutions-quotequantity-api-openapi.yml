@@ -150,62 +150,6 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    Project:
-      title: Project
-      type: object
-      properties:
-        uniqueID:
-          type: string
-        rowVersion:
-          type: integer
-          format: int64
-        projectID:
-          type: string
-        customerID:
-          type: string
-        locationID:
-          type: string
-        contactID:
-          type: string
-        dueDate:
-          type: string
-          format: date
-        projectDate:
-          type: string
-          format: date
-        closedDate:
-          type: string
-          format: date
-        shortDescription:
-          type: string
-        longDescription:
-          type: string
-        statusCode:
-          type: string
-        isClosed:
-          type: boolean
-        customer:
-          $ref: '#/components/schemas/Organization'
-    PartGroup:
-      title: PartGroup
-      type: object
-      properties:
-        uniqueID:
-          type: string
-        rowVersion:
-          type: integer
-          format: int64
-        partGroupID:
-          type: string
-        parentPartGroupID:
-          type: string
-        description:
-          type: string
-        isActive:
-          type: boolean
-        inactiveDate:
-          type: string
-          format: date
     Organization:
       title: Organization
       type: object
@@ -256,35 +200,72 @@ components:
           type: integer
         supplierStatus:
           type: integer
-    Reason:
-      title: Reason
+    Contact:
+      title: Contact
       type: object
       properties:
-        reasonID:
-          type: string
-        description:
-          type: string
-        name:
-          type: string
         uniqueID:
           type: string
         rowVersion:
           type: integer
           format: int64
-    QuoteQuantityListResponse:
+        contactID:
+          type: string
+        name:
+          type: string
+        organizationID:
+          type: string
+        organizationTypes:
+          type: array
+          items:
+            type: integer
+            format: int32
+        phoneNumber:
+          type: string
+        emailAddress:
+          type: string
+        isActive:
+          type: boolean
+        comments:
+          type: string
+        organization:
+          $ref: '#/components/schemas/Organization'
+    Project:
+      title: Project
       type: object
       properties:
-        data:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/QuoteQuantity'
-          readOnly: true
-        resultCount:
+        uniqueID:
+          type: string
+        rowVersion:
           type: integer
-          format: int32
-      additionalProperties: false
+          format: int64
+        projectID:
+          type: string
+        customerID:
+          type: string
+        locationID:
+          type: string
+        contactID:
+          type: string
+        dueDate:
+          type: string
+          format: date
+        projectDate:
+          type: string
+          format: date
+        closedDate:
+          type: string
+          format: date
+        shortDescription:
+          type: string
+        longDescription:
+          type: string
+        statusCode:
+          type: string
+        isClosed:
+          type: boolean
+        customer:
+          $ref: '#/components/schemas/Organization'
     QuoteLine:
       title: QuoteLine
       type: object
@@ -319,6 +300,85 @@ components:
           $ref: '#/components/schemas/Reason'
         partGroup:
           $ref: '#/components/schemas/PartGroup'
+    QuoteQuantityListResponse:
+      type: object
+      properties:
+        data:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/QuoteQuantity'
+          readOnly: true
+        resultCount:
+          type: integer
+          format: int32
+      additionalProperties: false
+    PartGroup:
+      title: PartGroup
+      type: object
+      properties:
+        uniqueID:
+          type: string
+        rowVersion:
+          type: integer
+          format: int64
+        partGroupID:
+          type: string
+        parentPartGroupID:
+          type: string
+        description:
+          type: string
+        isActive:
+          type: boolean
+        inactiveDate:
+          type: string
+          format: date
+    QuoteQuantity:
+      title: QuoteQuantity
+      type: object
+      properties:
+        uniqueID:
+          type: string
+        rowVersion:
+          type: integer
+          format: int64
+        quoteQuantityID:
+          type: string
+        quoteID:
+          type: string
+        quoteLineID:
+          type: string
+        quantity:
+          type: number
+          format: double
+        baseUnitPrice:
+          type: number
+          description: The price expressed in the currency of the seller.
+          format: double
+        foreignUnitPrice:
+          type: number
+          description: The price expressed in the currency of the buyer, if different from that of the seller.
+          format: double
+        quote:
+          $ref: '#/components/schemas/Quote'
+        quoteLine:
+          $ref: '#/components/schemas/QuoteLine'
+    Reason:
+      title: Reason
+      type: object
+      properties:
+        reasonID:
+          type: string
+        description:
+          type: string
+        name:
+          type: string
+        uniqueID:
+          type: string
+        rowVersion:
+          type: integer
+          format: int64
     Quote:
       title: Quote
       type: object
@@ -388,66 +448,6 @@ components:
           $ref: '#/components/schemas/Contact'
         project:
           $ref: '#/components/schemas/Project'
-    Contact:
-      title: Contact
-      type: object
-      properties:
-        uniqueID:
-          type: string
-        rowVersion:
-          type: integer
-          format: int64
-        contactID:
-          type: string
-        name:
-          type: string
-        organizationID:
-          type: string
-        organizationTypes:
-          type: array
-          items:
-            type: integer
-            format: int32
-        phoneNumber:
-          type: string
-        emailAddress:
-          type: string
-        isActive:
-          type: boolean
-        comments:
-          type: string
-        organization:
-          $ref: '#/components/schemas/Organization'
-    QuoteQuantity:
-      title: QuoteQuantity
-      type: object
-      properties:
-        uniqueID:
-          type: string
-        rowVersion:
-          type: integer
-          format: int64
-        quoteQuantityID:
-          type: string
-        quoteID:
-          type: string
-        quoteLineID:
-          type: string
-        quantity:
-          type: number
-          format: double
-        baseUnitPrice:
-          type: number
-          description: The price expressed in the currency of the seller.
-          format: double
-        foreignUnitPrice:
-          type: number
-          description: The price expressed in the currency of the buyer, if different from that of the seller.
-          format: double
-        quote:
-          $ref: '#/components/schemas/Quote'
-        quoteLine:
-          $ref: '#/components/schemas/QuoteLine'
   securitySchemes:
     Bearer:
       type: oauth2

@@ -35,16 +35,19 @@ paths:
           $ref: '#/components/responses/InternalServerError'
 components:
   schemas:
-    ProjectSecondarySourceType:
+    Answer:
       type: object
-      title: Secondary Source Type
+      title: Question Answer
+      description: Represents an answer for a question for the registrant
       properties:
-        secondarySourceTypeId:
+        answerId:
           type: string
+          description: Specifies the answer by id. If present, `answer` will be ignored. If no answer matches `answerId` the answer will be looked-up by its answer string.
           example: 123
-        secondarySourceType:
+        answer:
           type: string
-          example: Facebook
+          description: If no `answerId` is given, the answer will be looked-up by its answer string. If no answer with the given answer string exists, the answer will be created.
+          example: Recommended by a friend
     Project:
       title: Project
       type: object
@@ -55,16 +58,45 @@ components:
         projectId:
           type: string
           example: 123
-    ProjectWebsiteTracking:
+    ProjectSourceType:
       type: object
-      title: Website Tracking
+      title: Source Type
       properties:
-        domainAccountId:
+        sourceTypeId:
           type: string
-          example: LAS-123456-01
-        domain:
+          example: 123
+        sourceType:
           type: string
-          example: http://example.com/
+          example: Online Registration
+    ProjectRotation:
+      type: object
+      title: Rotation
+      properties:
+        rotationId:
+          type: string
+          example: 123
+        rotationName:
+          type: string
+          example: Newsletter
+    EmailTemplateMetadata:
+      type: object
+      title: Email Template Metadata
+      description: 'Size conservative metadata representation of Email Template i.e. no content body
+
+        '
+      properties:
+        templateId:
+          type: string
+          example: 123
+        folderId:
+          type: string
+          example: 123
+        name:
+          type: string
+          example: Welcoming email
+        subject:
+          type: string
+          example: You are offically welcomed
     Question:
       type: object
       title: Question
@@ -129,106 +161,16 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Answer'
-    ProjectSourceType:
+    ProjectWebsiteTracking:
       type: object
-      title: Source Type
+      title: Website Tracking
       properties:
-        sourceTypeId:
+        domainAccountId:
           type: string
-          example: 123
-        sourceType:
+          example: LAS-123456-01
+        domain:
           type: string
-          example: Online Registration
-    ProjectSalesRep:
-      type: object
-      title: Sales Rep
-      properties:
-        userId:
-          type: string
-          example: 123
-        firstName:
-          type: string
-          example: Lasso
-        lastName:
-          type: string
-          example: Autobot
-        email:
-          type: string
-          example: john.smith@example.com
-        phone:
-          type: string
-          example: 123-456-7890
-    EmailTemplateMetadata:
-      type: object
-      title: Email Template Metadata
-      description: 'Size conservative metadata representation of Email Template i.e. no content body
-
-        '
-      properties:
-        templateId:
-          type: string
-          example: 123
-        folderId:
-          type: string
-          example: 123
-        name:
-          type: string
-          example: Welcoming email
-        subject:
-          type: string
-          example: You are offically welcomed
-    FollowUpProcess:
-      type: object
-      title: Follow-up Process
-      description: If `followUpProcessId` is provided, the system will attempt to lookup the process by id, and fail if not found. If `followUpProcessId` is not provided, but `followUpProcess` is instead provided, the system will then attempt to lookup the process by value. If the value doesn't exist, it will be created
-      properties:
-        followUpProcessId:
-          type: string
-          example: 1
-        followUpProcess:
-          type: string
-          minLength: 1
-          maxLength: 20
-          example: 30 day follow up
-    StandardError:
-      type: object
-      title: Standard Error
-      description: A standard error response format.
-      properties:
-        errorCode:
-          type: integer
-          example: 4xx
-        error:
-          type: string
-          description: A summary of the error
-          example: A summary of the error
-        errorMessage:
-          type: string
-          description: Details of the error
-          example: Details of the error
-    Answer:
-      type: object
-      title: Question Answer
-      description: Represents an answer for a question for the registrant
-      properties:
-        answerId:
-          type: string
-          description: Specifies the answer by id. If present, `answer` will be ignored. If no answer matches `answerId` the answer will be looked-up by its answer string.
-          example: 123
-        answer:
-          type: string
-          description: If no `answerId` is given, the answer will be looked-up by its answer string. If no answer with the given answer string exists, the answer will be created.
-          example: Recommended by a friend
-    ProjectRating:
-      type: object
-      title: Rating
-      properties:
-        ratingId:
-          type: string
-          example: 123
-        rating:
-          type: string
-          example: A
+          example: http://example.com/
     ProjectSettings:
       type: object
       title: ProjectSettings
@@ -271,25 +213,83 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/EmailTemplateMetadata'
-    ProjectRotation:
+    FollowUpProcess:
       type: object
-      title: Rotation
+      title: Follow-up Process
+      description: If `followUpProcessId` is provided, the system will attempt to lookup the process by id, and fail if not found. If `followUpProcessId` is not provided, but `followUpProcess` is instead provided, the system will then attempt to lookup the process by value. If the value doesn't exist, it will be created
       properties:
-        rotationId:
+        followUpProcessId:
+          type: string
+          example: 1
+        followUpProcess:
+          type: string
+          minLength: 1
+          maxLength: 20
+          example: 30 day follow up
+    ProjectSalesRep:
+      type: object
+      title: Sales Rep
+      properties:
+        userId:
           type: string
           example: 123
-        rotationName:
+        firstName:
           type: string
-          example: Newsletter
+          example: Lasso
+        lastName:
+          type: string
+          example: Autobot
+        email:
+          type: string
+          example: john.smith@example.com
+        phone:
+          type: string
+          example: 123-456-7890
+    ProjectRating:
+      type: object
+      title: Rating
+      properties:
+        ratingId:
+          type: string
+          example: 123
+        rating:
+          type: string
+          example: A
+    StandardError:
+      type: object
+      title: Standard Error
+      description: A standard error response format.
+      properties:
+        errorCode:
+          type: integer
+          example: 4xx
+        error:
+          type: string
+          description: A summary of the error
+          example: A summary of the error
+        errorMessage:
+          type: string
+          description: Details of the error
+          example: Details of the error
+    ProjectSecondarySourceType:
+      type: object
+      title: Secondary Source Type
+      properties:
+        secondarySourceTypeId:
+          type: string
+          example: 123
+        secondarySourceType:
+          type: string
+          example: Facebook
   responses:
+    InternalServerError:
+      description: Receiving a 5xx response indicates an error on Lasso's end. Please contact us to report the problem
     Forbidden:
       description: The provided authentication credentials does not have sufficient privileges to access this resource
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/StandardError'
-    InternalServerError:
-      description: Receiving a 5xx response indicates an error on Lasso's end. Please contact us to report the problem
     Unauthorized:
       description: The request has not been fulfilled because it lacks valid authentication credentials
       content:

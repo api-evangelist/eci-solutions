@@ -21331,40 +21331,87 @@ paths:
       description: Production
 components:
   schemas:
-    Process:
-      title: Process
+    SalesOrderLine:
+      title: SalesOrderLine
       type: object
       properties:
-        processID:
+        salesOrderID:
+          type: string
+        orderLine:
+          type: integer
+        totalSalePrice:
+          type: number
+          format: double
+        uniqueID:
+          type: string
+        rowVersion:
+          type: integer
+          format: int64
+        salesOrderDeliveries:
+          type: array
+          items:
+            $ref: '#/components/schemas/SalesOrderDelivery'
+        salesOrderJobs:
+          $ref: '#/components/schemas/SalesOrderJob'
+    Department:
+      title: Department
+      type: object
+      properties:
+        deptID:
           type: string
         shortDesc:
-          type: string
-        setupRate:
-          type: string
-        productionRate:
           type: string
         uniqueID:
           type: string
         rowVersion:
           type: integer
           format: int64
-    ProductionCalendar:
-      title: ProductionCalendar
+    WorkCenter:
+      title: WorkCenter
       type: object
       properties:
-        productionDate:
-          type: string
-          format: date-time
-        productionHours:
-          type: number
-          format: double
-        productionStartTime:
-          type: string
         workCenterID:
           type: string
-        plantID:
+        shortDesc:
           type: string
-        department:
+        deptID:
+          type: string
+        overHeadRate:
+          type: string
+        quoteRate:
+          type: string
+        processID:
+          type: string
+        parentWorkCenterID:
+          type: string
+        shiftID:
+          type: string
+        uniqueID:
+          type: string
+        rowVersion:
+          type: integer
+          format: int64
+        departments:
+          type: array
+          items:
+            $ref: '#/components/schemas/Department'
+        shifts:
+          type: array
+          items:
+            $ref: '#/components/schemas/Shift'
+    PartRevision:
+      title: PartRevision
+      type: object
+      properties:
+        partID:
+          type: string
+        partRevisionID:
+          type: string
+        shortDesc:
+          type: string
+        longDescText:
+          type: string
+        longDescFormatted:
           type: string
         uniqueID:
           type: string
@@ -21420,131 +21467,32 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/JobOperation'
-    SalesOrderDelivery:
-      title: SalesOrderDelivery
+    Shift:
+      title: Shift
       type: object
       properties:
-        salesOrderID:
-          type: string
-        orderLine:
-          type: integer
-        orderLineDelivery:
-          type: string
-        promisedDate:
-          type: string
-          format: date-time
-        promisedQty:
-          type: number
-          format: double
-        shippedDate:
-          type: string
-          format: date-time
-        shippedQty:
-          type: number
-          format: double
-        uniqueID:
-          type: string
-        rowVersion:
-          type: integer
-          format: int64
-        salesOrderJobs:
-          type: array
-          items:
-            $ref: '#/components/schemas/SalesOrderJob'
-    SalesOrderLine:
-      title: SalesOrderLine
-      type: object
-      properties:
-        salesOrderID:
-          type: string
-        orderLine:
-          type: integer
-        totalSalePrice:
-          type: number
-          format: double
-        uniqueID:
-          type: string
-        rowVersion:
-          type: integer
-          format: int64
-        salesOrderDeliveries:
-          type: array
-          items:
-            $ref: '#/components/schemas/SalesOrderDelivery'
-        salesOrderJobs:
-          $ref: '#/components/schemas/SalesOrderJob'
-    PartRevision:
-      title: PartRevision
-      type: object
-      properties:
-        partID:
-          type: string
-        partRevisionID:
-          type: string
-        shortDesc:
-          type: string
-        longDescText:
-          type: string
-        longDescFormatted:
-          type: string
-        uniqueID:
-          type: string
-        rowVersion:
-          type: integer
-          format: int64
-    Department:
-      title: Department
-      type: object
-      properties:
-        deptID:
-          type: string
-        shortDesc:
-          type: string
-        uniqueID:
-          type: string
-        rowVersion:
-          type: integer
-          format: int64
-    SalesOrderJob:
-      title: SalesOrderJob
-      type: object
-      properties:
-        salesOrderID:
-          type: string
-        orderLine:
-          type: integer
-        orderLineDelivery:
-          type: string
-        jobID:
-          type: string
-        orderJobSeq:
-          type: integer
-        uniqueID:
-          type: string
-        rowVersion:
-          type: integer
-          format: int64
-    Employee:
-      title: Employee
-      type: object
-      properties:
-        employeeID:
-          type: string
-        firstName:
-          type: string
-        lastName:
-          type: string
-        title:
-          type: string
-        supervisorEmployeeID:
-          type: integer
-          format: int32
-        payRate:
-          type: number
-          format: double
-        deptID:
-          type: string
         shiftID:
+          type: number
+          format: float
+        shortDesc:
+          type: string
+        inactiveDate:
+          type: string
+          format: date-time
+        uniqueID:
+          type: string
+        rowVersion:
+          type: integer
+          format: int64
+        shiftDays:
+          type: array
+          items:
+            $ref: '#/components/schemas/ShiftDay'
+    TimeZone:
+      title: TimeZone
+      type: object
+      properties:
+        timeZoneName:
           type: string
         uniqueID:
           type: string
@@ -21590,6 +21538,75 @@ components:
           type: number
           format: double
         vendorID:
+          type: string
+        uniqueID:
+          type: string
+        rowVersion:
+          type: integer
+          format: int64
+    Timecard:
+      title: Timecard
+      type: object
+      properties:
+        timecardID:
+          type: string
+        employeeID:
+          type: string
+        shiftID:
+          type: number
+          format: float
+        timecardDate:
+          type: string
+          format: date-time
+        uniqueID:
+          type: string
+        rowVersion:
+          type: integer
+          format: int64
+        timecardlines:
+          type: array
+          items:
+            $ref: '#/components/schemas/TimecardLine'
+        employees:
+          type: array
+          items:
+            $ref: '#/components/schemas/Employee'
+    ShiftDay:
+      title: ShiftDay
+      type: object
+      properties:
+        shiftID:
+          type: number
+          format: float
+        shiftDay:
+          type: number
+          format: float
+        startTime:
+          type: string
+        endTime:
+          type: string
+        uniqueID:
+          type: string
+        rowVersion:
+          type: integer
+          format: int64
+    ProductionCalendar:
+      title: ProductionCalendar
+      type: object
+      properties:
+        productionDate:
+          type: string
+          format: date-time
+        productionHours:
+          type: number
+          format: double
+        productionStartTime:
+          type: string
+        workCenterID:
+          type: string
+        plantID:
+          type: string
+        department:
           type: string
         uniqueID:
           type: string
@@ -21668,23 +21685,56 @@ components:
         rowVersion:
           type: integer
           format: int64
-    WorkCenter:
-      title: WorkCenter
+    SalesOrderDelivery:
+      title: SalesOrderDelivery
       type: object
       properties:
-        workCenterID:
+        salesOrderID:
           type: string
-        shortDesc:
+        orderLine:
+          type: integer
+        orderLineDelivery:
           type: string
+        promisedDate:
+          type: string
+          format: date-time
+        promisedQty:
+          type: number
+          format: double
+        shippedDate:
+          type: string
+          format: date-time
+        shippedQty:
+          type: number
+          format: double
+        uniqueID:
+          type: string
+        rowVersion:
+          type: integer
+          format: int64
+        salesOrderJobs:
+          type: array
+          items:
+            $ref: '#/components/schemas/SalesOrderJob'
+    Employee:
+      title: Employee
+      type: object
+      properties:
+        employeeID:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        title:
+          type: string
+        supervisorEmployeeID:
+          type: integer
+          format: int32
+        payRate:
+          type: number
+          format: double
         deptID:
-          type: string
-        overHeadRate:
-          type: string
-        quoteRate:
-          type: string
-        processID:
-          type: string
-        parentWorkCenterID:
           type: string
         shiftID:
           type: string
@@ -21693,14 +21743,23 @@ components:
         rowVersion:
           type: integer
           format: int64
-        departments:
-          type: array
-          items:
-            $ref: '#/components/schemas/Department'
-        shifts:
-          type: array
-          items:
-            $ref: '#/components/schemas/Shift'
+    Process:
+      title: Process
+      type: object
+      properties:
+        processID:
+          type: string
+        shortDesc:
+          type: string
+        setupRate:
+          type: string
+        productionRate:
+          type: string
+        uniqueID:
+          type: string
+        rowVersion:
+          type: integer
+          format: int64
     TimecardLine:
       title: TimecardLine
       type: object
@@ -21773,84 +21832,159 @@ components:
             $ref: '#/components/schemas/SalesOrderDelivery'
         salesOrderJobs:
           $ref: '#/components/schemas/SalesOrderJob'
-    Shift:
-      title: Shift
+    SalesOrderJob:
+      title: SalesOrderJob
       type: object
       properties:
-        shiftID:
-          type: number
-          format: float
-        shortDesc:
+        salesOrderID:
           type: string
-        inactiveDate:
+        orderLine:
+          type: integer
+        orderLineDelivery:
           type: string
-          format: date-time
+        jobID:
+          type: string
+        orderJobSeq:
+          type: integer
         uniqueID:
           type: string
         rowVersion:
           type: integer
           format: int64
-        shiftDays:
+    SalesAccount:
+      title: SalesAccount
+      type: object
+      properties:
+        salesAccountID:
+          type: string
+        name:
+          type: string
+        isActive:
+          type: boolean
+        uniqueID:
+          type: string
+        rowVersion:
+          type: integer
+          format: int64
+    OrganizationPart:
+      title: OrganizationPart
+      type: object
+      properties:
+        partID:
+          type: string
+        partRevisionID:
+          type: string
+        organizationID:
+          type: string
+        organizationTypes:
           type: array
           items:
-            $ref: '#/components/schemas/ShiftDay'
-    ShiftDay:
-      title: ShiftDay
-      type: object
-      properties:
-        shiftID:
-          type: number
-          format: float
-        shiftDay:
-          type: number
-          format: float
-        startTime:
+            type: integer
+            format: int32
+        organizationPartID:
           type: string
-        endTime:
+        organizationShortDesc:
           type: string
         uniqueID:
           type: string
         rowVersion:
           type: integer
           format: int64
-    TimeZone:
-      title: TimeZone
+    Organization:
+      title: Organization
       type: object
       properties:
-        timeZoneName:
-          type: string
         uniqueID:
           type: string
         rowVersion:
           type: integer
           format: int64
-    Timecard:
-      title: Timecard
-      type: object
-      properties:
-        timecardID:
+        name:
           type: string
-        employeeID:
+        organizationID:
           type: string
-        shiftID:
-          type: number
-          format: float
-        timecardDate:
+        country:
           type: string
-          format: date-time
-        uniqueID:
-          type: string
-        rowVersion:
-          type: integer
-          format: int64
-        timecardlines:
+        isActive:
+          type: boolean
+        organizationTypes:
           type: array
           items:
-            $ref: '#/components/schemas/TimecardLine'
-        employees:
-          type: array
-          items:
-            $ref: '#/components/schemas/Employee'
+            type: integer
+            format: int32
+        phoneNumber:
+          type: string
+        customerPaymentTermID:
+          type: string
+        customerTaxCodeID:
+          type: string
+        supplierPaymentTermID:
+          type: string
+        supplierTaxCodeID:
+          type: string
+        currencyCode:
+          type: string
+        websiteUrl:
+          type: string
+        comments:
+          type: string
+        salesAccountID:
+          type: string
+        leadTimeDays:
+          type: integer
+          format: int32
+        minimumOrderAmount:
+          type: number
+          format: double
+        customerStatus:
+          type: integer
+        supplierStatus:
+          type: integer
+    PartMaterial:
+      title: PartMaterial
+      type: object
+      properties:
+        partID:
+          type: string
+        partRevisionID:
+          type: string
+        partOperationSeq:
+          type: integer
+          format: int32
+        materialPartID:
+          type: string
+        materialPartRevisionID:
+          type: string
+        uniqueID:
+          type: string
+        rowVersion:
+          type: integer
+          format: int64
+        quantity:
+          type: number
+          format: double
+        unitOfMeasure:
+          type: string
+        partAssemblyID:
+          type: string
+        partAssemblySeq:
+          type: integer
+          format: int32
+    GLCode:
+      title: GLCode
+      type: object
+      properties:
+        description:
+          type: string
+        glCodeID:
+          type: string
+        rowVersion:
+          type: integer
+          format: int64
+        uniqueID:
+          type: string
+        isActive:
+          type: boolean
     ARInvoiceSalesPerson:
       title: ARInvoiceSalesPerson
       type: object
@@ -21867,21 +22001,147 @@ components:
         rowVersion:
           type: integer
           format: int64
-    GLCode:
-      title: GLCode
+    PartPrice:
+      title: PartPrice
       type: object
       properties:
-        description:
+        partPriceID:
           type: string
-        glCodeID:
+        partID:
+          type: string
+        partRevisionID:
+          type: string
+        startDate:
+          type: string
+          format: date-time
+        endDate:
+          type: string
+          format: date-time
+        isCustomerSpecific:
+          type: boolean
+        uniqueID:
           type: string
         rowVersion:
           type: integer
           format: int64
+    ARInvoice:
+      title: ARInvoice
+      type: object
+      properties:
+        invoiceID:
+          type: string
+        invoiceDate:
+          type: string
+          format: date
+        dueDate:
+          type: string
+          format: date
+        invoiceType:
+          type: integer
+          format: int32
+        isPostedToGL:
+          type: boolean
+        postedDate:
+          type: string
+          format: date
+        isOnHold:
+          type: boolean
+        isOverpayment:
+          type: boolean
+        paymentTermID:
+          type: string
+        invoiceTotalBase:
+          type: number
+          format: double
+        invoiceTotalForeign:
+          type: number
+          format: double
+        invoiceBalanceBase:
+          type: number
+          format: double
+        invoiceBalanceForeign:
+          type: number
+          format: double
         uniqueID:
           type: string
-        isActive:
-          type: boolean
+        rowVersion:
+          type: integer
+          format: int64
+        customerID:
+          type: string
+        paidDate:
+          type: string
+          format: date
+        plantID:
+          type: string
+    CycleCode:
+      title: CycleCode
+      type: object
+      properties:
+        description:
+          type: string
+        uniqueID:
+          type: string
+        rowVersion:
+          type: integer
+          format: int64
+        cycleCodeID:
+          type: string
+    PartOperation_2:
+      title: PartOperation
+      type: object
+      properties:
+        partID:
+          type: string
+        partRevisionID:
+          type: string
+        partOperationSeq:
+          type: integer
+          format: int32
+        workCenterID:
+          type: string
+        processID:
+          type: string
+        shortDesc:
+          type: string
+        longDescText:
+          type: string
+        longDescFormatted:
+          type: string
+        outsideOperation:
+          type: string
+        estSetupHours:
+          type: number
+          format: double
+        estProdHours:
+          type: number
+          format: double
+        estQueueHours:
+          type: number
+          format: double
+        estMoveHours:
+          type: number
+          format: double
+        estQAHours:
+          type: number
+          format: double
+        vendorID:
+          type: string
+        estSetupTimeValue:
+          type: number
+          format: double
+        estSetupTimeUnit:
+          type: string
+        estProdTimeValue:
+          type: number
+          format: double
+        estProdTimeUnit:
+          type: string
+        uniqueID:
+          type: string
+        rowVersion:
+          type: integer
+          format: int64
     PartGroup:
       title: PartGroup
       type: object
@@ -21902,6 +22162,369 @@ components:
         inactiveDate:
           type: string
           format: date
+    QuoteSalesPerson:
+      title: QuoteSalesPerson
+      type: object
+      properties:
+        quoteID:
+          type: string
+        employeeID:
+          type: string
+        percentage:
+          type: number
+          format: double
+        isClosed:
+          type: boolean
+        uniqueID:
+          type: string
+        rowVersion:
+          type: integer
+          format: int64
+        sequenceNo:
+          type: integer
+          format: int32
+        quote:
+          $ref: '#/components/schemas/Quote'
+    PartRevision_2:
+      title: PartRevision
+      type: object
+      properties:
+        partID:
+          type: string
+        partRevisionID:
+          type: string
+        shortDesc:
+          type: string
+        longDescText:
+          type: string
+        longDescFormatted:
+          type: string
+        uniqueID:
+          type: string
+        rowVersion:
+          type: integer
+          format: int64
+        partCost:
+          type: number
+          format: double
+        effectiveStartDate:
+          type: string
+          format: date
+        expirationEndDate:
+          type: string
+          format: date
+        supplierOrganizationID:
+          type: string
+        leadTime:
+          type: integer
+          format: int32
+        quantityOnHand:
+          type: number
+          format: double
+        pricingUnitOfMeasure:
+          type: string
+    Part:
+      title: Part
+      type: object
+      properties:
+        partClassID:
+          type: string
+        partGroupID:
+          type: string
+        cycleCodeID:
+          type: string
+        partType:
+          type: integer
+          format: int32
+        partID:
+          type: string
+        alternatePartID:
+          type: string
+        uniqueID:
+          type: string
+        rowVersion:
+          type: integer
+          format: int64
+        isActive:
+          type: boolean
+        partClass:
+          $ref: '#/components/schemas/PartClass'
+        partGroup:
+          $ref: '#/components/schemas/PartGroup'
+    DmrClaim:
+      title: DmrClaim
+      type: object
+      properties:
+        claimID:
+          type: string
+        supplierOrganizationID:
+          type: string
+        claimDate:
+          type: string
+          format: date
+        claimTotal:
+          type: number
+          format: double
+        foreignTotal:
+          type: number
+          format: double
+        currency:
+          type: string
+        plantID:
+          type: string
+        projectID:
+          type: string
+        uniqueID:
+          type: string
+        rowVersion:
+          type: integer
+          format: int64
+        status:
+          type: string
+        supplier:
+          $ref: '#/components/schemas/Organization'
+        plant:
+          $ref: '#/components/schemas/Plant'
+        project:
+          $ref: '#/components/schemas/Project'
+    SalesOrderLine_2:
+      title: SalesOrderLine
+      type: object
+      properties:
+        salesOrderID:
+          type: string
+        orderLine:
+          type: integer
+        totalSalePrice:
+          type: number
+          format: double
+        uniqueID:
+          type: string
+        rowVersion:
+          type: integer
+          format: int64
+        partID:
+          type: string
+        partRevisionID:
+          type: string
+        partGroupID:
+          type: string
+        shortDescription:
+          type: string
+        saleUom:
+          type: string
+        baseUnitPrice:
+          type: number
+          description: The price expressed in the currency of the seller.
+          format: double
+        foreignUnitPrice:
+          type: number
+          description: The price expressed in the currency of the buyer, if different from that of the seller.
+          format: double
+        baseExtendedPrice:
+          type: number
+          description: The extended (qty x price) total expressed in the currency of the seller.
+          format: double
+        foreignExtendedPrice:
+          type: number
+          description: The extended (qty x price) total expressed in the currency of the buyer, if different from that of the seller.
+          format: double
+        quantityOrdered:
+          type: number
+          format: double
+        quantityShipped:
+          type: number
+          format: double
+        purchaseOrderCost:
+          type: number
+          format: double
+        purchaseOrderCostForeign:
+          type: number
+          format: double
+        salesOrderType:
+          type: string
+        locationID:
+          type: string
+        shippedDate:
+          type: string
+          format: date-time
+        isPosted:
+          type: boolean
+        dueDate:
+          type: string
+          format: date-time
+        salesOrderDeliveries:
+          type: array
+          items:
+            $ref: '#/components/schemas/SalesOrderDelivery_2'
+        salesOrderJobs:
+          $ref: '#/components/schemas/SalesOrderJob_2'
+        salesOrder:
+          $ref: '#/components/schemas/SalesOrder'
+        partRevision:
+          $ref: '#/components/schemas/PartRevision_2'
+        partGroup:
+          $ref: '#/components/schemas/PartGroup'
+    PartCostBreak:
+      title: PartCostBreak
+      type: object
+      properties:
+        partCostID:
+          type: string
+        quantity:
+          type: number
+          format: double
+        unitCost:
+          type: number
+          format: double
+        uniqueID:
+          type: string
+        rowVersion:
+          type: integer
+          format: int64
+    SalesOrderSalesPerson:
+      title: SalesOrderSalesPerson
+      type: object
+      properties:
+        salesOrderID:
+          type: string
+        salesEmployeeID:
+          type: string
+        uniqueID:
+          type: string
+        isActive:
+          type: boolean
+        sequenceNo:
+          type: integer
+          format: int32
+        rowVersion:
+          type: integer
+          format: int64
+        salesOrderType:
+          type: string
+        percentage:
+          type: number
+          format: double
+        salesOrder:
+          $ref: '#/components/schemas/SalesOrder'
+        salesEmployee:
+          $ref: '#/components/schemas/Employee_2'
+    Location:
+      title: Location
+      type: object
+      properties:
+        uniqueID:
+          type: string
+        rowVersion:
+          type: integer
+          format: int64
+        locationID:
+          type: string
+        name:
+          type: string
+        organizationID:
+          type: string
+        organizationTypes:
+          type: array
+          items:
+            type: integer
+            format: int32
+        addressLine1:
+          type: string
+        addressLine2:
+          type: string
+        addressLine3:
+          type: string
+        city:
+          type: string
+        county:
+          type: string
+        country:
+          type: string
+        postalCode:
+          type: string
+        state:
+          type: string
+        isActive:
+          type: boolean
+        locationTypes:
+          type: array
+          items:
+            type: integer
+            format: int32
+        organization:
+          $ref: '#/components/schemas/Organization'
+    WorkCenter_2:
+      title: WorkCenter
+      type: object
+      properties:
+        workCenterID:
+          type: string
+        shortDesc:
+          type: string
+        deptID:
+          type: string
+        overHeadRate:
+          type: string
+        quoteRate:
+          type: string
+        processID:
+          type: string
+        parentWorkCenterID:
+          type: string
+        shiftID:
+          type: string
+        uniqueID:
+          type: string
+        rowVersion:
+          type: integer
+          format: int64
+        laborRate:
+          type: string
+        departments:
+          type: array
+          items:
+            $ref: '#/components/schemas/Department'
+        shifts:
+          type: array
+          items:
+            $ref: '#/components/schemas/Shift'
+    Project:
+      title: Project
+      type: object
+      properties:
+        uniqueID:
+          type: string
+        rowVersion:
+          type: integer
+          format: int64
+        projectID:
+          type: string
+        customerID:
+          type: string
+        locationID:
+          type: string
+        contactID:
+          type: string
+        dueDate:
+          type: string
+          format: date
+        projectDate:
+          type: string
+          format: date
+        closedDate:
+          type: string
+          format: date
+        shortDescription:
+          type: string
+        longDescription:
+          type: string
+        statusCode:
+          type: string
+        isClosed:
+          type: boolean
+        customer:
+          $ref: '#/components/schemas/Organization'
     InspectionLine:
       title: InspectionLine
       type: object
@@ -21947,16 +22570,22 @@ components:
           format: int32
         inspectorEmployeeID:
           type: string
-    PartCostBreak:
-      title: PartCostBreak
+    PartPriceBreak:
+      title: PartPriceBreak
       type: object
       properties:
-        partCostID:
+        partPriceID:
           type: string
         quantity:
           type: number
           format: double
-        unitCost:
+        unitPrice:
+          type: number
+          format: double
+        markup:
+          type: number
+          format: double
+        discount:
           type: number
           format: double
         uniqueID:
@@ -21964,195 +22593,259 @@ components:
         rowVersion:
           type: integer
           format: int64
-    SalesOrderSalesPerson:
-      title: SalesOrderSalesPerson
+    WorkCenterRateBreak:
+      title: WorkCenterRateBreak
+      type: object
+      properties:
+        workCenterID:
+          type: string
+        shortDesc:
+          type: string
+        ordinal:
+          type: integer
+        setupRate:
+          type: number
+          format: double
+        prodRate:
+          type: number
+          format: double
+        uniqueID:
+          type: string
+        rowVersion:
+          type: integer
+          format: int64
+        laborRate:
+          type: string
+    PartBin:
+      title: PartBin
+      type: object
+      properties:
+        partRevisionID:
+          type: string
+        warehouseID:
+          type: string
+        partBinID:
+          type: string
+        quantityOnHand:
+          type: number
+          format: double
+        quantityAllocated:
+          type: number
+          format: double
+        quantityOnOrderSales:
+          type: number
+          format: double
+        quantityOnOrderPurchases:
+          type: number
+          format: double
+        quantityToInspect:
+          type: number
+          format: double
+        quantityToReturn:
+          type: number
+          format: double
+        uniqueID:
+          type: string
+        rowVersion:
+          type: integer
+          format: int64
+        partID:
+          type: string
+        lotNumber:
+          type: string
+        purchaseOrderLineID:
+          type: string
+        partRevision:
+          $ref: '#/components/schemas/PartRevision_2'
+    SalesOrderDelivery_2:
+      title: SalesOrderDelivery
       type: object
       properties:
         salesOrderID:
           type: string
-        salesEmployeeID:
+        orderLine:
+          type: integer
+        orderLineDelivery:
           type: string
+        promisedDate:
+          type: string
+          format: date-time
+        promisedQty:
+          type: number
+          format: double
+        shippedDate:
+          type: string
+          format: date-time
+        shippedQty:
+          type: number
+          format: double
         uniqueID:
           type: string
-        isActive:
-          type: boolean
-        sequenceNo:
-          type: integer
-          format: int32
         rowVersion:
           type: integer
           format: int64
+        deliveryTypeCode:
+          type: string
         salesOrderType:
           type: string
-        percentage:
-          type: number
-          format: double
-        salesOrder:
-          $ref: '#/components/schemas/SalesOrder'
-        salesEmployee:
-          $ref: '#/components/schemas/Employee_2'
-    Part:
-      title: Part
+        salesOrderJobs:
+          type: array
+          items:
+            $ref: '#/components/schemas/SalesOrderJob_2'
+    Employee_2:
+      title: Employee
       type: object
       properties:
-        partClassID:
-          type: string
-        partGroupID:
-          type: string
-        cycleCodeID:
-          type: string
-        partType:
-          type: integer
-          format: int32
-        partID:
-          type: string
-        alternatePartID:
-          type: string
-        uniqueID:
-          type: string
-        rowVersion:
-          type: integer
-          format: int64
-        isActive:
-          type: boolean
-        partClass:
-          $ref: '#/components/schemas/PartClass'
-        partGroup:
-          $ref: '#/components/schemas/PartGroup'
-    QuoteQuantity:
-      title: QuoteQuantity
-      type: object
-      properties:
-        uniqueID:
-          type: string
-        rowVersion:
-          type: integer
-          format: int64
-        quoteQuantityID:
-          type: string
-        quoteID:
-          type: string
-        quoteLineID:
-          type: string
-        quantity:
-          type: number
-          format: double
-        baseUnitPrice:
-          type: number
-          description: The price expressed in the currency of the seller.
-          format: double
-        foreignUnitPrice:
-          type: number
-          description: The price expressed in the currency of the buyer, if different from that of the seller.
-          format: double
-        quote:
-          $ref: '#/components/schemas/Quote'
-        quoteLine:
-          $ref: '#/components/schemas/QuoteLine'
-    DmrClaim:
-      title: DmrClaim
-      type: object
-      properties:
-        claimID:
-          type: string
-        supplierOrganizationID:
-          type: string
-        claimDate:
-          type: string
-          format: date
-        claimTotal:
-          type: number
-          format: double
-        foreignTotal:
-          type: number
-          format: double
-        currency:
-          type: string
-        plantID:
-          type: string
-        projectID:
-          type: string
-        uniqueID:
-          type: string
-        rowVersion:
-          type: integer
-          format: int64
-        status:
-          type: string
-        supplier:
-          $ref: '#/components/schemas/Organization'
-        plant:
-          $ref: '#/components/schemas/Plant'
-        project:
-          $ref: '#/components/schemas/Project'
-    QuoteSalesPerson:
-      title: QuoteSalesPerson
-      type: object
-      properties:
-        quoteID:
-          type: string
         employeeID:
           type: string
-        percentage:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        title:
+          type: string
+        supervisorEmployeeID:
+          type: string
+        payRate:
           type: number
           format: double
-        isClosed:
+        deptID:
+          type: string
+        shiftID:
+          type: string
+        isActive:
           type: boolean
         uniqueID:
           type: string
         rowVersion:
           type: integer
           format: int64
-        sequenceNo:
-          type: integer
-          format: int32
-        quote:
-          $ref: '#/components/schemas/Quote'
-    DmrClaimLine:
-      title: DmrClaimLine
+    PurchaseOrderLine:
+      title: PurchaseOrderLine
       type: object
       properties:
-        claimLineID:
+        dueDate:
           type: string
+          format: date
+        extendedCost:
+          type: number
+          format: double
+        foreignExtendedCost:
+          type: number
+          format: double
         partID:
           type: string
         partRevisionID:
           type: string
-        partShortDescription:
+        partDescription:
           type: string
-        partLongDescription:
+        partWarehouse:
           type: string
-        partWarehouseID:
+        purchaseOrderLineID:
           type: string
         quantity:
           type: number
           format: double
-        quantityShipped:
+        quantityReceived:
           type: number
           format: double
-        unitOfMeasure:
-          type: string
         unitCost:
           type: number
           format: double
         foreignUnitCost:
           type: number
           format: double
+        isReceived:
+          type: boolean
+        inspectionRequired:
+          type: boolean
         uniqueID:
           type: string
         rowVersion:
           type: integer
           format: int64
-        claimID:
+        isClosed:
+          type: boolean
+        purchaseOrderID:
           type: string
-        claim:
-          $ref: '#/components/schemas/DmrClaim'
-        part:
-          $ref: '#/components/schemas/Part'
-        partRevision:
-          $ref: '#/components/schemas/PartRevision_2'
-    Project:
-      title: Project
+        unitOfMeasure:
+          type: string
+        jobID:
+          type: string
+        purchaseOrder:
+          $ref: '#/components/schemas/PurchaseOrder'
+    JobAssembly:
+      title: JobAssembly
+      type: object
+      properties:
+        jobID:
+          type: string
+        jobAssemblyID:
+          type: string
+        level:
+          type: integer
+        parentAssemblyID:
+          type: string
+        sourceMethodID:
+          type: string
+        sourceRevisionID:
+          type: string
+        partID:
+          type: string
+        partRevisionID:
+          type: string
+        partShortDesc:
+          type: string
+        quantityPerParent:
+          type: number
+          format: double
+        orderQty:
+          type: number
+          format: double
+        inventoryQty:
+          type: number
+          format: double
+        scrapQty:
+          type: number
+          format: double
+        quantityToInspect:
+          type: number
+          format: double
+        quantityRcvdToInv:
+          type: number
+          format: double
+        productionQty:
+          type: number
+          format: double
+        quantityToMake:
+          type: number
+          format: double
+        quantityToPull:
+          type: number
+          format: double
+        quantityIssued:
+          type: number
+          format: double
+        quantityCompleted:
+          type: number
+          format: double
+        isProductionComplete:
+          type: boolean
+        completedDate:
+          type: string
+          format: date-time
+        uniqueID:
+          type: string
+        rowVersion:
+          type: integer
+          format: int64
+        jobIsClosed:
+          type: boolean
+        jobClosedDate:
+          type: string
+          format: date-time
+    Quote:
+      title: Quote
       type: object
       properties:
         uniqueID:
@@ -22160,48 +22853,191 @@ components:
         rowVersion:
           type: integer
           format: int64
-        projectID:
+        quoteID:
           type: string
-        customerID:
+        employeeID:
+          type: string
+        organizationID:
           type: string
         locationID:
           type: string
         contactID:
           type: string
+        invoiceLocationID:
+          type: string
+        quoteDate:
+          type: string
+          format: date
         dueDate:
           type: string
           format: date
-        projectDate:
-          type: string
-          format: date
+        isClosed:
+          type: boolean
         closedDate:
           type: string
           format: date
-        shortDescription:
+        currencyRateID:
           type: string
-        longDescription:
+        customerID:
+          type: string
+        expirationDate:
+          type: string
+          format: date
+        plantID:
+          type: string
+        projectID:
+          type: string
+        shipToOrganizationID:
+          type: string
+        shipToContactID:
+          type: string
+        shipToLocationID:
           type: string
         statusCode:
           type: string
-        isClosed:
-          type: boolean
+        totalSalesAmount:
+          type: number
+          format: double
+        awardProbability:
+          type: number
+          format: double
+        lostSaleCode:
+          type: string
         customer:
           $ref: '#/components/schemas/Organization'
-    Reason:
-      title: Reason
+        contact:
+          $ref: '#/components/schemas/Contact'
+        shipTo:
+          $ref: '#/components/schemas/Organization'
+        shipToContact:
+          $ref: '#/components/schemas/Contact'
+        project:
+          $ref: '#/components/schemas/Project'
+    SalesOrderJob_2:
+      title: SalesOrderJob
       type: object
       properties:
-        reasonID:
+        salesOrderID:
           type: string
+        orderLine:
+          type: integer
+        orderLineDelivery:
+          type: string
+        jobID:
+          type: string
+        orderJobSeq:
+          type: integer
+          format: int32
+        uniqueID:
+          type: string
+        rowVersion:
+          type: integer
+          format: int64
+    PartClass:
+      title: PartClass
+      type: object
+      properties:
         description:
-          type: string
-        name:
           type: string
         uniqueID:
           type: string
         rowVersion:
           type: integer
           format: int64
+        partClassID:
+          type: string
+        isActive:
+          type: boolean
+    TimecardLine_2:
+      title: TimecardLine
+      type: object
+      properties:
+        timecardID:
+          type: string
+        timecardLine:
+          type: string
+        jobID:
+          type: string
+        jobAssembly:
+          type: string
+        jobOperation:
+          type: integer
+          format: int32
+        workCenterID:
+          type: string
+        processID:
+          type: string
+        status:
+          type: string
+        timecardType:
+          type: string
+        goodQty:
+          type: number
+          format: double
+        scrapQty:
+          type: number
+          format: double
+        reworkQty:
+          type: number
+          format: double
+        rejectQty:
+          type: number
+          format: double
+        startTime:
+          type: string
+          format: date-time
+        endTime:
+          type: string
+          format: date-time
+        machineHours:
+          type: number
+          format: double
+        laborHours:
+          type: number
+          format: double
+        employeeID:
+          type: integer
+          format: int32
+        timecardDate:
+          type: string
+          format: date-time
+        uniqueID:
+          type: string
+        rowVersion:
+          type: integer
+          format: int64
+        workCenters:
+          type: array
+          items:
+            $ref: '#/components/schemas/WorkCenter_2'
+        workCenter:
+          $ref: '#/components/schemas/WorkCenter_2'
+        timecards:
+          type: array
+          items:
+            $ref: '#/components/schemas/Timecard'
+        timecard:
+          $ref: '#/components/schemas/Timecard'
+        jobs:
+          $ref: '#/components/schemas/Job_2'
+        job:
+          $ref: '#/components/schemas/Job_2'
+        processes:
+          $ref: '#/components/schemas/Process'
+        process:
+          $ref: '#/components/schemas/Process'
+        jobOperations:
+          $ref: '#/components/schemas/JobOperation_2'
+        jobOperationx:
+          $ref: '#/components/schemas/JobOperation_2'
+        salesOrderDeliveries:
+          type: array
+          items:
+            $ref: '#/components/schemas/SalesOrderDelivery_2'
+        salesOrderJobs:
+          $ref: '#/components/schemas/SalesOrderJob_2'
+        salesOrderJob:
+          $ref: '#/components/schemas/SalesOrderJob_2'
     Job_2:
       title: Job
       type: object
@@ -22312,145 +23148,67 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/JobOperation_2'
-    CycleCode:
-      title: CycleCode
+    RmaReceiptLine:
+      title: RmaReceiptLine
       type: object
       properties:
         description:
           type: string
-        uniqueID:
-          type: string
-        rowVersion:
-          type: integer
-          format: int64
-        cycleCodeID:
-          type: string
-    SalesOrderLine_2:
-      title: SalesOrderLine
-      type: object
-      properties:
-        salesOrderID:
-          type: string
-        orderLine:
-          type: integer
-        totalSalePrice:
-          type: number
-          format: double
-        uniqueID:
-          type: string
-        rowVersion:
-          type: integer
-          format: int64
+        isInspected:
+          type: boolean
         partID:
+          type: string
+        partLongDescription:
           type: string
         partRevisionID:
           type: string
-        partGroupID:
+        partWarehouseID:
           type: string
-        shortDescription:
+        projectID:
           type: string
-        saleUom:
-          type: string
-        baseUnitPrice:
-          type: number
-          description: The price expressed in the currency of the seller.
-          format: double
-        foreignUnitPrice:
-          type: number
-          description: The price expressed in the currency of the buyer, if different from that of the seller.
-          format: double
-        baseExtendedPrice:
-          type: number
-          description: The extended (qty x price) total expressed in the currency of the seller.
-          format: double
-        foreignExtendedPrice:
-          type: number
-          description: The extended (qty x price) total expressed in the currency of the buyer, if different from that of the seller.
-          format: double
-        quantityOrdered:
-          type: number
-          format: double
-        quantityShipped:
-          type: number
-          format: double
-        purchaseOrderCost:
-          type: number
-          format: double
-        purchaseOrderCostForeign:
-          type: number
-          format: double
-        salesOrderType:
-          type: string
-        locationID:
-          type: string
-        shippedDate:
-          type: string
-          format: date-time
-        isPosted:
+        isReceived:
           type: boolean
-        dueDate:
+        inspectionRequired:
+          type: boolean
+        claimLineID:
           type: string
-          format: date-time
-        salesOrderDeliveries:
-          type: array
-          items:
-            $ref: '#/components/schemas/SalesOrderDelivery_2'
-        salesOrderJobs:
-          $ref: '#/components/schemas/SalesOrderJob_2'
-        salesOrder:
-          $ref: '#/components/schemas/SalesOrder'
-        partRevision:
-          $ref: '#/components/schemas/PartRevision_2'
-        partGroup:
-          $ref: '#/components/schemas/PartGroup'
-    SalesOrderJob_2:
-      title: SalesOrderJob
-      type: object
-      properties:
-        salesOrderID:
+        claimQuantity:
+          type: number
+          format: double
+        receiptID:
           type: string
-        orderLine:
-          type: integer
-        orderLineDelivery:
+        receiptLineID:
           type: string
-        jobID:
-          type: string
-        orderJobSeq:
-          type: integer
-          format: int32
         uniqueID:
           type: string
         rowVersion:
           type: integer
           format: int64
-    Employee_2:
-      title: Employee
+        isClosed:
+          type: boolean
+        isReversed:
+          type: boolean
+        claimID:
+          type: string
+        claim:
+          $ref: '#/components/schemas/RmaClaim'
+        claimLine:
+          $ref: '#/components/schemas/RmaClaimLine'
+    TaxCode:
+      title: TaxCode
       type: object
       properties:
-        employeeID:
+        description:
           type: string
-        firstName:
-          type: string
-        lastName:
-          type: string
-        title:
-          type: string
-        supervisorEmployeeID:
-          type: string
-        payRate:
-          type: number
-          format: double
-        deptID:
-          type: string
-        shiftID:
+        taxCodeID:
           type: string
         isActive:
           type: boolean
-        uniqueID:
-          type: string
         rowVersion:
           type: integer
           format: int64
+        uniqueID:
+          type: string
     SalesOrder:
       title: SalesOrder
       type: object
@@ -22491,6 +23249,404 @@ components:
           $ref: '#/components/schemas/Plant'
         project:
           $ref: '#/components/schemas/Project'
+    QuoteQuantity:
+      title: QuoteQuantity
+      type: object
+      properties:
+        uniqueID:
+          type: string
+        rowVersion:
+          type: integer
+          format: int64
+        quoteQuantityID:
+          type: string
+        quoteID:
+          type: string
+        quoteLineID:
+          type: string
+        quantity:
+          type: number
+          format: double
+        baseUnitPrice:
+          type: number
+          description: The price expressed in the currency of the seller.
+          format: double
+        foreignUnitPrice:
+          type: number
+          description: The price expressed in the currency of the buyer, if different from that of the seller.
+          format: double
+        quote:
+          $ref: '#/components/schemas/Quote'
+        quoteLine:
+          $ref: '#/components/schemas/QuoteLine'
+    APInvoice:
+      title: APInvoice
+      type: object
+      properties:
+        invoiceID:
+          type: string
+        invoiceDate:
+          type: string
+          format: date
+        dueDate:
+          type: string
+          format: date
+        invoiceType:
+          type: integer
+          format: int32
+        isPostedToGL:
+          type: boolean
+        postedDate:
+          type: string
+          format: date
+        isOnHold:
+          type: boolean
+        isOverpayment:
+          type: boolean
+        paymentTermID:
+          type: string
+        baseTotal:
+          type: number
+          format: double
+        foreignTotal:
+          type: number
+          format: double
+        baseBalance:
+          type: number
+          format: double
+        foreignBalance:
+          type: number
+          format: double
+        uniqueID:
+          type: string
+        rowVersion:
+          type: integer
+          format: int64
+        currency:
+          type: string
+        supplierID:
+          type: string
+        paidDate:
+          type: string
+          format: date
+        plantID:
+          type: string
+    PurchaseOrder:
+      title: PurchaseOrder
+      type: object
+      properties:
+        apInvoiceLocationID:
+          type: string
+        buyerEmployeeID:
+          type: string
+        currency:
+          type: string
+        orderDate:
+          type: string
+          format: date
+        plantID:
+          type: string
+        projectID:
+          type: string
+        purchaseOrderID:
+          type: string
+        supplierOrganizationID:
+          type: string
+        uniqueID:
+          type: string
+        rowVersion:
+          type: integer
+          format: int64
+        isClosed:
+          type: boolean
+    Contact:
+      title: Contact
+      type: object
+      properties:
+        uniqueID:
+          type: string
+        rowVersion:
+          type: integer
+          format: int64
+        contactID:
+          type: string
+        name:
+          type: string
+        organizationID:
+          type: string
+        organizationTypes:
+          type: array
+          items:
+            type: integer
+            format: int32
+        phoneNumber:
+          type: string
+        emailAddress:
+          type: string
+        isActive:
+          type: boolean
+        comments:
+          type: string
+        organization:
+          $ref: '#/components/schemas/Organization'
+    PaymentTerm:
+      title: PaymentTerm
+      type: object
+      properties:
+        description:
+          type: string
+        paymentTermID:
+          type: string
+        rowVersion:
+          type: integer
+          format: int64
+        uniqueID:
+          type: string
+    RmaClaim:
+      title: RmaClaim
+      type: object
+      properties:
+        claimDate:
+          type: string
+          format: date
+        claimTotal:
+          type: number
+          format: double
+        foreignTotal:
+          type: number
+          format: double
+        currency:
+          type: string
+        customerOrganizationID:
+          type: string
+        plantID:
+          type: string
+        claimID:
+          type: string
+        uniqueID:
+          type: string
+        rowVersion:
+          type: integer
+          format: int64
+        status:
+          type: string
+        customer:
+          $ref: '#/components/schemas/Organization'
+    PartTransaction:
+      title: PartTransaction
+      type: object
+      properties:
+        partTransactionID:
+          type: string
+        partID:
+          type: string
+        partRevisionID:
+          type: string
+        transactionType:
+          type: integer
+        source:
+          type: integer
+        receiptType:
+          type: integer
+        isNonInventoryTransaction:
+          type: boolean
+        purchaseOrderID:
+          type: string
+        jobID:
+          type: string
+        partWarehouseID:
+          type: string
+        partBinID:
+          type: string
+        supplierOrganizationID:
+          type: string
+        inventoryQtyRcvd:
+          type: number
+          format: double
+        scrapQty:
+          type: number
+          format: double
+        quantityToInspect:
+          type: number
+          format: double
+        quantityToReturn:
+          type: number
+          format: double
+        purchaseQtyRcvd:
+          type: number
+          format: double
+        purchaseUnitCost:
+          type: number
+          format: double
+        transactionDate:
+          type: string
+          format: date-time
+        reference:
+          type: string
+        shipmentID:
+          type: string
+        shipmentLineID:
+          type: string
+        receiptID:
+          type: string
+        DMRShipmentID:
+          type: string
+        RMAReceiptID:
+          type: string
+        inspectionID:
+          type: string
+        inventoryCountID:
+          type: string
+        warehouseTransferID:
+          type: string
+        warehouseReceiptID:
+          type: string
+        projectID:
+          type: string
+        projectAreaID:
+          type: string
+        plantID:
+          type: string
+        costType:
+          type: integer
+        quantity:
+          type: number
+          format: double
+        unitLaborCost:
+          type: number
+          format: double
+        unitOverheadCost:
+          type: number
+          format: double
+        unitMaterialCost:
+          type: number
+          format: double
+        unitSubcontractCost:
+          type: number
+          format: double
+        uniqueID:
+          type: string
+        rowVersion:
+          type: integer
+          format: int64
+    QuoteLine:
+      title: QuoteLine
+      type: object
+      properties:
+        uniqueID:
+          type: string
+        rowVersion:
+          type: integer
+          format: int64
+        quoteID:
+          type: string
+        partID:
+          type: string
+        partRevisionID:
+          type: string
+        partGroupID:
+          type: string
+        shortDescription:
+          type: string
+        quoteQuantityID:
+          type: string
+          description: The QuoteQuantity record identifier to be used when calculating a Quote Total.
+        quoteLineID:
+          type: string
+        resolutionReasonID:
+          type: string
+        locationID:
+          type: string
+        quote:
+          $ref: '#/components/schemas/Quote'
+        resolutionReason:
+          $ref: '#/components/schemas/Reason'
+        partGroup:
+          $ref: '#/components/schemas/PartGroup'
+    APInvoiceLine:
+      title: APInvoiceLine
+      type: object
+      properties:
+        invoiceID:
+          type: string
+        lineID:
+          type: string
+        itemType:
+          type: string
+        partID:
+          type: string
+        partRevisionID:
+          type: string
+        partDescription:
+          type: string
+        purchaseQuantity:
+          type: number
+          format: double
+        baseUnitCost:
+          type: number
+          format: double
+        foreignUnitCost:
+          type: number
+          format: double
+        baseExtendedCost:
+          type: number
+          format: double
+        foreignExtendedCost:
+          type: number
+          format: double
+        baseSetupCharge:
+          type: number
+          format: double
+        foreignSetupCharge:
+          type: number
+          format: double
+        unitOfMeasure:
+          type: string
+        uniqueID:
+          type: string
+        rowVersion:
+          type: integer
+          format: int64
+    JobMaterial:
+      title: JobMaterial
+      type: object
+      properties:
+        jobID:
+          type: string
+        jobAssemblyID:
+          type: string
+        jobAssemblySeq:
+          type: integer
+          format: int32
+        materialPartID:
+          type: string
+        materialPartRevisionID:
+          type: string
+        estQuantity:
+          type: number
+          format: double
+        estUnitCost:
+          type: number
+          format: double
+        unitOfMeasure:
+          type: string
+        leadTime:
+          type: number
+          format: double
+        vendorID:
+          type: string
+        uniqueID:
+          type: string
+        rowVersion:
+          type: integer
+          format: int64
+        jobIsClosed:
+          type: boolean
+        jobClosedDate:
+          type: string
+          format: date-time
+        jobType:
+          type: string
     ShipmentLine:
       title: ShipmentLine
       type: object
@@ -22542,6 +23698,62 @@ components:
           type: string
         projectID:
           type: string
+    DmrClaimLine:
+      title: DmrClaimLine
+      type: object
+      properties:
+        claimLineID:
+          type: string
+        partID:
+          type: string
+        partRevisionID:
+          type: string
+        partShortDescription:
+          type: string
+        partLongDescription:
+          type: string
+        partWarehouseID:
+          type: string
+        quantity:
+          type: number
+          format: double
+        quantityShipped:
+          type: number
+          format: double
+        unitOfMeasure:
+          type: string
+        unitCost:
+          type: number
+          format: double
+        foreignUnitCost:
+          type: number
+          format: double
+        uniqueID:
+          type: string
+        rowVersion:
+          type: integer
+          format: int64
+        claimID:
+          type: string
+        claim:
+          $ref: '#/components/schemas/DmrClaim'
+        part:
+          $ref: '#/components/schemas/Part'
+        partRevision:
+          $ref: '#/components/schemas/PartRevision_2'
+    Plant:
+      title: Plant
+      type: object
+      properties:
+        plantID:
+          type: string
+        name:
+          type: string
+        uniqueID:
+          type: string
+        rowVersion:
+          type: integer
+          format: int64
     JobOperation_2:
       title: JobOperation
       type: object
@@ -22660,7 +23872,56 @@ components:
         jobClosedDate:
           type: string
           format: date-time
-    PartOperation_2:
+    Reason:
+      title: Reason
+      type: object
+      properties:
+        reasonID:
+          type: string
+        description:
+          type: string
+        name:
+          type: string
+        uniqueID:
+          type: string
+        rowVersion:
+          type: integer
+          format: int64
+    RmaClaimLine:
+      title: RmaClaimLine
+      type: object
+      properties:
+        unitPrice:
+          type: number
+          format: double
+        foreignUnitPrice:
+          type: number
+          format: double
+        extendedPrice:
+          type: number
+          format: double
+        foreignExtendedPrice:
+          type: number
+          format: double
+        uniqueID:
+          type: string
+        rowVersion:
+          type: integer
+          format: int64
+        claimID:
+          type: string
+        claimLineID:
+          type: string
+        quantity:
+          type: integer
+          format: int64
+        partID:
+          type: string
+        partRevisionID:
+          type: string
+        claim:
+          $ref: '#/components/schemas/RmaClaim'
+    PartOperation_3:
       title: PartOperation
       type: object
       properties:
@@ -22715,159 +23976,185 @@ components:
         rowVersion:
           type: integer
           format: int64
-    RmaClaimLine:
-      title: RmaClaimLine
+    PartRevision_3:
+      title: PartRevision
       type: object
       properties:
-        unitPrice:
-          type: number
-          format: double
-        foreignUnitPrice:
-          type: number
-          format: double
-        extendedPrice:
-          type: number
-          format: double
-        foreignExtendedPrice:
-          type: number
-          format: double
+        partID:
+          type: string
+        partRevisionID:
+          type: string
+        shortDesc:
+          type: string
+        longDescText:
+          type: string
+        longDescFormatted:
+          type: string
         uniqueID:
           type: string
         rowVersion:
           type: integer
           format: int64
-        claimID:
+        partCost:
+          type: number
+          format: double
+        effectiveStartDate:
           type: string
-        claimLineID:
+          format: date
+        expirationEndDate:
           type: string
-        quantity:
+          format: date
+        supplierOrganizationID:
+          type: string
+        leadTime:
+          type: integer
+          format: int32
+        quantityOnHand:
+          type: number
+          format: double
+        pricingUnitOfMeasure:
+          type: string
+    SalesOrderLine_3:
+      title: SalesOrderLine
+      type: object
+      properties:
+        salesOrderID:
+          type: string
+        orderLine:
+          type: integer
+        totalSalePrice:
+          type: number
+          format: double
+        uniqueID:
+          type: string
+        rowVersion:
           type: integer
           format: int64
         partID:
           type: string
         partRevisionID:
           type: string
-        claim:
-          $ref: '#/components/schemas/RmaClaim'
-    PartClass:
-      title: PartClass
+        partGroupID:
+          type: string
+        shortDescription:
+          type: string
+        saleUom:
+          type: string
+        baseUnitPrice:
+          type: number
+          description: The price expressed in the currency of the seller.
+          format: double
+        foreignUnitPrice:
+          type: number
+          description: The price expressed in the currency of the buyer, if different from that of the seller.
+          format: double
+        baseExtendedPrice:
+          type: number
+          description: The extended (qty x price) total expressed in the currency of the seller.
+          format: double
+        foreignExtendedPrice:
+          type: number
+          description: The extended (qty x price) total expressed in the currency of the buyer, if different from that of the seller.
+          format: double
+        quantityOrdered:
+          type: number
+          format: double
+        quantityShipped:
+          type: number
+          format: double
+        purchaseOrderCost:
+          type: number
+          format: double
+        purchaseOrderCostForeign:
+          type: number
+          format: double
+        salesOrderType:
+          type: string
+        locationID:
+          type: string
+        shippedDate:
+          type: string
+          format: date-time
+        isPosted:
+          type: boolean
+        dueDate:
+          type: string
+          format: date-time
+        salesOrderDeliveries:
+          type: array
+          items:
+            $ref: '#/components/schemas/SalesOrderDelivery_3'
+        salesOrderJobs:
+          $ref: '#/components/schemas/SalesOrderJob_3'
+        salesOrder:
+          $ref: '#/components/schemas/SalesOrder'
+        partRevision:
+          $ref: '#/components/schemas/PartRevision_3'
+        partGroup:
+          $ref: '#/components/schemas/PartGroup'
+    SalesOrderSalesPerson_2:
+      title: SalesOrderSalesPerson
       type: object
       properties:
-        description:
+        salesOrderID:
+          type: string
+        salesEmployeeID:
           type: string
         uniqueID:
-          type: string
-        rowVersion:
-          type: integer
-          format: int64
-        partClassID:
           type: string
         isActive:
           type: boolean
-    ARInvoice:
-      title: ARInvoice
-      type: object
-      properties:
-        invoiceID:
-          type: string
-        invoiceDate:
-          type: string
-          format: date
-        dueDate:
-          type: string
-          format: date
-        invoiceType:
+        sequenceNo:
           type: integer
           format: int32
-        isPostedToGL:
-          type: boolean
-        postedDate:
-          type: string
-          format: date
-        isOnHold:
-          type: boolean
-        isOverpayment:
-          type: boolean
-        paymentTermID:
-          type: string
-        invoiceTotalBase:
-          type: number
-          format: double
-        invoiceTotalForeign:
-          type: number
-          format: double
-        invoiceBalanceBase:
-          type: number
-          format: double
-        invoiceBalanceForeign:
-          type: number
-          format: double
-        uniqueID:
-          type: string
         rowVersion:
           type: integer
           format: int64
-        customerID:
+        salesOrderType:
           type: string
-        paidDate:
-          type: string
-          format: date
-        plantID:
-          type: string
-    JobMaterial:
-      title: JobMaterial
+        percentage:
+          type: number
+          format: double
+        salesOrder:
+          $ref: '#/components/schemas/SalesOrder'
+        salesEmployee:
+          $ref: '#/components/schemas/Employee_3'
+    WorkCenter_3:
+      title: WorkCenter
       type: object
       properties:
-        jobID:
+        workCenterID:
           type: string
-        jobAssemblyID:
+        shortDesc:
           type: string
-        jobAssemblySeq:
-          type: integer
-          format: int32
-        materialPartID:
+        deptID:
           type: string
-        materialPartRevisionID:
+        overHeadRate:
           type: string
-        estQuantity:
-          type: number
-          format: double
-        estUnitCost:
-          type: number
-          format: double
-        unitOfMeasure:
+        quoteRate:
           type: string
-        leadTime:
-          type: number
-          format: double
-        vendorID:
+        processID:
+          type: string
+        parentWorkCenterID:
+          type: string
+        shiftID:
           type: string
         uniqueID:
           type: string
         rowVersion:
           type: integer
           format: int64
-        jobIsClosed:
-          type: boolean
-        jobClosedDate:
+        laborRate:
           type: string
-          format: date-time
-        jobType:
-          type: string
-    Plant:
-      title: Plant
-      type: object
-      properties:
-        plantID:
-          type: string
-        name:
-          type: string
-        uniqueID:
-          type: string
-        rowVersion:
-          type: integer
-          format: int64
-    PartBin:
+        departments:
+          type: array
+          items:
+            $ref: '#/components/schemas/Department'
+        shifts:
+          type: array
+          items:
+            $ref: '#/components/schemas/Shift'
+    PartBin_2:
       title: PartBin
       type: object
       properties:
@@ -22907,413 +24194,91 @@ components:
         purchaseOrderLineID:
           type: string
         partRevision:
-          $ref: '#/components/schemas/PartRevision_2'
-    PurchaseOrder:
-      title: PurchaseOrder
+          $ref: '#/components/schemas/PartRevision_3'
+    SalesOrderDelivery_3:
+      title: SalesOrderDelivery
       type: object
       properties:
-        apInvoiceLocationID:
+        salesOrderID:
           type: string
-        buyerEmployeeID:
+        orderLine:
+          type: integer
+        orderLineDelivery:
           type: string
-        currency:
+        promisedDate:
           type: string
-        orderDate:
+          format: date-time
+        promisedQty:
+          type: number
+          format: double
+        shippedDate:
           type: string
-          format: date
-        plantID:
-          type: string
-        projectID:
-          type: string
-        purchaseOrderID:
-          type: string
-        supplierOrganizationID:
-          type: string
+          format: date-time
+        shippedQty:
+          type: number
+          format: double
         uniqueID:
           type: string
         rowVersion:
           type: integer
           format: int64
-        isClosed:
-          type: boolean
-    QuoteLine:
-      title: QuoteLine
+        deliveryTypeCode:
+          type: string
+        salesOrderType:
+          type: string
+        salesOrderJobs:
+          type: array
+          items:
+            $ref: '#/components/schemas/SalesOrderJob_3'
+    Employee_3:
+      title: Employee
       type: object
       properties:
-        uniqueID:
-          type: string
-        rowVersion:
-          type: integer
-          format: int64
-        quoteID:
-          type: string
-        partID:
-          type: string
-        partRevisionID:
-          type: string
-        partGroupID:
-          type: string
-        shortDescription:
-          type: string
-        quoteQuantityID:
-          type: string
-          description: The QuoteQuantity record identifier to be used when calculating a Quote Total.
-        quoteLineID:
-          type: string
-        resolutionReasonID:
-          type: string
-        locationID:
-          type: string
-        quote:
-          $ref: '#/components/schemas/Quote'
-        resolutionReason:
-          $ref: '#/components/schemas/Reason'
-        partGroup:
-          $ref: '#/components/schemas/PartGroup'
-    TaxCode:
-      title: TaxCode
-      type: object
-      properties:
-        description:
-          type: string
-        taxCodeID:
-          type: string
-        isActive:
-          type: boolean
-        rowVersion:
-          type: integer
-          format: int64
-        uniqueID:
-          type: string
-    Quote:
-      title: Quote
-      type: object
-      properties:
-        uniqueID:
-          type: string
-        rowVersion:
-          type: integer
-          format: int64
-        quoteID:
-          type: string
         employeeID:
           type: string
-        organizationID:
+        firstName:
           type: string
-        locationID:
+        lastName:
           type: string
-        contactID:
+        title:
           type: string
-        invoiceLocationID:
+        supervisorEmployeeID:
           type: string
-        quoteDate:
-          type: string
-          format: date
-        dueDate:
-          type: string
-          format: date
-        isClosed:
-          type: boolean
-        closedDate:
-          type: string
-          format: date
-        currencyRateID:
-          type: string
-        customerID:
-          type: string
-        expirationDate:
-          type: string
-          format: date
-        plantID:
-          type: string
-        projectID:
-          type: string
-        shipToOrganizationID:
-          type: string
-        shipToContactID:
-          type: string
-        shipToLocationID:
-          type: string
-        statusCode:
-          type: string
-        totalSalesAmount:
+        payRate:
           type: number
           format: double
-        awardProbability:
-          type: number
-          format: double
-        lostSaleCode:
-          type: string
-        customer:
-          $ref: '#/components/schemas/Organization'
-        contact:
-          $ref: '#/components/schemas/Contact'
-        shipTo:
-          $ref: '#/components/schemas/Organization'
-        shipToContact:
-          $ref: '#/components/schemas/Contact'
-        project:
-          $ref: '#/components/schemas/Project'
-    PartPrice:
-      title: PartPrice
-      type: object
-      properties:
-        partPriceID:
-          type: string
-        partID:
-          type: string
-        partRevisionID:
-          type: string
-        startDate:
-          type: string
-          format: date-time
-        endDate:
-          type: string
-          format: date-time
-        isCustomerSpecific:
-          type: boolean
-        uniqueID:
-          type: string
-        rowVersion:
-          type: integer
-          format: int64
-    WorkCenterRateBreak:
-      title: WorkCenterRateBreak
-      type: object
-      properties:
-        workCenterID:
-          type: string
-        shortDesc:
-          type: string
-        ordinal:
-          type: integer
-        setupRate:
-          type: number
-          format: double
-        prodRate:
-          type: number
-          format: double
-        uniqueID:
-          type: string
-        rowVersion:
-          type: integer
-          format: int64
-        laborRate:
-          type: string
-    PartPriceBreak:
-      title: PartPriceBreak
-      type: object
-      properties:
-        partPriceID:
-          type: string
-        quantity:
-          type: number
-          format: double
-        unitPrice:
-          type: number
-          format: double
-        markup:
-          type: number
-          format: double
-        discount:
-          type: number
-          format: double
-        uniqueID:
-          type: string
-        rowVersion:
-          type: integer
-          format: int64
-    PaymentTerm:
-      title: PaymentTerm
-      type: object
-      properties:
-        description:
-          type: string
-        paymentTermID:
-          type: string
-        rowVersion:
-          type: integer
-          format: int64
-        uniqueID:
-          type: string
-    Location:
-      title: Location
-      type: object
-      properties:
-        uniqueID:
-          type: string
-        rowVersion:
-          type: integer
-          format: int64
-        locationID:
-          type: string
-        name:
-          type: string
-        organizationID:
-          type: string
-        organizationTypes:
-          type: array
-          items:
-            type: integer
-            format: int32
-        addressLine1:
-          type: string
-        addressLine2:
-          type: string
-        addressLine3:
-          type: string
-        city:
-          type: string
-        county:
-          type: string
-        country:
-          type: string
-        postalCode:
-          type: string
-        state:
-          type: string
-        isActive:
-          type: boolean
-        locationTypes:
-          type: array
-          items:
-            type: integer
-            format: int32
-        organization:
-          $ref: '#/components/schemas/Organization'
-    PartTransaction:
-      title: PartTransaction
-      type: object
-      properties:
-        partTransactionID:
-          type: string
-        partID:
-          type: string
-        partRevisionID:
-          type: string
-        transactionType:
-          type: integer
-        source:
-          type: integer
-        receiptType:
-          type: integer
-        isNonInventoryTransaction:
-          type: boolean
-        purchaseOrderID:
-          type: string
-        jobID:
-          type: string
-        partWarehouseID:
-          type: string
-        partBinID:
-          type: string
-        supplierOrganizationID:
-          type: string
-        inventoryQtyRcvd:
-          type: number
-          format: double
-        scrapQty:
-          type: number
-          format: double
-        quantityToInspect:
-          type: number
-          format: double
-        quantityToReturn:
-          type: number
-          format: double
-        purchaseQtyRcvd:
-          type: number
-          format: double
-        purchaseUnitCost:
-          type: number
-          format: double
-        transactionDate:
-          type: string
-          format: date-time
-        reference:
-          type: string
-        shipmentID:
-          type: string
-        shipmentLineID:
-          type: string
-        receiptID:
-          type: string
-        DMRShipmentID:
-          type: string
-        RMAReceiptID:
-          type: string
-        inspectionID:
-          type: string
-        inventoryCountID:
-          type: string
-        warehouseTransferID:
-          type: string
-        warehouseReceiptID:
-          type: string
-        projectID:
-          type: string
-        projectAreaID:
-          type: string
-        plantID:
-          type: string
-        costType:
-          type: integer
-        quantity:
-          type: number
-          format: double
-        unitLaborCost:
-          type: number
-          format: double
-        unitOverheadCost:
-          type: number
-          format: double
-        unitMaterialCost:
-          type: number
-          format: double
-        unitSubcontractCost:
-          type: number
-          format: double
-        uniqueID:
-          type: string
-        rowVersion:
-          type: integer
-          format: int64
-    WorkCenter_2:
-      title: WorkCenter
-      type: object
-      properties:
-        workCenterID:
-          type: string
-        shortDesc:
-          type: string
         deptID:
-          type: string
-        overHeadRate:
-          type: string
-        quoteRate:
-          type: string
-        processID:
-          type: string
-        parentWorkCenterID:
           type: string
         shiftID:
           type: string
+        isActive:
+          type: boolean
         uniqueID:
           type: string
         rowVersion:
           type: integer
           format: int64
-        laborRate:
+    SalesOrderJob_3:
+      title: SalesOrderJob
+      type: object
+      properties:
+        salesOrderID:
           type: string
-        departments:
-          type: array
-          items:
-            $ref: '#/components/schemas/Department'
-        shifts:
-          type: array
-          items:
-            $ref: '#/components/schemas/Shift'
-    TimecardLine_2:
+        orderLine:
+          type: integer
+        orderLineDelivery:
+          type: string
+        jobID:
+          type: string
+        orderJobSeq:
+          type: integer
+          format: int32
+        uniqueID:
+          type: string
+        rowVersion:
+          type: integer
+          format: int64
+    TimecardLine_3:
       title: TimecardLine
       type: object
       properties:
@@ -23374,9 +24339,9 @@ components:
         workCenters:
           type: array
           items:
-            $ref: '#/components/schemas/WorkCenter_2'
+            $ref: '#/components/schemas/WorkCenter_3'
         workCenter:
-          $ref: '#/components/schemas/WorkCenter_2'
+          $ref: '#/components/schemas/WorkCenter_3'
         timecards:
           type: array
           items:
@@ -23384,613 +24349,25 @@ components:
         timecard:
           $ref: '#/components/schemas/Timecard'
         jobs:
-          $ref: '#/components/schemas/Job_2'
+          $ref: '#/components/schemas/Job_3'
         job:
-          $ref: '#/components/schemas/Job_2'
+          $ref: '#/components/schemas/Job_3'
         processes:
           $ref: '#/components/schemas/Process'
         process:
           $ref: '#/components/schemas/Process'
         jobOperations:
-          $ref: '#/components/schemas/JobOperation_2'
+          $ref: '#/components/schemas/JobOperation_3'
         jobOperationx:
-          $ref: '#/components/schemas/JobOperation_2'
+          $ref: '#/components/schemas/JobOperation_3'
         salesOrderDeliveries:
           type: array
           items:
-            $ref: '#/components/schemas/SalesOrderDelivery_2'
+            $ref: '#/components/schemas/SalesOrderDelivery_3'
         salesOrderJobs:
-          $ref: '#/components/schemas/SalesOrderJob_2'
+          $ref: '#/components/schemas/SalesOrderJob_3'
         salesOrderJob:
-          $ref: '#/components/schemas/SalesOrderJob_2'
-    PurchaseOrderLine:
-      title: PurchaseOrderLine
-      type: object
-      properties:
-        dueDate:
-          type: string
-          format: date
-        extendedCost:
-          type: number
-          format: double
-        foreignExtendedCost:
-          type: number
-          format: double
-        partID:
-          type: string
-        partRevisionID:
-          type: string
-        partDescription:
-          type: string
-        partWarehouse:
-          type: string
-        purchaseOrderLineID:
-          type: string
-        quantity:
-          type: number
-          format: double
-        quantityReceived:
-          type: number
-          format: double
-        unitCost:
-          type: number
-          format: double
-        foreignUnitCost:
-          type: number
-          format: double
-        isReceived:
-          type: boolean
-        inspectionRequired:
-          type: boolean
-        uniqueID:
-          type: string
-        rowVersion:
-          type: integer
-          format: int64
-        isClosed:
-          type: boolean
-        purchaseOrderID:
-          type: string
-        unitOfMeasure:
-          type: string
-        jobID:
-          type: string
-        purchaseOrder:
-          $ref: '#/components/schemas/PurchaseOrder'
-    OrganizationPart:
-      title: OrganizationPart
-      type: object
-      properties:
-        partID:
-          type: string
-        partRevisionID:
-          type: string
-        organizationID:
-          type: string
-        organizationTypes:
-          type: array
-          items:
-            type: integer
-            format: int32
-        organizationPartID:
-          type: string
-        organizationShortDesc:
-          type: string
-        uniqueID:
-          type: string
-        rowVersion:
-          type: integer
-          format: int64
-    JobAssembly:
-      title: JobAssembly
-      type: object
-      properties:
-        jobID:
-          type: string
-        jobAssemblyID:
-          type: string
-        level:
-          type: integer
-        parentAssemblyID:
-          type: string
-        sourceMethodID:
-          type: string
-        sourceRevisionID:
-          type: string
-        partID:
-          type: string
-        partRevisionID:
-          type: string
-        partShortDesc:
-          type: string
-        quantityPerParent:
-          type: number
-          format: double
-        orderQty:
-          type: number
-          format: double
-        inventoryQty:
-          type: number
-          format: double
-        scrapQty:
-          type: number
-          format: double
-        quantityToInspect:
-          type: number
-          format: double
-        quantityRcvdToInv:
-          type: number
-          format: double
-        productionQty:
-          type: number
-          format: double
-        quantityToMake:
-          type: number
-          format: double
-        quantityToPull:
-          type: number
-          format: double
-        quantityIssued:
-          type: number
-          format: double
-        quantityCompleted:
-          type: number
-          format: double
-        isProductionComplete:
-          type: boolean
-        completedDate:
-          type: string
-          format: date-time
-        uniqueID:
-          type: string
-        rowVersion:
-          type: integer
-          format: int64
-        jobIsClosed:
-          type: boolean
-        jobClosedDate:
-          type: string
-          format: date-time
-    PartMaterial:
-      title: PartMaterial
-      type: object
-      properties:
-        partID:
-          type: string
-        partRevisionID:
-          type: string
-        partOperationSeq:
-          type: integer
-          format: int32
-        materialPartID:
-          type: string
-        materialPartRevisionID:
-          type: string
-        uniqueID:
-          type: string
-        rowVersion:
-          type: integer
-          format: int64
-        quantity:
-          type: number
-          format: double
-        unitOfMeasure:
-          type: string
-        partAssemblyID:
-          type: string
-        partAssemblySeq:
-          type: integer
-          format: int32
-    Organization:
-      title: Organization
-      type: object
-      properties:
-        uniqueID:
-          type: string
-        rowVersion:
-          type: integer
-          format: int64
-        name:
-          type: string
-        organizationID:
-          type: string
-        country:
-          type: string
-        isActive:
-          type: boolean
-        organizationTypes:
-          type: array
-          items:
-            type: integer
-            format: int32
-        phoneNumber:
-          type: string
-        customerPaymentTermID:
-          type: string
-        customerTaxCodeID:
-          type: string
-        supplierPaymentTermID:
-          type: string
-        supplierTaxCodeID:
-          type: string
-        currencyCode:
-          type: string
-        websiteUrl:
-          type: string
-        comments:
-          type: string
-        salesAccountID:
-          type: string
-        leadTimeDays:
-          type: integer
-          format: int32
-        minimumOrderAmount:
-          type: number
-          format: double
-        customerStatus:
-          type: integer
-        supplierStatus:
-          type: integer
-    RmaClaim:
-      title: RmaClaim
-      type: object
-      properties:
-        claimDate:
-          type: string
-          format: date
-        claimTotal:
-          type: number
-          format: double
-        foreignTotal:
-          type: number
-          format: double
-        currency:
-          type: string
-        customerOrganizationID:
-          type: string
-        plantID:
-          type: string
-        claimID:
-          type: string
-        uniqueID:
-          type: string
-        rowVersion:
-          type: integer
-          format: int64
-        status:
-          type: string
-        customer:
-          $ref: '#/components/schemas/Organization'
-    SalesAccount:
-      title: SalesAccount
-      type: object
-      properties:
-        salesAccountID:
-          type: string
-        name:
-          type: string
-        isActive:
-          type: boolean
-        uniqueID:
-          type: string
-        rowVersion:
-          type: integer
-          format: int64
-    SalesOrderDelivery_2:
-      title: SalesOrderDelivery
-      type: object
-      properties:
-        salesOrderID:
-          type: string
-        orderLine:
-          type: integer
-        orderLineDelivery:
-          type: string
-        promisedDate:
-          type: string
-          format: date-time
-        promisedQty:
-          type: number
-          format: double
-        shippedDate:
-          type: string
-          format: date-time
-        shippedQty:
-          type: number
-          format: double
-        uniqueID:
-          type: string
-        rowVersion:
-          type: integer
-          format: int64
-        deliveryTypeCode:
-          type: string
-        salesOrderType:
-          type: string
-        salesOrderJobs:
-          type: array
-          items:
-            $ref: '#/components/schemas/SalesOrderJob_2'
-    PartRevision_2:
-      title: PartRevision
-      type: object
-      properties:
-        partID:
-          type: string
-        partRevisionID:
-          type: string
-        shortDesc:
-          type: string
-        longDescText:
-          type: string
-        longDescFormatted:
-          type: string
-        uniqueID:
-          type: string
-        rowVersion:
-          type: integer
-          format: int64
-        partCost:
-          type: number
-          format: double
-        effectiveStartDate:
-          type: string
-          format: date
-        expirationEndDate:
-          type: string
-          format: date
-        supplierOrganizationID:
-          type: string
-        leadTime:
-          type: integer
-          format: int32
-        quantityOnHand:
-          type: number
-          format: double
-        pricingUnitOfMeasure:
-          type: string
-    Contact:
-      title: Contact
-      type: object
-      properties:
-        uniqueID:
-          type: string
-        rowVersion:
-          type: integer
-          format: int64
-        contactID:
-          type: string
-        name:
-          type: string
-        organizationID:
-          type: string
-        organizationTypes:
-          type: array
-          items:
-            type: integer
-            format: int32
-        phoneNumber:
-          type: string
-        emailAddress:
-          type: string
-        isActive:
-          type: boolean
-        comments:
-          type: string
-        organization:
-          $ref: '#/components/schemas/Organization'
-    APInvoiceLine:
-      title: APInvoiceLine
-      type: object
-      properties:
-        invoiceID:
-          type: string
-        lineID:
-          type: string
-        itemType:
-          type: string
-        partID:
-          type: string
-        partRevisionID:
-          type: string
-        partDescription:
-          type: string
-        purchaseQuantity:
-          type: number
-          format: double
-        baseUnitCost:
-          type: number
-          format: double
-        foreignUnitCost:
-          type: number
-          format: double
-        baseExtendedCost:
-          type: number
-          format: double
-        foreignExtendedCost:
-          type: number
-          format: double
-        baseSetupCharge:
-          type: number
-          format: double
-        foreignSetupCharge:
-          type: number
-          format: double
-        unitOfMeasure:
-          type: string
-        uniqueID:
-          type: string
-        rowVersion:
-          type: integer
-          format: int64
-    APInvoice:
-      title: APInvoice
-      type: object
-      properties:
-        invoiceID:
-          type: string
-        invoiceDate:
-          type: string
-          format: date
-        dueDate:
-          type: string
-          format: date
-        invoiceType:
-          type: integer
-          format: int32
-        isPostedToGL:
-          type: boolean
-        postedDate:
-          type: string
-          format: date
-        isOnHold:
-          type: boolean
-        isOverpayment:
-          type: boolean
-        paymentTermID:
-          type: string
-        baseTotal:
-          type: number
-          format: double
-        foreignTotal:
-          type: number
-          format: double
-        baseBalance:
-          type: number
-          format: double
-        foreignBalance:
-          type: number
-          format: double
-        uniqueID:
-          type: string
-        rowVersion:
-          type: integer
-          format: int64
-        currency:
-          type: string
-        supplierID:
-          type: string
-        paidDate:
-          type: string
-          format: date
-        plantID:
-          type: string
-    RmaReceiptLine:
-      title: RmaReceiptLine
-      type: object
-      properties:
-        description:
-          type: string
-        isInspected:
-          type: boolean
-        partID:
-          type: string
-        partLongDescription:
-          type: string
-        partRevisionID:
-          type: string
-        partWarehouseID:
-          type: string
-        projectID:
-          type: string
-        isReceived:
-          type: boolean
-        inspectionRequired:
-          type: boolean
-        claimLineID:
-          type: string
-        claimQuantity:
-          type: number
-          format: double
-        receiptID:
-          type: string
-        receiptLineID:
-          type: string
-        uniqueID:
-          type: string
-        rowVersion:
-          type: integer
-          format: int64
-        isClosed:
-          type: boolean
-        isReversed:
-          type: boolean
-        claimID:
-          type: string
-        claim:
-          $ref: '#/components/schemas/RmaClaim'
-        claimLine:
-          $ref: '#/components/schemas/RmaClaimLine'
-    SalesOrderSalesPerson_2:
-      title: SalesOrderSalesPerson
-      type: object
-      properties:
-        salesOrderID:
-          type: string
-        salesEmployeeID:
-          type: string
-        uniqueID:
-          type: string
-        isActive:
-          type: boolean
-        sequenceNo:
-          type: integer
-          format: int32
-        rowVersion:
-          type: integer
-          format: int64
-        salesOrderType:
-          type: string
-        percentage:
-          type: number
-          format: double
-        salesOrder:
-          $ref: '#/components/schemas/SalesOrder'
-        salesEmployee:
-          $ref: '#/components/schemas/Employee_3'
-    DmrClaimLine_2:
-      title: DmrClaimLine
-      type: object
-      properties:
-        claimLineID:
-          type: string
-        partID:
-          type: string
-        partRevisionID:
-          type: string
-        partShortDescription:
-          type: string
-        partLongDescription:
-          type: string
-        partWarehouseID:
-          type: string
-        quantity:
-          type: number
-          format: double
-        quantityShipped:
-          type: number
-          format: double
-        unitOfMeasure:
-          type: string
-        unitCost:
-          type: number
-          format: double
-        foreignUnitCost:
-          type: number
-          format: double
-        uniqueID:
-          type: string
-        rowVersion:
-          type: integer
-          format: int64
-        claimID:
-          type: string
-        claim:
-          $ref: '#/components/schemas/DmrClaim'
-        part:
-          $ref: '#/components/schemas/Part'
-        partRevision:
-          $ref: '#/components/schemas/PartRevision_3'
+          $ref: '#/components/schemas/SalesOrderJob_3'
     Job_3:
       title: Job
       type: object
@@ -24101,132 +24478,49 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/JobOperation_3'
-    SalesOrderLine_3:
-      title: SalesOrderLine
+    DmrClaimLine_2:
+      title: DmrClaimLine
       type: object
       properties:
-        salesOrderID:
+        claimLineID:
           type: string
-        orderLine:
-          type: integer
-        totalSalePrice:
-          type: number
-          format: double
-        uniqueID:
-          type: string
-        rowVersion:
-          type: integer
-          format: int64
         partID:
           type: string
         partRevisionID:
           type: string
-        partGroupID:
+        partShortDescription:
           type: string
-        shortDescription:
+        partLongDescription:
           type: string
-        saleUom:
+        partWarehouseID:
           type: string
-        baseUnitPrice:
-          type: number
-          description: The price expressed in the currency of the seller.
-          format: double
-        foreignUnitPrice:
-          type: number
-          description: The price expressed in the currency of the buyer, if different from that of the seller.
-          format: double
-        baseExtendedPrice:
-          type: number
-          description: The extended (qty x price) total expressed in the currency of the seller.
-          format: double
-        foreignExtendedPrice:
-          type: number
-          description: The extended (qty x price) total expressed in the currency of the buyer, if different from that of the seller.
-          format: double
-        quantityOrdered:
+        quantity:
           type: number
           format: double
         quantityShipped:
           type: number
           format: double
-        purchaseOrderCost:
+        unitOfMeasure:
+          type: string
+        unitCost:
           type: number
           format: double
-        purchaseOrderCostForeign:
+        foreignUnitCost:
           type: number
           format: double
-        salesOrderType:
+        uniqueID:
           type: string
-        locationID:
+        rowVersion:
+          type: integer
+          format: int64
+        claimID:
           type: string
-        shippedDate:
-          type: string
-          format: date-time
-        isPosted:
-          type: boolean
-        dueDate:
-          type: string
-          format: date-time
-        salesOrderDeliveries:
-          type: array
-          items:
-            $ref: '#/components/schemas/SalesOrderDelivery_3'
-        salesOrderJobs:
-          $ref: '#/components/schemas/SalesOrderJob_3'
-        salesOrder:
-          $ref: '#/components/schemas/SalesOrder'
+        claim:
+          $ref: '#/components/schemas/DmrClaim'
+        part:
+          $ref: '#/components/schemas/Part'
         partRevision:
           $ref: '#/components/schemas/PartRevision_3'
-        partGroup:
-          $ref: '#/components/schemas/PartGroup'
-    SalesOrderJob_3:
-      title: SalesOrderJob
-      type: object
-      properties:
-        salesOrderID:
-          type: string
-        orderLine:
-          type: integer
-        orderLineDelivery:
-          type: string
-        jobID:
-          type: string
-        orderJobSeq:
-          type: integer
-          format: int32
-        uniqueID:
-          type: string
-        rowVersion:
-          type: integer
-          format: int64
-    Employee_3:
-      title: Employee
-      type: object
-      properties:
-        employeeID:
-          type: string
-        firstName:
-          type: string
-        lastName:
-          type: string
-        title:
-          type: string
-        supervisorEmployeeID:
-          type: string
-        payRate:
-          type: number
-          format: double
-        deptID:
-          type: string
-        shiftID:
-          type: string
-        isActive:
-          type: boolean
-        uniqueID:
-          type: string
-        rowVersion:
-          type: integer
-          format: int64
     JobOperation_3:
       title: JobOperation
       type: object
@@ -24345,300 +24639,6 @@ components:
         jobClosedDate:
           type: string
           format: date-time
-    PartOperation_3:
-      title: PartOperation
-      type: object
-      properties:
-        partID:
-          type: string
-        partRevisionID:
-          type: string
-        partOperationSeq:
-          type: integer
-          format: int32
-        workCenterID:
-          type: string
-        processID:
-          type: string
-        shortDesc:
-          type: string
-        longDescText:
-          type: string
-        longDescFormatted:
-          type: string
-        outsideOperation:
-          type: string
-        estSetupHours:
-          type: number
-          format: double
-        estProdHours:
-          type: number
-          format: double
-        estQueueHours:
-          type: number
-          format: double
-        estMoveHours:
-          type: number
-          format: double
-        estQAHours:
-          type: number
-          format: double
-        vendorID:
-          type: string
-        estSetupTimeValue:
-          type: number
-          format: double
-        estSetupTimeUnit:
-          type: string
-        estProdTimeValue:
-          type: number
-          format: double
-        estProdTimeUnit:
-          type: string
-        uniqueID:
-          type: string
-        rowVersion:
-          type: integer
-          format: int64
-    PartBin_2:
-      title: PartBin
-      type: object
-      properties:
-        partRevisionID:
-          type: string
-        warehouseID:
-          type: string
-        partBinID:
-          type: string
-        quantityOnHand:
-          type: number
-          format: double
-        quantityAllocated:
-          type: number
-          format: double
-        quantityOnOrderSales:
-          type: number
-          format: double
-        quantityOnOrderPurchases:
-          type: number
-          format: double
-        quantityToInspect:
-          type: number
-          format: double
-        quantityToReturn:
-          type: number
-          format: double
-        uniqueID:
-          type: string
-        rowVersion:
-          type: integer
-          format: int64
-        partID:
-          type: string
-        lotNumber:
-          type: string
-        purchaseOrderLineID:
-          type: string
-        partRevision:
-          $ref: '#/components/schemas/PartRevision_3'
-    WorkCenter_3:
-      title: WorkCenter
-      type: object
-      properties:
-        workCenterID:
-          type: string
-        shortDesc:
-          type: string
-        deptID:
-          type: string
-        overHeadRate:
-          type: string
-        quoteRate:
-          type: string
-        processID:
-          type: string
-        parentWorkCenterID:
-          type: string
-        shiftID:
-          type: string
-        uniqueID:
-          type: string
-        rowVersion:
-          type: integer
-          format: int64
-        laborRate:
-          type: string
-        departments:
-          type: array
-          items:
-            $ref: '#/components/schemas/Department'
-        shifts:
-          type: array
-          items:
-            $ref: '#/components/schemas/Shift'
-    TimecardLine_3:
-      title: TimecardLine
-      type: object
-      properties:
-        timecardID:
-          type: string
-        timecardLine:
-          type: string
-        jobID:
-          type: string
-        jobAssembly:
-          type: string
-        jobOperation:
-          type: integer
-          format: int32
-        workCenterID:
-          type: string
-        processID:
-          type: string
-        status:
-          type: string
-        timecardType:
-          type: string
-        goodQty:
-          type: number
-          format: double
-        scrapQty:
-          type: number
-          format: double
-        reworkQty:
-          type: number
-          format: double
-        rejectQty:
-          type: number
-          format: double
-        startTime:
-          type: string
-          format: date-time
-        endTime:
-          type: string
-          format: date-time
-        machineHours:
-          type: number
-          format: double
-        laborHours:
-          type: number
-          format: double
-        employeeID:
-          type: integer
-          format: int32
-        timecardDate:
-          type: string
-          format: date-time
-        uniqueID:
-          type: string
-        rowVersion:
-          type: integer
-          format: int64
-        workCenters:
-          type: array
-          items:
-            $ref: '#/components/schemas/WorkCenter_3'
-        workCenter:
-          $ref: '#/components/schemas/WorkCenter_3'
-        timecards:
-          type: array
-          items:
-            $ref: '#/components/schemas/Timecard'
-        timecard:
-          $ref: '#/components/schemas/Timecard'
-        jobs:
-          $ref: '#/components/schemas/Job_3'
-        job:
-          $ref: '#/components/schemas/Job_3'
-        processes:
-          $ref: '#/components/schemas/Process'
-        process:
-          $ref: '#/components/schemas/Process'
-        jobOperations:
-          $ref: '#/components/schemas/JobOperation_3'
-        jobOperationx:
-          $ref: '#/components/schemas/JobOperation_3'
-        salesOrderDeliveries:
-          type: array
-          items:
-            $ref: '#/components/schemas/SalesOrderDelivery_3'
-        salesOrderJobs:
-          $ref: '#/components/schemas/SalesOrderJob_3'
-        salesOrderJob:
-          $ref: '#/components/schemas/SalesOrderJob_3'
-    SalesOrderDelivery_3:
-      title: SalesOrderDelivery
-      type: object
-      properties:
-        salesOrderID:
-          type: string
-        orderLine:
-          type: integer
-        orderLineDelivery:
-          type: string
-        promisedDate:
-          type: string
-          format: date-time
-        promisedQty:
-          type: number
-          format: double
-        shippedDate:
-          type: string
-          format: date-time
-        shippedQty:
-          type: number
-          format: double
-        uniqueID:
-          type: string
-        rowVersion:
-          type: integer
-          format: int64
-        deliveryTypeCode:
-          type: string
-        salesOrderType:
-          type: string
-        salesOrderJobs:
-          type: array
-          items:
-            $ref: '#/components/schemas/SalesOrderJob_3'
-    PartRevision_3:
-      title: PartRevision
-      type: object
-      properties:
-        partID:
-          type: string
-        partRevisionID:
-          type: string
-        shortDesc:
-          type: string
-        longDescText:
-          type: string
-        longDescFormatted:
-          type: string
-        uniqueID:
-          type: string
-        rowVersion:
-          type: integer
-          format: int64
-        partCost:
-          type: number
-          format: double
-        effectiveStartDate:
-          type: string
-          format: date
-        expirationEndDate:
-          type: string
-          format: date
-        supplierOrganizationID:
-          type: string
-        leadTime:
-          type: integer
-          format: int32
-        quantityOnHand:
-          type: number
-          format: double
-        pricingUnitOfMeasure:
-          type: string
   securitySchemes:
     Bearer:
       type: oauth2

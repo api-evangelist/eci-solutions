@@ -69,76 +69,6 @@ paths:
                 $ref: '#/components/schemas/AnalyticsResponse'
 components:
   schemas:
-    AnalyticsCredentialBreakdownResponse:
-      type: object
-      properties:
-        clientId:
-          type:
-          - string
-          - 'null'
-          description: Gets or sets the credential client ID.
-        userName:
-          type:
-          - string
-          - 'null'
-          description: Gets or sets the display name of the credential owner. Empty when the user is not found.
-        totalApiCalls:
-          type: integer
-          description: Gets or sets the total API calls for this credential.
-          format: int64
-        averageCallsPerDay:
-          type: number
-          description: Gets or sets the average number of API calls per day for this credential.
-          format: double
-      additionalProperties: false
-      description: 'Represents one row in the credential breakdown table.
-
-        Only used when an integrationId filter is applied and the company has more than one credential.'
-    AnalyticsCredentialUsageResponse:
-      type: object
-      properties:
-        clientId:
-          type:
-          - string
-          - 'null'
-          description: Gets or sets the credential client ID.
-        userName:
-          type:
-          - string
-          - 'null'
-          description: Gets or sets the display name of the credential owner. Empty when the user is not found.
-        apiCallsCount:
-          type: integer
-          description: Gets or sets the total API calls for this credential in the selected period.
-          format: int64
-      additionalProperties: false
-      description: 'Represents a single bar in the credential usage chart.
-
-        Only used when an integrationId filter is applied and the company has more than one credential.'
-    AnalyticsSystemBreakdownResponse:
-      type: object
-      properties:
-        systemId:
-          type:
-          - integer
-          - 'null'
-          description: Gets or sets the system ID.
-          format: int32
-        systemName:
-          type:
-          - string
-          - 'null'
-          description: Gets or sets the system name.
-        totalApiCalls:
-          type: integer
-          description: Gets or sets the total API calls for this system.
-          format: int64
-        averageCallsPerDay:
-          type: number
-          description: Gets or sets the average number of API calls per day for this system.
-          format: double
-      additionalProperties: false
-      description: Represents one row in the system breakdown table.
     AnalyticsProductUsageResponse:
       type: object
       properties:
@@ -155,6 +85,19 @@ components:
       description: 'Represents a single bar in the product usage chart.
 
         Only used when an integrationId filter is applied.'
+    AnalyticsDailyUsageResponse:
+      type: object
+      properties:
+        date:
+          type: string
+          description: Gets or sets the date for this chart point.
+          format: date-time
+        apiCallsCount:
+          type: integer
+          description: Gets or sets the number of API calls on this date.
+          format: int64
+      additionalProperties: false
+      description: Represents a single daily point in the API calls time series.
     AnalyticsSummaryResponse:
       type: object
       properties:
@@ -184,19 +127,50 @@ components:
           format: int32
       additionalProperties: false
       description: Represents KPI values for the analytics summary cards.
-    AnalyticsDailyUsageResponse:
+    AnalyticsSystemBreakdownResponse:
       type: object
       properties:
-        date:
-          type: string
-          description: Gets or sets the date for this chart point.
-          format: date-time
-        apiCallsCount:
+        systemId:
+          type:
+          - integer
+          - 'null'
+          description: Gets or sets the system ID.
+          format: int32
+        systemName:
+          type:
+          - string
+          - 'null'
+          description: Gets or sets the system name.
+        totalApiCalls:
           type: integer
-          description: Gets or sets the number of API calls on this date.
+          description: Gets or sets the total API calls for this system.
           format: int64
+        averageCallsPerDay:
+          type: number
+          description: Gets or sets the average number of API calls per day for this system.
+          format: double
       additionalProperties: false
-      description: Represents a single daily point in the API calls time series.
+      description: Represents one row in the system breakdown table.
+    AnalyticsProductBreakdownResponse:
+      type: object
+      properties:
+        productName:
+          type:
+          - string
+          - 'null'
+          description: Gets or sets the product name.
+        totalApiCalls:
+          type: integer
+          description: Gets or sets the total API calls for this product.
+          format: int64
+        averageCallsPerDay:
+          type: number
+          description: Gets or sets the average number of API calls per day for this product.
+          format: double
+      additionalProperties: false
+      description: 'Represents one row in the product breakdown table.
+
+        Only used when an integrationId filter is applied.'
     AnalyticsSystemUsageResponse:
       type: object
       properties:
@@ -239,26 +213,66 @@ components:
           format: double
       additionalProperties: false
       description: Represents one row in the integration breakdown table.
-    AnalyticsProductBreakdownResponse:
+    AnalyticsCredentialBreakdownResponse:
       type: object
       properties:
-        productName:
+        clientId:
           type:
           - string
           - 'null'
-          description: Gets or sets the product name.
+          description: Gets or sets the credential client ID.
+        userName:
+          type:
+          - string
+          - 'null'
+          description: Gets or sets the display name of the credential owner. Empty when the user is not found.
         totalApiCalls:
           type: integer
-          description: Gets or sets the total API calls for this product.
+          description: Gets or sets the total API calls for this credential.
           format: int64
         averageCallsPerDay:
           type: number
-          description: Gets or sets the average number of API calls per day for this product.
+          description: Gets or sets the average number of API calls per day for this credential.
           format: double
       additionalProperties: false
-      description: 'Represents one row in the product breakdown table.
+      description: 'Represents one row in the credential breakdown table.
 
-        Only used when an integrationId filter is applied.'
+        Only used when an integrationId filter is applied and the company has more than one credential.'
+    AnalyticsIntegrationUsageResponse:
+      type: object
+      properties:
+        integrationName:
+          type:
+          - string
+          - 'null'
+          description: Gets or sets the integration name.
+        apiCallsCount:
+          type: integer
+          description: Gets or sets the total API calls for this integration in the selected period.
+          format: int64
+      additionalProperties: false
+      description: Represents a single bar in the integrationq usage chart.
+    AnalyticsCredentialUsageResponse:
+      type: object
+      properties:
+        clientId:
+          type:
+          - string
+          - 'null'
+          description: Gets or sets the credential client ID.
+        userName:
+          type:
+          - string
+          - 'null'
+          description: Gets or sets the display name of the credential owner. Empty when the user is not found.
+        apiCallsCount:
+          type: integer
+          description: Gets or sets the total API calls for this credential in the selected period.
+          format: int64
+      additionalProperties: false
+      description: 'Represents a single bar in the credential usage chart.
+
+        Only used when an integrationId filter is applied and the company has more than one credential.'
     AnalyticsResponse:
       type: object
       properties:
@@ -358,20 +372,6 @@ components:
           description: Only populated when an integrationId filter is applied and the company has more than one credential for the integration.
       additionalProperties: false
       description: Represents analytics data required by the usage dashboard.
-    AnalyticsIntegrationUsageResponse:
-      type: object
-      properties:
-        integrationName:
-          type:
-          - string
-          - 'null'
-          description: Gets or sets the integration name.
-        apiCallsCount:
-          type: integer
-          description: Gets or sets the total API calls for this integration in the selected period.
-          format: int64
-      additionalProperties: false
-      description: Represents a single bar in the integrationq usage chart.
   securitySchemes:
     oidc:
       type: openIdConnect

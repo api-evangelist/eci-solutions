@@ -365,57 +365,6 @@ paths:
       x-summary-source: derived
 components:
   schemas:
-    PhoneWrite:
-      type: object
-      title: Phone Write
-      properties:
-        phone:
-          type: string
-          minLength: 1
-          maxLength: 20
-          example: 123-456-7890
-        type:
-          type: string
-          minLength: 0
-          maxLength: 25
-          example: Mobile
-        primary:
-          type: boolean
-          example: true
-    Phone:
-      type: object
-      title: Phone
-      properties:
-        phone:
-          type: string
-          minLength: 1
-          maxLength: 20
-          example: 123-456-7890
-        type:
-          type: string
-          minLength: 0
-          maxLength: 25
-          example: Mobile
-        primary:
-          type: boolean
-          description: there can be only one primary phone in a non-empty collection of phones
-          example: true
-    PhoneRead:
-      type: object
-      title: Phone Read
-      properties:
-        phoneId:
-          type: string
-          example: 123
-        phone:
-          type: string
-          example: 123-456-7890
-        type:
-          type: string
-          example: Mobile
-        primary:
-          type: boolean
-          example: true
     Address:
       type: object
       title: Address
@@ -477,22 +426,6 @@ components:
         primary:
           type: boolean
           example: true
-    StandardError:
-      type: object
-      title: Standard Error
-      description: A standard error response format.
-      properties:
-        errorCode:
-          type: integer
-          example: 4xx
-        error:
-          type: string
-          description: A summary of the error
-          example: A summary of the error
-        errorMessage:
-          type: string
-          description: Details of the error
-          example: Details of the error
     AddressRead:
       type: object
       title: Address Read
@@ -582,29 +515,24 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Address'
-    EmailRead:
+    Phone:
       type: object
-      title: Email Read
+      title: Phone
       properties:
-        emailId:
+        phone:
           type: string
-          example: 123
-        email:
-          type: string
-          example: test_registrant@lassocrm.com
+          minLength: 1
+          maxLength: 20
+          example: 123-456-7890
         type:
           type: string
-          example: Personal
+          minLength: 0
+          maxLength: 25
+          example: Mobile
         primary:
           type: boolean
+          description: there can be only one primary phone in a non-empty collection of phones
           example: true
-        optedStatus:
-          type: string
-          enum:
-          - opted_in
-          - opted_out
-          - non_opted
-          example: opted_in
     AddressWrite:
       type: object
       title: Address Write
@@ -632,27 +560,79 @@ components:
         primary:
           type: boolean
           example: true
+    PhoneRead:
+      type: object
+      title: Phone Read
+      properties:
+        phoneId:
+          type: string
+          example: 123
+        phone:
+          type: string
+          example: 123-456-7890
+        type:
+          type: string
+          example: Mobile
+        primary:
+          type: boolean
+          example: true
+    PhoneWrite:
+      type: object
+      title: Phone Write
+      properties:
+        phone:
+          type: string
+          minLength: 1
+          maxLength: 20
+          example: 123-456-7890
+        type:
+          type: string
+          minLength: 0
+          maxLength: 25
+          example: Mobile
+        primary:
+          type: boolean
+          example: true
+    EmailRead:
+      type: object
+      title: Email Read
+      properties:
+        emailId:
+          type: string
+          example: 123
+        email:
+          type: string
+          example: test_registrant@lassocrm.com
+        type:
+          type: string
+          example: Personal
+        primary:
+          type: boolean
+          example: true
+        optedStatus:
+          type: string
+          enum:
+          - opted_in
+          - opted_out
+          - non_opted
+          example: opted_in
+    StandardError:
+      type: object
+      title: Standard Error
+      description: A standard error response format.
+      properties:
+        errorCode:
+          type: integer
+          example: 4xx
+        error:
+          type: string
+          description: A summary of the error
+          example: A summary of the error
+        errorMessage:
+          type: string
+          description: Details of the error
+          example: Details of the error
   responses:
-    NotFound:
-      description: The specified resource was not found
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/StandardError'
-    Forbidden:
-      description: The provided authentication credentials does not have sufficient privileges to access this resource
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/StandardError'
-    Unauthorized:
-      description: The request has not been fulfilled because it lacks valid authentication credentials
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/StandardError'
-    InternalServerError:
-      description: Receiving a 5xx response indicates an error on Lasso's end. Please contact us to report the problem
     BadRequest:
       description: 'The request could not be processed due to invalid input:
 
@@ -670,6 +650,26 @@ components:
         Check the body model for more documentation on field constraints and limits.
 
         '
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/StandardError'
+    InternalServerError:
+      description: Receiving a 5xx response indicates an error on Lasso's end. Please contact us to report the problem
+    Unauthorized:
+      description: The request has not been fulfilled because it lacks valid authentication credentials
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/StandardError'
+    Forbidden:
+      description: The provided authentication credentials does not have sufficient privileges to access this resource
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/StandardError'
+    NotFound:
+      description: The specified resource was not found
       content:
         application/json:
           schema:

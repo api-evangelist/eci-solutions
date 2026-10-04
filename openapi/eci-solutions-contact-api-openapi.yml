@@ -2114,6 +2114,20 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
+    ContactListResponse:
+      type: object
+      properties:
+        data:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Contact'
+          readOnly: true
+        resultCount:
+          type: integer
+          format: int32
+      additionalProperties: false
     Organization:
       title: Organization
       type: object
@@ -2164,6 +2178,36 @@ components:
           type: integer
         supplierStatus:
           type: integer
+    Contact:
+      title: Contact
+      type: object
+      properties:
+        uniqueID:
+          type: string
+        rowVersion:
+          type: integer
+          format: int64
+        contactID:
+          type: string
+        name:
+          type: string
+        organizationID:
+          type: string
+        organizationTypes:
+          type: array
+          items:
+            type: integer
+            format: int32
+        phoneNumber:
+          type: string
+        emailAddress:
+          type: string
+        isActive:
+          type: boolean
+        comments:
+          type: string
+        organization:
+          $ref: '#/components/schemas/Organization'
     ContactCreateModel:
       type: object
       properties:
@@ -2208,84 +2252,386 @@ components:
       - 2
       type: integer
       format: int32
-    Contact:
-      title: Contact
+    AddressModel:
       type: object
       properties:
-        uniqueID:
-          type: string
-        rowVersion:
-          type: integer
-          format: int64
-        contactID:
-          type: string
-        name:
-          type: string
-        organizationID:
-          type: string
-        organizationTypes:
-          type: array
-          items:
-            type: integer
-            format: int32
-        phoneNumber:
-          type: string
-        emailAddress:
-          type: string
-        isActive:
+        line1:
+          type:
+          - string
+          - 'null'
+          description: 'First line of address. (Max chars: 255)
+
+            QBO: Line1
+
+            Xero: AddressLine1
+
+            MYOB: Street
+
+            Sage: Address_Line_1'
+        line2:
+          type:
+          - string
+          - 'null'
+          description: 'Second line of address. (Max chars: 255)
+
+            QBO: Line2
+
+            Xero: AddressLine2
+
+            MYOB: Street (Will be concatenated with previous lines when saved. Total length must not exceed 255 chars)
+
+            Sage: Address_Line_2'
+        line3:
+          type:
+          - string
+          - 'null'
+          description: 'Third line of address. (Max chars: 255)
+
+            QBO: Line3
+
+            Xero: AddressLine3 (For AU employee addresses, will be concatenated with previous line when saved.)
+
+            MYOB: Street (Will be concatenated with previous lines when saved. Total length must not exceed 255 chars)'
+        line4:
+          type:
+          - string
+          - 'null'
+          description: 'Fourth line of address. (Max chars: 255)
+
+            QBO: Line4
+
+            Xero: AddressLine4 (For AU employee addresses, will be concatenated with previous line when saved.)
+
+            MYOB: N/A'
+        line5:
+          type:
+          - string
+          - 'null'
+          description: 'Fifth line of address. (Max chars: 255)
+
+            QBO: Line5
+
+            Xero: N/A
+
+            MYOB: N/A'
+        city:
+          type:
+          - string
+          - 'null'
+          description: 'City. (Max chars: 255)
+
+            QBO: City
+
+            Xero: City
+
+            MYOB: City
+
+            Sage: City'
+        stateProv:
+          type:
+          - string
+          - 'null'
+          description: 'State or province. (Max chars: 255)
+
+            QBO: CountrySubDivisionCode
+
+            Xero: Region (For AU: ACT, NSW, NT, QLD, SA, TAS, VIC, WA)
+
+            MYOB: State
+
+            Sage: Region'
+        postalCode:
+          type:
+          - string
+          - 'null'
+          description: 'Postal code. (Max chars: 11)
+
+            QBO: PostalCode
+
+            Xero: PostalCode
+
+            MYOB: PostCode
+
+            Sage: Postal_Code
+
+            Sage: Country_Id'
+        country:
+          type:
+          - string
+          - 'null'
+          description: 'Country. (Max chars: 50)
+
+            QBO: Country
+
+            Xero: Country
+
+            MYOB: Country'
+      additionalProperties: false
+      description: Represents an address for a Customer, Vendor, or Employee
+    ContentResponseModel:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: Unique id of the entity.
+        syncToken:
+          type:
+          - string
+          - 'null'
+          description: SyncToken representing the version of the record.
+      additionalProperties: false
+      description: A record containing the unique id and syncToken for a saved entity.
+    AccountBasedExpenseLineDetailModel:
+      type: object
+      properties:
+        accountRef:
+          type:
+          - string
+          - 'null'
+          description: 'Reference to the Expense account associated with this item.
+
+            SAGE: Invoice_Lines.Product.Purchase_Ledger_Account_Id'
+        taxAmount:
+          type:
+          - number
+          - 'null'
+          description: 'Sales tax paid as part of the expense.
+
+            SAGE: Invoice_Lines.Tax_Amount'
+          format: double
+        taxInclusiveAmt:
+          type:
+          - number
+          - 'null'
+          description: "The total amount of the line item including tax.\n SAGE: Invoice_Lines.Net_Amount"
+          format: double
+        classRef:
+          type:
+          - string
+          - 'null'
+          description: Reference to the Class associated with the expense.
+        taxCodeRef:
+          type:
+          - string
+          - 'null'
+          description: The TaxCode associated with the sales tax for the expense.
+        billableStatus:
+          type:
+          - string
+          - 'null'
+          description: 'The billable status of the expense. Valid values: Billable, NotBillable, HasBeenBilled'
+        customerRef:
+          type:
+          - string
+          - 'null'
+          description: Reference to the Customer associated with the expense.
+      additionalProperties: false
+      description: Account Based Expense Line Detail Model
+    EmployeeModel:
+      type: object
+      properties:
+        upsert:
           type: boolean
-        comments:
-          type: string
-        organization:
-          $ref: '#/components/schemas/Organization'
-    ContactListResponse:
-      type: object
-      properties:
-        data:
+          description: 'When no unique Id is provided, allow updating if a matching Employee record exists, otherwise create a new record
+
+            QBO: Update a matching record by DisplayName.
+
+            Xero: Update a matching record by First Name, Last Name, and DOB (AU); First Name and Last Name (US/Global).'
+        primaryAddr:
+          allOf:
+          - $ref: '#/components/schemas/AddressModel'
+          description: The Primary address
+        dob:
           type:
-          - array
+          - string
           - 'null'
-          items:
-            $ref: '#/components/schemas/Contact'
-          readOnly: true
-        resultCount:
-          type: integer
-          format: int32
+          description: Birth date of the employee.
+          format: date-time
+        hireDate:
+          type:
+          - string
+          - 'null'
+          description: Hire date of the employee.
+          format: date-time
+        terminationDate:
+          type:
+          - string
+          - 'null'
+          description: Termination date of the employee.
+          format: date-time
+        gender:
+          type:
+          - string
+          - 'null'
+          description: Gender of the employee.
+        title:
+          type:
+          - string
+          - 'null'
+          description: Title of the employee.
+        billRate:
+          type:
+          - number
+          - 'null'
+          description: BillRate of the employee.
+          format: double
+        id:
+          type:
+          - string
+          - 'null'
+          description: Unique id of the contact. Provide when updating the record.
+        override:
+          type: boolean
+          description: Set to true to force an update to the record regardless of version conflict. SyncToken is not required if Override is true.
+        syncToken:
+          type:
+          - string
+          - 'null'
+          description: SyncToken to ensure updating the latest version of the record. Used for updating with QBO and MYOB.
+        companyName:
+          type:
+          - string
+          - 'null'
+          description: 'The name of the company associated with the person or organization. Max chars: 50.
+
+            QBO: CompanyName
+
+            Xero: Name (used only when DisplayName is not provided)
+
+            MYOB: CompanyName (also sets IsIndividual to false if provided)
+
+            Sage: Name'
+        phonePrimary:
+          type:
+          - string
+          - 'null'
+          description: 'Primary phone number for the contact. Max chars: 21.
+
+            QBO: PrimaryPhone
+
+            Xero: Phones (phone type DEFAULT)
+
+            MYOB: Addresses.Phone1 (for bill address if it exists, otherwise for ship address)
+
+            Sage: Main_Contact_Person.Telephone'
+        phoneMobile:
+          type:
+          - string
+          - 'null'
+          description: 'Mobile phone number for the contact. Max chars: 21.
+
+            QBO: Mobile
+
+            Xero: Phones (phone type MOBILE)
+
+            MYOB: Addresses.Phone2 (for bill address if it exists, otherwise for ship address)
+
+            Sage: Main_Contact_Person.Mobile'
+        email:
+          type:
+          - string
+          - 'null'
+          description: 'Email address for the contact. Max chars: 100.
+
+            QBO: PrimaryEmailAddr
+
+            Xero: EmailAddress (N/A for Employees)
+
+            MYOB: Addresses.Email (for bill address if it exists, otherwise for ship address)
+
+            Sage: Main_Contact_Person.Email'
+        displayName:
+          type:
+          - string
+          - 'null'
+          description: 'Display name of the person or organization. Max chars: 255.
+
+            QBO: DisplayName (Must be unique across all Customer, Vendor, and Employee objects)
+
+            Xero: Name (N/A for Employees)
+
+            MYOB: CompanyName OR concatenated FirstName and LastName (read-only, ignored when saving)
+
+            Sage: Displayed_As (read-only, ignored when saving)'
+        firstName:
+          type:
+          - string
+          - 'null'
+          description: 'First name of the contact. Max chars: 20.
+
+            QBO: GivenName
+
+            Xero: FirstName
+
+            MYOB: FirstName
+
+            Sage: MainContactPerson.Name'
+        lastName:
+          type:
+          - string
+          - 'null'
+          description: 'Last name of the person. Max chars: 30.
+
+            QBO: FamilyName
+
+            Xero: LastName
+
+            MYOB: LastName
+
+            Sage: MainContactPerson.Name'
+        active:
+          type:
+          - boolean
+          - 'null'
+          description: 'IsActive for the contact
+
+            QBO: Active
+
+            Xero: ContactStatus == Contact.ContactStatusEnum.ACTIVE
+
+            MYOB: IsActive
+
+            Sage: is_active'
+        createDateTime:
+          type:
+          - string
+          - 'null'
+          description: 'CreateDateTime for the contact
+
+            QBO: MetaData.CreateTime
+
+            Xero: N/A
+
+            MYOB: Created
+
+            Sage: created_at'
+          format: date-time
+        modifyDateTime:
+          type:
+          - string
+          - 'null'
+          description: 'ModifyDateTime for the contact
+
+            QBO: MetaData.LastUpdatedTime
+
+            Xero: UpdatedDateUTC
+
+            MYOB: LastModified
+
+            Sage: updated_at'
+          format: date-time
       additionalProperties: false
-    ApiError:
-      type: object
-      properties:
-        ExceptionMessage:
-          type:
-          - string
-          - 'null'
-        Details:
-          type:
-          - string
-          - 'null'
-        ReferenceErrorCode:
-          type:
-          - string
-          - 'null'
-        ReferenceDocumentLink:
-          type:
-          - string
-          - 'null'
-        Errors:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/ValidationError'
-      additionalProperties: false
-    CreditMemoLineModel:
+      description: Employee Model
+    InvoiceLineModel:
       type: object
       properties:
         type:
           type:
           - string
           - 'null'
-          description: 'Type of the credit memo line.
+          description: 'Type of the invoice or credit memo line.
 
             QBO: N/A (Should always be SalesItemLineDetail)
 
@@ -2303,7 +2649,9 @@ components:
           type:
           - string
           - 'null'
-          description: 'Description for the credit memo line. Max chars: 255.'
+          description: 'Description text for the sale line.
+
+            Max Chars : 1000 (QBO: Max Chars - 4000, Xero: Max Chars - 4000, MYOB: Max Chars - 1000)'
         accountRef:
           type:
           - string
@@ -2313,73 +2661,256 @@ components:
           allOf:
           - $ref: '#/components/schemas/SalesItemLineDetailModel'
           description: Line Item Details
+        discountAmount:
+          type:
+          - number
+          - 'null'
+          format: double
+        discountPercent:
+          type:
+          - number
+          - 'null'
+          format: double
       additionalProperties: false
-      description: Line item details for customer credits.
-    ValidationError:
+      description: Line item details for customer invoices and credits.
+    JournalLineModel:
       type: object
       properties:
-        Field:
+        id:
           type:
           - string
           - 'null'
-        Message:
-          type:
-          - string
-          - 'null'
-        ErrorCode:
-          type:
-          - string
-          - 'null'
-        Detail:
-          type:
-          - string
-          - 'null'
-      additionalProperties: false
-    SalesItemLineDetailModel:
-      type: object
-      properties:
-        qty:
-          type: number
-          description: '(ShipQuantity for Myob)
+          description: 'MYOB: RowId
 
-            The quantity of goods shipped.'
-          format: double
-        unitPrice:
+            Xero: N/A
+
+            QBO: Id
+
+            Sage: Id'
+        type:
+          type:
+          - string
+          - 'null'
+          description: 'MYOB: IsCredit (false when Type = "Debit", true when Type = "Credit")
+
+            Xero: Debits must be positive and Credits must be negative in Xero. When Type = "Credit" and LineAmount is positive, LineAmount is negated. When Type = "Debit" and LineAmount is negative, LineAmount is negated.
+
+            QBO: PostingType
+
+            Sage: N/A'
+        amount:
           type: number
-          description: Unit price assigned to the item.
+          description: 'MYOB: Amount
+
+            Xero: LineAmount
+
+            QBO: Amount
+
+            Sage: Credit/Debit'
           format: double
+        accountRef:
+          type:
+          - string
+          - 'null'
+          description: 'MYOB: Account.UID
+
+            Xero: AccountID. System Accounts and Bank Accounts may not be used.
+
+            QBO: AccountRef
+
+            Sage: Ledger_Account_Id'
         taxCodeRef:
           type:
           - string
           - 'null'
-          description: '(TaxCode for Myob)
+          description: 'MYOB: TaxCode.UID
 
-            Tax code'
-        itemRef:
+            Xero: TaxType
+
+            QBO: TaxCodeRef'
+        customerOrVendorRef:
           type:
           - string
           - 'null'
-          description: '(Item for Myob)
+          description: 'Gets or sets the reference identifier for the associated customer or vendor.
 
-            Details for an Item'
-        accountCode:
+            MYOB: N/A
+
+            Xero: N/A
+
+            QBO: Entity.EntityRef.Value'
+        description:
           type:
           - string
           - 'null'
-          description: '(Account for Myob)
+          description: 'MYOB: Memo
 
-            Account Code.
+            Xero: Description
 
-            Max Chars : 10 (Xero: Max Chars - 10)'
-        itemAccountRef:
-          type:
-          - string
-          - 'null'
-          description: '(QBO related field)
+            QBO: Description
 
-            In MYOB maps with Account.UID'
+            Sage: Details'
       additionalProperties: false
-      description: Sale Item Detail Model
+      description: 'Represents an individual line of a GL Journal to be saved to or existing in the financial system.
+
+        QBO: https://developer.intuit.com/app/developer/qbo/docs/api/accounting/all-entities/journalentry
+
+        Xero: https://developer.xero.com/documentation/api/accounting/manualjournals
+
+        MYOB: https://developer.myob.com/api/myob-business-api/v2/generalledger/generaljournal/
+
+        Sage: https://developer.sage.com/accounting/reference/accounting/#tag/Journals'
+    CreditMemoModelAPIResponse:
+      type: object
+      properties:
+        Version:
+          type:
+          - string
+          - 'null'
+        StatusCode:
+          type: integer
+          format: int32
+        Message:
+          type:
+          - string
+          - 'null'
+        ResponseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        Result:
+          allOf:
+          - $ref: '#/components/schemas/CreditMemoModel'
+          description: "Represents a Customer Credit Memo to be saved to the financial system.\nQBO: https://developer.intuit.com/app/developer/qbo/docs/api/accounting/all-entities/creditmemo\nXero: https://developer.xero.com/documentation/api/accounting/creditnotes\nMYOB: https://developer.myob.com/api/myob-business-api/v2/sale/invoice/invoice_item/ (Credit Invoice)\n    OR https://developer.myob.com/api/myob-business-api/v2/sale/credit_refund/ (Credit Refund Payment)\nSage: https://developer.sage.com/accounting/reference/invoicing-sales/#tag/Sales-Credit-Notes"
+      additionalProperties: false
+    InvoiceResponseModel:
+      type: object
+      properties:
+        invoiceId:
+          type:
+          - string
+          - 'null'
+        docNumber:
+          type:
+          - string
+          - 'null'
+        syncToken:
+          type:
+          - string
+          - 'null'
+        active:
+          type:
+          - boolean
+          - 'null'
+          description: 'IsActive for the Invoice
+
+            QBO: N/A
+
+            Xero: N/A
+
+            MYOB: N/A
+
+            Sage: N/A'
+        createDateTime:
+          type:
+          - string
+          - 'null'
+          description: 'The create date and time date for the Invoice.
+
+            QBO: MetaData.CreateTime
+
+            MYOB: Created
+
+            Xero: Date
+
+            Sage: N/A'
+          format: date-time
+        modifyDateTime:
+          type:
+          - string
+          - 'null'
+          description: 'The modify date and time date for the Invoice.
+
+            QBO: MetaData.LastUpdatedTime
+
+            MYOB: LastModified
+
+            Xero: UpdatedDateUTC
+
+            SAGE: N/A'
+          format: date-time
+      additionalProperties: false
+    CreditMemoResponseModel:
+      type: object
+      properties:
+        creditMemoId:
+          type:
+          - string
+          - 'null'
+          description: Unique id of the credit memo.
+        docNumber:
+          type:
+          - string
+          - 'null'
+          description: User-defined alphanumeric identifier for the credit memo.
+        syncToken:
+          type:
+          - string
+          - 'null'
+          description: SyncToken representing the version of the record.
+      additionalProperties: false
+      description: A record containing the unique id and syncToken for a saved credit memo.
+    SupplierModelAPIResponse:
+      type: object
+      properties:
+        Version:
+          type:
+          - string
+          - 'null'
+        StatusCode:
+          type: integer
+          format: int32
+        Message:
+          type:
+          - string
+          - 'null'
+        ResponseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        Result:
+          allOf:
+          - $ref: '#/components/schemas/SupplierModel'
+          description: 'Represents a Supplier/Vendor to be saved to the financial system.
+
+            QBO: https://developer.intuit.com/app/developer/qbo/docs/api/accounting/all-entities/vendor
+
+            Xero: https://developer.xero.com/documentation/api/accounting/contacts
+
+            MYOB: https://developer.myob.com/api/myob-business-api/v2/contact/supplier/
+
+            Sage: https://developer.sage.com/accounting/reference/contacts/#tag/Contacts'
+      additionalProperties: false
+    StringAPIResponse:
+      type: object
+      properties:
+        Version:
+          type:
+          - string
+          - 'null'
+        StatusCode:
+          type: integer
+          format: int32
+        Message:
+          type:
+          - string
+          - 'null'
+        ResponseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        Result:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
     BillModel:
       type: object
       properties:
@@ -2593,49 +3124,208 @@ components:
         MYOB: https://developer.myob.com/api/myob-business-api/v2/purchase/bill/
 
         SAGE: https://developer.myob.cohttps://developer.sage.com/accounting/reference/invoicing-purchases/#tag/Purchase-Invoices'
-    TimeActivityResponseModel:
+    PaymentTermModel:
       type: object
       properties:
         id:
           type:
           - string
           - 'null'
-        employeeRef:
-          type:
-          - string
-          - 'null'
-        transactionDate:
-          type: string
-          format: date-time
-        description:
-          type:
-          - string
-          - 'null'
-        status:
-          type:
-          - string
-          - 'null'
-        hours:
-          type:
-          - number
-          - 'null'
-          format: double
+          description: Unique id of the term. Provide when updating the record.
+        override:
+          type: boolean
+          description: Set to true to force an update to the record regardless of version conflict. SyncToken is not required if Override is true.
         syncToken:
           type:
           - string
           - 'null'
+          description: SyncToken to ensure updating the latest version of the record.
+        upsert:
+          type: boolean
+          description: 'When no unique Id is provided, allow updating if a matching Payment Term record exists, otherwise create a new record.
+
+            QBO: Update a matching record by Name.'
+        termDay:
+          type: integer
+          description: '(Days fiels for Xero)
+
+            The number of days or day of the month within which the customer has to pay invoices..'
+          format: int32
+          deprecated: true
+        itemChoice:
+          type:
+          - string
+          - 'null'
+          description: For QBO valid value should be one among DayOfMonthDue, DiscountDayOfMonth, DiscountDays, DueDays, DueNextMonthDays
+          deprecated: true
+        name:
+          type:
+          - string
+          - 'null'
+          description: '(QBO related feild)
+
+            User recognizable name for the term.'
+        active:
+          type: boolean
+          description: 'Active for the Payment Term
+
+            QBO: Active'
+        dueDays:
+          type:
+          - integer
+          - 'null'
+          description: '(Range is 0 through 999 for QuickBooks)
+
+            QBO: DueDays (Number of days from delivery of goods or services until the payment is due. Required if DayOfMonthDue not present)'
+          format: int32
+        dayOfMonthDue:
+          type:
+          - integer
+          - 'null'
+          description: '(Range is 1 through 31 for QuickBooks)
+
+            QBO: DayOfMonthDue (Payment must be received by this day of the month. Used only if DueDays is not specified. Required if DueDays not present)'
+          format: int32
+        discountPercent:
+          type:
+          - number
+          - 'null'
+          description: '(Range is 0 through 100 for QuickBooks)
+
+            QBO: Discount Percent (Discount percentage available against an amount if paid within the days specified by DiscountDays.)'
+          format: double
+        discountDays:
+          type:
+          - integer
+          - 'null'
+          description: '(Range is 0 through 999 for QuickBooks)
+
+            QBO: DiscountDays (the number of days or day of the month within which the customer must pay to receive discounts.)'
+          format: int32
+        discountDayOfMonth:
+          type:
+          - integer
+          - 'null'
+          description: '(Range is 0 through 31 for QuickBooks)
+
+            QBO: DiscountDayOfMonth (Discount applies if paid before this day of month. Required if DueDays not present.)'
+          format: int32
+        dueNextMonthDays:
+          type:
+          - integer
+          - 'null'
+          description: '(Range is 0 through 999 for QuickBooks)
+
+            QBO: DueNextMonthDays (Payment due next month if issued that many days before the DayOfMonthDue. Required if DueDays not present.)'
+          format: int32
+      additionalProperties: false
+      description: 'Represents a Payment Term to be saved to the financial system.
+
+        QBO: https://developer.intuit.com/app/developer/qbo/docs/api/accounting/all-entities/term'
+    JournalModel:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: Unique id of the journal. Provide when updating the record.
+        syncToken:
+          type:
+          - string
+          - 'null'
+          description: SyncToken to ensure updating the latest version of the record. Used for updating with QBO and MYOB.
+        override:
+          type: boolean
+          description: Set to true to force an update to the record regardless of version conflict. SyncToken is not required if Override is true.
+        upsert:
+          type: boolean
+          description: 'When no unique Id is provided, allow updating if a matching journal record exists, otherwise create a new record
+
+            MYOB : Update a matching record by DocNumber.
+
+            QBO: Update a matching record by DocNumber.
+
+            Xero: Update a matching record by DocNumber.
+
+            Sage: N/A'
+        docNumber:
+          type:
+          - string
+          - 'null'
+          description: 'MYOB: DisplayID
+
+            Xero: Narration
+
+            QBO: DocNumber
+
+            Sage: Reference'
+        line:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/JournalLineModel'
+          description: 'A collection of line information for the journal. See FinancialIntegration.Models.RequestModel.JournalLineModel for information.
+
+            QBO: Line.
+
+            Xero: JournalLines.
+
+            MYOB: Lines.
+
+            Sage: Journal_Lines.'
+        date:
+          type:
+          - string
+          - 'null'
+          description: 'MYOB: DateOccured
+
+            Xero: Date
+
+            QBO: TxnDate
+
+            Sage: Date'
+          format: date-time
+        exchangeRate:
+          type:
+          - number
+          - 'null'
+          description: 'MYOB: CurrencyExchangeRate
+
+            Xero: N/A
+
+            QBO: ExchangeRate
+
+            Sage: N/A'
+          format: double
         createDateTime:
           type:
           - string
           - 'null'
+          description: 'CreateDateTime for the journal
+
+            QBO: MetaData.CreateTime'
           format: date-time
         modifyDateTime:
           type:
           - string
           - 'null'
+          description: 'ModifyDateTime for the journal
+
+            QBO: MetaData.LastUpdatedTime'
           format: date-time
       additionalProperties: false
-    EmployeeModelListAPIResponse:
+      description: 'Represents a GL Journal to be saved to or existing in the financial system.
+
+        QBO: https://developer.intuit.com/app/developer/qbo/docs/api/accounting/all-entities/journalentry
+
+        Xero: https://developer.xero.com/documentation/api/accounting/manualjournals
+
+        MYOB: https://developer.myob.com/api/myob-business-api/v2/generalledger/generaljournal/
+
+        Sage: https://developer.sage.com/accounting/reference/accounting/#tag/Journals'
+    BillResponseModelAPIResponse:
       type: object
       properties:
         Version:
@@ -2653,13 +3343,11 @@ components:
           allOf:
           - $ref: '#/components/schemas/ApiError'
         Result:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/EmployeeModel'
+          allOf:
+          - $ref: '#/components/schemas/BillResponseModel'
+          description: A record containing the unique id, doc number, and syncToken for a saved GL account.
       additionalProperties: false
-    EmployeeModelAPIResponse:
+    CreditMemoResponseModelAPIResponse:
       type: object
       properties:
         Version:
@@ -2678,32 +3366,8 @@ components:
           - $ref: '#/components/schemas/ApiError'
         Result:
           allOf:
-          - $ref: '#/components/schemas/EmployeeModel'
-          description: Employee Model
-      additionalProperties: false
-    VendorCreditModelListAPIResponse:
-      type: object
-      properties:
-        Version:
-          type:
-          - string
-          - 'null'
-        StatusCode:
-          type: integer
-          format: int32
-        Message:
-          type:
-          - string
-          - 'null'
-        ResponseException:
-          allOf:
-          - $ref: '#/components/schemas/ApiError'
-        Result:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/VendorCreditModel'
+          - $ref: '#/components/schemas/CreditMemoResponseModel'
+          description: A record containing the unique id and syncToken for a saved credit memo.
       additionalProperties: false
     ItemBasedExpenseLineDetailModel:
       type: object
@@ -2748,26 +3412,188 @@ components:
           description: Reference to a customer or job.
       additionalProperties: false
       description: Item based expense line detail model
-    BillResponseModel:
+    JournalModelListAPIResponse:
       type: object
       properties:
-        billId:
+        Version:
           type:
           - string
           - 'null'
-          description: Unique id of the vendor bill.
-        docNumber:
+        StatusCode:
+          type: integer
+          format: int32
+        Message:
           type:
           - string
           - 'null'
-          description: User-defined alphanumeric identifier for the bill.
+        ResponseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        Result:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/JournalModel'
+      additionalProperties: false
+    BillModelListAPIResponse:
+      type: object
+      properties:
+        Version:
+          type:
+          - string
+          - 'null'
+        StatusCode:
+          type: integer
+          format: int32
+        Message:
+          type:
+          - string
+          - 'null'
+        ResponseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        Result:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/BillModel'
+      additionalProperties: false
+    AddressModelAPIResponse:
+      type: object
+      properties:
+        Version:
+          type:
+          - string
+          - 'null'
+        StatusCode:
+          type: integer
+          format: int32
+        Message:
+          type:
+          - string
+          - 'null'
+        ResponseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        Result:
+          allOf:
+          - $ref: '#/components/schemas/AddressModel'
+          description: Represents an address for a Customer, Vendor, or Employee
+      additionalProperties: false
+    CreditMemoLineModel:
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+          description: 'Type of the credit memo line.
+
+            QBO: N/A (Should always be SalesItemLineDetail)
+
+            Xero: N/A
+
+            MYOB: N/A'
+          deprecated: true
+        amount:
+          type:
+          - number
+          - 'null'
+          description: (Total field for Myob)
+          format: double
+        description:
+          type:
+          - string
+          - 'null'
+          description: 'Description for the credit memo line. Max chars: 255.'
+        accountRef:
+          type:
+          - string
+          - 'null'
+          description: MYOB field
+        salesItemLineDetail:
+          allOf:
+          - $ref: '#/components/schemas/SalesItemLineDetailModel'
+          description: Line Item Details
+      additionalProperties: false
+      description: Line item details for customer credits.
+    TimeActivityModel:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: Unique id of the time activity. Provide when updating the record.
+        override:
+          type: boolean
+          description: Set to true to force an update to the record regardless of version conflict. SyncToken is not required if Override is true.
         syncToken:
           type:
           - string
           - 'null'
-          description: SyncToken representing the version of the record.
+          description: SyncToken to ensure updating the latest version of the record. Used for updating with QBO and MYOB.
+        employeeRef:
+          type:
+          - string
+          - 'null'
+          description: Specifies the employee whose time is being recorded.
+        employeePayRateRef:
+          type:
+          - string
+          - 'null'
+          description: Specifies the employee pay rate for the time activity.
+        hours:
+          type:
+          - number
+          - 'null'
+          description: Hours and minutes worked.
+          format: double
+        transactionDate:
+          type:
+          - string
+          - 'null'
+          description: The date for the time activity. This is the posting date that affects financial statements. If the date is not supplied, the current date on the server is used.
+          format: date-time
+        description:
+          type:
+          - string
+          - 'null'
+          description: Description of work completed during time activity.
       additionalProperties: false
-      description: A record containing the unique id, doc number, and syncToken for a saved GL account.
+      description: 'Represents an employee Time Activity to be saved to the financial system.
+
+        QBO: https://developer.intuit.com/app/developer/qbo/docs/api/accounting/all-entities/timeactivity
+
+        Xero: https://developer.xero.com/documentation/api/accounting/invoices
+
+        MYOB: https://developer.myob.com/api/myob-business-api/v2/purchase/bill/'
+    CustomerModelListAPIResponse:
+      type: object
+      properties:
+        Version:
+          type:
+          - string
+          - 'null'
+        StatusCode:
+          type: integer
+          format: int32
+        Message:
+          type:
+          - string
+          - 'null'
+        ResponseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        Result:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/CustomerModel'
+      additionalProperties: false
     ItemModelAPIResponse:
       type: object
       properties:
@@ -2798,7 +3624,129 @@ components:
 
             Sage: https://developer.sage.com/accounting/reference/products-services/#tag/Products/operation/getProducts'
       additionalProperties: false
-    JournalModelListAPIResponse:
+    BillModelAPIResponse:
+      type: object
+      properties:
+        Version:
+          type:
+          - string
+          - 'null'
+        StatusCode:
+          type: integer
+          format: int32
+        Message:
+          type:
+          - string
+          - 'null'
+        ResponseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        Result:
+          allOf:
+          - $ref: '#/components/schemas/BillModel'
+          description: 'Represents a Vendor Bill to be saved to the financial system.
+
+            QBO: https://developer.intuit.com/app/developer/qbo/docs/api/accounting/all-entities/bill
+
+            Xero: https://developer.xero.com/documentation/api/accounting/invoices
+
+            MYOB: https://developer.myob.com/api/myob-business-api/v2/purchase/bill/
+
+            SAGE: https://developer.myob.cohttps://developer.sage.com/accounting/reference/invoicing-purchases/#tag/Purchase-Invoices'
+      additionalProperties: false
+    ValidationError:
+      type: object
+      properties:
+        Field:
+          type:
+          - string
+          - 'null'
+        Message:
+          type:
+          - string
+          - 'null'
+        ErrorCode:
+          type:
+          - string
+          - 'null'
+        Detail:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    PaymentTermResponseModel:
+      type: object
+      properties:
+        paymentTermId:
+          type:
+          - string
+          - 'null'
+        syncToken:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    BillLineModel:
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+          description: 'Type of the line.
+
+            QBO: DetailType (Should always be either ItemBasedExpenseLineDetail or AccountBasedExpenseLineDetail based on which detail property is provided)
+
+            Xero: N/A
+
+            MYOB: N/A'
+          deprecated: true
+        amount:
+          type:
+          - number
+          - 'null'
+          description: 'Total amount of the line.
+
+            QBO: Amount
+
+            Xero: LineAmount
+
+            MYOB: Amount
+
+            SAGE: Invoice_Lines.Total_Amount'
+          format: double
+        description:
+          maxLength: 1000
+          type:
+          - string
+          - 'null'
+          description: 'Description text for the purchase line. Max chars: 1000
+
+            QBO: Description
+
+            Xero: Description
+
+            MYOB: Description
+
+            SAGE: Invoice_Lines.Description'
+        accountRef:
+          type:
+          - string
+          - 'null'
+          description: 'MYOB field
+
+            Invoice_Lines.Ledger_Account_Id'
+        itemBasedExpenseLineDetail:
+          allOf:
+          - $ref: '#/components/schemas/ItemBasedExpenseLineDetailModel'
+          description: Details for item purchases from a vendor.
+        accountBasedExpenseLineDetail:
+          allOf:
+          - $ref: '#/components/schemas/AccountBasedExpenseLineDetailModel'
+          description: Details for non-item purchases from a vendor.
+      additionalProperties: false
+      description: Line item details for vendor bills.
+    EmployeeModelListAPIResponse:
       type: object
       properties:
         Version:
@@ -2820,62 +3768,170 @@ components:
           - array
           - 'null'
           items:
-            $ref: '#/components/schemas/JournalModel'
+            $ref: '#/components/schemas/EmployeeModel'
       additionalProperties: false
-    TimeActivityResponseModelAPIResponse:
+    CreditMemoModel:
       type: object
       properties:
-        Version:
+        id:
           type:
           - string
           - 'null'
-        StatusCode:
-          type: integer
-          format: int32
-        Message:
-          type:
-          - string
-          - 'null'
-        ResponseException:
-          allOf:
-          - $ref: '#/components/schemas/ApiError'
-        Result:
-          allOf:
-          - $ref: '#/components/schemas/TimeActivityResponseModel'
-      additionalProperties: false
-    InvoiceResponseModel:
-      type: object
-      properties:
-        invoiceId:
-          type:
-          - string
-          - 'null'
-        docNumber:
-          type:
-          - string
-          - 'null'
+          description: Unique id of the credit memo. Provide when updating the record.
+        override:
+          type: boolean
+          description: Set to true to force an update to the record regardless of version conflict. SyncToken is not required if Override is true.
         syncToken:
           type:
           - string
           - 'null'
-        active:
-          type:
-          - boolean
-          - 'null'
-          description: 'IsActive for the Invoice
+          description: SyncToken to ensure updating the latest version of the record. Used for updating with QBO and MYOB.
+        upsert:
+          type: boolean
+          description: 'When no unique Id is provided, allow updating if a matching Credit Memo record exists, otherwise create a new record
 
-            QBO: N/A
+            QBO: Update a matching record by DocNumber.
+
+            Xero: Update a matching record by DocNumber.
+
+            MYOB: Update a matching record by DocNumber.
+
+            Sage: Update a matching record by DocNumber.'
+        customerRef:
+          type:
+          - string
+          - 'null'
+          description: 'Unique id of the customer to which to apply this credit.
+
+            QBO: CustomerRef
+
+            Xero: Contact.ContactID
+
+            MYOB: Customer.UID
+
+            SAGE: Contact_Id'
+        line:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/CreditMemoLineModel'
+          description: Details of individual credit memo lines.
+        currencyCode:
+          type:
+          - string
+          - 'null'
+          description: 'Unique id or code for the currency in which all amounts on the associated transaction are expressed.
+
+            QBO: CurrencyRef
+
+            Xero: CurrencyCode
+
+            MYOB: ForeignCurrency.UID (read-only)
+
+            SAGE: Currency_Id'
+        baseCurrency:
+          type:
+          - string
+          - 'null'
+          description: 'Determines whether the bill is expressed in the home currency or foreign currency.
+
+            QBO: When BaseCurrency is not equal to the provided CurrencyCode, automatically look up the currency exchange rate and apply it to the bill.
 
             Xero: N/A
 
             MYOB: N/A
 
-            Sage: N/A'
+            Sage: When BaseCurrency is not equal to the provided CurrencyCode, automatically look up the currency exchange rate and apply it to the bill.'
+        txnDate:
+          type:
+          - string
+          - 'null'
+          description: 'The transaction or issue date for the credit memo.
+
+            QBO: TxnDate
+
+            Xero: Date
+
+            MYOB: Date
+
+            SAGE: Date'
+          format: date-time
+        invoiceRef:
+          type:
+          - string
+          - 'null'
+          description: 'Id of the Invoice for which Credit Memo is issued.
+
+            QBO: InvoiceRef
+
+            Xero: LineItems.InvoiceID
+
+            MYOB: Invoice.UID (Credit Refund Payment only)'
+        accountRef:
+          type:
+          - string
+          - 'null'
+          description: MYOB Field maps with Account.UID
+        billAddr:
+          allOf:
+          - $ref: '#/components/schemas/AddressModel'
+          description: 'Bill-to address of the Credit Memo. If not specified, the customer''s default billing address may be used.
+
+            QBO: BillAddr
+
+            Xero: Contact.Addresses (address type POBOX)
+
+            MYOB: Payee (Credit Refund Payment only)'
+        shipAddr:
+          allOf:
+          - $ref: '#/components/schemas/AddressModel'
+          description: 'Ship-to address of the Credit Memo. If not specified, the customer''s default shipping address may be used.
+
+            QBO: ShipAddr'
+        billEmail:
+          type:
+          - string
+          - 'null'
+          description: 'Identifies the e-mail address where the invoice is sent.
+
+            QBO: BillEmail.Address. If EmailStatus=NeedToSend, BillEmail is a required input.
+
+            Xero: N/A
+
+            MYOB: N/A
+
+            SAGE: Contact.Email (Read only)'
+        docNumber:
+          type:
+          - string
+          - 'null'
+          description: 'Reference number for the transaction.
+
+            QBO: DocNumber
+
+            Xero: CreditNoteNumber
+
+            MYOB: Number
+
+            SAGE: Reference'
+        taxCodeRef:
+          type:
+          - string
+          - 'null'
+          description: 'Id of the tax code to use for this transaction.
+
+            SAGE: Tax_Analysis.Tax_Rate_Id'
+        status:
+          type:
+          - string
+          - 'null'
+          description: "The status of the credit memo.\nQBO: Status - Valid values: Deleted\nXero: Status - Valid values: DRAFT, SUBMITTED, DELETED, AUTHORISED, PAID, and VOIDED \nMYOB: Status - Valid values: Unknown, Open, Closed, Credit\nSAGE: Status.Id - Valid values: UNPAID, PART_PAID, PAID, VOID, DRAFT, DISPUTED, DECLINED or PRO_FORMA"
         createDateTime:
           type:
           - string
           - 'null'
-          description: 'The create date and time date for the Invoice.
+          description: 'The create date and time date for the credit memo.
 
             QBO: MetaData.CreateTime
 
@@ -2889,7 +3945,7 @@ components:
           type:
           - string
           - 'null'
-          description: 'The modify date and time date for the Invoice.
+          description: 'The modify date and time date for the credit memo.
 
             QBO: MetaData.LastUpdatedTime
 
@@ -2899,125 +3955,34 @@ components:
 
             SAGE: N/A'
           format: date-time
+        customerMemo:
+          type:
+          - string
+          - 'null'
+          description: 'CustomerMemo is used for a note that is able to be read by the customer on the invoice.
+
+            QBO: CustomerMemo
+
+            Xero: N/A
+
+            MYOB: Memo
+
+            Sage: N/A'
+        privateNote:
+          type:
+          - string
+          - 'null'
+          description: 'PrivateNote is used for a note that will not be shown to the customer on the invoice.
+
+            QBO: PrivateNote
+
+            Xero: N/A
+
+            MYOB: N/A
+
+            Sage: N/A'
       additionalProperties: false
-    BillModelListAPIResponse:
-      type: object
-      properties:
-        Version:
-          type:
-          - string
-          - 'null'
-        StatusCode:
-          type: integer
-          format: int32
-        Message:
-          type:
-          - string
-          - 'null'
-        ResponseException:
-          allOf:
-          - $ref: '#/components/schemas/ApiError'
-        Result:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/BillModel'
-      additionalProperties: false
-    TimeActivityBatchModel:
-      required:
-      - employeeRef
-      - timeActivities
-      type: object
-      properties:
-        employeeRef:
-          minLength: 1
-          type: string
-          description: The employee whose time is being recorded.
-        timeActivities:
-          minItems: 1
-          type: array
-          items:
-            $ref: '#/components/schemas/TimeActivityEmployeeBatchModel'
-          description: The employee's time activities
-      additionalProperties: false
-      description: Time activity Model
-    CustomerModelAPIResponse:
-      type: object
-      properties:
-        Version:
-          type:
-          - string
-          - 'null'
-        StatusCode:
-          type: integer
-          format: int32
-        Message:
-          type:
-          - string
-          - 'null'
-        ResponseException:
-          allOf:
-          - $ref: '#/components/schemas/ApiError'
-        Result:
-          allOf:
-          - $ref: '#/components/schemas/CustomerModel'
-          description: 'Represents a Customer to be saved to the financial system.
-
-            QBO: https://developer.intuit.com/app/developer/qbo/docs/api/accounting/all-entities/customer
-
-            Xero: https://developer.xero.com/documentation/api/accounting/contacts
-
-            MYOB: https://developer.myob.com/api/myob-business-api/v2/contact/customer/
-
-            Sage: https://developer.sage.com/accounting/reference/contacts/#tag/Contacts'
-      additionalProperties: false
-    AccountBasedExpenseLineDetailModel:
-      type: object
-      properties:
-        accountRef:
-          type:
-          - string
-          - 'null'
-          description: 'Reference to the Expense account associated with this item.
-
-            SAGE: Invoice_Lines.Product.Purchase_Ledger_Account_Id'
-        taxAmount:
-          type:
-          - number
-          - 'null'
-          description: 'Sales tax paid as part of the expense.
-
-            SAGE: Invoice_Lines.Tax_Amount'
-          format: double
-        taxInclusiveAmt:
-          type:
-          - number
-          - 'null'
-          description: "The total amount of the line item including tax.\n SAGE: Invoice_Lines.Net_Amount"
-          format: double
-        classRef:
-          type:
-          - string
-          - 'null'
-          description: Reference to the Class associated with the expense.
-        taxCodeRef:
-          type:
-          - string
-          - 'null'
-          description: The TaxCode associated with the sales tax for the expense.
-        billableStatus:
-          type:
-          - string
-          - 'null'
-          description: 'The billable status of the expense. Valid values: Billable, NotBillable, HasBeenBilled'
-        customerRef:
-          type:
-          - string
-          - 'null'
-          description: Reference to the Customer associated with the expense.
-      additionalProperties: false
-      description: Account Based Expense Line Detail Model
+      description: "Represents a Customer Credit Memo to be saved to the financial system.\nQBO: https://developer.intuit.com/app/developer/qbo/docs/api/accounting/all-entities/creditmemo\nXero: https://developer.xero.com/documentation/api/accounting/creditnotes\nMYOB: https://developer.myob.com/api/myob-business-api/v2/sale/invoice/invoice_item/ (Credit Invoice)\n    OR https://developer.myob.com/api/myob-business-api/v2/sale/credit_refund/ (Credit Refund Payment)\nSage: https://developer.sage.com/accounting/reference/invoicing-sales/#tag/Sales-Credit-Notes"
     CustomerShippingAddressModel:
       required:
       - customerId
@@ -3145,15 +4110,7 @@ components:
             MYOB: Country'
       additionalProperties: false
       description: THIS CLASS IS USED TO HAVE SHIPPING ADDRESS DETAILS
-    CustomerResponseModel:
-      type: object
-      properties:
-        customerId:
-          type:
-          - string
-          - 'null'
-      additionalProperties: false
-    BillResponseModelAPIResponse:
+    ContentResponseModelAPIResponse:
       type: object
       properties:
         Version:
@@ -3172,62 +4129,173 @@ components:
           - $ref: '#/components/schemas/ApiError'
         Result:
           allOf:
-          - $ref: '#/components/schemas/BillResponseModel'
-          description: A record containing the unique id, doc number, and syncToken for a saved GL account.
+          - $ref: '#/components/schemas/ContentResponseModel'
+          description: A record containing the unique id and syncToken for a saved entity.
       additionalProperties: false
-    JournalModel:
+    InvoiceResponseModelAPIResponse:
+      type: object
+      properties:
+        Version:
+          type:
+          - string
+          - 'null'
+        StatusCode:
+          type: integer
+          format: int32
+        Message:
+          type:
+          - string
+          - 'null'
+        ResponseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        Result:
+          allOf:
+          - $ref: '#/components/schemas/InvoiceResponseModel'
+      additionalProperties: false
+    BillResponseModel:
+      type: object
+      properties:
+        billId:
+          type:
+          - string
+          - 'null'
+          description: Unique id of the vendor bill.
+        docNumber:
+          type:
+          - string
+          - 'null'
+          description: User-defined alphanumeric identifier for the bill.
+        syncToken:
+          type:
+          - string
+          - 'null'
+          description: SyncToken representing the version of the record.
+      additionalProperties: false
+      description: A record containing the unique id, doc number, and syncToken for a saved GL account.
+    CustomerResponseModelAPIResponse:
+      type: object
+      properties:
+        Version:
+          type:
+          - string
+          - 'null'
+        StatusCode:
+          type: integer
+          format: int32
+        Message:
+          type:
+          - string
+          - 'null'
+        ResponseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        Result:
+          allOf:
+          - $ref: '#/components/schemas/CustomerResponseModel'
+      additionalProperties: false
+    TimeActivityResponseModel:
       type: object
       properties:
         id:
           type:
           - string
           - 'null'
-          description: Unique id of the journal. Provide when updating the record.
+        employeeRef:
+          type:
+          - string
+          - 'null'
+        transactionDate:
+          type: string
+          format: date-time
+        description:
+          type:
+          - string
+          - 'null'
+        status:
+          type:
+          - string
+          - 'null'
+        hours:
+          type:
+          - number
+          - 'null'
+          format: double
         syncToken:
           type:
           - string
           - 'null'
-          description: SyncToken to ensure updating the latest version of the record. Used for updating with QBO and MYOB.
-        override:
-          type: boolean
-          description: Set to true to force an update to the record regardless of version conflict. SyncToken is not required if Override is true.
-        upsert:
-          type: boolean
-          description: 'When no unique Id is provided, allow updating if a matching journal record exists, otherwise create a new record
-
-            MYOB : Update a matching record by DocNumber.
-
-            QBO: Update a matching record by DocNumber.
-
-            Xero: Update a matching record by DocNumber.
-
-            Sage: N/A'
-        docNumber:
+        createDateTime:
           type:
           - string
           - 'null'
-          description: 'MYOB: DisplayID
-
-            Xero: Narration
-
-            QBO: DocNumber
-
-            Sage: Reference'
-        line:
+          format: date-time
+        modifyDateTime:
           type:
-          - array
+          - string
           - 'null'
+          format: date-time
+      additionalProperties: false
+    TimeActivityBatchModel:
+      required:
+      - employeeRef
+      - timeActivities
+      type: object
+      properties:
+        employeeRef:
+          minLength: 1
+          type: string
+          description: The employee whose time is being recorded.
+        timeActivities:
+          minItems: 1
+          type: array
           items:
-            $ref: '#/components/schemas/JournalLineModel'
-          description: 'A collection of line information for the journal. See FinancialIntegration.Models.RequestModel.JournalLineModel for information.
+            $ref: '#/components/schemas/TimeActivityEmployeeBatchModel'
+          description: The employee's time activities
+      additionalProperties: false
+      description: Time activity Model
+    PaymentTermResponseModelAPIResponse:
+      type: object
+      properties:
+        Version:
+          type:
+          - string
+          - 'null'
+        StatusCode:
+          type: integer
+          format: int32
+        Message:
+          type:
+          - string
+          - 'null'
+        ResponseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        Result:
+          allOf:
+          - $ref: '#/components/schemas/PaymentTermResponseModel'
+      additionalProperties: false
+    JournalResponseModel:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: 'MYOB: UID
 
-            QBO: Line.
+            Xero: ManualJournalId
 
-            Xero: JournalLines.
+            QBO: Id'
+        syncToken:
+          type:
+          - string
+          - 'null'
+          description: 'MYOB: RowVersion
 
-            MYOB: Lines.
+            Xero: N/A
 
-            Sage: Journal_Lines.'
+            QBO: SyncToken'
         date:
           type:
           - string
@@ -3236,87 +4304,20 @@ components:
 
             Xero: Date
 
-            QBO: TxnDate
-
-            Sage: Date'
+            QBO: TxnDate'
           format: date-time
-        exchangeRate:
-          type:
-          - number
-          - 'null'
-          description: 'MYOB: CurrencyExchangeRate
-
-            Xero: N/A
-
-            QBO: ExchangeRate
-
-            Sage: N/A'
-          format: double
-        createDateTime:
+        docNumber:
           type:
           - string
           - 'null'
-          description: 'CreateDateTime for the journal
+          description: 'MYOB : DisplayID
 
-            QBO: MetaData.CreateTime'
-          format: date-time
-        modifyDateTime:
-          type:
-          - string
-          - 'null'
-          description: 'ModifyDateTime for the journal
+            Xero : Narration
 
-            QBO: MetaData.LastUpdatedTime'
-          format: date-time
+            QBO: DocNumber'
       additionalProperties: false
-      description: 'Represents a GL Journal to be saved to or existing in the financial system.
-
-        QBO: https://developer.intuit.com/app/developer/qbo/docs/api/accounting/all-entities/journalentry
-
-        Xero: https://developer.xero.com/documentation/api/accounting/manualjournals
-
-        MYOB: https://developer.myob.com/api/myob-business-api/v2/generalledger/generaljournal/
-
-        Sage: https://developer.sage.com/accounting/reference/accounting/#tag/Journals'
-    VendorCreditLineModel:
-      type: object
-      properties:
-        type:
-          type:
-          - string
-          - 'null'
-          description: 'Type of the line.
-
-            QBO: DetailType (Should always be either ItemBasedExpenseLineDetail or AccountBasedExpenseLineDetail based on which detail property is provided)
-
-            Xero: N/A
-
-            MYOB: N/A'
-          deprecated: true
-        description:
-          type:
-          - string
-          - 'null'
-          description: 'Description for the vendor credit line. Max chars: 255.
-
-            Sage: Credit_Note_Lines.Description'
-        amount:
-          type:
-          - number
-          - 'null'
-          description: "Total amount of the line item.\nQBO: Amount\nXero: \nSage: Total_Amount"
-          format: double
-        itemBasedExpenseLineDetail:
-          allOf:
-          - $ref: '#/components/schemas/ItemBasedExpenseLineDetailModel'
-          description: Details for item purchases from a vendor.
-        accountBasedExpenseLineDetail:
-          allOf:
-          - $ref: '#/components/schemas/AccountBasedExpenseLineDetailModel'
-          description: Details for non-item purchases from a vendor.
-      additionalProperties: false
-      description: THIS CLASS IS BEING USED TO HAVE LINE ITEM OF INVOICE
-    JournalModelAPIResponse:
+      description: ''
+    CustomerModelAPIResponse:
       type: object
       properties:
         Version:
@@ -3335,16 +4336,827 @@ components:
           - $ref: '#/components/schemas/ApiError'
         Result:
           allOf:
-          - $ref: '#/components/schemas/JournalModel'
-          description: 'Represents a GL Journal to be saved to or existing in the financial system.
+          - $ref: '#/components/schemas/CustomerModel'
+          description: 'Represents a Customer to be saved to the financial system.
 
-            QBO: https://developer.intuit.com/app/developer/qbo/docs/api/accounting/all-entities/journalentry
+            QBO: https://developer.intuit.com/app/developer/qbo/docs/api/accounting/all-entities/customer
 
-            Xero: https://developer.xero.com/documentation/api/accounting/manualjournals
+            Xero: https://developer.xero.com/documentation/api/accounting/contacts
 
-            MYOB: https://developer.myob.com/api/myob-business-api/v2/generalledger/generaljournal/
+            MYOB: https://developer.myob.com/api/myob-business-api/v2/contact/customer/
 
-            Sage: https://developer.sage.com/accounting/reference/accounting/#tag/Journals'
+            Sage: https://developer.sage.com/accounting/reference/contacts/#tag/Contacts'
+      additionalProperties: false
+    VendorCreditModelAPIResponse:
+      type: object
+      properties:
+        Version:
+          type:
+          - string
+          - 'null'
+        StatusCode:
+          type: integer
+          format: int32
+        Message:
+          type:
+          - string
+          - 'null'
+        ResponseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        Result:
+          allOf:
+          - $ref: '#/components/schemas/VendorCreditModel'
+          description: "Represents a Vendor Credit to be saved to the financial system.\nQBO: https://developer.intuit.com/app/developer/qbo/docs/api/accounting/all-entities/vendorcredit\nXero: https://developer.xero.com/documentation/api/accounting/creditnotes\nMYOB: https://developer.myob.com/api/myob-business-api/v2/purchase/bill/bill_item/\n    OR https://developer.myob.com/api/myob-business-api/v2/purchase/debit_refund/\nSage: https://developer.sage.com/accounting/reference/invoicing-purchases/#tag/Purchase-Credit-Notes"
+      additionalProperties: false
+    VendorCreditModel:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: Unique id of the vendor credit. Provide when updating the record.
+        override:
+          type: boolean
+          description: Set to true to force an update to the record regardless of version conflict. SyncToken is not required if Override is true.
+        syncToken:
+          type:
+          - string
+          - 'null'
+          description: SyncToken to ensure updating the latest version of the record. Used for updating with QBO and MYOB.
+        upsert:
+          type: boolean
+          description: 'When no unique Id is provided, allow updating if a matching Vendor Credit record exists, otherwise create a new record
+
+            QBO: Update a matching record by DocNumber.
+
+            Xero: Update a matching record by DocNumber.
+
+            MYOB: Update a matching record by DocNumber.
+
+            Sage: Update a matching record by DocNumber.'
+        vendorRef:
+          type:
+          - string
+          - 'null'
+          description: 'The unique id of the vendor from which this credit is applied.
+
+            QBO: VendorRef
+
+            Xero: Contact.ContactID
+
+            MYOB: Supplier.UID
+
+            Sage: Contact_Id'
+        line:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/VendorCreditLineModel'
+          description: An array of line invoice information
+        docNumber:
+          type:
+          - string
+          - 'null'
+          description: 'Reference number for the transaction.
+
+            QBO: DocNumber
+
+            Xero: CreditNoteNumber
+
+            MYOB: Number
+
+            Sage: Reference'
+        currencyCode:
+          type:
+          - string
+          - 'null'
+          description: 'QBO: Reference to the currency in which all amounts on the associated transaction are expressed
+
+            Sage: Currency_Id'
+        baseCurrency:
+          type:
+          - string
+          - 'null'
+          description: 'Misc. field to determine if Currency code is home currency or foreign currency
+
+            Sage: Currency.Id (Read only)'
+        type:
+          type:
+          - string
+          - 'null'
+          description: Type of vendor credit.
+          deprecated: true
+        depositTo:
+          type:
+          - string
+          - 'null'
+          description: 'MYOB field "Deposit To Account Name"
+
+            Sage: Contact.Bank_Account_Details.Account_Number (Read only)'
+        accountRef:
+          type:
+          - string
+          - 'null'
+          description: 'QBO: Specifies to which AP account the bill is credited'
+        billRef:
+          type:
+          - string
+          - 'null'
+          description: MYOB field "Accounting System stored ID for Original Bill"
+        privateNote:
+          type:
+          - string
+          - 'null'
+          description: 'Private note for the transaction. This note does not appear externally outside the organization.
+
+            Sage: Notes'
+        txnDate:
+          type:
+          - string
+          - 'null'
+          description: 'MYOB field maps to date
+
+            Sage: Date'
+          format: date-time
+        amount:
+          type: number
+          description: 'MYOB field "Vendor Credit Total"
+
+            Sage: TotalAmount'
+          format: double
+        status:
+          type:
+          - string
+          - 'null'
+          description: "The status of the vendor credit.\nQBO: Status - Valid values: Deleted\nXero: Status - Valid values: DRAFT, SUBMITTED, DELETED, AUTHORISED, PAID, and VOIDED \nMYOB: Status - Valid values: Unknown, Open, Closed, Debit\nSAGE: Status.Id - Valid values: UNPAID, PART_PAID, PAID, VOID, DRAFT, DISPUTED, DECLINED or PRO_FORMA"
+        createDateTime:
+          type:
+          - string
+          - 'null'
+          description: 'CreateDateTime for the vendor credit
+
+            QBO: MetaData.CreateTime'
+          format: date-time
+        modifyDateTime:
+          type:
+          - string
+          - 'null'
+          description: 'ModifyDateTime for the vendor credit
+
+            QBO: MetaData.LastUpdatedTime'
+          format: date-time
+        showTaxInclusiveAmounts:
+          type:
+          - boolean
+          - 'null'
+          description: 'Indicates whether to display amounts on the vendor credit with tax included or not.
+
+            QBO: GlobalTaxCalculation (true -> TaxInclusive, false -> TaxExcluded, null -> NotApplicable)'
+      additionalProperties: false
+      description: "Represents a Vendor Credit to be saved to the financial system.\nQBO: https://developer.intuit.com/app/developer/qbo/docs/api/accounting/all-entities/vendorcredit\nXero: https://developer.xero.com/documentation/api/accounting/creditnotes\nMYOB: https://developer.myob.com/api/myob-business-api/v2/purchase/bill/bill_item/\n    OR https://developer.myob.com/api/myob-business-api/v2/purchase/debit_refund/\nSage: https://developer.sage.com/accounting/reference/invoicing-purchases/#tag/Purchase-Credit-Notes"
+    ApiError:
+      type: object
+      properties:
+        ExceptionMessage:
+          type:
+          - string
+          - 'null'
+        Details:
+          type:
+          - string
+          - 'null'
+        ReferenceErrorCode:
+          type:
+          - string
+          - 'null'
+        ReferenceDocumentLink:
+          type:
+          - string
+          - 'null'
+        Errors:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ValidationError'
+      additionalProperties: false
+    ItemModel:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: Unique id of the item. Provide when updating the record.
+        override:
+          type: boolean
+          description: Set to true to force an update to the record regardless of version conflict. SyncToken is not required if Override is true.
+        syncToken:
+          type:
+          - string
+          - 'null'
+          description: SyncToken to ensure updating the latest version of the record. Used for updating with QBO and MYOB.
+        upsert:
+          type: boolean
+          description: 'When no unique Id is provided, allow updating if a matching Item record exists, otherwise create a new record
+
+            QBO: Update a matching record by Code.
+
+            Xero: Update a matching record by Code.
+
+            MYOB: Update a matching record by Code.
+
+            Sage: Update a matching record by Code.'
+        updateTransactionHistory:
+          type:
+          - boolean
+          - 'null'
+          description: 'Whether income or expense account on existing transactions for this item should be updated with new accounts. Default: true.
+
+            QBO: Uses historical transaction-exclusive item update when false.
+
+            Xero: N/A
+
+            MYOB: N/A
+
+            Sage: N/A'
+        type:
+          type:
+          - string
+          - 'null'
+          description: 'Classification that specifies the use of this item. Valid values are: Inventory, NonInventory, Service, and Category
+
+            QBO: Type
+
+            Xero: N/A
+
+            MYOB: N/A
+
+            Sage: Catalog_Item_Type_Id'
+        code:
+          type:
+          - string
+          - 'null'
+          description: 'Code or short name for this item. Max chars: 30.
+
+            QBO: Name
+
+            Xero: Code and Name
+
+            MYOB: Number and Name
+
+            Sage: Item_Code'
+        description:
+          type:
+          - string
+          - 'null'
+          description: 'Sales description of the item. Max chars: 255.
+
+            QBO: Description
+
+            Xero: Description
+
+            MYOB: Description
+
+            Sage: Description'
+        purchaseDesc:
+          type:
+          - string
+          - 'null'
+          description: 'Purchase description for the item. Max chars: 255.
+
+            QBO: PurchaseDesc
+
+            Xero: PurchaseDescription
+
+            MYOB: UseDescription (If PurchaseDesc is provided and equal to Description, set UseDescription to true so Description is used on both sales and purchases, otherwise ignored)
+
+            Sage: Purchase_Description'
+        incomeGLAccountRef:
+          type:
+          - string
+          - 'null'
+          description: 'Id of the account that records the proceeds from the sale of this item.
+
+            QBO: IncomeAccountRef
+
+            Xero: SalesDetails.AccountCode. The AccountCode used is based on the unique GL Account Id provided as IncomeGLAccountRef
+
+            MYOB: IncomeAccount.UID
+
+            Sage: Sales_Ledger_Account_Id'
+        sellTaxCodeRef:
+          type:
+          - string
+          - 'null'
+          description: 'Tax Code to use when selling this item.
+
+            QBO: SellTaxCodeRef
+
+            Xero: SalesDetails.TaxType
+
+            MYOB: SellingDetails.TaxCode.UID
+
+            Sage: Sales_Tax_Rate_Id'
+        expenseGLAccountRef:
+          type:
+          - string
+          - 'null'
+          description: 'Id of the account used to pay a vendor for this item.
+
+            QBO: ExpenseAccountRef
+
+            Xero: PurchaseDetails.AccountCode (non-tracked item) or PurchaseDetails.COGSAccountCode (tracked inventory item). The AccountCode used is based on the unique GL Account Id provided as ExpenseGLAccountRef.
+
+            MYOB: ExpenseAccount.UID
+
+            Sage: Purchase_Ledger_Account_Id'
+        purchaseTaxCodeRef:
+          type:
+          - string
+          - 'null'
+          description: 'Tax Code to use when purchasing this item.
+
+            QBO: PurchaseTaxCodeRef
+
+            Xero: PurchaseDetails.TaxType
+
+            MYOB: BuyingDetails.TaxCode.UID
+
+            Sage: Purchase_Tax_Rate_Id'
+        sku:
+          maxLength: 100
+          type:
+          - string
+          - 'null'
+          description: 'The stock keeping unit (SKU) for this Item. This is a company-defined identifier for an item or product used in tracking inventory. Max chars: 100.
+
+            QBO: Sku
+
+            Xero: N/A
+
+            MYOB: N/A
+
+            Sage: N/A'
+        categoryRef:
+          type:
+          - string
+          - 'null'
+          description: 'Id of the parent item category of this sub-item.
+
+            QBO: ParentRef
+
+            Xero: N/A
+
+            MYOB: N/A
+
+            Sage: N/A'
+        taxable:
+          type: boolean
+          description: 'Whether transactions for this item are taxable.
+
+            QBO: Taxable (US only)
+
+            Xero: N/A
+
+            MYOB: N/A
+
+            Sage: Sales_Prices.Price_Includes_Tax'
+        preferredVendorRef:
+          type:
+          - string
+          - 'null'
+          description: 'Id of the preferred vendor to buy from when purchasing this item.
+
+            QBO: PrefVendorRef
+
+            Xero: N/A
+
+            MYOB: BuyingDetails.RestockingInformation.Supplier.UID
+
+            Sage: Usual_Supplier_Id'
+        unitPrice:
+          type:
+          - number
+          - 'null'
+          description: 'Unit price when selling this item.
+
+            QBO: UnitPrice
+
+            Xero: SalesDetails.UnitPrice
+
+            MYOB: SellingDetails.BaseSellingPrice
+
+            Sage: Sales_Prices.Price'
+          format: double
+        purchaseCost:
+          type:
+          - number
+          - 'null'
+          description: 'Unit cost when purchasing this item.
+
+            QBO: PurchaseCost
+
+            Xero: PurchaseDetails.UnitPrice
+
+            MYOB: BuyingDetails.StandardCost
+
+            Sage: Cost_Price'
+          format: double
+        assetGLAccountRef:
+          type:
+          - string
+          - 'null'
+          description: 'AssetGLAccountRef for the item
+
+            QBO: AssetActRefrence
+
+            Xero: InventoryAssetAccountCode. The AccountCode used is based on the unique GL Account Id provided as AssetGLAccountRef.
+
+            MYOB: AssetAccount.UID
+
+            Sage: N/A'
+        active:
+          type:
+          - boolean
+          - 'null'
+          description: 'IsActive for the item
+
+            QBO: Active
+
+            Xero: N/A
+
+            MYOB: IsActive
+
+            Sage: N/A'
+        createDateTime:
+          type:
+          - string
+          - 'null'
+          description: 'CreateDateTime for the item
+
+            QBO: MetaData.CreateTime
+
+            Xero: N/A
+
+            MYOB: N/A
+
+            Sage: CreatedAt'
+          format: date-time
+        modifyDateTime:
+          type:
+          - string
+          - 'null'
+          description: 'ModifyDateTime for the item
+
+            QBO: MetaData.LastUpdatedTime
+
+            Xero: UpdatedDateUTC
+
+            MYOB: LastModified
+
+            Sage: N/A'
+          format: date-time
+        qtyOnHand:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        invStartDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+      additionalProperties: false
+      description: 'Represents a Item, generally for sale or purchase, to be saved to the financial system.
+
+        QBO: https://developer.intuit.com/app/developer/qbo/docs/api/accounting/all-entities/item
+
+        Xero: https://developer.xero.com/documentation/api/accounting/items
+
+        MYOB: https://developer.myob.com/api/myob-business-api/v2/inventory/item/
+
+        Sage: https://developer.sage.com/accounting/reference/products-services/#tag/Products/operation/getProducts'
+    InvoiceModel:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: Unique id of the invoice. Provide when updating the record.
+        override:
+          type: boolean
+          description: Set to true to force an update to the record regardless of version conflict. SyncToken is not required if Override is true.
+        syncToken:
+          type:
+          - string
+          - 'null'
+          description: SyncToken to ensure updating the latest version of the record. Used for updating with QBO and MYOB.
+        upsert:
+          type: boolean
+          description: 'When no unique Id is provided, allow updating if a matching Invoice record exists, otherwise create a new record
+
+            QBO: Update a matching record by DocNumber.
+
+            Xero: Update a matching record by DocNumber.
+
+            Sage: Update a matching record by DocNumber.'
+        customerRef:
+          type:
+          - string
+          - 'null'
+          description: 'Customer Reference
+
+            Sage: Contact_Id'
+        line:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/InvoiceLineModel'
+          description: An array of line invoice information
+        currencyCode:
+          type:
+          - string
+          - 'null'
+          description: 'In QBO maps with CurrencyRef.Value
+
+            Sage: Currency_Id'
+        baseCurrency:
+          type:
+          - string
+          - 'null'
+          description: Misc. field to determine if Currency code is home currency or foreign currency
+        invoiceType:
+          type:
+          - string
+          - 'null'
+          description: Type of invoice.
+          deprecated: true
+        txnDate:
+          type:
+          - string
+          - 'null'
+          description: '(Date field for Myob)
+
+            The date entered by the user when this transaction occurred.
+
+            yyyy/MM/dd is the valid date format.
+
+            Sage: Date'
+          format: date-time
+        dueDate:
+          type:
+          - string
+          - 'null'
+          description: 'Date when the payment of the transaction is due. If date is not provided, the number of days specified in SalesTermRef added the transaction date will be used.
+
+            Sage: Due_Date'
+          format: date-time
+        paymentTermRef:
+          type:
+          - string
+          - 'null'
+          description: "Reference to the sales term associated with the transaction. Query the Term name list resource to determine the appropriate Term object for this reference. \nSage: Payments_Allocation.Reference"
+        billAddr:
+          allOf:
+          - $ref: '#/components/schemas/AddressModel'
+          description: Bill-to address of the Invoice. If BillAddris not specified, and a default Customer:BillingAddr is specified in QuickBooks for this customer, the default bill-to address is used by QuickBooks.
+        shipAddr:
+          allOf:
+          - $ref: '#/components/schemas/AddressModel'
+          description: "(ShipToAddress field for Myob)\nIdentifies the address where the goods must be shipped. If ShipAddris not specified, and a default Customer:ShippingAddr is specified in QuickBooks \nfor this customer, the default ship-to address will be used by QuickBooks."
+        docNumber:
+          type:
+          - string
+          - 'null'
+          description: 'Reference number for the transaction. QBO: DocNumber. Xero: InvoiceNumber. Sage: Reference.
+
+            Max Chars : 21 (QBO: Max Chars - 21, MYOB: Max Chars - 30, Xero: Max Chars - 50, Sage: Max Chars - 25)'
+        status:
+          type:
+          - string
+          - 'null'
+          description: '(Myob -> Open, Close, Credit)
+
+            Invoice Status (Xero-Submitted,Authorised)
+
+            Sage: Status_Id (OUTSTANDING, OVERDUE, UNPAID, PART_PAID, PAID, VOID, DRAFT and PRO_FORMA)'
+        shipDate:
+          type:
+          - string
+          - 'null'
+          description: Date for delivery of goods or services.
+          format: date-time
+        shipMethod:
+          type:
+          - string
+          - 'null'
+          description: 'Maps with MYOB field ShippingMethod.
+
+            Maps with QBO ShipMethodRef.Value'
+        billEmail:
+          type:
+          - string
+          - 'null'
+          description: '(QBO Related field)
+
+            Identifies the e-mail address where the invoice is sent. If EmailStatus=NeedToSend, BillEmailis a required input.
+
+            Max Chars : 100 (QBO: Max Chars - 100)
+
+            Sage: Contact.Email'
+        trackingNum:
+          type:
+          - string
+          - 'null'
+          description: '(QBO Related field)
+
+            Tracking Number (Shipping Info)'
+        taxCodeRef:
+          type:
+          - string
+          - 'null'
+          description: 'Tax code reference
+
+            Sage: Tax_Analysis.Tax_Rate_Id'
+        referenceNumber:
+          maxLength: 255
+          type:
+          - string
+          - 'null'
+          description: 'Reference number for the invoice, e.g., customer purchase order number. Max chars: 255.
+
+            QBO: N/A
+
+            Xero: Reference
+
+            MYOB: CustomerPurchaseOrderNumber
+
+            Sage: N/A'
+        createDateTime:
+          type:
+          - string
+          - 'null'
+          description: 'The create date and time date for the Invoice.
+
+            QBO: MetaData.CreateTime
+
+            MYOB: Created
+
+            Xero: Date
+
+            Sage: N/A'
+          format: date-time
+        modifyDateTime:
+          type:
+          - string
+          - 'null'
+          description: 'The modify date and time date for the Invoice.
+
+            QBO: MetaData.LastUpdatedTime
+
+            MYOB: LastModified
+
+            Xero: UpdatedDateUTC
+
+            SAGE: N/A'
+          format: date-time
+        active:
+          type:
+          - boolean
+          - 'null'
+          description: 'Active for the Invoice
+
+            QBO: N/A
+
+            Xero: N/A
+
+            MYOB: N/A
+
+            Sage: N/A'
+        totalDiscountAmount:
+          type:
+          - number
+          - 'null'
+          description: 'TotalDiscountAmount for the Invoice
+
+            QBO: DiscountLineDetail.Amount
+
+            Xero: N/A
+
+            MYOB: N/A
+
+            Sage: N/A'
+          format: double
+        customerMemo:
+          type:
+          - string
+          - 'null'
+          description: 'CustomerMemo is used for a note that is able to be read by the customer on the invoice.
+
+            QBO: CustomerMemo
+
+            Xero: N/A
+
+            MYOB: JournalMemo
+
+            Sage: Notes'
+        privateNote:
+          type:
+          - string
+          - 'null'
+          description: 'PrivateNote is used for a note that will not be shown to the customer on the invoice.
+
+            QBO: PrivateNote
+
+            Xero: N/A
+
+            MYOB: N/A
+
+            Sage: N/A'
+      additionalProperties: false
+      description: 'This class is being used to have invoice details
+
+        Sage: https://developer.sage.com/accounting/reference/invoicing-sales/#tag/Sales-Invoices'
+    TimeActivityResponseModelAPIResponse:
+      type: object
+      properties:
+        Version:
+          type:
+          - string
+          - 'null'
+        StatusCode:
+          type: integer
+          format: int32
+        Message:
+          type:
+          - string
+          - 'null'
+        ResponseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        Result:
+          allOf:
+          - $ref: '#/components/schemas/TimeActivityResponseModel'
+      additionalProperties: false
+    CreditMemoModelListAPIResponse:
+      type: object
+      properties:
+        Version:
+          type:
+          - string
+          - 'null'
+        StatusCode:
+          type: integer
+          format: int32
+        Message:
+          type:
+          - string
+          - 'null'
+        ResponseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        Result:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/CreditMemoModel'
+      additionalProperties: false
+    EmployeeModelAPIResponse:
+      type: object
+      properties:
+        Version:
+          type:
+          - string
+          - 'null'
+        StatusCode:
+          type: integer
+          format: int32
+        Message:
+          type:
+          - string
+          - 'null'
+        ResponseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        Result:
+          allOf:
+          - $ref: '#/components/schemas/EmployeeModel'
+          description: Employee Model
+      additionalProperties: false
+    CustomerResponseModel:
+      type: object
+      properties:
+        customerId:
+          type:
+          - string
+          - 'null'
       additionalProperties: false
     SupplierModel:
       type: object
@@ -3612,50 +5424,6 @@ components:
         MYOB: https://developer.myob.com/api/myob-business-api/v2/contact/supplier/
 
         Sage: https://developer.sage.com/accounting/reference/contacts/#tag/Contacts'
-    AddressModelAPIResponse:
-      type: object
-      properties:
-        Version:
-          type:
-          - string
-          - 'null'
-        StatusCode:
-          type: integer
-          format: int32
-        Message:
-          type:
-          - string
-          - 'null'
-        ResponseException:
-          allOf:
-          - $ref: '#/components/schemas/ApiError'
-        Result:
-          allOf:
-          - $ref: '#/components/schemas/AddressModel'
-          description: Represents an address for a Customer, Vendor, or Employee
-      additionalProperties: false
-    CreditMemoModelAPIResponse:
-      type: object
-      properties:
-        Version:
-          type:
-          - string
-          - 'null'
-        StatusCode:
-          type: integer
-          format: int32
-        Message:
-          type:
-          - string
-          - 'null'
-        ResponseException:
-          allOf:
-          - $ref: '#/components/schemas/ApiError'
-        Result:
-          allOf:
-          - $ref: '#/components/schemas/CreditMemoModel'
-          description: "Represents a Customer Credit Memo to be saved to the financial system.\nQBO: https://developer.intuit.com/app/developer/qbo/docs/api/accounting/all-entities/creditmemo\nXero: https://developer.xero.com/documentation/api/accounting/creditnotes\nMYOB: https://developer.myob.com/api/myob-business-api/v2/sale/invoice/invoice_item/ (Credit Invoice)\n    OR https://developer.myob.com/api/myob-business-api/v2/sale/credit_refund/ (Credit Refund Payment)\nSage: https://developer.sage.com/accounting/reference/invoicing-sales/#tag/Sales-Credit-Notes"
-      additionalProperties: false
     ItemModelListAPIResponse:
       type: object
       properties:
@@ -3680,27 +5448,138 @@ components:
           items:
             $ref: '#/components/schemas/ItemModel'
       additionalProperties: false
-    TimeActivityModel:
+    VendorCreditLineModel:
       type: object
       properties:
-        id:
+        type:
           type:
           - string
           - 'null'
-          description: Unique id of the time activity. Provide when updating the record.
-        override:
-          type: boolean
-          description: Set to true to force an update to the record regardless of version conflict. SyncToken is not required if Override is true.
-        syncToken:
+          description: 'Type of the line.
+
+            QBO: DetailType (Should always be either ItemBasedExpenseLineDetail or AccountBasedExpenseLineDetail based on which detail property is provided)
+
+            Xero: N/A
+
+            MYOB: N/A'
+          deprecated: true
+        description:
           type:
           - string
           - 'null'
-          description: SyncToken to ensure updating the latest version of the record. Used for updating with QBO and MYOB.
-        employeeRef:
+          description: 'Description for the vendor credit line. Max chars: 255.
+
+            Sage: Credit_Note_Lines.Description'
+        amount:
+          type:
+          - number
+          - 'null'
+          description: "Total amount of the line item.\nQBO: Amount\nXero: \nSage: Total_Amount"
+          format: double
+        itemBasedExpenseLineDetail:
+          allOf:
+          - $ref: '#/components/schemas/ItemBasedExpenseLineDetailModel'
+          description: Details for item purchases from a vendor.
+        accountBasedExpenseLineDetail:
+          allOf:
+          - $ref: '#/components/schemas/AccountBasedExpenseLineDetailModel'
+          description: Details for non-item purchases from a vendor.
+      additionalProperties: false
+      description: THIS CLASS IS BEING USED TO HAVE LINE ITEM OF INVOICE
+    JournalResponseModelAPIResponse:
+      type: object
+      properties:
+        Version:
           type:
           - string
           - 'null'
-          description: Specifies the employee whose time is being recorded.
+        StatusCode:
+          type: integer
+          format: int32
+        Message:
+          type:
+          - string
+          - 'null'
+        ResponseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        Result:
+          allOf:
+          - $ref: '#/components/schemas/JournalResponseModel'
+          description: ''
+      additionalProperties: false
+    VendorCreditModelListAPIResponse:
+      type: object
+      properties:
+        Version:
+          type:
+          - string
+          - 'null'
+        StatusCode:
+          type: integer
+          format: int32
+        Message:
+          type:
+          - string
+          - 'null'
+        ResponseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        Result:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/VendorCreditModel'
+      additionalProperties: false
+    SalesItemLineDetailModel:
+      type: object
+      properties:
+        qty:
+          type: number
+          description: '(ShipQuantity for Myob)
+
+            The quantity of goods shipped.'
+          format: double
+        unitPrice:
+          type: number
+          description: Unit price assigned to the item.
+          format: double
+        taxCodeRef:
+          type:
+          - string
+          - 'null'
+          description: '(TaxCode for Myob)
+
+            Tax code'
+        itemRef:
+          type:
+          - string
+          - 'null'
+          description: '(Item for Myob)
+
+            Details for an Item'
+        accountCode:
+          type:
+          - string
+          - 'null'
+          description: '(Account for Myob)
+
+            Account Code.
+
+            Max Chars : 10 (Xero: Max Chars - 10)'
+        itemAccountRef:
+          type:
+          - string
+          - 'null'
+          description: '(QBO related field)
+
+            In MYOB maps with Account.UID'
+      additionalProperties: false
+      description: Sale Item Detail Model
+    TimeActivityEmployeeBatchModel:
+      type: object
+      properties:
         employeePayRateRef:
           type:
           - string
@@ -3724,13 +5603,61 @@ components:
           - 'null'
           description: Description of work completed during time activity.
       additionalProperties: false
-      description: 'Represents an employee Time Activity to be saved to the financial system.
+      description: Employee Time Activity Batch Model
+    JournalModelAPIResponse:
+      type: object
+      properties:
+        Version:
+          type:
+          - string
+          - 'null'
+        StatusCode:
+          type: integer
+          format: int32
+        Message:
+          type:
+          - string
+          - 'null'
+        ResponseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        Result:
+          allOf:
+          - $ref: '#/components/schemas/JournalModel'
+          description: 'Represents a GL Journal to be saved to or existing in the financial system.
 
-        QBO: https://developer.intuit.com/app/developer/qbo/docs/api/accounting/all-entities/timeactivity
+            QBO: https://developer.intuit.com/app/developer/qbo/docs/api/accounting/all-entities/journalentry
 
-        Xero: https://developer.xero.com/documentation/api/accounting/invoices
+            Xero: https://developer.xero.com/documentation/api/accounting/manualjournals
 
-        MYOB: https://developer.myob.com/api/myob-business-api/v2/purchase/bill/'
+            MYOB: https://developer.myob.com/api/myob-business-api/v2/generalledger/generaljournal/
+
+            Sage: https://developer.sage.com/accounting/reference/accounting/#tag/Journals'
+      additionalProperties: false
+    SupplierModelListAPIResponse:
+      type: object
+      properties:
+        Version:
+          type:
+          - string
+          - 'null'
+        StatusCode:
+          type: integer
+          format: int32
+        Message:
+          type:
+          - string
+          - 'null'
+        ResponseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        Result:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/SupplierModel'
+      additionalProperties: false
     CustomerModel:
       type: object
       properties:
@@ -4059,1933 +5986,81 @@ components:
         MYOB: https://developer.myob.com/api/myob-business-api/v2/contact/customer/
 
         Sage: https://developer.sage.com/accounting/reference/contacts/#tag/Contacts'
-    ContentResponseModelAPIResponse:
+    Links:
       type: object
       properties:
-        Version:
-          type:
-          - string
-          - 'null'
-        StatusCode:
-          type: integer
-          format: int32
-        Message:
-          type:
-          - string
-          - 'null'
-        ResponseException:
-          allOf:
-          - $ref: '#/components/schemas/ApiError'
-        Result:
-          allOf:
-          - $ref: '#/components/schemas/ContentResponseModel'
-          description: A record containing the unique id and syncToken for a saved entity.
+        self:
+          $ref: '#/components/schemas/Self'
       additionalProperties: false
-    InvoiceResponseModelAPIResponse:
+    UpdateContact:
+      required:
+      - developer_id
       type: object
       properties:
-        Version:
+        first_name:
+          maxLength: 64
+          minLength: 0
           type:
           - string
           - 'null'
-        StatusCode:
-          type: integer
-          format: int32
-        Message:
+        last_name:
+          maxLength: 64
+          minLength: 0
           type:
           - string
           - 'null'
-        ResponseException:
-          allOf:
-          - $ref: '#/components/schemas/ApiError'
-        Result:
-          allOf:
-          - $ref: '#/components/schemas/InvoiceResponseModel'
-      additionalProperties: false
-    CreditMemoModel:
-      type: object
-      properties:
-        id:
-          type:
-          - string
-          - 'null'
-          description: Unique id of the credit memo. Provide when updating the record.
-        override:
-          type: boolean
-          description: Set to true to force an update to the record regardless of version conflict. SyncToken is not required if Override is true.
-        syncToken:
-          type:
-          - string
-          - 'null'
-          description: SyncToken to ensure updating the latest version of the record. Used for updating with QBO and MYOB.
-        upsert:
-          type: boolean
-          description: 'When no unique Id is provided, allow updating if a matching Credit Memo record exists, otherwise create a new record
-
-            QBO: Update a matching record by DocNumber.
-
-            Xero: Update a matching record by DocNumber.
-
-            MYOB: Update a matching record by DocNumber.
-
-            Sage: Update a matching record by DocNumber.'
-        customerRef:
-          type:
-          - string
-          - 'null'
-          description: 'Unique id of the customer to which to apply this credit.
-
-            QBO: CustomerRef
-
-            Xero: Contact.ContactID
-
-            MYOB: Customer.UID
-
-            SAGE: Contact_Id'
-        line:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/CreditMemoLineModel'
-          description: Details of individual credit memo lines.
-        currencyCode:
-          type:
-          - string
-          - 'null'
-          description: 'Unique id or code for the currency in which all amounts on the associated transaction are expressed.
-
-            QBO: CurrencyRef
-
-            Xero: CurrencyCode
-
-            MYOB: ForeignCurrency.UID (read-only)
-
-            SAGE: Currency_Id'
-        baseCurrency:
-          type:
-          - string
-          - 'null'
-          description: 'Determines whether the bill is expressed in the home currency or foreign currency.
-
-            QBO: When BaseCurrency is not equal to the provided CurrencyCode, automatically look up the currency exchange rate and apply it to the bill.
-
-            Xero: N/A
-
-            MYOB: N/A
-
-            Sage: When BaseCurrency is not equal to the provided CurrencyCode, automatically look up the currency exchange rate and apply it to the bill.'
-        txnDate:
-          type:
-          - string
-          - 'null'
-          description: 'The transaction or issue date for the credit memo.
-
-            QBO: TxnDate
-
-            Xero: Date
-
-            MYOB: Date
-
-            SAGE: Date'
-          format: date-time
-        invoiceRef:
-          type:
-          - string
-          - 'null'
-          description: 'Id of the Invoice for which Credit Memo is issued.
-
-            QBO: InvoiceRef
-
-            Xero: LineItems.InvoiceID
-
-            MYOB: Invoice.UID (Credit Refund Payment only)'
-        accountRef:
-          type:
-          - string
-          - 'null'
-          description: MYOB Field maps with Account.UID
-        billAddr:
-          allOf:
-          - $ref: '#/components/schemas/AddressModel'
-          description: 'Bill-to address of the Credit Memo. If not specified, the customer''s default billing address may be used.
-
-            QBO: BillAddr
-
-            Xero: Contact.Addresses (address type POBOX)
-
-            MYOB: Payee (Credit Refund Payment only)'
-        shipAddr:
-          allOf:
-          - $ref: '#/components/schemas/AddressModel'
-          description: 'Ship-to address of the Credit Memo. If not specified, the customer''s default shipping address may be used.
-
-            QBO: ShipAddr'
-        billEmail:
-          type:
-          - string
-          - 'null'
-          description: 'Identifies the e-mail address where the invoice is sent.
-
-            QBO: BillEmail.Address. If EmailStatus=NeedToSend, BillEmail is a required input.
-
-            Xero: N/A
-
-            MYOB: N/A
-
-            SAGE: Contact.Email (Read only)'
-        docNumber:
-          type:
-          - string
-          - 'null'
-          description: 'Reference number for the transaction.
-
-            QBO: DocNumber
-
-            Xero: CreditNoteNumber
-
-            MYOB: Number
-
-            SAGE: Reference'
-        taxCodeRef:
-          type:
-          - string
-          - 'null'
-          description: 'Id of the tax code to use for this transaction.
-
-            SAGE: Tax_Analysis.Tax_Rate_Id'
-        status:
-          type:
-          - string
-          - 'null'
-          description: "The status of the credit memo.\nQBO: Status - Valid values: Deleted\nXero: Status - Valid values: DRAFT, SUBMITTED, DELETED, AUTHORISED, PAID, and VOIDED \nMYOB: Status - Valid values: Unknown, Open, Closed, Credit\nSAGE: Status.Id - Valid values: UNPAID, PART_PAID, PAID, VOID, DRAFT, DISPUTED, DECLINED or PRO_FORMA"
-        createDateTime:
-          type:
-          - string
-          - 'null'
-          description: 'The create date and time date for the credit memo.
-
-            QBO: MetaData.CreateTime
-
-            MYOB: Created
-
-            Xero: Date
-
-            Sage: N/A'
-          format: date-time
-        modifyDateTime:
-          type:
-          - string
-          - 'null'
-          description: 'The modify date and time date for the credit memo.
-
-            QBO: MetaData.LastUpdatedTime
-
-            MYOB: LastModified
-
-            Xero: UpdatedDateUTC
-
-            SAGE: N/A'
-          format: date-time
-        customerMemo:
-          type:
-          - string
-          - 'null'
-          description: 'CustomerMemo is used for a note that is able to be read by the customer on the invoice.
-
-            QBO: CustomerMemo
-
-            Xero: N/A
-
-            MYOB: Memo
-
-            Sage: N/A'
-        privateNote:
-          type:
-          - string
-          - 'null'
-          description: 'PrivateNote is used for a note that will not be shown to the customer on the invoice.
-
-            QBO: PrivateNote
-
-            Xero: N/A
-
-            MYOB: N/A
-
-            Sage: N/A'
-      additionalProperties: false
-      description: "Represents a Customer Credit Memo to be saved to the financial system.\nQBO: https://developer.intuit.com/app/developer/qbo/docs/api/accounting/all-entities/creditmemo\nXero: https://developer.xero.com/documentation/api/accounting/creditnotes\nMYOB: https://developer.myob.com/api/myob-business-api/v2/sale/invoice/invoice_item/ (Credit Invoice)\n    OR https://developer.myob.com/api/myob-business-api/v2/sale/credit_refund/ (Credit Refund Payment)\nSage: https://developer.sage.com/accounting/reference/invoicing-sales/#tag/Sales-Credit-Notes"
-    EmployeeModel:
-      type: object
-      properties:
-        upsert:
-          type: boolean
-          description: 'When no unique Id is provided, allow updating if a matching Employee record exists, otherwise create a new record
-
-            QBO: Update a matching record by DisplayName.
-
-            Xero: Update a matching record by First Name, Last Name, and DOB (AU); First Name and Last Name (US/Global).'
-        primaryAddr:
-          allOf:
-          - $ref: '#/components/schemas/AddressModel'
-          description: The Primary address
-        dob:
-          type:
-          - string
-          - 'null'
-          description: Birth date of the employee.
-          format: date-time
-        hireDate:
-          type:
-          - string
-          - 'null'
-          description: Hire date of the employee.
-          format: date-time
-        terminationDate:
-          type:
-          - string
-          - 'null'
-          description: Termination date of the employee.
-          format: date-time
-        gender:
-          type:
-          - string
-          - 'null'
-          description: Gender of the employee.
-        title:
-          type:
-          - string
-          - 'null'
-          description: Title of the employee.
-        billRate:
-          type:
-          - number
-          - 'null'
-          description: BillRate of the employee.
-          format: double
-        id:
-          type:
-          - string
-          - 'null'
-          description: Unique id of the contact. Provide when updating the record.
-        override:
-          type: boolean
-          description: Set to true to force an update to the record regardless of version conflict. SyncToken is not required if Override is true.
-        syncToken:
-          type:
-          - string
-          - 'null'
-          description: SyncToken to ensure updating the latest version of the record. Used for updating with QBO and MYOB.
-        companyName:
-          type:
-          - string
-          - 'null'
-          description: 'The name of the company associated with the person or organization. Max chars: 50.
-
-            QBO: CompanyName
-
-            Xero: Name (used only when DisplayName is not provided)
-
-            MYOB: CompanyName (also sets IsIndividual to false if provided)
-
-            Sage: Name'
-        phonePrimary:
-          type:
-          - string
-          - 'null'
-          description: 'Primary phone number for the contact. Max chars: 21.
-
-            QBO: PrimaryPhone
-
-            Xero: Phones (phone type DEFAULT)
-
-            MYOB: Addresses.Phone1 (for bill address if it exists, otherwise for ship address)
-
-            Sage: Main_Contact_Person.Telephone'
-        phoneMobile:
-          type:
-          - string
-          - 'null'
-          description: 'Mobile phone number for the contact. Max chars: 21.
-
-            QBO: Mobile
-
-            Xero: Phones (phone type MOBILE)
-
-            MYOB: Addresses.Phone2 (for bill address if it exists, otherwise for ship address)
-
-            Sage: Main_Contact_Person.Mobile'
         email:
+          pattern: ^(([\w-]+\.)+[\w-]+|([a-zA-Z]{1}|[\w+-]{2,}))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$
           type:
           - string
           - 'null'
-          description: 'Email address for the contact. Max chars: 100.
-
-            QBO: PrimaryEmailAddr
-
-            Xero: EmailAddress (N/A for Employees)
-
-            MYOB: Addresses.Email (for bill address if it exists, otherwise for ship address)
-
-            Sage: Main_Contact_Person.Email'
-        displayName:
-          type:
-          - string
-          - 'null'
-          description: 'Display name of the person or organization. Max chars: 255.
-
-            QBO: DisplayName (Must be unique across all Customer, Vendor, and Employee objects)
-
-            Xero: Name (N/A for Employees)
-
-            MYOB: CompanyName OR concatenated FirstName and LastName (read-only, ignored when saving)
-
-            Sage: Displayed_As (read-only, ignored when saving)'
-        firstName:
-          type:
-          - string
-          - 'null'
-          description: 'First name of the contact. Max chars: 20.
-
-            QBO: GivenName
-
-            Xero: FirstName
-
-            MYOB: FirstName
-
-            Sage: MainContactPerson.Name'
-        lastName:
-          type:
-          - string
-          - 'null'
-          description: 'Last name of the person. Max chars: 30.
-
-            QBO: FamilyName
-
-            Xero: LastName
-
-            MYOB: LastName
-
-            Sage: MainContactPerson.Name'
-        active:
-          type:
-          - boolean
-          - 'null'
-          description: 'IsActive for the contact
-
-            QBO: Active
-
-            Xero: ContactStatus == Contact.ContactStatusEnum.ACTIVE
-
-            MYOB: IsActive
-
-            Sage: is_active'
-        createDateTime:
-          type:
-          - string
-          - 'null'
-          description: 'CreateDateTime for the contact
-
-            QBO: MetaData.CreateTime
-
-            Xero: N/A
-
-            MYOB: Created
-
-            Sage: created_at'
-          format: date-time
-        modifyDateTime:
-          type:
-          - string
-          - 'null'
-          description: 'ModifyDateTime for the contact
-
-            QBO: MetaData.LastUpdatedTime
-
-            Xero: UpdatedDateUTC
-
-            MYOB: LastModified
-
-            Sage: updated_at'
-          format: date-time
-      additionalProperties: false
-      description: Employee Model
-    JournalLineModel:
-      type: object
-      properties:
-        id:
-          type:
-          - string
-          - 'null'
-          description: 'MYOB: RowId
-
-            Xero: N/A
-
-            QBO: Id
-
-            Sage: Id'
-        type:
-          type:
-          - string
-          - 'null'
-          description: 'MYOB: IsCredit (false when Type = "Debit", true when Type = "Credit")
-
-            Xero: Debits must be positive and Credits must be negative in Xero. When Type = "Credit" and LineAmount is positive, LineAmount is negated. When Type = "Debit" and LineAmount is negative, LineAmount is negated.
-
-            QBO: PostingType
-
-            Sage: N/A'
-        amount:
-          type: number
-          description: 'MYOB: Amount
-
-            Xero: LineAmount
-
-            QBO: Amount
-
-            Sage: Credit/Debit'
-          format: double
-        accountRef:
-          type:
-          - string
-          - 'null'
-          description: 'MYOB: Account.UID
-
-            Xero: AccountID. System Accounts and Bank Accounts may not be used.
-
-            QBO: AccountRef
-
-            Sage: Ledger_Account_Id'
-        taxCodeRef:
-          type:
-          - string
-          - 'null'
-          description: 'MYOB: TaxCode.UID
-
-            Xero: TaxType
-
-            QBO: TaxCodeRef'
-        customerOrVendorRef:
-          type:
-          - string
-          - 'null'
-          description: 'Gets or sets the reference identifier for the associated customer or vendor.
-
-            MYOB: N/A
-
-            Xero: N/A
-
-            QBO: Entity.EntityRef.Value'
-        description:
-          type:
-          - string
-          - 'null'
-          description: 'MYOB: Memo
-
-            Xero: Description
-
-            QBO: Description
-
-            Sage: Details'
-      additionalProperties: false
-      description: 'Represents an individual line of a GL Journal to be saved to or existing in the financial system.
-
-        QBO: https://developer.intuit.com/app/developer/qbo/docs/api/accounting/all-entities/journalentry
-
-        Xero: https://developer.xero.com/documentation/api/accounting/manualjournals
-
-        MYOB: https://developer.myob.com/api/myob-business-api/v2/generalledger/generaljournal/
-
-        Sage: https://developer.sage.com/accounting/reference/accounting/#tag/Journals'
-    CustomerModelListAPIResponse:
-      type: object
-      properties:
-        Version:
-          type:
-          - string
-          - 'null'
-        StatusCode:
-          type: integer
-          format: int32
-        Message:
-          type:
-          - string
-          - 'null'
-        ResponseException:
-          allOf:
-          - $ref: '#/components/schemas/ApiError'
-        Result:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/CustomerModel'
-      additionalProperties: false
-    PaymentTermResponseModel:
-      type: object
-      properties:
-        paymentTermId:
-          type:
-          - string
-          - 'null'
-        syncToken:
-          type:
-          - string
-          - 'null'
-      additionalProperties: false
-    BillLineModel:
-      type: object
-      properties:
-        type:
-          type:
-          - string
-          - 'null'
-          description: 'Type of the line.
-
-            QBO: DetailType (Should always be either ItemBasedExpenseLineDetail or AccountBasedExpenseLineDetail based on which detail property is provided)
-
-            Xero: N/A
-
-            MYOB: N/A'
-          deprecated: true
-        amount:
-          type:
-          - number
-          - 'null'
-          description: 'Total amount of the line.
-
-            QBO: Amount
-
-            Xero: LineAmount
-
-            MYOB: Amount
-
-            SAGE: Invoice_Lines.Total_Amount'
-          format: double
-        description:
-          maxLength: 1000
-          type:
-          - string
-          - 'null'
-          description: 'Description text for the purchase line. Max chars: 1000
-
-            QBO: Description
-
-            Xero: Description
-
-            MYOB: Description
-
-            SAGE: Invoice_Lines.Description'
-        accountRef:
-          type:
-          - string
-          - 'null'
-          description: 'MYOB field
-
-            Invoice_Lines.Ledger_Account_Id'
-        itemBasedExpenseLineDetail:
-          allOf:
-          - $ref: '#/components/schemas/ItemBasedExpenseLineDetailModel'
-          description: Details for item purchases from a vendor.
-        accountBasedExpenseLineDetail:
-          allOf:
-          - $ref: '#/components/schemas/AccountBasedExpenseLineDetailModel'
-          description: Details for non-item purchases from a vendor.
-      additionalProperties: false
-      description: Line item details for vendor bills.
-    StringAPIResponse:
-      type: object
-      properties:
-        Version:
-          type:
-          - string
-          - 'null'
-        StatusCode:
-          type: integer
-          format: int32
-        Message:
-          type:
-          - string
-          - 'null'
-        ResponseException:
-          allOf:
-          - $ref: '#/components/schemas/ApiError'
-        Result:
-          type:
-          - string
-          - 'null'
-      additionalProperties: false
-    CustomerResponseModelAPIResponse:
-      type: object
-      properties:
-        Version:
-          type:
-          - string
-          - 'null'
-        StatusCode:
-          type: integer
-          format: int32
-        Message:
-          type:
-          - string
-          - 'null'
-        ResponseException:
-          allOf:
-          - $ref: '#/components/schemas/ApiError'
-        Result:
-          allOf:
-          - $ref: '#/components/schemas/CustomerResponseModel'
-      additionalProperties: false
-    VendorCreditModelAPIResponse:
-      type: object
-      properties:
-        Version:
-          type:
-          - string
-          - 'null'
-        StatusCode:
-          type: integer
-          format: int32
-        Message:
-          type:
-          - string
-          - 'null'
-        ResponseException:
-          allOf:
-          - $ref: '#/components/schemas/ApiError'
-        Result:
-          allOf:
-          - $ref: '#/components/schemas/VendorCreditModel'
-          description: "Represents a Vendor Credit to be saved to the financial system.\nQBO: https://developer.intuit.com/app/developer/qbo/docs/api/accounting/all-entities/vendorcredit\nXero: https://developer.xero.com/documentation/api/accounting/creditnotes\nMYOB: https://developer.myob.com/api/myob-business-api/v2/purchase/bill/bill_item/\n    OR https://developer.myob.com/api/myob-business-api/v2/purchase/debit_refund/\nSage: https://developer.sage.com/accounting/reference/invoicing-purchases/#tag/Purchase-Credit-Notes"
-      additionalProperties: false
-    CreditMemoResponseModelAPIResponse:
-      type: object
-      properties:
-        Version:
-          type:
-          - string
-          - 'null'
-        StatusCode:
-          type: integer
-          format: int32
-        Message:
-          type:
-          - string
-          - 'null'
-        ResponseException:
-          allOf:
-          - $ref: '#/components/schemas/ApiError'
-        Result:
-          allOf:
-          - $ref: '#/components/schemas/CreditMemoResponseModel'
-          description: A record containing the unique id and syncToken for a saved credit memo.
-      additionalProperties: false
-    BillModelAPIResponse:
-      type: object
-      properties:
-        Version:
-          type:
-          - string
-          - 'null'
-        StatusCode:
-          type: integer
-          format: int32
-        Message:
-          type:
-          - string
-          - 'null'
-        ResponseException:
-          allOf:
-          - $ref: '#/components/schemas/ApiError'
-        Result:
-          allOf:
-          - $ref: '#/components/schemas/BillModel'
-          description: 'Represents a Vendor Bill to be saved to the financial system.
-
-            QBO: https://developer.intuit.com/app/developer/qbo/docs/api/accounting/all-entities/bill
-
-            Xero: https://developer.xero.com/documentation/api/accounting/invoices
-
-            MYOB: https://developer.myob.com/api/myob-business-api/v2/purchase/bill/
-
-            SAGE: https://developer.myob.cohttps://developer.sage.com/accounting/reference/invoicing-purchases/#tag/Purchase-Invoices'
-      additionalProperties: false
-    JournalResponseModel:
-      type: object
-      properties:
-        id:
-          type:
-          - string
-          - 'null'
-          description: 'MYOB: UID
-
-            Xero: ManualJournalId
-
-            QBO: Id'
-        syncToken:
-          type:
-          - string
-          - 'null'
-          description: 'MYOB: RowVersion
-
-            Xero: N/A
-
-            QBO: SyncToken'
-        date:
-          type:
-          - string
-          - 'null'
-          description: 'MYOB: DateOccured
-
-            Xero: Date
-
-            QBO: TxnDate'
-          format: date-time
-        docNumber:
-          type:
-          - string
-          - 'null'
-          description: 'MYOB : DisplayID
-
-            Xero : Narration
-
-            QBO: DocNumber'
-      additionalProperties: false
-      description: ''
-    PaymentTermModel:
-      type: object
-      properties:
-        id:
-          type:
-          - string
-          - 'null'
-          description: Unique id of the term. Provide when updating the record.
-        override:
-          type: boolean
-          description: Set to true to force an update to the record regardless of version conflict. SyncToken is not required if Override is true.
-        syncToken:
-          type:
-          - string
-          - 'null'
-          description: SyncToken to ensure updating the latest version of the record.
-        upsert:
-          type: boolean
-          description: 'When no unique Id is provided, allow updating if a matching Payment Term record exists, otherwise create a new record.
-
-            QBO: Update a matching record by Name.'
-        termDay:
-          type: integer
-          description: '(Days fiels for Xero)
-
-            The number of days or day of the month within which the customer has to pay invoices..'
-          format: int32
-          deprecated: true
-        itemChoice:
-          type:
-          - string
-          - 'null'
-          description: For QBO valid value should be one among DayOfMonthDue, DiscountDayOfMonth, DiscountDays, DueDays, DueNextMonthDays
-          deprecated: true
-        name:
-          type:
-          - string
-          - 'null'
-          description: '(QBO related feild)
-
-            User recognizable name for the term.'
-        active:
-          type: boolean
-          description: 'Active for the Payment Term
-
-            QBO: Active'
-        dueDays:
-          type:
-          - integer
-          - 'null'
-          description: '(Range is 0 through 999 for QuickBooks)
-
-            QBO: DueDays (Number of days from delivery of goods or services until the payment is due. Required if DayOfMonthDue not present)'
-          format: int32
-        dayOfMonthDue:
-          type:
-          - integer
-          - 'null'
-          description: '(Range is 1 through 31 for QuickBooks)
-
-            QBO: DayOfMonthDue (Payment must be received by this day of the month. Used only if DueDays is not specified. Required if DueDays not present)'
-          format: int32
-        discountPercent:
-          type:
-          - number
-          - 'null'
-          description: '(Range is 0 through 100 for QuickBooks)
-
-            QBO: Discount Percent (Discount percentage available against an amount if paid within the days specified by DiscountDays.)'
-          format: double
-        discountDays:
-          type:
-          - integer
-          - 'null'
-          description: '(Range is 0 through 999 for QuickBooks)
-
-            QBO: DiscountDays (the number of days or day of the month within which the customer must pay to receive discounts.)'
-          format: int32
-        discountDayOfMonth:
-          type:
-          - integer
-          - 'null'
-          description: '(Range is 0 through 31 for QuickBooks)
-
-            QBO: DiscountDayOfMonth (Discount applies if paid before this day of month. Required if DueDays not present.)'
-          format: int32
-        dueNextMonthDays:
-          type:
-          - integer
-          - 'null'
-          description: '(Range is 0 through 999 for QuickBooks)
-
-            QBO: DueNextMonthDays (Payment due next month if issued that many days before the DayOfMonthDue. Required if DueDays not present.)'
-          format: int32
-      additionalProperties: false
-      description: 'Represents a Payment Term to be saved to the financial system.
-
-        QBO: https://developer.intuit.com/app/developer/qbo/docs/api/accounting/all-entities/term'
-    ItemModel:
-      type: object
-      properties:
-        id:
-          type:
-          - string
-          - 'null'
-          description: Unique id of the item. Provide when updating the record.
-        override:
-          type: boolean
-          description: Set to true to force an update to the record regardless of version conflict. SyncToken is not required if Override is true.
-        syncToken:
-          type:
-          - string
-          - 'null'
-          description: SyncToken to ensure updating the latest version of the record. Used for updating with QBO and MYOB.
-        upsert:
-          type: boolean
-          description: 'When no unique Id is provided, allow updating if a matching Item record exists, otherwise create a new record
-
-            QBO: Update a matching record by Code.
-
-            Xero: Update a matching record by Code.
-
-            MYOB: Update a matching record by Code.
-
-            Sage: Update a matching record by Code.'
-        updateTransactionHistory:
-          type:
-          - boolean
-          - 'null'
-          description: 'Whether income or expense account on existing transactions for this item should be updated with new accounts. Default: true.
-
-            QBO: Uses historical transaction-exclusive item update when false.
-
-            Xero: N/A
-
-            MYOB: N/A
-
-            Sage: N/A'
-        type:
-          type:
-          - string
-          - 'null'
-          description: 'Classification that specifies the use of this item. Valid values are: Inventory, NonInventory, Service, and Category
-
-            QBO: Type
-
-            Xero: N/A
-
-            MYOB: N/A
-
-            Sage: Catalog_Item_Type_Id'
-        code:
-          type:
-          - string
-          - 'null'
-          description: 'Code or short name for this item. Max chars: 30.
-
-            QBO: Name
-
-            Xero: Code and Name
-
-            MYOB: Number and Name
-
-            Sage: Item_Code'
-        description:
-          type:
-          - string
-          - 'null'
-          description: 'Sales description of the item. Max chars: 255.
-
-            QBO: Description
-
-            Xero: Description
-
-            MYOB: Description
-
-            Sage: Description'
-        purchaseDesc:
-          type:
-          - string
-          - 'null'
-          description: 'Purchase description for the item. Max chars: 255.
-
-            QBO: PurchaseDesc
-
-            Xero: PurchaseDescription
-
-            MYOB: UseDescription (If PurchaseDesc is provided and equal to Description, set UseDescription to true so Description is used on both sales and purchases, otherwise ignored)
-
-            Sage: Purchase_Description'
-        incomeGLAccountRef:
-          type:
-          - string
-          - 'null'
-          description: 'Id of the account that records the proceeds from the sale of this item.
-
-            QBO: IncomeAccountRef
-
-            Xero: SalesDetails.AccountCode. The AccountCode used is based on the unique GL Account Id provided as IncomeGLAccountRef
-
-            MYOB: IncomeAccount.UID
-
-            Sage: Sales_Ledger_Account_Id'
-        sellTaxCodeRef:
-          type:
-          - string
-          - 'null'
-          description: 'Tax Code to use when selling this item.
-
-            QBO: SellTaxCodeRef
-
-            Xero: SalesDetails.TaxType
-
-            MYOB: SellingDetails.TaxCode.UID
-
-            Sage: Sales_Tax_Rate_Id'
-        expenseGLAccountRef:
-          type:
-          - string
-          - 'null'
-          description: 'Id of the account used to pay a vendor for this item.
-
-            QBO: ExpenseAccountRef
-
-            Xero: PurchaseDetails.AccountCode (non-tracked item) or PurchaseDetails.COGSAccountCode (tracked inventory item). The AccountCode used is based on the unique GL Account Id provided as ExpenseGLAccountRef.
-
-            MYOB: ExpenseAccount.UID
-
-            Sage: Purchase_Ledger_Account_Id'
-        purchaseTaxCodeRef:
-          type:
-          - string
-          - 'null'
-          description: 'Tax Code to use when purchasing this item.
-
-            QBO: PurchaseTaxCodeRef
-
-            Xero: PurchaseDetails.TaxType
-
-            MYOB: BuyingDetails.TaxCode.UID
-
-            Sage: Purchase_Tax_Rate_Id'
-        sku:
-          maxLength: 100
-          type:
-          - string
-          - 'null'
-          description: 'The stock keeping unit (SKU) for this Item. This is a company-defined identifier for an item or product used in tracking inventory. Max chars: 100.
-
-            QBO: Sku
-
-            Xero: N/A
-
-            MYOB: N/A
-
-            Sage: N/A'
-        categoryRef:
-          type:
-          - string
-          - 'null'
-          description: 'Id of the parent item category of this sub-item.
-
-            QBO: ParentRef
-
-            Xero: N/A
-
-            MYOB: N/A
-
-            Sage: N/A'
-        taxable:
-          type: boolean
-          description: 'Whether transactions for this item are taxable.
-
-            QBO: Taxable (US only)
-
-            Xero: N/A
-
-            MYOB: N/A
-
-            Sage: Sales_Prices.Price_Includes_Tax'
-        preferredVendorRef:
-          type:
-          - string
-          - 'null'
-          description: 'Id of the preferred vendor to buy from when purchasing this item.
-
-            QBO: PrefVendorRef
-
-            Xero: N/A
-
-            MYOB: BuyingDetails.RestockingInformation.Supplier.UID
-
-            Sage: Usual_Supplier_Id'
-        unitPrice:
-          type:
-          - number
-          - 'null'
-          description: 'Unit price when selling this item.
-
-            QBO: UnitPrice
-
-            Xero: SalesDetails.UnitPrice
-
-            MYOB: SellingDetails.BaseSellingPrice
-
-            Sage: Sales_Prices.Price'
-          format: double
-        purchaseCost:
-          type:
-          - number
-          - 'null'
-          description: 'Unit cost when purchasing this item.
-
-            QBO: PurchaseCost
-
-            Xero: PurchaseDetails.UnitPrice
-
-            MYOB: BuyingDetails.StandardCost
-
-            Sage: Cost_Price'
-          format: double
-        assetGLAccountRef:
-          type:
-          - string
-          - 'null'
-          description: 'AssetGLAccountRef for the item
-
-            QBO: AssetActRefrence
-
-            Xero: InventoryAssetAccountCode. The AccountCode used is based on the unique GL Account Id provided as AssetGLAccountRef.
-
-            MYOB: AssetAccount.UID
-
-            Sage: N/A'
-        active:
-          type:
-          - boolean
-          - 'null'
-          description: 'IsActive for the item
-
-            QBO: Active
-
-            Xero: N/A
-
-            MYOB: IsActive
-
-            Sage: N/A'
-        createDateTime:
-          type:
-          - string
-          - 'null'
-          description: 'CreateDateTime for the item
-
-            QBO: MetaData.CreateTime
-
-            Xero: N/A
-
-            MYOB: N/A
-
-            Sage: CreatedAt'
-          format: date-time
-        modifyDateTime:
-          type:
-          - string
-          - 'null'
-          description: 'ModifyDateTime for the item
-
-            QBO: MetaData.LastUpdatedTime
-
-            Xero: UpdatedDateUTC
-
-            MYOB: LastModified
-
-            Sage: N/A'
-          format: date-time
-        qtyOnHand:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        invStartDate:
-          type:
-          - string
-          - 'null'
-          format: date-time
-      additionalProperties: false
-      description: 'Represents a Item, generally for sale or purchase, to be saved to the financial system.
-
-        QBO: https://developer.intuit.com/app/developer/qbo/docs/api/accounting/all-entities/item
-
-        Xero: https://developer.xero.com/documentation/api/accounting/items
-
-        MYOB: https://developer.myob.com/api/myob-business-api/v2/inventory/item/
-
-        Sage: https://developer.sage.com/accounting/reference/products-services/#tag/Products/operation/getProducts'
-    AddressModel:
-      type: object
-      properties:
-        line1:
-          type:
-          - string
-          - 'null'
-          description: 'First line of address. (Max chars: 255)
-
-            QBO: Line1
-
-            Xero: AddressLine1
-
-            MYOB: Street
-
-            Sage: Address_Line_1'
-        line2:
-          type:
-          - string
-          - 'null'
-          description: 'Second line of address. (Max chars: 255)
-
-            QBO: Line2
-
-            Xero: AddressLine2
-
-            MYOB: Street (Will be concatenated with previous lines when saved. Total length must not exceed 255 chars)
-
-            Sage: Address_Line_2'
-        line3:
-          type:
-          - string
-          - 'null'
-          description: 'Third line of address. (Max chars: 255)
-
-            QBO: Line3
-
-            Xero: AddressLine3 (For AU employee addresses, will be concatenated with previous line when saved.)
-
-            MYOB: Street (Will be concatenated with previous lines when saved. Total length must not exceed 255 chars)'
-        line4:
-          type:
-          - string
-          - 'null'
-          description: 'Fourth line of address. (Max chars: 255)
-
-            QBO: Line4
-
-            Xero: AddressLine4 (For AU employee addresses, will be concatenated with previous line when saved.)
-
-            MYOB: N/A'
-        line5:
-          type:
-          - string
-          - 'null'
-          description: 'Fifth line of address. (Max chars: 255)
-
-            QBO: Line5
-
-            Xero: N/A
-
-            MYOB: N/A'
-        city:
-          type:
-          - string
-          - 'null'
-          description: 'City. (Max chars: 255)
-
-            QBO: City
-
-            Xero: City
-
-            MYOB: City
-
-            Sage: City'
-        stateProv:
-          type:
-          - string
-          - 'null'
-          description: 'State or province. (Max chars: 255)
-
-            QBO: CountrySubDivisionCode
-
-            Xero: Region (For AU: ACT, NSW, NT, QLD, SA, TAS, VIC, WA)
-
-            MYOB: State
-
-            Sage: Region'
-        postalCode:
-          type:
-          - string
-          - 'null'
-          description: 'Postal code. (Max chars: 11)
-
-            QBO: PostalCode
-
-            Xero: PostalCode
-
-            MYOB: PostCode
-
-            Sage: Postal_Code
-
-            Sage: Country_Id'
-        country:
-          type:
-          - string
-          - 'null'
-          description: 'Country. (Max chars: 50)
-
-            QBO: Country
-
-            Xero: Country
-
-            MYOB: Country'
-      additionalProperties: false
-      description: Represents an address for a Customer, Vendor, or Employee
-    PaymentTermResponseModelAPIResponse:
-      type: object
-      properties:
-        Version:
-          type:
-          - string
-          - 'null'
-        StatusCode:
-          type: integer
-          format: int32
-        Message:
-          type:
-          - string
-          - 'null'
-        ResponseException:
-          allOf:
-          - $ref: '#/components/schemas/ApiError'
-        Result:
-          allOf:
-          - $ref: '#/components/schemas/PaymentTermResponseModel'
-      additionalProperties: false
-    InvoiceModel:
-      type: object
-      properties:
-        id:
-          type:
-          - string
-          - 'null'
-          description: Unique id of the invoice. Provide when updating the record.
-        override:
-          type: boolean
-          description: Set to true to force an update to the record regardless of version conflict. SyncToken is not required if Override is true.
-        syncToken:
-          type:
-          - string
-          - 'null'
-          description: SyncToken to ensure updating the latest version of the record. Used for updating with QBO and MYOB.
-        upsert:
-          type: boolean
-          description: 'When no unique Id is provided, allow updating if a matching Invoice record exists, otherwise create a new record
-
-            QBO: Update a matching record by DocNumber.
-
-            Xero: Update a matching record by DocNumber.
-
-            Sage: Update a matching record by DocNumber.'
-        customerRef:
-          type:
-          - string
-          - 'null'
-          description: 'Customer Reference
-
-            Sage: Contact_Id'
-        line:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/InvoiceLineModel'
-          description: An array of line invoice information
-        currencyCode:
-          type:
-          - string
-          - 'null'
-          description: 'In QBO maps with CurrencyRef.Value
-
-            Sage: Currency_Id'
-        baseCurrency:
-          type:
-          - string
-          - 'null'
-          description: Misc. field to determine if Currency code is home currency or foreign currency
-        invoiceType:
-          type:
-          - string
-          - 'null'
-          description: Type of invoice.
-          deprecated: true
-        txnDate:
-          type:
-          - string
-          - 'null'
-          description: '(Date field for Myob)
-
-            The date entered by the user when this transaction occurred.
-
-            yyyy/MM/dd is the valid date format.
-
-            Sage: Date'
-          format: date-time
-        dueDate:
-          type:
-          - string
-          - 'null'
-          description: 'Date when the payment of the transaction is due. If date is not provided, the number of days specified in SalesTermRef added the transaction date will be used.
-
-            Sage: Due_Date'
-          format: date-time
-        paymentTermRef:
-          type:
-          - string
-          - 'null'
-          description: "Reference to the sales term associated with the transaction. Query the Term name list resource to determine the appropriate Term object for this reference. \nSage: Payments_Allocation.Reference"
-        billAddr:
-          allOf:
-          - $ref: '#/components/schemas/AddressModel'
-          description: Bill-to address of the Invoice. If BillAddris not specified, and a default Customer:BillingAddr is specified in QuickBooks for this customer, the default bill-to address is used by QuickBooks.
-        shipAddr:
-          allOf:
-          - $ref: '#/components/schemas/AddressModel'
-          description: "(ShipToAddress field for Myob)\nIdentifies the address where the goods must be shipped. If ShipAddris not specified, and a default Customer:ShippingAddr is specified in QuickBooks \nfor this customer, the default ship-to address will be used by QuickBooks."
-        docNumber:
-          type:
-          - string
-          - 'null'
-          description: 'Reference number for the transaction. QBO: DocNumber. Xero: InvoiceNumber. Sage: Reference.
-
-            Max Chars : 21 (QBO: Max Chars - 21, MYOB: Max Chars - 30, Xero: Max Chars - 50, Sage: Max Chars - 25)'
-        status:
-          type:
-          - string
-          - 'null'
-          description: '(Myob -> Open, Close, Credit)
-
-            Invoice Status (Xero-Submitted,Authorised)
-
-            Sage: Status_Id (OUTSTANDING, OVERDUE, UNPAID, PART_PAID, PAID, VOID, DRAFT and PRO_FORMA)'
-        shipDate:
-          type:
-          - string
-          - 'null'
-          description: Date for delivery of goods or services.
-          format: date-time
-        shipMethod:
-          type:
-          - string
-          - 'null'
-          description: 'Maps with MYOB field ShippingMethod.
-
-            Maps with QBO ShipMethodRef.Value'
-        billEmail:
-          type:
-          - string
-          - 'null'
-          description: '(QBO Related field)
-
-            Identifies the e-mail address where the invoice is sent. If EmailStatus=NeedToSend, BillEmailis a required input.
-
-            Max Chars : 100 (QBO: Max Chars - 100)
-
-            Sage: Contact.Email'
-        trackingNum:
-          type:
-          - string
-          - 'null'
-          description: '(QBO Related field)
-
-            Tracking Number (Shipping Info)'
-        taxCodeRef:
-          type:
-          - string
-          - 'null'
-          description: 'Tax code reference
-
-            Sage: Tax_Analysis.Tax_Rate_Id'
-        referenceNumber:
+        address:
           maxLength: 255
+          minLength: 0
           type:
           - string
           - 'null'
-          description: 'Reference number for the invoice, e.g., customer purchase order number. Max chars: 255.
-
-            QBO: N/A
-
-            Xero: Reference
-
-            MYOB: CustomerPurchaseOrderNumber
-
-            Sage: N/A'
-        createDateTime:
+        city:
+          maxLength: 36
+          minLength: 0
           type:
           - string
           - 'null'
-          description: 'The create date and time date for the Invoice.
-
-            QBO: MetaData.CreateTime
-
-            MYOB: Created
-
-            Xero: Date
-
-            Sage: N/A'
-          format: date-time
-        modifyDateTime:
+        state:
+          maxLength: 24
+          minLength: 0
           type:
           - string
           - 'null'
-          description: 'The modify date and time date for the Invoice.
-
-            QBO: MetaData.LastUpdatedTime
-
-            MYOB: LastModified
-
-            Xero: UpdatedDateUTC
-
-            SAGE: N/A'
-          format: date-time
-        active:
-          type:
-          - boolean
-          - 'null'
-          description: 'Active for the Invoice
-
-            QBO: N/A
-
-            Xero: N/A
-
-            MYOB: N/A
-
-            Sage: N/A'
-        totalDiscountAmount:
-          type:
-          - number
-          - 'null'
-          description: 'TotalDiscountAmount for the Invoice
-
-            QBO: DiscountLineDetail.Amount
-
-            Xero: N/A
-
-            MYOB: N/A
-
-            Sage: N/A'
-          format: double
-        customerMemo:
+        zip:
+          pattern: ^.{5,10}$
           type:
           - string
           - 'null'
-          description: 'CustomerMemo is used for a note that is able to be read by the customer on the invoice.
-
-            QBO: CustomerMemo
-
-            Xero: N/A
-
-            MYOB: JournalMemo
-
-            Sage: Notes'
-        privateNote:
+        cell_phone:
+          maxLength: 10
+          minLength: 0
+          pattern: ^[0-9]*$
           type:
           - string
           - 'null'
-          description: 'PrivateNote is used for a note that will not be shown to the customer on the invoice.
-
-            QBO: PrivateNote
-
-            Xero: N/A
-
-            MYOB: N/A
-
-            Sage: N/A'
-      additionalProperties: false
-      description: 'This class is being used to have invoice details
-
-        Sage: https://developer.sage.com/accounting/reference/invoicing-sales/#tag/Sales-Invoices'
-    CreditMemoModelListAPIResponse:
-      type: object
-      properties:
-        Version:
+        account_number:
           type:
           - string
           - 'null'
-        StatusCode:
+          description: Account number for Macola - Customers Number should be added in that.
+        company_name:
+          type:
+          - string
+          - 'null'
+          description: Company Name for Macola contacts - Customer Name should be added in that.
+        tokenExpire:
           type: integer
           format: int32
-        Message:
-          type:
-          - string
-          - 'null'
-        ResponseException:
-          allOf:
-          - $ref: '#/components/schemas/ApiError'
-        Result:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/CreditMemoModel'
+        developer_id:
+          minLength: 1
+          type: string
       additionalProperties: false
-    SupplierModelListAPIResponse:
-      type: object
-      properties:
-        Version:
-          type:
-          - string
-          - 'null'
-        StatusCode:
-          type: integer
-          format: int32
-        Message:
-          type:
-          - string
-          - 'null'
-        ResponseException:
-          allOf:
-          - $ref: '#/components/schemas/ApiError'
-        Result:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/SupplierModel'
-      additionalProperties: false
-    SupplierModelAPIResponse:
-      type: object
-      properties:
-        Version:
-          type:
-          - string
-          - 'null'
-        StatusCode:
-          type: integer
-          format: int32
-        Message:
-          type:
-          - string
-          - 'null'
-        ResponseException:
-          allOf:
-          - $ref: '#/components/schemas/ApiError'
-        Result:
-          allOf:
-          - $ref: '#/components/schemas/SupplierModel'
-          description: 'Represents a Supplier/Vendor to be saved to the financial system.
-
-            QBO: https://developer.intuit.com/app/developer/qbo/docs/api/accounting/all-entities/vendor
-
-            Xero: https://developer.xero.com/documentation/api/accounting/contacts
-
-            MYOB: https://developer.myob.com/api/myob-business-api/v2/contact/supplier/
-
-            Sage: https://developer.sage.com/accounting/reference/contacts/#tag/Contacts'
-      additionalProperties: false
-    CreditMemoResponseModel:
-      type: object
-      properties:
-        creditMemoId:
-          type:
-          - string
-          - 'null'
-          description: Unique id of the credit memo.
-        docNumber:
-          type:
-          - string
-          - 'null'
-          description: User-defined alphanumeric identifier for the credit memo.
-        syncToken:
-          type:
-          - string
-          - 'null'
-          description: SyncToken representing the version of the record.
-      additionalProperties: false
-      description: A record containing the unique id and syncToken for a saved credit memo.
-    InvoiceLineModel:
-      type: object
-      properties:
-        type:
-          type:
-          - string
-          - 'null'
-          description: 'Type of the invoice or credit memo line.
-
-            QBO: N/A (Should always be SalesItemLineDetail)
-
-            Xero: N/A
-
-            MYOB: N/A'
-          deprecated: true
-        amount:
-          type:
-          - number
-          - 'null'
-          description: (Total field for Myob)
-          format: double
-        description:
-          type:
-          - string
-          - 'null'
-          description: 'Description text for the sale line.
-
-            Max Chars : 1000 (QBO: Max Chars - 4000, Xero: Max Chars - 4000, MYOB: Max Chars - 1000)'
-        accountRef:
-          type:
-          - string
-          - 'null'
-          description: MYOB field
-        salesItemLineDetail:
-          allOf:
-          - $ref: '#/components/schemas/SalesItemLineDetailModel'
-          description: Line Item Details
-        discountAmount:
-          type:
-          - number
-          - 'null'
-          format: double
-        discountPercent:
-          type:
-          - number
-          - 'null'
-          format: double
-      additionalProperties: false
-      description: Line item details for customer invoices and credits.
-    VendorCreditModel:
-      type: object
-      properties:
-        id:
-          type:
-          - string
-          - 'null'
-          description: Unique id of the vendor credit. Provide when updating the record.
-        override:
-          type: boolean
-          description: Set to true to force an update to the record regardless of version conflict. SyncToken is not required if Override is true.
-        syncToken:
-          type:
-          - string
-          - 'null'
-          description: SyncToken to ensure updating the latest version of the record. Used for updating with QBO and MYOB.
-        upsert:
-          type: boolean
-          description: 'When no unique Id is provided, allow updating if a matching Vendor Credit record exists, otherwise create a new record
-
-            QBO: Update a matching record by DocNumber.
-
-            Xero: Update a matching record by DocNumber.
-
-            MYOB: Update a matching record by DocNumber.
-
-            Sage: Update a matching record by DocNumber.'
-        vendorRef:
-          type:
-          - string
-          - 'null'
-          description: 'The unique id of the vendor from which this credit is applied.
-
-            QBO: VendorRef
-
-            Xero: Contact.ContactID
-
-            MYOB: Supplier.UID
-
-            Sage: Contact_Id'
-        line:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/VendorCreditLineModel'
-          description: An array of line invoice information
-        docNumber:
-          type:
-          - string
-          - 'null'
-          description: 'Reference number for the transaction.
-
-            QBO: DocNumber
-
-            Xero: CreditNoteNumber
-
-            MYOB: Number
-
-            Sage: Reference'
-        currencyCode:
-          type:
-          - string
-          - 'null'
-          description: 'QBO: Reference to the currency in which all amounts on the associated transaction are expressed
-
-            Sage: Currency_Id'
-        baseCurrency:
-          type:
-          - string
-          - 'null'
-          description: 'Misc. field to determine if Currency code is home currency or foreign currency
-
-            Sage: Currency.Id (Read only)'
-        type:
-          type:
-          - string
-          - 'null'
-          description: Type of vendor credit.
-          deprecated: true
-        depositTo:
-          type:
-          - string
-          - 'null'
-          description: 'MYOB field "Deposit To Account Name"
-
-            Sage: Contact.Bank_Account_Details.Account_Number (Read only)'
-        accountRef:
-          type:
-          - string
-          - 'null'
-          description: 'QBO: Specifies to which AP account the bill is credited'
-        billRef:
-          type:
-          - string
-          - 'null'
-          description: MYOB field "Accounting System stored ID for Original Bill"
-        privateNote:
-          type:
-          - string
-          - 'null'
-          description: 'Private note for the transaction. This note does not appear externally outside the organization.
-
-            Sage: Notes'
-        txnDate:
-          type:
-          - string
-          - 'null'
-          description: 'MYOB field maps to date
-
-            Sage: Date'
-          format: date-time
-        amount:
-          type: number
-          description: 'MYOB field "Vendor Credit Total"
-
-            Sage: TotalAmount'
-          format: double
-        status:
-          type:
-          - string
-          - 'null'
-          description: "The status of the vendor credit.\nQBO: Status - Valid values: Deleted\nXero: Status - Valid values: DRAFT, SUBMITTED, DELETED, AUTHORISED, PAID, and VOIDED \nMYOB: Status - Valid values: Unknown, Open, Closed, Debit\nSAGE: Status.Id - Valid values: UNPAID, PART_PAID, PAID, VOID, DRAFT, DISPUTED, DECLINED or PRO_FORMA"
-        createDateTime:
-          type:
-          - string
-          - 'null'
-          description: 'CreateDateTime for the vendor credit
-
-            QBO: MetaData.CreateTime'
-          format: date-time
-        modifyDateTime:
-          type:
-          - string
-          - 'null'
-          description: 'ModifyDateTime for the vendor credit
-
-            QBO: MetaData.LastUpdatedTime'
-          format: date-time
-        showTaxInclusiveAmounts:
-          type:
-          - boolean
-          - 'null'
-          description: 'Indicates whether to display amounts on the vendor credit with tax included or not.
-
-            QBO: GlobalTaxCalculation (true -> TaxInclusive, false -> TaxExcluded, null -> NotApplicable)'
-      additionalProperties: false
-      description: "Represents a Vendor Credit to be saved to the financial system.\nQBO: https://developer.intuit.com/app/developer/qbo/docs/api/accounting/all-entities/vendorcredit\nXero: https://developer.xero.com/documentation/api/accounting/creditnotes\nMYOB: https://developer.myob.com/api/myob-business-api/v2/purchase/bill/bill_item/\n    OR https://developer.myob.com/api/myob-business-api/v2/purchase/debit_refund/\nSage: https://developer.sage.com/accounting/reference/invoicing-purchases/#tag/Purchase-Credit-Notes"
-    JournalResponseModelAPIResponse:
-      type: object
-      properties:
-        Version:
-          type:
-          - string
-          - 'null'
-        StatusCode:
-          type: integer
-          format: int32
-        Message:
-          type:
-          - string
-          - 'null'
-        ResponseException:
-          allOf:
-          - $ref: '#/components/schemas/ApiError'
-        Result:
-          allOf:
-          - $ref: '#/components/schemas/JournalResponseModel'
-          description: ''
-      additionalProperties: false
-    ContentResponseModel:
-      type: object
-      properties:
-        id:
-          type:
-          - string
-          - 'null'
-          description: Unique id of the entity.
-        syncToken:
-          type:
-          - string
-          - 'null'
-          description: SyncToken representing the version of the record.
-      additionalProperties: false
-      description: A record containing the unique id and syncToken for a saved entity.
-    TimeActivityEmployeeBatchModel:
-      type: object
-      properties:
-        employeePayRateRef:
-          type:
-          - string
-          - 'null'
-          description: Specifies the employee pay rate for the time activity.
-        hours:
-          type:
-          - number
-          - 'null'
-          description: Hours and minutes worked.
-          format: double
-        transactionDate:
-          type:
-          - string
-          - 'null'
-          description: The date for the time activity. This is the posting date that affects financial statements. If the date is not supplied, the current date on the server is used.
-          format: date-time
-        description:
-          type:
-          - string
-          - 'null'
-          description: Description of work completed during time activity.
-      additionalProperties: false
-      description: Employee Time Activity Batch Model
     ApiError_2:
       type: object
       properties:
@@ -6013,6 +6088,215 @@ components:
           - 'null'
           items:
             $ref: '#/components/schemas/ValidationError_2'
+      additionalProperties: false
+    Contact_2:
+      required:
+      - developer_id
+      - last_name
+      - location_id
+      type: object
+      properties:
+        location_id:
+          minLength: 1
+          type: string
+        developer_id:
+          minLength: 1
+          type: string
+        id:
+          type:
+          - string
+          - 'null'
+        first_name:
+          maxLength: 64
+          minLength: 0
+          type:
+          - string
+          - 'null'
+        last_name:
+          maxLength: 64
+          minLength: 0
+          type: string
+        email:
+          pattern: ^(([\w-]+\.)+[\w-]+|([a-zA-Z]{1}|[\w+-]{2,}))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$
+          type:
+          - string
+          - 'null'
+        address:
+          maxLength: 255
+          minLength: 0
+          type:
+          - string
+          - 'null'
+        city:
+          maxLength: 36
+          minLength: 0
+          type:
+          - string
+          - 'null'
+        state:
+          maxLength: 24
+          minLength: 0
+          type:
+          - string
+          - 'null'
+        zip:
+          pattern: ^.{5,10}$
+          type:
+          - string
+          - 'null'
+        cell_phone:
+          maxLength: 10
+          minLength: 0
+          pattern: ^[0-9]*$
+          type:
+          - string
+          - 'null'
+        account_number:
+          type:
+          - string
+          - 'null'
+          description: Account number for Macola - Customers Number should be added in that.
+        company_name:
+          type:
+          - string
+          - 'null'
+          description: Company Name for Macola contacts - Customer Name should be added in that.
+        tokenExpire:
+          type: integer
+          format: int32
+        locale:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    AccountVaultListResponse:
+      type: object
+      properties:
+        accountVaults:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/AccountVaultDetail'
+        action:
+          type:
+          - string
+          - 'null'
+        locale:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    AccountNumberContactsAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          $ref: '#/components/schemas/ApiError_2'
+        result:
+          $ref: '#/components/schemas/AccountNumberContacts'
+      additionalProperties: false
+    Self:
+      type: object
+      properties:
+        href:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    ContactAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          $ref: '#/components/schemas/ApiError_2'
+        result:
+          $ref: '#/components/schemas/Contact_2'
+      additionalProperties: false
+    AccountVaultListResponseAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          $ref: '#/components/schemas/ApiError_2'
+        result:
+          $ref: '#/components/schemas/AccountVaultListResponse'
+      additionalProperties: false
+    StringAPIResponse_2:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          $ref: '#/components/schemas/ApiError_2'
+        result:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    AccountNumberContacts:
+      type: object
+      properties:
+        contacts:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Contact_2'
+        tokenExpire:
+          type: integer
+          format: int32
+      additionalProperties: false
+    ValidationError_2:
+      type: object
+      properties:
+        field:
+          type:
+          - string
+          - 'null'
+        message:
+          type:
+          - string
+          - 'null'
       additionalProperties: false
     AccountVaultDetail:
       type: object
@@ -6104,290 +6388,6 @@ components:
         customer_id: {}
         _links:
           $ref: '#/components/schemas/Links'
-      additionalProperties: false
-    ValidationError_2:
-      type: object
-      properties:
-        field:
-          type:
-          - string
-          - 'null'
-        message:
-          type:
-          - string
-          - 'null'
-      additionalProperties: false
-    Self:
-      type: object
-      properties:
-        href:
-          type:
-          - string
-          - 'null'
-      additionalProperties: false
-    UpdateContact:
-      required:
-      - developer_id
-      type: object
-      properties:
-        first_name:
-          maxLength: 64
-          minLength: 0
-          type:
-          - string
-          - 'null'
-        last_name:
-          maxLength: 64
-          minLength: 0
-          type:
-          - string
-          - 'null'
-        email:
-          pattern: ^(([\w-]+\.)+[\w-]+|([a-zA-Z]{1}|[\w+-]{2,}))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$
-          type:
-          - string
-          - 'null'
-        address:
-          maxLength: 255
-          minLength: 0
-          type:
-          - string
-          - 'null'
-        city:
-          maxLength: 36
-          minLength: 0
-          type:
-          - string
-          - 'null'
-        state:
-          maxLength: 24
-          minLength: 0
-          type:
-          - string
-          - 'null'
-        zip:
-          pattern: ^.{5,10}$
-          type:
-          - string
-          - 'null'
-        cell_phone:
-          maxLength: 10
-          minLength: 0
-          pattern: ^[0-9]*$
-          type:
-          - string
-          - 'null'
-        account_number:
-          type:
-          - string
-          - 'null'
-          description: Account number for Macola - Customers Number should be added in that.
-        company_name:
-          type:
-          - string
-          - 'null'
-          description: Company Name for Macola contacts - Customer Name should be added in that.
-        tokenExpire:
-          type: integer
-          format: int32
-        developer_id:
-          minLength: 1
-          type: string
-      additionalProperties: false
-    Contact_2:
-      required:
-      - developer_id
-      - last_name
-      - location_id
-      type: object
-      properties:
-        location_id:
-          minLength: 1
-          type: string
-        developer_id:
-          minLength: 1
-          type: string
-        id:
-          type:
-          - string
-          - 'null'
-        first_name:
-          maxLength: 64
-          minLength: 0
-          type:
-          - string
-          - 'null'
-        last_name:
-          maxLength: 64
-          minLength: 0
-          type: string
-        email:
-          pattern: ^(([\w-]+\.)+[\w-]+|([a-zA-Z]{1}|[\w+-]{2,}))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$
-          type:
-          - string
-          - 'null'
-        address:
-          maxLength: 255
-          minLength: 0
-          type:
-          - string
-          - 'null'
-        city:
-          maxLength: 36
-          minLength: 0
-          type:
-          - string
-          - 'null'
-        state:
-          maxLength: 24
-          minLength: 0
-          type:
-          - string
-          - 'null'
-        zip:
-          pattern: ^.{5,10}$
-          type:
-          - string
-          - 'null'
-        cell_phone:
-          maxLength: 10
-          minLength: 0
-          pattern: ^[0-9]*$
-          type:
-          - string
-          - 'null'
-        account_number:
-          type:
-          - string
-          - 'null'
-          description: Account number for Macola - Customers Number should be added in that.
-        company_name:
-          type:
-          - string
-          - 'null'
-          description: Company Name for Macola contacts - Customer Name should be added in that.
-        tokenExpire:
-          type: integer
-          format: int32
-        locale:
-          type:
-          - string
-          - 'null'
-      additionalProperties: false
-    ContactAPIResponse:
-      type: object
-      properties:
-        version:
-          type:
-          - string
-          - 'null'
-        statusCode:
-          type: integer
-          format: int32
-        message:
-          type:
-          - string
-          - 'null'
-        responseException:
-          $ref: '#/components/schemas/ApiError_2'
-        result:
-          $ref: '#/components/schemas/Contact_2'
-      additionalProperties: false
-    StringAPIResponse_2:
-      type: object
-      properties:
-        version:
-          type:
-          - string
-          - 'null'
-        statusCode:
-          type: integer
-          format: int32
-        message:
-          type:
-          - string
-          - 'null'
-        responseException:
-          $ref: '#/components/schemas/ApiError_2'
-        result:
-          type:
-          - string
-          - 'null'
-      additionalProperties: false
-    Links:
-      type: object
-      properties:
-        self:
-          $ref: '#/components/schemas/Self'
-      additionalProperties: false
-    AccountVaultListResponseAPIResponse:
-      type: object
-      properties:
-        version:
-          type:
-          - string
-          - 'null'
-        statusCode:
-          type: integer
-          format: int32
-        message:
-          type:
-          - string
-          - 'null'
-        responseException:
-          $ref: '#/components/schemas/ApiError_2'
-        result:
-          $ref: '#/components/schemas/AccountVaultListResponse'
-      additionalProperties: false
-    AccountNumberContacts:
-      type: object
-      properties:
-        contacts:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/Contact_2'
-        tokenExpire:
-          type: integer
-          format: int32
-      additionalProperties: false
-    AccountNumberContactsAPIResponse:
-      type: object
-      properties:
-        version:
-          type:
-          - string
-          - 'null'
-        statusCode:
-          type: integer
-          format: int32
-        message:
-          type:
-          - string
-          - 'null'
-        responseException:
-          $ref: '#/components/schemas/ApiError_2'
-        result:
-          $ref: '#/components/schemas/AccountNumberContacts'
-      additionalProperties: false
-    AccountVaultListResponse:
-      type: object
-      properties:
-        accountVaults:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/AccountVaultDetail'
-        action:
-          type:
-          - string
-          - 'null'
-        locale:
-          type:
-          - string
-          - 'null'
       additionalProperties: false
   securitySchemes:
     Bearer:

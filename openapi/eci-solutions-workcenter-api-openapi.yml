@@ -255,6 +255,108 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
+    Department:
+      title: Department
+      type: object
+      properties:
+        deptID:
+          type: string
+        shortDesc:
+          type: string
+        uniqueID:
+          type: string
+        rowVersion:
+          type: integer
+          format: int64
+    WorkCenter:
+      title: WorkCenter
+      type: object
+      properties:
+        workCenterID:
+          type: string
+        shortDesc:
+          type: string
+        deptID:
+          type: string
+        overHeadRate:
+          type: string
+        quoteRate:
+          type: string
+        processID:
+          type: string
+        parentWorkCenterID:
+          type: string
+        shiftID:
+          type: string
+        uniqueID:
+          type: string
+        rowVersion:
+          type: integer
+          format: int64
+        laborRate:
+          type: string
+        departments:
+          type: array
+          items:
+            $ref: '#/components/schemas/Department'
+        shifts:
+          type: array
+          items:
+            $ref: '#/components/schemas/Shift'
+    WorkCenterListResponse:
+      type: object
+      properties:
+        data:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/WorkCenter'
+          readOnly: true
+        resultCount:
+          type: integer
+          format: int32
+      additionalProperties: false
+    Shift:
+      title: Shift
+      type: object
+      properties:
+        shiftID:
+          type: number
+          format: float
+        shortDesc:
+          type: string
+        inactiveDate:
+          type: string
+          format: date-time
+        uniqueID:
+          type: string
+        rowVersion:
+          type: integer
+          format: int64
+        shiftDays:
+          type: array
+          items:
+            $ref: '#/components/schemas/ShiftDay'
+    ShiftDay:
+      title: ShiftDay
+      type: object
+      properties:
+        shiftID:
+          type: number
+          format: float
+        shiftDay:
+          type: number
+          format: float
+        startTime:
+          type: string
+        endTime:
+          type: string
+        uniqueID:
+          type: string
+        rowVersion:
+          type: integer
+          format: int64
     WorkCenterCreateModel:
       required:
       - workCenterID
@@ -296,108 +398,6 @@ components:
           description: The ID of the process associated with the workcenter.
       additionalProperties: false
       description: A model used to create new workcenters.
-    WorkCenterListResponse:
-      type: object
-      properties:
-        data:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/WorkCenter'
-          readOnly: true
-        resultCount:
-          type: integer
-          format: int32
-      additionalProperties: false
-    WorkCenter:
-      title: WorkCenter
-      type: object
-      properties:
-        workCenterID:
-          type: string
-        shortDesc:
-          type: string
-        deptID:
-          type: string
-        overHeadRate:
-          type: string
-        quoteRate:
-          type: string
-        processID:
-          type: string
-        parentWorkCenterID:
-          type: string
-        shiftID:
-          type: string
-        uniqueID:
-          type: string
-        rowVersion:
-          type: integer
-          format: int64
-        laborRate:
-          type: string
-        departments:
-          type: array
-          items:
-            $ref: '#/components/schemas/Department'
-        shifts:
-          type: array
-          items:
-            $ref: '#/components/schemas/Shift'
-    Department:
-      title: Department
-      type: object
-      properties:
-        deptID:
-          type: string
-        shortDesc:
-          type: string
-        uniqueID:
-          type: string
-        rowVersion:
-          type: integer
-          format: int64
-    Shift:
-      title: Shift
-      type: object
-      properties:
-        shiftID:
-          type: number
-          format: float
-        shortDesc:
-          type: string
-        inactiveDate:
-          type: string
-          format: date-time
-        uniqueID:
-          type: string
-        rowVersion:
-          type: integer
-          format: int64
-        shiftDays:
-          type: array
-          items:
-            $ref: '#/components/schemas/ShiftDay'
-    ShiftDay:
-      title: ShiftDay
-      type: object
-      properties:
-        shiftID:
-          type: number
-          format: float
-        shiftDay:
-          type: number
-          format: float
-        startTime:
-          type: string
-        endTime:
-          type: string
-        uniqueID:
-          type: string
-        rowVersion:
-          type: integer
-          format: int64
   securitySchemes:
     Bearer:
       type: oauth2

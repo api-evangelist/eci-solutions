@@ -472,6 +472,111 @@ components:
           items:
             $ref: '#/components/schemas/ValidationError'
       additionalProperties: false
+    UpdateUserProfileAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        result:
+          allOf:
+          - $ref: '#/components/schemas/UpdateUserProfile'
+      additionalProperties: false
+    RegisterUser:
+      required:
+      - email
+      - roleId
+      type: object
+      properties:
+        email:
+          minLength: 1
+          pattern: .*@.*
+          type: string
+        firstName:
+          type:
+          - string
+          - 'null'
+        lastName:
+          type:
+          - string
+          - 'null'
+        companyId:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        roleId:
+          type: integer
+          format: int32
+        products:
+          type:
+          - array
+          - 'null'
+          items:
+            type: integer
+            format: int32
+        providerName:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    ERPUserResponseModelAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        result:
+          allOf:
+          - $ref: '#/components/schemas/ERPUserResponseModel'
+      additionalProperties: false
+    UserMeResponse:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+        name:
+          type:
+          - string
+          - 'null'
+        roleId:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        email:
+          type:
+          - string
+          - 'null'
+        sub:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
     EciIntegrationResponse:
       type: object
       properties:
@@ -545,14 +650,14 @@ components:
           - 'null'
           format: int32
       additionalProperties: false
-    ValidationError:
+    UpdateUserProfile:
       type: object
       properties:
-        field:
+        firstName:
           type:
           - string
           - 'null'
-        message:
+        lastName:
           type:
           - string
           - 'null'
@@ -578,60 +683,23 @@ components:
           allOf:
           - $ref: '#/components/schemas/LoginProviderResponse'
       additionalProperties: false
-    UpdateUserProfile:
+    SsoProvider:
       type: object
       properties:
-        firstName:
+        name:
           type:
           - string
           - 'null'
-        lastName:
+        description:
           type:
           - string
           - 'null'
-      additionalProperties: false
-    UpdateUserProfileAPIResponse:
-      type: object
-      properties:
-        version:
+        identifiers:
           type:
-          - string
+          - array
           - 'null'
-        statusCode:
-          type: integer
-          format: int32
-        message:
-          type:
-          - string
-          - 'null'
-        responseException:
-          allOf:
-          - $ref: '#/components/schemas/ApiError'
-        result:
-          allOf:
-          - $ref: '#/components/schemas/UpdateUserProfile'
-      additionalProperties: false
-    StringAPIResponse:
-      type: object
-      properties:
-        version:
-          type:
-          - string
-          - 'null'
-        statusCode:
-          type: integer
-          format: int32
-        message:
-          type:
-          - string
-          - 'null'
-        responseException:
-          allOf:
-          - $ref: '#/components/schemas/ApiError'
-        result:
-          type:
-          - string
-          - 'null'
+          items:
+            type: string
       additionalProperties: false
     UpdateAdmins:
       type: object
@@ -656,6 +724,73 @@ components:
           - boolean
           - 'null'
         providerName:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    LoginProviderResponse:
+      type: object
+      properties:
+        provider:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+        title:
+          type:
+          - string
+          - 'null'
+        status:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        detail:
+          type:
+          - string
+          - 'null'
+        instance:
+          type:
+          - string
+          - 'null'
+      additionalProperties: {}
+    StringAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        result:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    ValidationError:
+      type: object
+      properties:
+        field:
+          type:
+          - string
+          - 'null'
+        message:
           type:
           - string
           - 'null'
@@ -739,78 +874,6 @@ components:
           - string
           - 'null'
       additionalProperties: false
-    SsoProvider:
-      type: object
-      properties:
-        name:
-          type:
-          - string
-          - 'null'
-        description:
-          type:
-          - string
-          - 'null'
-        identifiers:
-          type:
-          - array
-          - 'null'
-          items:
-            type: string
-      additionalProperties: false
-    ERPUserResponseModelAPIResponse:
-      type: object
-      properties:
-        version:
-          type:
-          - string
-          - 'null'
-        statusCode:
-          type: integer
-          format: int32
-        message:
-          type:
-          - string
-          - 'null'
-        responseException:
-          allOf:
-          - $ref: '#/components/schemas/ApiError'
-        result:
-          allOf:
-          - $ref: '#/components/schemas/ERPUserResponseModel'
-      additionalProperties: false
-    UserMeResponse:
-      type: object
-      properties:
-        id:
-          type:
-          - string
-          - 'null'
-        name:
-          type:
-          - string
-          - 'null'
-        roleId:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        email:
-          type:
-          - string
-          - 'null'
-        sub:
-          type:
-          - string
-          - 'null'
-      additionalProperties: false
-    LoginProviderResponse:
-      type: object
-      properties:
-        provider:
-          type:
-          - string
-          - 'null'
-      additionalProperties: false
     ERPUserResponseModelIListAPIResponse:
       type: object
       properties:
@@ -834,69 +897,6 @@ components:
           - 'null'
           items:
             $ref: '#/components/schemas/ERPUserResponseModel'
-      additionalProperties: false
-    ProblemDetails:
-      type: object
-      properties:
-        type:
-          type:
-          - string
-          - 'null'
-        title:
-          type:
-          - string
-          - 'null'
-        status:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        detail:
-          type:
-          - string
-          - 'null'
-        instance:
-          type:
-          - string
-          - 'null'
-      additionalProperties: {}
-    RegisterUser:
-      required:
-      - email
-      - roleId
-      type: object
-      properties:
-        email:
-          minLength: 1
-          pattern: .*@.*
-          type: string
-        firstName:
-          type:
-          - string
-          - 'null'
-        lastName:
-          type:
-          - string
-          - 'null'
-        companyId:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        roleId:
-          type: integer
-          format: int32
-        products:
-          type:
-          - array
-          - 'null'
-          items:
-            type: integer
-            format: int32
-        providerName:
-          type:
-          - string
-          - 'null'
       additionalProperties: false
   securitySchemes:
     oidc:

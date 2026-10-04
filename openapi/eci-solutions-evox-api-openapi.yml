@@ -443,83 +443,60 @@ paths:
                 $ref: '#/components/schemas/ErpProcessOrderResponse'
 components:
   schemas:
-    ErpProductPricingListResponse:
+    ErpInvoiceLookupByIdResponse:
       type: object
       properties:
+        invoice_id:
+          type: number
+          format: double
         customer_code:
+          type: integer
+          format: int32
+        billing_details:
+          $ref: '#/components/schemas/InvoiceBillingDetails'
+        shipping_details:
+          $ref: '#/components/schemas/InvoiceShippingDetails'
+        order_id:
+          type: number
+          format: double
+        invoice_status_description:
           type:
           - string
           - 'null'
-        seller_reference:
-          type:
-          - string
-          - 'null'
-        data:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/ErpProductPricingResponseData'
-      additionalProperties: false
-    ErpPurchasedProductFilterRequest:
-      type: object
-      properties:
-        start_date:
+        order_date:
           type:
           - string
           - 'null'
           format: date-time
-        end_date:
+        invoice_date:
           type:
           - string
           - 'null'
           format: date-time
-      additionalProperties: false
-    Request:
-      type: object
-      properties:
-        header:
-          $ref: '#/components/schemas/Header'
-        branch:
-          $ref: '#/components/schemas/Branch'
-        lines:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/Lines'
-      additionalProperties: false
-    TrackingInformation:
-      type: object
-      properties:
-        carrier_account_number:
+        duedate:
           type:
           - string
           - 'null'
-        delivery_charge:
+        discount:
+          type: integer
+          format: int32
+        sub_total:
+          type: number
+          format: double
+        tax_total:
+          type: number
+          format: double
+        total:
+          type: number
+          format: double
+        balance:
+          type: number
+          format: double
+        customer_po:
           type:
           - string
           - 'null'
-        delivery_date:
-          type:
-          - string
-          - 'null'
-          format: date-time
-        shipping_date:
-          type:
-          - string
-          - 'null'
-          format: date-time
-        status:
-          type:
-          - string
-          - 'null'
-        status_time:
-          type:
-          - string
-          - 'null'
-          format: date-time
-        weight:
+        third_party_order_number:
           type:
           - string
           - 'null'
@@ -527,11 +504,153 @@ components:
           type:
           - string
           - 'null'
-        tracking_number:
+        invoice_lines:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/InvoiceLines'
+      additionalProperties: false
+    ErpProcessOrderRequestDataObjectItemsData:
+      required:
+      - quantity
+      - sku
+      - total
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        sku:
+          minLength: 1
+          type: string
+        title:
           type:
           - string
           - 'null'
-        tracking_url:
+        item_price:
+          type:
+          - number
+          - 'null'
+          format: double
+        item_price_raw:
+          type:
+          - number
+          - 'null'
+          format: double
+        uom:
+          type:
+          - string
+          - 'null'
+        taxable:
+          type:
+          - boolean
+          - 'null'
+        quantity:
+          type: number
+          format: double
+        notes:
+          type:
+          - string
+          - 'null'
+        subtotal:
+          type:
+          - number
+          - 'null'
+          format: double
+        tax:
+          type:
+          - number
+          - 'null'
+          format: double
+        total:
+          type: number
+          format: double
+        seller_reference:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    BillingAddress:
+      type: object
+      properties:
+        address_code:
+          type: integer
+          format: int32
+        name:
+          type:
+          - string
+          - 'null'
+        address1:
+          type:
+          - string
+          - 'null'
+        address2:
+          type:
+          - string
+          - 'null'
+        address3:
+          type:
+          - string
+          - 'null'
+        city:
+          type:
+          - string
+          - 'null'
+        state:
+          type:
+          - string
+          - 'null'
+        postal_code:
+          type:
+          - string
+          - 'null'
+        country:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    ErpProcessOrderRequestDataObjectItems:
+      required:
+      - data
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErpProcessOrderRequestDataObjectItemsData'
+        weight:
+          type:
+          - number
+          - 'null'
+          format: double
+        count:
+          type:
+          - integer
+          - 'null'
+          format: int32
+      additionalProperties: false
+    ErpPurchasedProductRequest:
+      required:
+      - customer_code
+      type: object
+      properties:
+        customer_code:
+          minLength: 1
+          type: string
+        seller_reference:
+          type:
+          - string
+          - 'null'
+        filters:
+          $ref: '#/components/schemas/ErpPurchasedProductFilterRequest'
+        current_page:
+          type:
+          - string
+          - 'null'
+        per_page:
           type:
           - string
           - 'null'
@@ -602,433 +721,28 @@ components:
           - string
           - 'null'
       additionalProperties: false
-    ErpProcessOrderResponseObject:
-      type: object
-      properties:
-        order_id:
-          type:
-          - string
-          - 'null'
-        ship_to_id:
-          type:
-          - string
-          - 'null'
-      additionalProperties: false
-    ErpCustomerLookupRequest:
-      required:
-      - customer_code
-      type: object
-      properties:
-        customer_code:
-          minLength: 1
-          type: string
-        seller_reference:
-          type:
-          - string
-          - 'null'
-      additionalProperties: false
-    ErpCustomerBalanceAccount:
-      type: object
-      properties:
-        seller_reference:
-          type:
-          - string
-          - 'null'
-        balance:
-          type:
-          - number
-          - 'null'
-          format: double
-        total_due:
-          type:
-          - number
-          - 'null'
-          format: double
-        last_charge_date:
-          type:
-          - string
-          - 'null'
-          format: date-time
-        last_sale_date:
-          type:
-          - string
-          - 'null'
-          format: date-time
-        last_payment_date:
-          type:
-          - string
-          - 'null'
-          format: date-time
-        last_payment_amount:
-          type:
-          - number
-          - 'null'
-          format: double
-        due_30_days:
-          type:
-          - number
-          - 'null'
-          format: double
-        due_60_days:
-          type:
-          - number
-          - 'null'
-          format: double
-        due_90_days:
-          type:
-          - number
-          - 'null'
-          format: double
-        due_over_90_days:
-          type:
-          - number
-          - 'null'
-          format: double
-        open_credits:
-          type:
-          - number
-          - 'null'
-          format: double
-        credit_available:
-          type:
-          - number
-          - 'null'
-          format: double
-      additionalProperties: false
-    ErpProcessCustomerOrderPaymentRequest:
-      required:
-      - customer_code
-      - data
-      - orders
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/ErpProcessOrderPaymentRequestData'
-        customer_code:
-          minLength: 1
-          type: string
-        seller_reference:
-          type:
-          - string
-          - 'null'
-        orders:
-          type: array
-          items:
-            $ref: '#/components/schemas/ErpProcessOrderPaymentRequestOrders'
-      additionalProperties: false
-    ErpProductOrderFilterRequest:
-      type: object
-      properties:
-        order_id:
-          type:
-          - string
-          - 'null'
-        customer_po:
-          type:
-          - string
-          - 'null'
-        third_party_order_number:
-          type:
-          - string
-          - 'null'
-        start_date:
-          type:
-          - string
-          - 'null'
-          format: date-time
-        end_date:
-          type:
-          - string
-          - 'null'
-          format: date-time
-      additionalProperties: false
-    Branch:
-      type: object
-      properties:
-        id:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        code:
-          type:
-          - string
-          - 'null'
-      additionalProperties: false
-    ErpProductInventoryRequest:
-      required:
-      - products
-      type: object
-      properties:
-        customer_code:
-          type:
-          - string
-          - 'null'
-        products:
-          type: array
-          items:
-            $ref: '#/components/schemas/ErpProductInventory'
-      additionalProperties: false
-    ErpProcessOrderPaymentRequestOrders:
-      required:
-      - order_id
-      - total
-      type: object
-      properties:
-        order_id:
-          minLength: 1
-          type: string
-          description: The ID of the order in the ERP system.
-        total:
-          type: number
-          description: The total amount of the payment that should be applied to this order.
-          format: double
-      additionalProperties: false
-    ErpProcessOrderPaymentRequestData:
-      type: object
-      properties:
-        id:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        method_id:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        title:
-          type:
-          - string
-          - 'null'
-        gateway:
-          $ref: '#/components/schemas/ErpProcessOrderRequestDataGateway'
-        surcharge:
-          type:
-          - number
-          - 'null'
-          format: double
-        subtotal:
-          type:
-          - number
-          - 'null'
-          format: double
-        total:
-          type:
-          - number
-          - 'null'
-          format: double
-        capture:
-          type:
-          - boolean
-          - 'null'
-        status_id:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        status:
-          type:
-          - string
-          - 'null'
-      additionalProperties: false
-    ErpProductPricingRequest:
-      required:
-      - customer_code
-      - products
-      type: object
-      properties:
-        customer_code:
-          minLength: 1
-          type: string
-        seller_reference:
-          type:
-          - string
-          - 'null'
-        branch:
-          $ref: '#/components/schemas/Branch'
-        products:
-          type: array
-          items:
-            $ref: '#/components/schemas/ErpProductPricingRequestProduct'
-      additionalProperties: false
-    ErpProcessOrderRequestDataObjectItems:
+    ErpProcessOrderRequest:
       required:
       - data
       type: object
       properties:
         data:
-          type: array
-          items:
-            $ref: '#/components/schemas/ErpProcessOrderRequestDataObjectItemsData'
-        weight:
-          type:
-          - number
-          - 'null'
-          format: double
-        count:
-          type:
-          - integer
-          - 'null'
+          $ref: '#/components/schemas/ErpProcessOrderRequestData'
+      additionalProperties: false
+    InvoiceLines:
+      type: object
+      properties:
+        item_id:
+          type: integer
           format: int32
-      additionalProperties: false
-    ErpProductPricingResponseData:
-      type: object
-      properties:
-        item_sku:
-          type:
-          - string
-          - 'null'
-        uom:
-          type:
-          - string
-          - 'null'
-        quantity:
-          type: number
-          format: double
-        unit_price:
-          type: number
-          format: double
-      additionalProperties: false
-    ErpProcessOrderRequestDataObjectCustomer:
-      required:
-      - account_number
-      - customer_seller_reference
-      type: object
-      properties:
-        id:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        customer_seller_reference:
-          minLength: 1
-          type: string
-        name:
-          type:
-          - string
-          - 'null'
-        account_number:
-          minLength: 1
-          type: string
-      additionalProperties: false
-    ErpProcessOrderResponse:
-      type: object
-      properties:
-        status:
-          type:
-          - string
-          - 'null'
-        message:
-          type:
-          - string
-          - 'null'
-        object:
-          $ref: '#/components/schemas/ErpProcessOrderResponseObject'
-      additionalProperties: false
-    InvoiceData:
-      type: object
-      properties:
-        customer_code:
-          type:
-          - string
-          - 'null'
-        file_base64:
-          type:
-          - string
-          - 'null'
-      additionalProperties: false
-    ErpCustomerBalanceResponse:
-      type: object
-      properties:
-        customer_code:
-          type:
-          - string
-          - 'null'
-        data:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/ErpCustomerBalanceAccount'
-      additionalProperties: false
-    ErpOrderPaymentCreateResponse:
-      type: object
-      properties:
-        customer_code:
-          type:
-          - string
-          - 'null'
-        seller_reference:
-          type:
-          - string
-          - 'null'
-        payments_applied:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/ErpOrderPaymentAppliedPayment'
-      additionalProperties: false
-    ErpProductPricingRequestProduct:
-      required:
-      - item_sku
-      type: object
-      properties:
-        item_sku:
-          minLength: 1
-          type: string
-        uom:
-          type:
-          - string
-          - 'null'
-        quantity:
-          type:
-          - number
-          - 'null'
-          format: double
-      additionalProperties: false
-    ErpProductInventory:
-      type: object
-      properties:
-        item_sku:
-          type:
-          - string
-          - 'null'
-      additionalProperties: false
-    ErpProductResponseData:
-      type: object
-      properties:
-        item_sku:
-          type:
-          - string
-          - 'null'
-        uom:
-          type:
-          - string
-          - 'null'
-        inventory:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/ErpProductInventoryResponseData'
-      additionalProperties: false
-    OrderLine:
-      type: object
-      properties:
-        line_no:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        product_id:
-          type:
-          - string
-          - 'null'
         sku:
+          type:
+          - string
+          - 'null'
+        qty:
+          type: number
+          format: double
+        qty_shipped:
           type:
           - string
           - 'null'
@@ -1036,42 +750,28 @@ components:
           type:
           - string
           - 'null'
-        note:
-          type:
-          - string
-          - 'null'
         uom:
           type:
           - string
           - 'null'
-        qty:
-          type:
-          - string
-          - 'null'
-        qty_shipped:
-          type:
-          - string
-          - 'null'
         unit_price:
-          type:
-          - number
-          - 'null'
+          type: number
           format: double
         tax:
           type:
-          - number
+          - string
           - 'null'
+        price:
+          type: number
           format: double
-        total:
+        note:
           type:
-          - number
+          - string
           - 'null'
-          format: double
       additionalProperties: false
-    ErpInvoiceLookupByIdRequest:
+    Header:
       required:
       - customer_code
-      - invoice_id
       type: object
       properties:
         customer_code:
@@ -1081,27 +781,7 @@ components:
           type:
           - string
           - 'null'
-        invoice_id:
-          minLength: 1
-          type: string
-      additionalProperties: false
-    ErpInvoiceDocumentRequest:
-      required:
-      - customer_code
-      - document_id
-      type: object
-      properties:
-        customer_code:
-          minLength: 1
-          type: string
-        seller_reference:
-          type:
-          - string
-          - 'null'
-        document_id:
-          minLength: 1
-          type: string
-        document_type:
+        shiptopostcode:
           type:
           - string
           - 'null'
@@ -1121,183 +801,34 @@ components:
           items:
             type: string
       additionalProperties: false
-    ErpPurchasedProductResponseData:
+    Items:
       type: object
       properties:
         sku:
           type:
           - string
-          - 'null'
-        last_ordered_date:
-          type:
-          - string
-          - 'null'
-          format: date-time
-        total_qty_ordered:
-          type:
-          - number
-          - 'null'
-          format: double
-        times_ordered:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        uom:
-          type:
-          - string
-          - 'null'
-      additionalProperties: false
-    ErpInvoiceModel:
-      type: object
-      properties:
-        invoice_id:
-          type:
-          - string
-          - 'null'
-        customer_code:
-          type:
-          - string
-          - 'null'
-        billing_details:
-          $ref: '#/components/schemas/InvoiceBillingDetails'
-        shipping_details:
-          $ref: '#/components/schemas/InvoiceShippingDetails'
-        order_id:
-          type:
-          - string
-          - 'null'
-        invoice_status_description:
-          type:
-          - string
-          - 'null'
-        invoice_date:
-          type:
-          - string
-          - 'null'
-          format: date-time
-        duedate:
-          type:
-          - string
-          - 'null'
-          format: date-time
-        discount_total:
-          type: number
-          format: double
-        sub_total:
-          type:
-          - number
-          - 'null'
-          format: double
-        tax_total:
-          type:
-          - number
-          - 'null'
-          format: double
-        total:
-          type:
-          - number
-          - 'null'
-          format: double
-        balance:
-          type:
-          - number
-          - 'null'
-          format: double
-        customer_po:
-          type:
-          - string
-          - 'null'
-        third_party_order_number:
-          type:
-          - string
-          - 'null'
-      additionalProperties: false
-    Data:
-      type: object
-      properties:
-        salestax_amount:
-          type:
-          - number
-          - 'null'
-          format: double
-      additionalProperties: false
-    ErpProcessOrderRequestDataObjectItemsData:
-      required:
-      - quantity
-      - sku
-      - total
-      type: object
-      properties:
-        id:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        sku:
-          minLength: 1
-          type: string
-        title:
-          type:
-          - string
-          - 'null'
-        item_price:
-          type:
-          - number
-          - 'null'
-          format: double
-        item_price_raw:
-          type:
-          - number
-          - 'null'
-          format: double
-        uom:
-          type:
-          - string
-          - 'null'
-        taxable:
-          type:
-          - boolean
           - 'null'
         quantity:
-          type: number
-          format: double
-        notes:
-          type:
-          - string
-          - 'null'
-        subtotal:
           type:
           - number
           - 'null'
           format: double
-        tax:
+        uom:
+          type:
+          - string
+          - 'null'
+        unit_price:
           type:
           - number
           - 'null'
           format: double
-        total:
-          type: number
-          format: double
-        seller_reference:
+        total_price:
           type:
-          - string
+          - number
           - 'null'
-      additionalProperties: false
-    ErpProductInventoryResponseData:
-      type: object
-      properties:
-        location_code:
-          type:
-          - string
-          - 'null'
-        qty:
-          type: number
           format: double
-        is_quantity_control:
-          type: boolean
       additionalProperties: false
-    ErpOrderHistoryRequest:
+    ErpInvoiceHistoryRequest:
       required:
       - customer_code
       type: object
@@ -1310,7 +841,7 @@ components:
           - string
           - 'null'
         filters:
-          $ref: '#/components/schemas/ErpProductOrderFilterRequest'
+          $ref: '#/components/schemas/ErpInvoiceFilterRequest'
         current_page:
           type:
           - string
@@ -1320,75 +851,50 @@ components:
           - string
           - 'null'
       additionalProperties: false
-    ErpInvoiceLookupByIdResponse:
+    ErpCustomerLookupResponse:
       type: object
       properties:
-        invoice_id:
-          type: number
-          format: double
         customer_code:
           type: integer
           format: int32
-        billing_details:
-          $ref: '#/components/schemas/InvoiceBillingDetails'
-        shipping_details:
-          $ref: '#/components/schemas/InvoiceShippingDetails'
-        order_id:
-          type: number
-          format: double
-        invoice_status_description:
+        name:
           type:
           - string
           - 'null'
-        order_date:
+        email:
           type:
           - string
           - 'null'
-          format: date-time
-        invoice_date:
+        phone:
           type:
           - string
           - 'null'
-          format: date-time
-        duedate:
+        is_enable:
           type:
-          - string
+          - boolean
           - 'null'
-        discount:
-          type: integer
-          format: int32
-        sub_total:
-          type: number
-          format: double
-        tax_total:
-          type: number
-          format: double
-        total:
-          type: number
-          format: double
-        balance:
-          type: number
-          format: double
-        customer_po:
+        is_prepay:
           type:
-          - string
+          - boolean
           - 'null'
-        third_party_order_number:
+        po_required:
           type:
-          - string
+          - boolean
           - 'null'
-        note:
-          type:
-          - string
-          - 'null'
-        invoice_lines:
+        shipping_address:
           type:
           - array
           - 'null'
           items:
-            $ref: '#/components/schemas/InvoiceLines'
+            $ref: '#/components/schemas/ShippingAddress'
+        billing_address:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/BillingAddress'
       additionalProperties: false
-    InvoiceShippingDetails:
+    InvoiceBillingDetails:
       type: object
       properties:
         customer_id:
@@ -1424,47 +930,167 @@ components:
           - string
           - 'null'
       additionalProperties: false
-    ErpProcessOrderRequestDataGateway:
+    ErpProductResponseData:
       type: object
       properties:
+        item_sku:
+          type:
+          - string
+          - 'null'
+        uom:
+          type:
+          - string
+          - 'null'
+        inventory:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ErpProductInventoryResponseData'
+      additionalProperties: false
+    ErpPurchasedProductFilterRequest:
+      type: object
+      properties:
+        start_date:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        end_date:
+          type:
+          - string
+          - 'null'
+          format: date-time
+      additionalProperties: false
+    InvoiceData:
+      type: object
+      properties:
+        customer_code:
+          type:
+          - string
+          - 'null'
+        file_base64:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    ShippingAddress:
+      type: object
+      properties:
+        address_code:
+          type: integer
+          format: int32
         name:
           type:
           - string
           - 'null'
-        customer:
+        address1:
           type:
           - string
           - 'null'
-        token:
+        address2:
           type:
           - string
           - 'null'
-        authorization:
+        address3:
           type:
           - string
           - 'null'
-        card_type:
+        city:
           type:
           - string
           - 'null'
-        card_last4:
+        state:
           type:
           - string
           - 'null'
-        card_exp_month:
+        postal_code:
           type:
-          - integer
+          - string
           - 'null'
-          format: int32
-        card_exp_year:
+        country:
           type:
-          - integer
+          - string
           - 'null'
-          format: int32
       additionalProperties: false
-    ErpPurchasedProductRequest:
+    ErpProcessOrderPaymentRequest:
+      required:
+      - data
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErpProcessOrderPaymentRequestData'
+      additionalProperties: false
+    ErpProcessOrderResponse:
+      type: object
+      properties:
+        status:
+          type:
+          - string
+          - 'null'
+        message:
+          type:
+          - string
+          - 'null'
+        object:
+          $ref: '#/components/schemas/ErpProcessOrderResponseObject'
+      additionalProperties: false
+    ErpProductPricingListResponse:
+      type: object
+      properties:
+        customer_code:
+          type:
+          - string
+          - 'null'
+        seller_reference:
+          type:
+          - string
+          - 'null'
+        data:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ErpProductPricingResponseData'
+      additionalProperties: false
+    ErpCheckoutTaxRequest:
+      type: object
+      properties:
+        request:
+          $ref: '#/components/schemas/Request'
+      additionalProperties: false
+    ErpProductOrderFilterRequest:
+      type: object
+      properties:
+        order_id:
+          type:
+          - string
+          - 'null'
+        customer_po:
+          type:
+          - string
+          - 'null'
+        third_party_order_number:
+          type:
+          - string
+          - 'null'
+        start_date:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        end_date:
+          type:
+          - string
+          - 'null'
+          format: date-time
+      additionalProperties: false
+    ErpInvoiceDocumentRequest:
       required:
       - customer_code
+      - document_id
       type: object
       properties:
         customer_code:
@@ -1474,86 +1100,121 @@ components:
           type:
           - string
           - 'null'
-        filters:
-          $ref: '#/components/schemas/ErpPurchasedProductFilterRequest'
-        current_page:
-          type:
-          - string
-          - 'null'
-        per_page:
+        document_id:
+          minLength: 1
+          type: string
+        document_type:
           type:
           - string
           - 'null'
       additionalProperties: false
-    ErpProcessOrderRequestDataObjectShippingData:
+    ErpInvoiceFilterRequest:
       type: object
       properties:
-        id:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        title:
+        invoice_id:
           type:
           - string
           - 'null'
-        label:
+        customer_po:
           type:
           - string
           - 'null'
-        supplier_id:
+        third_party_order_number:
           type:
-          - integer
+          - string
           - 'null'
-          format: int32
-        items_count:
+        start_date:
           type:
-          - integer
+          - string
           - 'null'
-          format: int32
+          format: date-time
+        end_date:
+          type:
+          - string
+          - 'null'
+          format: date-time
+      additionalProperties: false
+    ErpProductPricingRequestProduct:
+      required:
+      - item_sku
+      type: object
+      properties:
+        item_sku:
+          minLength: 1
+          type: string
+        uom:
+          type:
+          - string
+          - 'null'
+        quantity:
+          type:
+          - number
+          - 'null'
+          format: double
+      additionalProperties: false
+    ErpInvoiceLookupByIdRequest:
+      required:
+      - customer_code
+      - invoice_id
+      type: object
+      properties:
+        customer_code:
+          minLength: 1
+          type: string
+        seller_reference:
+          type:
+          - string
+          - 'null'
+        invoice_id:
+          minLength: 1
+          type: string
+      additionalProperties: false
+    TrackingInformation:
+      type: object
+      properties:
+        carrier_account_number:
+          type:
+          - string
+          - 'null'
+        delivery_charge:
+          type:
+          - string
+          - 'null'
+        delivery_date:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        shipping_date:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        status:
+          type:
+          - string
+          - 'null'
+        status_time:
+          type:
+          - string
+          - 'null'
+          format: date-time
         weight:
           type:
-          - number
+          - string
           - 'null'
-          format: double
-        subtotal:
-          type:
-          - number
-          - 'null'
-          format: double
-        tax:
-          type:
-          - number
-          - 'null'
-          format: double
-        total:
-          type:
-          - number
-          - 'null'
-          format: double
-      additionalProperties: false
-    ShippingMethods:
-      type: object
-      properties:
-        label:
+        note:
           type:
           - string
           - 'null'
-        fixed_rate:
-          type:
-          - number
-          - 'null'
-          format: double
-        total:
+        tracking_number:
           type:
           - string
           - 'null'
-      additionalProperties: false
-    ErpCheckoutTaxRequest:
-      type: object
-      properties:
-        request:
-          $ref: '#/components/schemas/Request'
+        tracking_url:
+          type:
+          - string
+          - 'null'
       additionalProperties: false
     ErpOrderHistoryByIdResponse:
       type: object
@@ -1637,64 +1298,274 @@ components:
           items:
             $ref: '#/components/schemas/TrackingInformation'
       additionalProperties: false
-    Lines:
+    ErpInvoiceHistoryResponse:
+      type: object
+      properties:
+        invoices:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ErpInvoiceModel'
+        total_invoices:
+          type: integer
+          format: int32
+      additionalProperties: false
+    ErpProductPricingResponseData:
       type: object
       properties:
         item_sku:
           type:
           - string
           - 'null'
-        line_amount:
+        uom:
           type:
-          - number
+          - string
           - 'null'
+        quantity:
+          type: number
           format: double
+        unit_price:
+          type: number
+          format: double
+      additionalProperties: false
+    Branch:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        code:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    ErpProductInventoryResponseData:
+      type: object
+      properties:
+        location_code:
+          type:
+          - string
+          - 'null'
+        qty:
+          type: number
+          format: double
+        is_quantity_control:
+          type: boolean
+      additionalProperties: false
+    ErpProductInventoryListResponse:
+      type: object
+      properties:
+        products:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ErpProductResponseData'
+      additionalProperties: false
+    ErpOrderHistoryByIdRequest:
+      required:
+      - customer_code
+      - order_id
+      type: object
+      properties:
+        customer_code:
+          minLength: 1
+          type: string
+        seller_reference:
+          type:
+          - string
+          - 'null'
+        order_id:
+          minLength: 1
+          type: string
+      additionalProperties: false
+    ErpProcessOrderRequestDataObjectBranch:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        code:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    InvoiceShippingDetails:
+      type: object
+      properties:
+        customer_id:
+          type:
+          - string
+          - 'null'
+        name:
+          type:
+          - string
+          - 'null'
+        address1:
+          type:
+          - string
+          - 'null'
+        address2:
+          type:
+          - string
+          - 'null'
+        address3:
+          type:
+          - string
+          - 'null'
+        city:
+          type:
+          - string
+          - 'null'
+        state:
+          type:
+          - string
+          - 'null'
+        postal_code:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    ErpProcessOrderResponseObject:
+      type: object
+      properties:
+        order_id:
+          type:
+          - string
+          - 'null'
+        ship_to_id:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    OrderShippingDetails:
+      type: object
+      properties:
+        customer_code:
+          type:
+          - string
+          - 'null'
+        name:
+          type:
+          - string
+          - 'null'
+        address1:
+          type:
+          - string
+          - 'null'
+        address2:
+          type:
+          - string
+          - 'null'
+        address3:
+          type:
+          - string
+          - 'null'
+        city:
+          type:
+          - string
+          - 'null'
+        state:
+          type:
+          - string
+          - 'null'
+        postal_code:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    OrderLine:
+      type: object
+      properties:
+        line_no:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        product_id:
+          type:
+          - string
+          - 'null'
+        sku:
+          type:
+          - string
+          - 'null'
+        description:
+          type:
+          - string
+          - 'null'
+        note:
+          type:
+          - string
+          - 'null'
+        uom:
+          type:
+          - string
+          - 'null'
         qty:
           type:
+          - string
+          - 'null'
+        qty_shipped:
+          type:
+          - string
+          - 'null'
+        unit_price:
+          type:
+          - number
+          - 'null'
+          format: double
+        tax:
+          type:
+          - number
+          - 'null'
+          format: double
+        total:
+          type:
           - number
           - 'null'
           format: double
       additionalProperties: false
-    ErpOrderHistoryResponse:
+    OrderBillingDetails:
       type: object
       properties:
-        orders:
+        customer_code:
           type:
-          - array
+          - string
           - 'null'
-          items:
-            $ref: '#/components/schemas/ErpOrderHistoryResponseData'
-        total_orders:
-          type: integer
-          format: int32
-      additionalProperties: false
-    ShippingMethodResponse:
-      type: object
-      properties:
-        shipping_methods:
+        name:
           type:
-          - array
+          - string
           - 'null'
-          items:
-            $ref: '#/components/schemas/ShippingMethods'
-      additionalProperties: false
-    ErpProcessOrderPaymentRequest:
-      required:
-      - data
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/ErpProcessOrderPaymentRequestData'
-      additionalProperties: false
-    ErpProcessOrderRequest:
-      required:
-      - data
-      type: object
-      properties:
-        data:
-          $ref: '#/components/schemas/ErpProcessOrderRequestData'
+        address1:
+          type:
+          - string
+          - 'null'
+        address2:
+          type:
+          - string
+          - 'null'
+        address3:
+          type:
+          - string
+          - 'null'
+        city:
+          type:
+          - string
+          - 'null'
+        state:
+          type:
+          - string
+          - 'null'
+        postal_code:
+          type:
+          - string
+          - 'null'
       additionalProperties: false
     ErpProcessOrderRequestDataObjectShipping:
       type: object
@@ -1731,13 +1602,236 @@ components:
           - 'null'
           format: double
       additionalProperties: false
-    ErpInvoiceDocumentResponse:
+    ErpPurchasedProductListResponse:
       type: object
       properties:
-        data:
-          $ref: '#/components/schemas/InvoiceData'
+        count:
+          type:
+          - string
+          - 'null'
+        customer_code:
+          type:
+          - string
+          - 'null'
+        seller_reference:
+          type:
+          - string
+          - 'null'
+        products:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ErpPurchasedProductResponseData'
       additionalProperties: false
-    ErpInvoiceHistoryRequest:
+    ErpCustomerBalanceResponse:
+      type: object
+      properties:
+        customer_code:
+          type:
+          - string
+          - 'null'
+        data:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ErpCustomerBalanceAccount'
+      additionalProperties: false
+    ErpProcessOrderRequestDataGateway:
+      type: object
+      properties:
+        name:
+          type:
+          - string
+          - 'null'
+        customer:
+          type:
+          - string
+          - 'null'
+        token:
+          type:
+          - string
+          - 'null'
+        authorization:
+          type:
+          - string
+          - 'null'
+        card_type:
+          type:
+          - string
+          - 'null'
+        card_last4:
+          type:
+          - string
+          - 'null'
+        card_exp_month:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        card_exp_year:
+          type:
+          - integer
+          - 'null'
+          format: int32
+      additionalProperties: false
+    ErpProductPricingRequest:
+      required:
+      - customer_code
+      - products
+      type: object
+      properties:
+        customer_code:
+          minLength: 1
+          type: string
+        seller_reference:
+          type:
+          - string
+          - 'null'
+        branch:
+          $ref: '#/components/schemas/Branch'
+        products:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErpProductPricingRequestProduct'
+      additionalProperties: false
+    ErpInvoiceModel:
+      type: object
+      properties:
+        invoice_id:
+          type:
+          - string
+          - 'null'
+        customer_code:
+          type:
+          - string
+          - 'null'
+        billing_details:
+          $ref: '#/components/schemas/InvoiceBillingDetails'
+        shipping_details:
+          $ref: '#/components/schemas/InvoiceShippingDetails'
+        order_id:
+          type:
+          - string
+          - 'null'
+        invoice_status_description:
+          type:
+          - string
+          - 'null'
+        invoice_date:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        duedate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        discount_total:
+          type: number
+          format: double
+        sub_total:
+          type:
+          - number
+          - 'null'
+          format: double
+        tax_total:
+          type:
+          - number
+          - 'null'
+          format: double
+        total:
+          type:
+          - number
+          - 'null'
+          format: double
+        balance:
+          type:
+          - number
+          - 'null'
+          format: double
+        customer_po:
+          type:
+          - string
+          - 'null'
+        third_party_order_number:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    ErpOrderHistoryResponse:
+      type: object
+      properties:
+        orders:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ErpOrderHistoryResponseData'
+        total_orders:
+          type: integer
+          format: int32
+      additionalProperties: false
+    ErpProductInventoryRequest:
+      required:
+      - products
+      type: object
+      properties:
+        customer_code:
+          type:
+          - string
+          - 'null'
+        products:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErpProductInventory'
+      additionalProperties: false
+    ErpProcessOrderRequestData:
+      required:
+      - object
+      type: object
+      properties:
+        object:
+          $ref: '#/components/schemas/ErpProcessOrderRequestDataObject'
+      additionalProperties: false
+    ErpOrderPaymentCreateResponse:
+      type: object
+      properties:
+        customer_code:
+          type:
+          - string
+          - 'null'
+        seller_reference:
+          type:
+          - string
+          - 'null'
+        payments_applied:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ErpOrderPaymentAppliedPayment'
+      additionalProperties: false
+    ShippingMethods:
+      type: object
+      properties:
+        label:
+          type:
+          - string
+          - 'null'
+        fixed_rate:
+          type:
+          - number
+          - 'null'
+          format: double
+        total:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    ErpOrderHistoryRequest:
       required:
       - customer_code
       type: object
@@ -1750,7 +1844,7 @@ components:
           - string
           - 'null'
         filters:
-          $ref: '#/components/schemas/ErpInvoiceFilterRequest'
+          $ref: '#/components/schemas/ErpProductOrderFilterRequest'
         current_page:
           type:
           - string
@@ -1759,23 +1853,6 @@ components:
           type:
           - string
           - 'null'
-      additionalProperties: false
-    ErpOrderHistoryByIdRequest:
-      required:
-      - customer_code
-      - order_id
-      type: object
-      properties:
-        customer_code:
-          minLength: 1
-          type: string
-        seller_reference:
-          type:
-          - string
-          - 'null'
-        order_id:
-          minLength: 1
-          type: string
       additionalProperties: false
     ErpProcessOrderRequestDataObject:
       required:
@@ -1830,180 +1907,323 @@ components:
         items:
           $ref: '#/components/schemas/ErpProcessOrderRequestDataObjectItems'
       additionalProperties: false
-    OrderShippingDetails:
+    ErpProductInventory:
       type: object
       properties:
-        customer_code:
-          type:
-          - string
-          - 'null'
-        name:
-          type:
-          - string
-          - 'null'
-        address1:
-          type:
-          - string
-          - 'null'
-        address2:
-          type:
-          - string
-          - 'null'
-        address3:
-          type:
-          - string
-          - 'null'
-        city:
-          type:
-          - string
-          - 'null'
-        state:
-          type:
-          - string
-          - 'null'
-        postal_code:
+        item_sku:
           type:
           - string
           - 'null'
       additionalProperties: false
-    ErpCustomerLookupResponse:
+    ErpProcessOrderPaymentRequestData:
       type: object
       properties:
-        customer_code:
-          type: integer
+        id:
+          type:
+          - integer
+          - 'null'
           format: int32
-        name:
+        method_id:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        title:
           type:
           - string
           - 'null'
-        email:
+        gateway:
+          $ref: '#/components/schemas/ErpProcessOrderRequestDataGateway'
+        surcharge:
+          type:
+          - number
+          - 'null'
+          format: double
+        subtotal:
+          type:
+          - number
+          - 'null'
+          format: double
+        total:
+          type:
+          - number
+          - 'null'
+          format: double
+        capture:
+          type:
+          - boolean
+          - 'null'
+        status_id:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        status:
           type:
           - string
           - 'null'
-        phone:
-          type:
-          - string
-          - 'null'
-        is_enable:
-          type:
-          - boolean
-          - 'null'
-        is_prepay:
-          type:
-          - boolean
-          - 'null'
-        po_required:
-          type:
-          - boolean
-          - 'null'
-        shipping_address:
+      additionalProperties: false
+    ShippingMethodResponse:
+      type: object
+      properties:
+        shipping_methods:
           type:
           - array
           - 'null'
           items:
-            $ref: '#/components/schemas/ShippingAddress'
-        billing_address:
+            $ref: '#/components/schemas/ShippingMethods'
+      additionalProperties: false
+    Request:
+      type: object
+      properties:
+        header:
+          $ref: '#/components/schemas/Header'
+        branch:
+          $ref: '#/components/schemas/Branch'
+        lines:
           type:
           - array
           - 'null'
           items:
-            $ref: '#/components/schemas/BillingAddress'
+            $ref: '#/components/schemas/Lines'
       additionalProperties: false
-    ErpInvoiceHistoryResponse:
+    ErpInvoiceDocumentResponse:
       type: object
       properties:
-        invoices:
+        data:
+          $ref: '#/components/schemas/InvoiceData'
+      additionalProperties: false
+    ErpProcessOrderRequestDataObjectShippingData:
+      type: object
+      properties:
+        id:
           type:
-          - array
+          - integer
           - 'null'
-          items:
-            $ref: '#/components/schemas/ErpInvoiceModel'
-        total_invoices:
-          type: integer
           format: int32
-      additionalProperties: false
-    ShippingAddress:
-      type: object
-      properties:
-        address_code:
-          type: integer
+        title:
+          type:
+          - string
+          - 'null'
+        label:
+          type:
+          - string
+          - 'null'
+        supplier_id:
+          type:
+          - integer
+          - 'null'
           format: int32
-        name:
+        items_count:
           type:
-          - string
+          - integer
           - 'null'
-        address1:
+          format: int32
+        weight:
           type:
-          - string
+          - number
           - 'null'
-        address2:
+          format: double
+        subtotal:
           type:
-          - string
+          - number
           - 'null'
-        address3:
+          format: double
+        tax:
           type:
-          - string
+          - number
           - 'null'
-        city:
+          format: double
+        total:
           type:
-          - string
+          - number
           - 'null'
-        state:
-          type:
-          - string
-          - 'null'
-        postal_code:
-          type:
-          - string
-          - 'null'
-        country:
-          type:
-          - string
-          - 'null'
+          format: double
       additionalProperties: false
-    InvoiceBillingDetails:
-      type: object
-      properties:
-        customer_id:
-          type:
-          - string
-          - 'null'
-        name:
-          type:
-          - string
-          - 'null'
-        address1:
-          type:
-          - string
-          - 'null'
-        address2:
-          type:
-          - string
-          - 'null'
-        address3:
-          type:
-          - string
-          - 'null'
-        city:
-          type:
-          - string
-          - 'null'
-        state:
-          type:
-          - string
-          - 'null'
-        postal_code:
-          type:
-          - string
-          - 'null'
-      additionalProperties: false
-    ErpProcessOrderRequestData:
+    ErpProcessOrderRequestDataObjectCustomer:
       required:
-      - object
+      - account_number
+      - customer_seller_reference
       type: object
       properties:
-        object:
-          $ref: '#/components/schemas/ErpProcessOrderRequestDataObject'
+        id:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        customer_seller_reference:
+          minLength: 1
+          type: string
+        name:
+          type:
+          - string
+          - 'null'
+        account_number:
+          minLength: 1
+          type: string
+      additionalProperties: false
+    ErpCustomerLookupRequest:
+      required:
+      - customer_code
+      type: object
+      properties:
+        customer_code:
+          minLength: 1
+          type: string
+        seller_reference:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    ErpCheckoutTaxResponse:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/Data'
+      additionalProperties: false
+    ErpProcessCustomerOrderPaymentRequest:
+      required:
+      - customer_code
+      - data
+      - orders
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErpProcessOrderPaymentRequestData'
+        customer_code:
+          minLength: 1
+          type: string
+        seller_reference:
+          type:
+          - string
+          - 'null'
+        orders:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErpProcessOrderPaymentRequestOrders'
+      additionalProperties: false
+    ErpOrderPaymentAppliedPayment:
+      type: object
+      properties:
+        order_id:
+          type:
+          - string
+          - 'null'
+        total:
+          type:
+          - number
+          - 'null'
+          format: double
+        is_auth_only:
+          type:
+          - boolean
+          - 'null'
+      additionalProperties: false
+    Data:
+      type: object
+      properties:
+        salestax_amount:
+          type:
+          - number
+          - 'null'
+          format: double
+      additionalProperties: false
+    ErpPurchasedProductResponseData:
+      type: object
+      properties:
+        sku:
+          type:
+          - string
+          - 'null'
+        last_ordered_date:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        total_qty_ordered:
+          type:
+          - number
+          - 'null'
+          format: double
+        times_ordered:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        uom:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    ErpCustomerBalanceAccount:
+      type: object
+      properties:
+        seller_reference:
+          type:
+          - string
+          - 'null'
+        balance:
+          type:
+          - number
+          - 'null'
+          format: double
+        total_due:
+          type:
+          - number
+          - 'null'
+          format: double
+        last_charge_date:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        last_sale_date:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        last_payment_date:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        last_payment_amount:
+          type:
+          - number
+          - 'null'
+          format: double
+        due_30_days:
+          type:
+          - number
+          - 'null'
+          format: double
+        due_60_days:
+          type:
+          - number
+          - 'null'
+          format: double
+        due_90_days:
+          type:
+          - number
+          - 'null'
+          format: double
+        due_over_90_days:
+          type:
+          - number
+          - 'null'
+          format: double
+        open_credits:
+          type:
+          - number
+          - 'null'
+          format: double
+        credit_available:
+          type:
+          - number
+          - 'null'
+          format: double
       additionalProperties: false
     ErpShippingMethodRequest:
       required:
@@ -2054,258 +2274,38 @@ components:
           items:
             $ref: '#/components/schemas/Items'
       additionalProperties: false
-    ErpProductInventoryListResponse:
-      type: object
-      properties:
-        products:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/ErpProductResponseData'
-      additionalProperties: false
-    ErpCheckoutTaxResponse:
-      type: object
-      properties:
-        data:
-          $ref: '#/components/schemas/Data'
-      additionalProperties: false
-    Header:
+    ErpProcessOrderPaymentRequestOrders:
       required:
-      - customer_code
-      type: object
-      properties:
-        customer_code:
-          minLength: 1
-          type: string
-        seller_reference:
-          type:
-          - string
-          - 'null'
-        shiptopostcode:
-          type:
-          - string
-          - 'null'
-      additionalProperties: false
-    ErpInvoiceFilterRequest:
-      type: object
-      properties:
-        invoice_id:
-          type:
-          - string
-          - 'null'
-        customer_po:
-          type:
-          - string
-          - 'null'
-        third_party_order_number:
-          type:
-          - string
-          - 'null'
-        start_date:
-          type:
-          - string
-          - 'null'
-          format: date-time
-        end_date:
-          type:
-          - string
-          - 'null'
-          format: date-time
-      additionalProperties: false
-    ErpPurchasedProductListResponse:
-      type: object
-      properties:
-        count:
-          type:
-          - string
-          - 'null'
-        customer_code:
-          type:
-          - string
-          - 'null'
-        seller_reference:
-          type:
-          - string
-          - 'null'
-        products:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/ErpPurchasedProductResponseData'
-      additionalProperties: false
-    Items:
-      type: object
-      properties:
-        sku:
-          type:
-          - string
-          - 'null'
-        quantity:
-          type:
-          - number
-          - 'null'
-          format: double
-        uom:
-          type:
-          - string
-          - 'null'
-        unit_price:
-          type:
-          - number
-          - 'null'
-          format: double
-        total_price:
-          type:
-          - number
-          - 'null'
-          format: double
-      additionalProperties: false
-    BillingAddress:
-      type: object
-      properties:
-        address_code:
-          type: integer
-          format: int32
-        name:
-          type:
-          - string
-          - 'null'
-        address1:
-          type:
-          - string
-          - 'null'
-        address2:
-          type:
-          - string
-          - 'null'
-        address3:
-          type:
-          - string
-          - 'null'
-        city:
-          type:
-          - string
-          - 'null'
-        state:
-          type:
-          - string
-          - 'null'
-        postal_code:
-          type:
-          - string
-          - 'null'
-        country:
-          type:
-          - string
-          - 'null'
-      additionalProperties: false
-    ErpProcessOrderRequestDataObjectBranch:
-      type: object
-      properties:
-        id:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        code:
-          type:
-          - string
-          - 'null'
-      additionalProperties: false
-    ErpOrderPaymentAppliedPayment:
+      - order_id
+      - total
       type: object
       properties:
         order_id:
+          minLength: 1
+          type: string
+          description: The ID of the order in the ERP system.
+        total:
+          type: number
+          description: The total amount of the payment that should be applied to this order.
+          format: double
+      additionalProperties: false
+    Lines:
+      type: object
+      properties:
+        item_sku:
           type:
           - string
           - 'null'
-        total:
+        line_amount:
           type:
           - number
           - 'null'
           format: double
-        is_auth_only:
-          type:
-          - boolean
-          - 'null'
-      additionalProperties: false
-    OrderBillingDetails:
-      type: object
-      properties:
-        customer_code:
-          type:
-          - string
-          - 'null'
-        name:
-          type:
-          - string
-          - 'null'
-        address1:
-          type:
-          - string
-          - 'null'
-        address2:
-          type:
-          - string
-          - 'null'
-        address3:
-          type:
-          - string
-          - 'null'
-        city:
-          type:
-          - string
-          - 'null'
-        state:
-          type:
-          - string
-          - 'null'
-        postal_code:
-          type:
-          - string
-          - 'null'
-      additionalProperties: false
-    InvoiceLines:
-      type: object
-      properties:
-        item_id:
-          type: integer
-          format: int32
-        sku:
-          type:
-          - string
-          - 'null'
         qty:
-          type: number
+          type:
+          - number
+          - 'null'
           format: double
-        qty_shipped:
-          type:
-          - string
-          - 'null'
-        description:
-          type:
-          - string
-          - 'null'
-        uom:
-          type:
-          - string
-          - 'null'
-        unit_price:
-          type: number
-          format: double
-        tax:
-          type:
-          - string
-          - 'null'
-        price:
-          type: number
-          format: double
-        note:
-          type:
-          - string
-          - 'null'
       additionalProperties: false
   securitySchemes:
     Bearer:

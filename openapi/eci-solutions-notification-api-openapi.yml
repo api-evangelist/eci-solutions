@@ -464,6 +464,52 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
+    AppDeliveryPropertiesResponse:
+      type: object
+      properties:
+        isRead:
+          type: boolean
+          description: Property indicating whether the message has been read.
+      additionalProperties: false
+      description: Response object for application delivery properties
+    CreateNotificationResponse:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: The created notification ID
+        status:
+          type:
+          - string
+          - 'null'
+          description: Overall status of the notification
+        deliveryStatus:
+          type:
+          - object
+          - 'null'
+          additionalProperties:
+            $ref: '#/components/schemas/DeliveryStatusInfo'
+          description: Delivery status information per user
+      additionalProperties: false
+      description: Response model for creating a notification
+    DeliveryStatusInfo:
+      type: object
+      properties:
+        email:
+          $ref: '#/components/schemas/EmailDeliveryInfo'
+        app:
+          $ref: '#/components/schemas/AppDeliveryInfo'
+      additionalProperties: false
+      description: Delivery status information for a specific user
+    ImportanceLevel:
+      enum:
+      - Low
+      - Medium
+      - High
+      type: string
+      description: Importance level of the notification
     MessagesResponse:
       type: object
       properties:
@@ -516,15 +562,87 @@ components:
           $ref: '#/components/schemas/AppDeliveryPropertiesResponse'
       additionalProperties: false
       description: Response for message details
-    DeliveryStatusInfo:
+    MarkMessageReadRequest:
       type: object
       properties:
-        email:
-          $ref: '#/components/schemas/EmailDeliveryInfo'
-        app:
-          $ref: '#/components/schemas/AppDeliveryInfo'
+        isRead:
+          type:
+          - boolean
+          - 'null'
+          description: Indicates whether the message should be marked as read (true) or unread (false).
       additionalProperties: false
-      description: Delivery status information for a specific user
+      description: Request model for marking a message as read or unread
+    CreateNotificationRequest:
+      required:
+      - applicationId
+      - bodyTemplate
+      - recipientUserIds
+      - subjectTemplate
+      type: object
+      properties:
+        applicationId:
+          type: integer
+          description: The Nexus product ID (required)
+          format: int32
+        applicationDeploymentId:
+          type:
+          - integer
+          - 'null'
+          description: The Nexus application deployment ID (optional)
+          format: int32
+        applicationComponent:
+          maxLength: 100
+          minLength: 0
+          type:
+          - string
+          - 'null'
+          description: This is generic name of a system component
+        subjectTemplate:
+          minLength: 1
+          type: string
+          description: 'Template for the notification subject line with optional placeholders.
+
+            Supports {{fieldName}} syntax for dynamic values (e.g., "Hello {{givenName}}").
+
+            Available placeholders: id, emailAddress, givenName, familyName, displayName.'
+          example: Welcome back, {{givenName}}!
+        bodyTemplate:
+          minLength: 1
+          type: string
+          description: 'Template for the notification message body with optional placeholders.
+
+            Supports {{fieldName}} syntax for dynamic values.
+
+            Available placeholders: id, emailAddress, givenName, familyName, displayName.
+
+            Maximum length: 32,768 bytes (32KB).'
+          example: Hello {{displayName}}, your report is ready for review.
+        bodyFormat:
+          $ref: '#/components/schemas/Format'
+        importance:
+          $ref: '#/components/schemas/ImportanceLevel'
+        recipientUserIds:
+          type: array
+          items:
+            type: string
+          description: List of Nexus user IDs to receive the notification (required)
+      additionalProperties: false
+      description: Request model for creating a notification.
+    AppDeliveryInfo:
+      type: object
+      properties:
+        status:
+          type:
+          - string
+          - 'null'
+          description: Delivery status
+        appDeliveryId:
+          type:
+          - string
+          - 'null'
+          description: App delivery ID
+      additionalProperties: false
+      description: App delivery details
     EmailStatus:
       enum:
       - None
@@ -535,6 +653,31 @@ components:
       - Delayed
       type: string
       description: Status of the email
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+        title:
+          type:
+          - string
+          - 'null'
+        status:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        detail:
+          type:
+          - string
+          - 'null'
+        instance:
+          type:
+          - string
+          - 'null'
+      additionalProperties: {}
     EmailDeliveryInfo:
       type: object
       properties:
@@ -555,21 +698,6 @@ components:
           description: Additional details
       additionalProperties: false
       description: Email delivery status
-    AppDeliveryInfo:
-      type: object
-      properties:
-        status:
-          type:
-          - string
-          - 'null'
-          description: Delivery status
-        appDeliveryId:
-          type:
-          - string
-          - 'null'
-          description: App delivery ID
-      additionalProperties: false
-      description: App delivery details
     MessagesResponseListResponse:
       type: object
       properties:
@@ -582,44 +710,6 @@ components:
           description: The collection of items in the response
       additionalProperties: false
       description: Object representing a list response
-    Format:
-      enum:
-      - Plain
-      - HTML
-      type: string
-      description: Format of the content
-    CreateNotificationResponse:
-      type: object
-      properties:
-        id:
-          type:
-          - string
-          - 'null'
-          description: The created notification ID
-        status:
-          type:
-          - string
-          - 'null'
-          description: Overall status of the notification
-        deliveryStatus:
-          type:
-          - object
-          - 'null'
-          additionalProperties:
-            $ref: '#/components/schemas/DeliveryStatusInfo'
-          description: Delivery status information per user
-      additionalProperties: false
-      description: Response model for creating a notification
-    MarkMessageReadRequest:
-      type: object
-      properties:
-        isRead:
-          type:
-          - boolean
-          - 'null'
-          description: Indicates whether the message should be marked as read (true) or unread (false).
-      additionalProperties: false
-      description: Request model for marking a message as read or unread
     EmailDeliveryPropertiesResponse:
       type: object
       properties:
@@ -699,102 +789,12 @@ components:
             items:
               type: string
       additionalProperties: {}
-    AppDeliveryPropertiesResponse:
-      type: object
-      properties:
-        isRead:
-          type: boolean
-          description: Property indicating whether the message has been read.
-      additionalProperties: false
-      description: Response object for application delivery properties
-    CreateNotificationRequest:
-      required:
-      - applicationId
-      - bodyTemplate
-      - recipientUserIds
-      - subjectTemplate
-      type: object
-      properties:
-        applicationId:
-          type: integer
-          description: The Nexus product ID (required)
-          format: int32
-        applicationDeploymentId:
-          type:
-          - integer
-          - 'null'
-          description: The Nexus application deployment ID (optional)
-          format: int32
-        applicationComponent:
-          maxLength: 100
-          minLength: 0
-          type:
-          - string
-          - 'null'
-          description: This is generic name of a system component
-        subjectTemplate:
-          minLength: 1
-          type: string
-          description: 'Template for the notification subject line with optional placeholders.
-
-            Supports {{fieldName}} syntax for dynamic values (e.g., "Hello {{givenName}}").
-
-            Available placeholders: id, emailAddress, givenName, familyName, displayName.'
-          example: Welcome back, {{givenName}}!
-        bodyTemplate:
-          minLength: 1
-          type: string
-          description: 'Template for the notification message body with optional placeholders.
-
-            Supports {{fieldName}} syntax for dynamic values.
-
-            Available placeholders: id, emailAddress, givenName, familyName, displayName.
-
-            Maximum length: 32,768 bytes (32KB).'
-          example: Hello {{displayName}}, your report is ready for review.
-        bodyFormat:
-          $ref: '#/components/schemas/Format'
-        importance:
-          $ref: '#/components/schemas/ImportanceLevel'
-        recipientUserIds:
-          type: array
-          items:
-            type: string
-          description: List of Nexus user IDs to receive the notification (required)
-      additionalProperties: false
-      description: Request model for creating a notification.
-    ProblemDetails:
-      type: object
-      properties:
-        type:
-          type:
-          - string
-          - 'null'
-        title:
-          type:
-          - string
-          - 'null'
-        status:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        detail:
-          type:
-          - string
-          - 'null'
-        instance:
-          type:
-          - string
-          - 'null'
-      additionalProperties: {}
-    ImportanceLevel:
+    Format:
       enum:
-      - Low
-      - Medium
-      - High
+      - Plain
+      - HTML
       type: string
-      description: Importance level of the notification
+      description: Format of the content
   securitySchemes:
     Auth0:
       type: http

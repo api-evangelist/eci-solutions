@@ -271,6 +271,39 @@ paths:
           description: Server Error
 components:
   schemas:
+    DeviceActivatedResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The device unique ID
+          format: uuid
+        isActivated:
+          type: boolean
+          description: Indicates if the device is activated
+        properties:
+          type:
+          - object
+          - 'null'
+          additionalProperties:
+            type: string
+          description: Additional information provided by the activator
+        credential:
+          allOf:
+          - $ref: '#/components/schemas/DeviceCredentialModel'
+          description: 'If the device activation requested an access token and refresh token
+
+            for the device, this property will contain the token information'
+      additionalProperties: false
+    DeviceActivateRequestModel:
+      required:
+      - code
+      type: object
+      properties:
+        code:
+          minLength: 1
+          type: string
+      additionalProperties: false
     DeviceCredentialType:
       enum:
       - None
@@ -278,6 +311,46 @@ components:
       - Secret
       - TokenAndSecret
       type: string
+    DeviceCreateModel:
+      required:
+      - clientId
+      type: object
+      properties:
+        clientId:
+          type: string
+          description: The client ID of the application registered to create devices.
+          format: uuid
+        credentialType:
+          allOf:
+          - $ref: '#/components/schemas/DeviceCredentialType'
+          description: 'The requested type of credential to obtain along with the device
+
+            registration. This is not required and will default to None.'
+        description:
+          maxLength: 100
+          type:
+          - string
+          - 'null'
+          description: 'A description of the device to be displayed to the
+
+            user who will authorize activation of the device.'
+        origin:
+          maxLength: 250
+          type:
+          - string
+          - 'null'
+          description: 'The domain origin, if applicable, of the device.
+
+            Will be displayed to the user who will authorize activation of the device.'
+        deviceType:
+          maxLength: 50
+          type:
+          - string
+          - 'null'
+          description: 'An application specific identifier for the type of device.
+
+            Will be displayed to the user who will authorize activation of the device.'
+      additionalProperties: false
     DeviceCredentialModel:
       type: object
       properties:
@@ -328,15 +401,6 @@ components:
           - string
           - 'null'
       additionalProperties: false
-    DeviceActivateRequestModel:
-      required:
-      - code
-      type: object
-      properties:
-        code:
-          minLength: 1
-          type: string
-      additionalProperties: false
     OAuthAccessTokenResponse:
       type: object
       properties:
@@ -355,30 +419,6 @@ components:
           type:
           - string
           - 'null'
-      additionalProperties: false
-    DeviceActivatedResponse:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The device unique ID
-          format: uuid
-        isActivated:
-          type: boolean
-          description: Indicates if the device is activated
-        properties:
-          type:
-          - object
-          - 'null'
-          additionalProperties:
-            type: string
-          description: Additional information provided by the activator
-        credential:
-          allOf:
-          - $ref: '#/components/schemas/DeviceCredentialModel'
-          description: 'If the device activation requested an access token and refresh token
-
-            for the device, this property will contain the token information'
       additionalProperties: false
     ProblemDetails:
       type: object
@@ -405,46 +445,6 @@ components:
           - string
           - 'null'
       additionalProperties: {}
-    DeviceCreateModel:
-      required:
-      - clientId
-      type: object
-      properties:
-        clientId:
-          type: string
-          description: The client ID of the application registered to create devices.
-          format: uuid
-        credentialType:
-          allOf:
-          - $ref: '#/components/schemas/DeviceCredentialType'
-          description: 'The requested type of credential to obtain along with the device
-
-            registration. This is not required and will default to None.'
-        description:
-          maxLength: 100
-          type:
-          - string
-          - 'null'
-          description: 'A description of the device to be displayed to the
-
-            user who will authorize activation of the device.'
-        origin:
-          maxLength: 250
-          type:
-          - string
-          - 'null'
-          description: 'The domain origin, if applicable, of the device.
-
-            Will be displayed to the user who will authorize activation of the device.'
-        deviceType:
-          maxLength: 50
-          type:
-          - string
-          - 'null'
-          description: 'An application specific identifier for the type of device.
-
-            Will be displayed to the user who will authorize activation of the device.'
-      additionalProperties: false
     DeviceCreateResponse:
       type: object
       properties:

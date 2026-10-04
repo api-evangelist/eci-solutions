@@ -193,26 +193,6 @@ paths:
           $ref: '#/components/responses/InternalServerError'
 components:
   responses:
-    NotFound:
-      description: The specified resource was not found
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/StandardError'
-    Forbidden:
-      description: The provided authentication credentials does not have sufficient privileges to access this resource
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/StandardError'
-    InternalServerError:
-      description: Receiving a 5xx response indicates an error on Lasso's end. Please contact us to report the problem
-    Unauthorized:
-      description: The request has not been fulfilled because it lacks valid authentication credentials
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/StandardError'
     BadRequest:
       description: 'The request could not be processed due to invalid input:
 
@@ -234,19 +214,27 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/StandardError'
+    InternalServerError:
+      description: Receiving a 5xx response indicates an error on Lasso's end. Please contact us to report the problem
+    Unauthorized:
+      description: The request has not been fulfilled because it lacks valid authentication credentials
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/StandardError'
+    Forbidden:
+      description: The provided authentication credentials does not have sufficient privileges to access this resource
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/StandardError'
+    NotFound:
+      description: The specified resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/StandardError'
   schemas:
-    AppointmentSmsReminderRecipient:
-      type: object
-      title: AppointmentReminderRecipient
-      properties:
-        phone:
-          type: string
-          minLength: 1
-          maxLength: 20
-          example: 123-456-7890
-        message:
-          type: string
-          example: 'Del Boca Vista: your appt is Today at 9:45 am with Andrew. Call 123.456.7890 to contact us. Reply STOP to opt out'
     AppointmentCreate:
       type: object
       title: Appointment Create
@@ -299,6 +287,136 @@ components:
             $ref: '#/components/schemas/AppointmentSmsReminderRecipient'
         createdBy:
           $ref: '#/components/schemas/Creator'
+    AppointmentUpdate:
+      type: object
+      title: Appointment Update
+      required:
+      - name
+      - startTime
+      - endTime
+      properties:
+        name:
+          type: string
+          example: Design Center Selections
+        description:
+          type: string
+          example: Come on in and make it yours
+        details:
+          type: string
+          example: Appointment to make selection
+        startTime:
+          type: string
+          format: datetime
+          description: When the appointment is scheduled to start. Datetimes are in ISO-8601 UTC format.
+          example: '2019-01-31T18:30:00Z'
+        endTime:
+          type: string
+          format: datetime
+          description: When the appointment is scheduled to end. Datetimes are in ISO-8601 UTC format.
+          example: '2019-01-31T19:30:00Z'
+        location:
+          type: string
+          example: 4601 US-377, Brownwood, TX 76801, United States
+        isPublic:
+          type: boolean
+          example: false
+        status:
+          type: string
+          enum:
+          - Open
+          - Tentative
+          - Confirmed
+          - Cancelled
+          - Completed
+          - No Show
+        scheduledSmsReminders:
+          type: array
+          items:
+            $ref: '#/components/schemas/AppointmentSmsReminderRecipient'
+        createdBy:
+          $ref: '#/components/schemas/Creator'
+    Creator:
+      type: object
+      title: Creator
+      description: 'Determines the user that created this entity based on an ordered set of Heuristics:
+
+        - if creator is null or empty, then default to user: Lasso Autobot
+
+        - if userId is provided, then lookup user by id, respond with 400 level error if specified user does not exist
+
+        - if user first and last name are provided, then lookup user by name, otherwise default to user: Lasso Autobot
+
+        '
+      properties:
+        firstName:
+          type: string
+          example: John
+        lastName:
+          type: string
+          example: Smith
+        userId:
+          type: string
+          example: 123
+    AppointmentSmsReminderRecipient:
+      type: object
+      title: AppointmentReminderRecipient
+      properties:
+        phone:
+          type: string
+          minLength: 1
+          maxLength: 20
+          example: 123-456-7890
+        message:
+          type: string
+          example: 'Del Boca Vista: your appt is Today at 9:45 am with Andrew. Call 123.456.7890 to contact us. Reply STOP to opt out'
+    AppointmentEmailConfirmationRecipient:
+      type: object
+      title: Appointment Confirmation Recipient
+      required:
+      - email
+      properties:
+        firstName:
+          type: string
+          example: John
+        lastName:
+          type: string
+          example: Smith
+        email:
+          type: string
+          minLength: 1
+          maxLength: 50
+          example: test_registrant@lassocrm.com
+    AppointmentLinks:
+      type: object
+      properties:
+        self:
+          type: string
+          description: Link to the appointment
+          example: /registrants/456/appointments/123
+        update:
+          type: string
+          description: Link to update the appointment
+          example: /registrants/456/appointments/123
+        delete:
+          type: string
+          description: Link to delete the appointment
+          example: /registrants/456/appointments/123
+    StandardError:
+      type: object
+      title: Standard Error
+      description: A standard error response format.
+      properties:
+        errorCode:
+          type: integer
+          example: 4xx
+        error:
+          type: string
+          description: A summary of the error
+          example: A summary of the error
+        errorMessage:
+          type: string
+          description: Details of the error
+          example: Details of the error
     AppointmentRead:
       title: Appointment Read
       type: object
@@ -348,124 +466,6 @@ components:
           $ref: '#/components/schemas/Creator'
         _links:
           $ref: '#/components/schemas/AppointmentLinks'
-    AppointmentLinks:
-      type: object
-      properties:
-        self:
-          type: string
-          description: Link to the appointment
-          example: /registrants/456/appointments/123
-        update:
-          type: string
-          description: Link to update the appointment
-          example: /registrants/456/appointments/123
-        delete:
-          type: string
-          description: Link to delete the appointment
-          example: /registrants/456/appointments/123
-    StandardError:
-      type: object
-      title: Standard Error
-      description: A standard error response format.
-      properties:
-        errorCode:
-          type: integer
-          example: 4xx
-        error:
-          type: string
-          description: A summary of the error
-          example: A summary of the error
-        errorMessage:
-          type: string
-          description: Details of the error
-          example: Details of the error
-    Creator:
-      type: object
-      title: Creator
-      description: 'Determines the user that created this entity based on an ordered set of Heuristics:
-
-        - if creator is null or empty, then default to user: Lasso Autobot
-
-        - if userId is provided, then lookup user by id, respond with 400 level error if specified user does not exist
-
-        - if user first and last name are provided, then lookup user by name, otherwise default to user: Lasso Autobot
-
-        '
-      properties:
-        firstName:
-          type: string
-          example: John
-        lastName:
-          type: string
-          example: Smith
-        userId:
-          type: string
-          example: 123
-    AppointmentUpdate:
-      type: object
-      title: Appointment Update
-      required:
-      - name
-      - startTime
-      - endTime
-      properties:
-        name:
-          type: string
-          example: Design Center Selections
-        description:
-          type: string
-          example: Come on in and make it yours
-        details:
-          type: string
-          example: Appointment to make selection
-        startTime:
-          type: string
-          format: datetime
-          description: When the appointment is scheduled to start. Datetimes are in ISO-8601 UTC format.
-          example: '2019-01-31T18:30:00Z'
-        endTime:
-          type: string
-          format: datetime
-          description: When the appointment is scheduled to end. Datetimes are in ISO-8601 UTC format.
-          example: '2019-01-31T19:30:00Z'
-        location:
-          type: string
-          example: 4601 US-377, Brownwood, TX 76801, United States
-        isPublic:
-          type: boolean
-          example: false
-        status:
-          type: string
-          enum:
-          - Open
-          - Tentative
-          - Confirmed
-          - Cancelled
-          - Completed
-          - No Show
-        scheduledSmsReminders:
-          type: array
-          items:
-            $ref: '#/components/schemas/AppointmentSmsReminderRecipient'
-        createdBy:
-          $ref: '#/components/schemas/Creator'
-    AppointmentEmailConfirmationRecipient:
-      type: object
-      title: Appointment Confirmation Recipient
-      required:
-      - email
-      properties:
-        firstName:
-          type: string
-          example: John
-        lastName:
-          type: string
-          example: Smith
-        email:
-          type: string
-          minLength: 1
-          maxLength: 50
-          example: test_registrant@lassocrm.com
   securitySchemes:
     JwtAuthorizer:
       type: http

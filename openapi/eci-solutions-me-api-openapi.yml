@@ -846,167 +846,14 @@ paths:
                 $ref: '#/components/schemas/ProblemDetails'
 components:
   schemas:
-    ResponseType:
+    BodyType:
       enum:
-      - None
-      - Organizer
-      - TentativelyAccepted
-      - Accepted
-      - Declined
-      - NotResponded
+      - Html
+      - Text
+      - RichText
       type: string
-      description: Represents the response type of a calendar event.
-    CalendarEventResponseListResponse:
-      type: object
-      properties:
-        value:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/CalendarEventResponse'
-          description: Response value, containing a list of T items
-        nextPageToken:
-          type:
-          - string
-          - 'null'
-          description: The next page token
-      additionalProperties: false
-      description: Response for a list of T items
-    AttachmentType:
-      enum:
-      - File
-      type: string
-      description: Represents the type of attachment in an email.
-    ProblemDetails:
-      type: object
-      properties:
-        type:
-          type:
-          - string
-          - 'null'
-        title:
-          type:
-          - string
-          - 'null'
-        status:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        detail:
-          type:
-          - string
-          - 'null'
-        instance:
-          type:
-          - string
-          - 'null'
-      additionalProperties: {}
-    SendMailRequest:
-      required:
-      - toRecipients
-      type: object
-      properties:
-        subject:
-          type:
-          - string
-          - 'null'
-          description: Gets or sets the subject of the email.
-        body:
-          type:
-          - string
-          - 'null'
-          description: Gets or sets the body content of the email.
-        bodyType:
-          $ref: '#/components/schemas/BodyType'
-        toRecipients:
-          type: array
-          items:
-            $ref: '#/components/schemas/EmailAddress'
-          description: Gets or sets the collection of email addresses to send the email to.
-        ccRecipients:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/EmailAddress'
-          description: Gets or sets the collection of email addresses to send a carbon copy (CC) of the email to.
-        bccRecipients:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/EmailAddress'
-          description: Gets or sets the collection of email addresses to send a blind carbon copy (BCC) of the email to.
-        attachments:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/CreateMailAttachmentModel'
-          description: Gets or sets the collection of attachments to include in the email.
-        replyToMessageId:
-          type:
-          - string
-          - 'null'
-          description: If specified, the email will be sent as a reply to the message with this ID.
-      additionalProperties: false
-      description: Represents a request to send an email.
-    DriveResponse:
-      type: object
-      properties:
-        id:
-          type:
-          - string
-          - 'null'
-          description: The ID of the drive
-        name:
-          type:
-          - string
-          - 'null'
-          description: The name of the drive
-        provider:
-          type:
-          - string
-          - 'null'
-          description: The provider of the drive
-        providerType:
-          type:
-          - string
-          - 'null'
-          description: The provider type of the drive
-        createdDate:
-          type:
-          - string
-          - 'null'
-          description: The created date of the drive
-          format: date-time
-        webUrl:
-          type:
-          - string
-          - 'null'
-          description: The WebUrl of the drive
-      additionalProperties: false
-      description: Custom Drive object
-    Folder:
-      enum:
-      - Inbox
-      - SentItems
-      - Drafts
-      - DeletedItems
-      - JunkEmail
-      - Outbox
-      - Archive
-      type: string
-      description: Represents the main folders in a mail system.
-    MailSortOrder:
-      enum:
-      - NewestFirst
-      - OldestFirst
-      type: string
-      description: Indicates the sort order for mail items.
-    CreateCalendarEventRequest:
+      description: Mail body type.
+    UpdateCalendarEventRequest:
       type: object
       properties:
         subject:
@@ -1020,11 +867,15 @@ components:
           - 'null'
           description: The body or description of the calendar event.
         start:
-          type: string
+          type:
+          - string
+          - 'null'
           description: The start date and time of the calendar event.
           format: date-time
         end:
-          type: string
+          type:
+          - string
+          - 'null'
           description: The end date and time of the calendar event.
           format: date-time
         location:
@@ -1040,7 +891,7 @@ components:
             type: string
           description: The email addresses of the attendees.
       additionalProperties: false
-      description: Request to create a calendar event.
+      description: Request to update a calendar event.
     DraftMailItemResponse:
       type: object
       properties:
@@ -1101,40 +952,6 @@ components:
           description: Represents the unique identifier of the draft email.
       additionalProperties: false
       description: Represents a response for a draft email.
-    Attendee:
-      type: object
-      properties:
-        address:
-          type:
-          - string
-          - 'null'
-          description: Email address.
-        name:
-          type:
-          - string
-          - 'null'
-          description: User name.
-        status:
-          $ref: '#/components/schemas/ResponseType'
-      additionalProperties: false
-      description: Represents an attendee in a calendar event.
-    MailItemResponseListResponse:
-      type: object
-      properties:
-        value:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/MailItemResponse'
-          description: Response value, containing a list of T items
-        nextPageToken:
-          type:
-          - string
-          - 'null'
-          description: The next page token
-      additionalProperties: false
-      description: Response for a list of T items
     DriveItemResponseListResponse:
       type: object
       properties:
@@ -1144,6 +961,107 @@ components:
           - 'null'
           items:
             $ref: '#/components/schemas/DriveItemResponse'
+          description: Response value, containing a list of T items
+        nextPageToken:
+          type:
+          - string
+          - 'null'
+          description: The next page token
+      additionalProperties: false
+      description: Response for a list of T items
+    CalendarEventResponseListResponse:
+      type: object
+      properties:
+        value:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/CalendarEventResponse'
+          description: Response value, containing a list of T items
+        nextPageToken:
+          type:
+          - string
+          - 'null'
+          description: The next page token
+      additionalProperties: false
+      description: Response for a list of T items
+    GetMailAttachmentModelListResponse:
+      type: object
+      properties:
+        value:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/GetMailAttachmentModel'
+          description: Response value, containing a list of T items
+        nextPageToken:
+          type:
+          - string
+          - 'null'
+          description: The next page token
+      additionalProperties: false
+      description: Response for a list of T items
+    SendMailRequest:
+      required:
+      - toRecipients
+      type: object
+      properties:
+        subject:
+          type:
+          - string
+          - 'null'
+          description: Gets or sets the subject of the email.
+        body:
+          type:
+          - string
+          - 'null'
+          description: Gets or sets the body content of the email.
+        bodyType:
+          $ref: '#/components/schemas/BodyType'
+        toRecipients:
+          type: array
+          items:
+            $ref: '#/components/schemas/EmailAddress'
+          description: Gets or sets the collection of email addresses to send the email to.
+        ccRecipients:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/EmailAddress'
+          description: Gets or sets the collection of email addresses to send a carbon copy (CC) of the email to.
+        bccRecipients:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/EmailAddress'
+          description: Gets or sets the collection of email addresses to send a blind carbon copy (BCC) of the email to.
+        attachments:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/CreateMailAttachmentModel'
+          description: Gets or sets the collection of attachments to include in the email.
+        replyToMessageId:
+          type:
+          - string
+          - 'null'
+          description: If specified, the email will be sent as a reply to the message with this ID.
+      additionalProperties: false
+      description: Represents a request to send an email.
+    MailItemResponseListResponse:
+      type: object
+      properties:
+        value:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/MailItemResponse'
           description: Response value, containing a list of T items
         nextPageToken:
           type:
@@ -1170,105 +1088,69 @@ components:
           $ref: '#/components/schemas/AttachmentType'
       additionalProperties: false
       description: Represents a model for an email attachment.
-    DriveItemResponse:
+    MailSortOrder:
+      enum:
+      - NewestFirst
+      - OldestFirst
+      type: string
+      description: Indicates the sort order for mail items.
+    EmailAddress:
+      type: object
+      properties:
+        address:
+          type:
+          - string
+          - 'null'
+          description: Email address.
+        name:
+          type:
+          - string
+          - 'null'
+          description: User name.
+      additionalProperties: false
+      description: Email address class.
+    MailResponseType:
+      enum:
+      - Full
+      - Minimal
+      type: string
+      description: Indicates the options for what data to return in mail item responses.
+    DriveResponse:
       type: object
       properties:
         id:
           type:
           - string
           - 'null'
-          description: Gets or sets the unique identifier of the drive item.
-        driveId:
-          type:
-          - string
-          - 'null'
-          description: Gets or sets the unique identifier of the drive.
+          description: The ID of the drive
         name:
           type:
           - string
           - 'null'
-          description: Gets or sets the name of the drive item.
-        itemType:
+          description: The name of the drive
+        provider:
           type:
           - string
           - 'null'
-          description: Gets or sets the type of the item. This can be null.
+          description: The provider of the drive
         providerType:
           type:
           - string
           - 'null'
-          description: Gets or sets the type of the provider. This can be null.
+          description: The provider type of the drive
         createdDate:
           type:
           - string
           - 'null'
-          description: Gets or sets the date and time when the drive item was created.
+          description: The created date of the drive
           format: date-time
         webUrl:
           type:
           - string
           - 'null'
-          description: Gets or sets the web URL of the drive item. This can be null.
+          description: The WebUrl of the drive
       additionalProperties: false
-      description: Response for the GetDriveItemsRequest, representing a drive item
-    CalendarEventResponse:
-      type: object
-      properties:
-        subject:
-          type:
-          - string
-          - 'null'
-          description: The subject of the event.
-        body:
-          type:
-          - string
-          - 'null'
-          description: The body or description of the event.
-        organizer:
-          $ref: '#/components/schemas/EmailAddress'
-        attendees:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/Attendee'
-          description: The collection of attendees for the event.
-        start:
-          type:
-          - string
-          - 'null'
-          description: The start date and time of the event.
-          format: date-time
-        end:
-          type:
-          - string
-          - 'null'
-          description: The end date and time of the event.
-          format: date-time
-        location:
-          type:
-          - string
-          - 'null'
-          description: The location of the event.
-        id:
-          type:
-          - string
-          - 'null'
-          description: The Id of the event.
-        bodyPreview:
-          type:
-          - string
-          - 'null'
-          description: The BodyPreview of the event.
-      additionalProperties: false
-      description: Response for calendar events.
-    BodyType:
-      enum:
-      - Html
-      - Text
-      - RichText
-      type: string
-      description: Mail body type.
+      description: Custom Drive object
     MailItemResponse:
       type: object
       properties:
@@ -1334,6 +1216,176 @@ components:
           description: Mail body preview.
       additionalProperties: false
       description: Representing a email message.
+    Attendee:
+      type: object
+      properties:
+        address:
+          type:
+          - string
+          - 'null'
+          description: Email address.
+        name:
+          type:
+          - string
+          - 'null'
+          description: User name.
+        status:
+          $ref: '#/components/schemas/ResponseType'
+      additionalProperties: false
+      description: Represents an attendee in a calendar event.
+    AttachmentType:
+      enum:
+      - File
+      type: string
+      description: Represents the type of attachment in an email.
+    DriveItemResponse:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: Gets or sets the unique identifier of the drive item.
+        driveId:
+          type:
+          - string
+          - 'null'
+          description: Gets or sets the unique identifier of the drive.
+        name:
+          type:
+          - string
+          - 'null'
+          description: Gets or sets the name of the drive item.
+        itemType:
+          type:
+          - string
+          - 'null'
+          description: Gets or sets the type of the item. This can be null.
+        providerType:
+          type:
+          - string
+          - 'null'
+          description: Gets or sets the type of the provider. This can be null.
+        createdDate:
+          type:
+          - string
+          - 'null'
+          description: Gets or sets the date and time when the drive item was created.
+          format: date-time
+        webUrl:
+          type:
+          - string
+          - 'null'
+          description: Gets or sets the web URL of the drive item. This can be null.
+      additionalProperties: false
+      description: Response for the GetDriveItemsRequest, representing a drive item
+    CreateCalendarEventRequest:
+      type: object
+      properties:
+        subject:
+          type:
+          - string
+          - 'null'
+          description: The subject of the calendar event.
+        body:
+          type:
+          - string
+          - 'null'
+          description: The body or description of the calendar event.
+        start:
+          type: string
+          description: The start date and time of the calendar event.
+          format: date-time
+        end:
+          type: string
+          description: The end date and time of the calendar event.
+          format: date-time
+        location:
+          type:
+          - string
+          - 'null'
+          description: The location of the calendar event.
+        attendeesEmails:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+          description: The email addresses of the attendees.
+      additionalProperties: false
+      description: Request to create a calendar event.
+    CalendarEventResponse:
+      type: object
+      properties:
+        subject:
+          type:
+          - string
+          - 'null'
+          description: The subject of the event.
+        body:
+          type:
+          - string
+          - 'null'
+          description: The body or description of the event.
+        organizer:
+          $ref: '#/components/schemas/EmailAddress'
+        attendees:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Attendee'
+          description: The collection of attendees for the event.
+        start:
+          type:
+          - string
+          - 'null'
+          description: The start date and time of the event.
+          format: date-time
+        end:
+          type:
+          - string
+          - 'null'
+          description: The end date and time of the event.
+          format: date-time
+        location:
+          type:
+          - string
+          - 'null'
+          description: The location of the event.
+        id:
+          type:
+          - string
+          - 'null'
+          description: The Id of the event.
+        bodyPreview:
+          type:
+          - string
+          - 'null'
+          description: The BodyPreview of the event.
+      additionalProperties: false
+      description: Response for calendar events.
+    Folder:
+      enum:
+      - Inbox
+      - SentItems
+      - Drafts
+      - DeletedItems
+      - JunkEmail
+      - Outbox
+      - Archive
+      type: string
+      description: Represents the main folders in a mail system.
+    ResponseType:
+      enum:
+      - None
+      - Organizer
+      - TentativelyAccepted
+      - Accepted
+      - Declined
+      - NotResponded
+      type: string
+      description: Represents the response type of a calendar event.
     GetMailAttachmentModel:
       type: object
       properties:
@@ -1382,83 +1434,31 @@ components:
           description: Gets a value that indicates if the attachment is inline (part of the message body) or not.
       additionalProperties: false
       description: Represents a model for an email attachment, including its metadata.
-    UpdateCalendarEventRequest:
+    ProblemDetails:
       type: object
       properties:
-        subject:
+        type:
           type:
           - string
           - 'null'
-          description: The subject of the calendar event.
-        body:
+        title:
           type:
           - string
           - 'null'
-          description: The body or description of the calendar event.
-        start:
+        status:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        detail:
           type:
           - string
           - 'null'
-          description: The start date and time of the calendar event.
-          format: date-time
-        end:
+        instance:
           type:
           - string
           - 'null'
-          description: The end date and time of the calendar event.
-          format: date-time
-        location:
-          type:
-          - string
-          - 'null'
-          description: The location of the calendar event.
-        attendeesEmails:
-          type:
-          - array
-          - 'null'
-          items:
-            type: string
-          description: The email addresses of the attendees.
-      additionalProperties: false
-      description: Request to update a calendar event.
-    GetMailAttachmentModelListResponse:
-      type: object
-      properties:
-        value:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/GetMailAttachmentModel'
-          description: Response value, containing a list of T items
-        nextPageToken:
-          type:
-          - string
-          - 'null'
-          description: The next page token
-      additionalProperties: false
-      description: Response for a list of T items
-    MailResponseType:
-      enum:
-      - Full
-      - Minimal
-      type: string
-      description: Indicates the options for what data to return in mail item responses.
-    EmailAddress:
-      type: object
-      properties:
-        address:
-          type:
-          - string
-          - 'null'
-          description: Email address.
-        name:
-          type:
-          - string
-          - 'null'
-          description: User name.
-      additionalProperties: false
-      description: Email address class.
+      additionalProperties: {}
   securitySchemes:
     Bearer:
       type: oauth2

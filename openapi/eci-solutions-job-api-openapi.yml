@@ -438,6 +438,100 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
+    JobListResponse:
+      type: object
+      properties:
+        data:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/Job'
+          readOnly: true
+        resultCount:
+          type: integer
+          format: int32
+      additionalProperties: false
+    JobPartProduction:
+      required:
+      - partID
+      - quantityProduced
+      type: object
+      properties:
+        partID:
+          minLength: 1
+          type: string
+        quantityProduced:
+          maximum: 2147483647
+          minimum: 1
+          type: number
+          format: double
+        productionDate:
+          type:
+          - string
+          - 'null'
+          format: date
+        partBinID:
+          type:
+          - string
+          - 'null'
+        shiftID:
+          type:
+          - string
+          - 'null'
+        printDestinationID:
+          type:
+          - string
+          - 'null'
+        lotNumber:
+          type:
+          - string
+          - 'null'
+        lotExpirationDate:
+          type:
+          - string
+          - 'null'
+          format: date
+        lotAttributes:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+        serialNumbers:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+        catchWeights:
+          type:
+          - array
+          - 'null'
+          items:
+            type: number
+            format: double
+      additionalProperties: false
+    JobUpdateModel:
+      type: object
+      properties:
+        schedStartDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        schedEndDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        jobOperations:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/JobOperationUpdateModelData'
+      additionalProperties: false
     Job:
       title: Job
       type: object
@@ -548,28 +642,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/JobOperation'
-    JobOperationUpdateModelData:
-      type: object
-      properties:
-        uniqueID:
-          type:
-          - string
-          - 'null'
-        workCenterID:
-          type:
-          - string
-          - 'null'
-        schedStartDate:
-          type:
-          - string
-          - 'null'
-          format: date-time
-        schedEndDate:
-          type:
-          - string
-          - 'null'
-          format: date-time
-      additionalProperties: false
     JobOperation:
       title: JobOperation
       type: object
@@ -688,83 +760,17 @@ components:
         jobClosedDate:
           type: string
           format: date-time
-    JobListResponse:
+    JobOperationUpdateModelData:
       type: object
       properties:
-        data:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/Job'
-          readOnly: true
-        resultCount:
-          type: integer
-          format: int32
-      additionalProperties: false
-    JobPartProduction:
-      required:
-      - partID
-      - quantityProduced
-      type: object
-      properties:
-        partID:
-          minLength: 1
-          type: string
-        quantityProduced:
-          maximum: 2147483647
-          minimum: 1
-          type: number
-          format: double
-        productionDate:
+        uniqueID:
           type:
           - string
           - 'null'
-          format: date
-        partBinID:
+        workCenterID:
           type:
           - string
           - 'null'
-        shiftID:
-          type:
-          - string
-          - 'null'
-        printDestinationID:
-          type:
-          - string
-          - 'null'
-        lotNumber:
-          type:
-          - string
-          - 'null'
-        lotExpirationDate:
-          type:
-          - string
-          - 'null'
-          format: date
-        lotAttributes:
-          type:
-          - array
-          - 'null'
-          items:
-            type: string
-        serialNumbers:
-          type:
-          - array
-          - 'null'
-          items:
-            type: string
-        catchWeights:
-          type:
-          - array
-          - 'null'
-          items:
-            type: number
-            format: double
-      additionalProperties: false
-    JobUpdateModel:
-      type: object
-      properties:
         schedStartDate:
           type:
           - string
@@ -775,12 +781,6 @@ components:
           - string
           - 'null'
           format: date-time
-        jobOperations:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/JobOperationUpdateModelData'
       additionalProperties: false
   securitySchemes:
     Bearer:

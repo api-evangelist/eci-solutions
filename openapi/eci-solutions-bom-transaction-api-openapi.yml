@@ -1082,6 +1082,144 @@ paths:
                 $ref: '#/components/schemas/APIResponseMessageDto'
 components:
   schemas:
+    BOMReceiptDto:
+      required:
+      - receiptID
+      - receiptDate
+      - supplierOrganizationID
+      type: object
+      properties:
+        receiptID:
+          type: string
+        receiptDate:
+          type: string
+          format: date-time
+        plantDepartmentID:
+          type: string
+        plantID:
+          type: string
+        deliveryDocket:
+          type: string
+        supplierOrganizationID:
+          type: string
+        purchaseLocationID:
+          type: string
+        apInvoiceLocationID:
+          type: string
+        apInvoiceContactID:
+          type: string
+        shippingMethodID:
+          type: string
+        receiptSubtotal:
+          type: number
+          format: double
+        freightCharge:
+          type: number
+          format: double
+        receiptTotal:
+          type: number
+          format: double
+        projectID:
+          type: string
+        currencyRateID:
+          type: string
+        exchangeRate:
+          type: number
+          format: double
+        nestlinkProcessed:
+          type: boolean
+        customRate:
+          type: boolean
+        reversalEntry:
+          type: boolean
+        reversed:
+          type: boolean
+        postedToGl:
+          type: boolean
+        postedDate:
+          type: string
+          format: date-time
+        closed:
+          type: boolean
+        closedDate:
+          type: string
+          format: date-time
+        createdBy:
+          type: string
+        createdDate:
+          type: string
+          format: date-time
+        uniqueID:
+          type: string
+          format: uuid
+          example: 00000000-0000-0000-0000-000000000000
+        rowVersion:
+          type: string
+          format: byte
+    BOMMaterialIssueDto:
+      type: object
+      properties:
+        materialIssueID:
+          type: string
+        materialIssueDate:
+          type: string
+          format: date-time
+        createdDate:
+          type: string
+          format: date-time
+        createdBy:
+          type: string
+        postedDate:
+          type: string
+          format: date-time
+        posted:
+          type: boolean
+        reversalEntry:
+          type: boolean
+        reversed:
+          type: boolean
+        uniqueID:
+          type: string
+          format: uuid
+          example: 00000000-0000-0000-0000-000000000000
+        rowVersion:
+          type: string
+          format: byte
+    CTMBOMMaterialIssueLineDto:
+      required:
+      - materialIssue
+      type: object
+      properties:
+        materialIssue:
+          $ref: '#/components/schemas/BOMMaterialIssueDto'
+        materialIssueLines:
+          type: array
+          items:
+            $ref: '#/components/schemas/BOMMaterialIssueLineDto'
+    Error:
+      type: object
+      properties:
+        innerText:
+          type: string
+    APIResponseMessageDto:
+      type: object
+      properties:
+        description:
+          type: string
+        status:
+          type: string
+        payloadID:
+          type: string
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+          readOnly: true
+        warnings:
+          type: array
+          items:
+            $ref: '#/components/schemas/Warning'
+          readOnly: true
     BOMMfgReceiptDto:
       required:
       - receiptType
@@ -1148,25 +1286,6 @@ components:
           type: string
         heatLot:
           type: string
-    APIResponseMessageDto:
-      type: object
-      properties:
-        description:
-          type: string
-        status:
-          type: string
-        payloadID:
-          type: string
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/Error'
-          readOnly: true
-        warnings:
-          type: array
-          items:
-            $ref: '#/components/schemas/Warning'
-          readOnly: true
     BOMMaterialIssueLineDto:
       required:
       - materialIssueID
@@ -1282,51 +1401,6 @@ components:
         createdDate:
           type: string
           format: date-time
-    CTMBOMMaterialIssueLineDto:
-      required:
-      - materialIssue
-      type: object
-      properties:
-        materialIssue:
-          $ref: '#/components/schemas/BOMMaterialIssueDto'
-        materialIssueLines:
-          type: array
-          items:
-            $ref: '#/components/schemas/BOMMaterialIssueLineDto'
-    BOMMaterialIssueDto:
-      type: object
-      properties:
-        materialIssueID:
-          type: string
-        materialIssueDate:
-          type: string
-          format: date-time
-        createdDate:
-          type: string
-          format: date-time
-        createdBy:
-          type: string
-        postedDate:
-          type: string
-          format: date-time
-        posted:
-          type: boolean
-        reversalEntry:
-          type: boolean
-        reversed:
-          type: boolean
-        uniqueID:
-          type: string
-          format: uuid
-          example: 00000000-0000-0000-0000-000000000000
-        rowVersion:
-          type: string
-          format: byte
-    Warning:
-      type: object
-      properties:
-        innerText:
-          type: string
     BOMReceiptLineDto:
       type: object
       properties:
@@ -1430,85 +1504,11 @@ components:
         rowVersion:
           type: string
           format: byte
-    Error:
+    Warning:
       type: object
       properties:
         innerText:
           type: string
-    BOMReceiptDto:
-      required:
-      - receiptID
-      - receiptDate
-      - supplierOrganizationID
-      type: object
-      properties:
-        receiptID:
-          type: string
-        receiptDate:
-          type: string
-          format: date-time
-        plantDepartmentID:
-          type: string
-        plantID:
-          type: string
-        deliveryDocket:
-          type: string
-        supplierOrganizationID:
-          type: string
-        purchaseLocationID:
-          type: string
-        apInvoiceLocationID:
-          type: string
-        apInvoiceContactID:
-          type: string
-        shippingMethodID:
-          type: string
-        receiptSubtotal:
-          type: number
-          format: double
-        freightCharge:
-          type: number
-          format: double
-        receiptTotal:
-          type: number
-          format: double
-        projectID:
-          type: string
-        currencyRateID:
-          type: string
-        exchangeRate:
-          type: number
-          format: double
-        nestlinkProcessed:
-          type: boolean
-        customRate:
-          type: boolean
-        reversalEntry:
-          type: boolean
-        reversed:
-          type: boolean
-        postedToGl:
-          type: boolean
-        postedDate:
-          type: string
-          format: date-time
-        closed:
-          type: boolean
-        closedDate:
-          type: string
-          format: date-time
-        createdBy:
-          type: string
-        createdDate:
-          type: string
-          format: date-time
-        uniqueID:
-          type: string
-          format: uuid
-          example: 00000000-0000-0000-0000-000000000000
-        rowVersion:
-          type: string
-          format: byte
   securitySchemes:
     oauth2:
       type: oauth2

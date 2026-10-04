@@ -118,6 +118,40 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
+    Links:
+      type: object
+      properties:
+        self:
+          $ref: '#/components/schemas/Self'
+      additionalProperties: false
+    ApiError:
+      type: object
+      properties:
+        isError:
+          type: boolean
+        exceptionMessage:
+          type:
+          - string
+          - 'null'
+        details:
+          type:
+          - string
+          - 'null'
+        referenceErrorCode:
+          type:
+          - string
+          - 'null'
+        referenceDocumentLink:
+          type:
+          - string
+          - 'null'
+        validationErrors:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ValidationError'
+      additionalProperties: false
     AccountVaultUpdate:
       required:
       - account_holder_name
@@ -139,6 +173,91 @@ components:
         developer_id:
           minLength: 1
           type: string
+      additionalProperties: false
+    AccountVaultDetailRequest:
+      required:
+      - account_vault_id
+      - developer_id
+      type: object
+      properties:
+        account_vault_id:
+          minLength: 1
+          type: string
+        developer_id:
+          minLength: 1
+          type: string
+      additionalProperties: false
+    AccountVaultDetailResponseAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          $ref: '#/components/schemas/ApiError'
+        result:
+          $ref: '#/components/schemas/AccountVaultDetailResponse'
+      additionalProperties: false
+    Self:
+      type: object
+      properties:
+        href:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    AccountVaultUpdateModel:
+      type: object
+      properties:
+        accountvault:
+          $ref: '#/components/schemas/AccountVaultUpdate'
+      additionalProperties: false
+    AccountVaultDetailResponse:
+      type: object
+      properties:
+        accountvault:
+          $ref: '#/components/schemas/AccountVaultDetail'
+      additionalProperties: false
+    StringAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          $ref: '#/components/schemas/ApiError'
+        result:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    ValidationError:
+      type: object
+      properties:
+        field:
+          type:
+          - string
+          - 'null'
+        message:
+          type:
+          - string
+          - 'null'
       additionalProperties: false
     AccountVaultDetail:
       type: object
@@ -230,125 +349,6 @@ components:
         customer_id: {}
         _links:
           $ref: '#/components/schemas/Links'
-      additionalProperties: false
-    ApiError:
-      type: object
-      properties:
-        isError:
-          type: boolean
-        exceptionMessage:
-          type:
-          - string
-          - 'null'
-        details:
-          type:
-          - string
-          - 'null'
-        referenceErrorCode:
-          type:
-          - string
-          - 'null'
-        referenceDocumentLink:
-          type:
-          - string
-          - 'null'
-        validationErrors:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/ValidationError'
-      additionalProperties: false
-    ValidationError:
-      type: object
-      properties:
-        field:
-          type:
-          - string
-          - 'null'
-        message:
-          type:
-          - string
-          - 'null'
-      additionalProperties: false
-    Self:
-      type: object
-      properties:
-        href:
-          type:
-          - string
-          - 'null'
-      additionalProperties: false
-    StringAPIResponse:
-      type: object
-      properties:
-        version:
-          type:
-          - string
-          - 'null'
-        statusCode:
-          type: integer
-          format: int32
-        message:
-          type:
-          - string
-          - 'null'
-        responseException:
-          $ref: '#/components/schemas/ApiError'
-        result:
-          type:
-          - string
-          - 'null'
-      additionalProperties: false
-    AccountVaultDetailResponse:
-      type: object
-      properties:
-        accountvault:
-          $ref: '#/components/schemas/AccountVaultDetail'
-      additionalProperties: false
-    Links:
-      type: object
-      properties:
-        self:
-          $ref: '#/components/schemas/Self'
-      additionalProperties: false
-    AccountVaultUpdateModel:
-      type: object
-      properties:
-        accountvault:
-          $ref: '#/components/schemas/AccountVaultUpdate'
-      additionalProperties: false
-    AccountVaultDetailRequest:
-      required:
-      - account_vault_id
-      - developer_id
-      type: object
-      properties:
-        account_vault_id:
-          minLength: 1
-          type: string
-        developer_id:
-          minLength: 1
-          type: string
-      additionalProperties: false
-    AccountVaultDetailResponseAPIResponse:
-      type: object
-      properties:
-        version:
-          type:
-          - string
-          - 'null'
-        statusCode:
-          type: integer
-          format: int32
-        message:
-          type:
-          - string
-          - 'null'
-        responseException:
-          $ref: '#/components/schemas/ApiError'
-        result:
-          $ref: '#/components/schemas/AccountVaultDetailResponse'
       additionalProperties: false
   securitySchemes:
     Bearer:

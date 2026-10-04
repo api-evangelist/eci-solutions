@@ -406,31 +406,17 @@ components:
           items:
             $ref: '#/components/schemas/ValidationError'
       additionalProperties: false
-    ValidationError:
-      type: object
-      properties:
-        field:
-          type:
-          - string
-          - 'null'
-        message:
-          type:
-          - string
-          - 'null'
-      additionalProperties: false
-    AuthenticateUser_2:
+    MerchantAccountModel:
       required:
-      - password
-      - user_name
+      - developer_id
+      - location_id
       type: object
       properties:
-        user_name:
-          maxLength: 50
+        location_id:
           minLength: 1
           type: string
-        password:
-          maxLength: 64
-          minLength: 6
+        developer_id:
+          minLength: 1
           type: string
       additionalProperties: false
     ApiUserSettingsAPIResponse:
@@ -451,6 +437,21 @@ components:
           $ref: '#/components/schemas/ApiError'
         result:
           $ref: '#/components/schemas/ApiUserSettings'
+      additionalProperties: false
+    AuthenticateUser_2:
+      required:
+      - password
+      - user_name
+      type: object
+      properties:
+        user_name:
+          maxLength: 50
+          minLength: 1
+          type: string
+        password:
+          maxLength: 64
+          minLength: 6
+          type: string
       additionalProperties: false
     RegistrationModel:
       required:
@@ -546,54 +547,14 @@ components:
         result:
           $ref: '#/components/schemas/AuthenticateUserResponse'
       additionalProperties: false
-    StringAPIResponse:
+    ValidationError:
       type: object
       properties:
-        version:
+        field:
           type:
           - string
           - 'null'
-        statusCode:
-          type: integer
-          format: int32
         message:
-          type:
-          - string
-          - 'null'
-        responseException:
-          $ref: '#/components/schemas/ApiError'
-        result:
-          type:
-          - string
-          - 'null'
-      additionalProperties: false
-    MerchantUserModel:
-      type: object
-      properties:
-        merchant:
-          $ref: '#/components/schemas/MerchantAccountModel'
-        user:
-          $ref: '#/components/schemas/AuthenticateUser_2'
-      additionalProperties: false
-    AuthenticateUserResponse:
-      required:
-      - password
-      - user_name
-      type: object
-      properties:
-        user_name:
-          maxLength: 50
-          minLength: 1
-          type: string
-        password:
-          maxLength: 64
-          minLength: 6
-          type: string
-        token:
-          type:
-          - string
-          - 'null'
-        refreshToken:
           type:
           - string
           - 'null'
@@ -640,18 +601,57 @@ components:
           minLength: 1
           type: string
       additionalProperties: false
-    MerchantAccountModel:
-      required:
-      - developer_id
-      - location_id
+    StringAPIResponse:
       type: object
       properties:
-        location_id:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          $ref: '#/components/schemas/ApiError'
+        result:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    AuthenticateUserResponse:
+      required:
+      - password
+      - user_name
+      type: object
+      properties:
+        user_name:
+          maxLength: 50
           minLength: 1
           type: string
-        developer_id:
-          minLength: 1
+        password:
+          maxLength: 64
+          minLength: 6
           type: string
+        token:
+          type:
+          - string
+          - 'null'
+        refreshToken:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    MerchantUserModel:
+      type: object
+      properties:
+        merchant:
+          $ref: '#/components/schemas/MerchantAccountModel'
+        user:
+          $ref: '#/components/schemas/AuthenticateUser_2'
       additionalProperties: false
   securitySchemes:
     Bearer:

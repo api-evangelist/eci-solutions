@@ -272,17 +272,47 @@ components:
           items:
             $ref: '#/components/schemas/ValidationError'
       additionalProperties: false
-    ValidationError:
+    ApplicationResponseAPIResponse:
       type: object
       properties:
-        field:
+        version:
           type:
           - string
           - 'null'
+        statusCode:
+          type: integer
+          format: int32
         message:
           type:
           - string
           - 'null'
+        responseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        result:
+          allOf:
+          - $ref: '#/components/schemas/ApplicationResponse'
+      additionalProperties: false
+    CreatedApplicationResponseAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        result:
+          allOf:
+          - $ref: '#/components/schemas/CreatedApplicationResponse'
       additionalProperties: false
     CreatedApplicationResponse:
       type: object
@@ -295,13 +325,17 @@ components:
           - string
           - 'null'
       additionalProperties: false
-    UpdateApplicationRequestModel:
+    ApplicationRequestModel:
+      required:
+      - description
+      - roleId
       type: object
       properties:
+        description:
+          minLength: 1
+          type: string
         roleId:
-          type:
-          - integer
-          - 'null'
+          type: integer
           format: int32
         productId:
           type:
@@ -318,19 +352,13 @@ components:
           - integer
           - 'null'
           format: int32
-        description:
-          type:
-          - string
-          - 'null'
         redirectUris:
           type:
           - string
           - 'null'
           description: "A list of possible redirect URIs for authentication flows. \nMultiple values should be separated with line feeds (\\n)."
         isActive:
-          type:
-          - boolean
-          - 'null'
+          type: boolean
         displayName:
           type:
           - string
@@ -352,6 +380,14 @@ components:
           description: 'Terms and conditions text (supports HTML) shown during authorization.
 
             Only applicable when RoleId = Partner (6).'
+      additionalProperties: false
+    ApplicationSecretValueResponse:
+      type: object
+      properties:
+        clientSecret:
+          type:
+          - string
+          - 'null'
       additionalProperties: false
     ApplicationResponse:
       type: object
@@ -445,59 +481,13 @@ components:
 
             Only applicable when RoleId = Partner (6).'
       additionalProperties: false
-    ApplicationResponseAPIResponse:
+    UpdateApplicationRequestModel:
       type: object
       properties:
-        version:
-          type:
-          - string
-          - 'null'
-        statusCode:
-          type: integer
-          format: int32
-        message:
-          type:
-          - string
-          - 'null'
-        responseException:
-          allOf:
-          - $ref: '#/components/schemas/ApiError'
-        result:
-          allOf:
-          - $ref: '#/components/schemas/ApplicationResponse'
-      additionalProperties: false
-    ApplicationSecretValueResponseAPIResponse:
-      type: object
-      properties:
-        version:
-          type:
-          - string
-          - 'null'
-        statusCode:
-          type: integer
-          format: int32
-        message:
-          type:
-          - string
-          - 'null'
-        responseException:
-          allOf:
-          - $ref: '#/components/schemas/ApiError'
-        result:
-          allOf:
-          - $ref: '#/components/schemas/ApplicationSecretValueResponse'
-      additionalProperties: false
-    ApplicationRequestModel:
-      required:
-      - description
-      - roleId
-      type: object
-      properties:
-        description:
-          minLength: 1
-          type: string
         roleId:
-          type: integer
+          type:
+          - integer
+          - 'null'
           format: int32
         productId:
           type:
@@ -514,13 +504,19 @@ components:
           - integer
           - 'null'
           format: int32
+        description:
+          type:
+          - string
+          - 'null'
         redirectUris:
           type:
           - string
           - 'null'
           description: "A list of possible redirect URIs for authentication flows. \nMultiple values should be separated with line feeds (\\n)."
         isActive:
-          type: boolean
+          type:
+          - boolean
+          - 'null'
         displayName:
           type:
           - string
@@ -542,57 +538,6 @@ components:
           description: 'Terms and conditions text (supports HTML) shown during authorization.
 
             Only applicable when RoleId = Partner (6).'
-      additionalProperties: false
-    StringAPIResponse:
-      type: object
-      properties:
-        version:
-          type:
-          - string
-          - 'null'
-        statusCode:
-          type: integer
-          format: int32
-        message:
-          type:
-          - string
-          - 'null'
-        responseException:
-          allOf:
-          - $ref: '#/components/schemas/ApiError'
-        result:
-          type:
-          - string
-          - 'null'
-      additionalProperties: false
-    ApplicationSecretValueResponse:
-      type: object
-      properties:
-        clientSecret:
-          type:
-          - string
-          - 'null'
-      additionalProperties: false
-    CreatedApplicationResponseAPIResponse:
-      type: object
-      properties:
-        version:
-          type:
-          - string
-          - 'null'
-        statusCode:
-          type: integer
-          format: int32
-        message:
-          type:
-          - string
-          - 'null'
-        responseException:
-          allOf:
-          - $ref: '#/components/schemas/ApiError'
-        result:
-          allOf:
-          - $ref: '#/components/schemas/CreatedApplicationResponse'
       additionalProperties: false
     ApplicationResponseIListAPIResponse:
       type: object
@@ -617,6 +562,61 @@ components:
           - 'null'
           items:
             $ref: '#/components/schemas/ApplicationResponse'
+      additionalProperties: false
+    ApplicationSecretValueResponseAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        result:
+          allOf:
+          - $ref: '#/components/schemas/ApplicationSecretValueResponse'
+      additionalProperties: false
+    StringAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        result:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    ValidationError:
+      type: object
+      properties:
+        field:
+          type:
+          - string
+          - 'null'
+        message:
+          type:
+          - string
+          - 'null'
       additionalProperties: false
   securitySchemes:
     oidc:
