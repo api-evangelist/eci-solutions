@@ -150,8 +150,8 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    Organization:
-      title: Organization
+    PartGroup:
+      title: PartGroup
       type: object
       properties:
         uniqueID:
@@ -159,77 +159,17 @@ components:
         rowVersion:
           type: integer
           format: int64
-        name:
+        partGroupID:
           type: string
-        organizationID:
+        parentPartGroupID:
           type: string
-        country:
-          type: string
-        isActive:
-          type: boolean
-        organizationTypes:
-          type: array
-          items:
-            type: integer
-            format: int32
-        phoneNumber:
-          type: string
-        customerPaymentTermID:
-          type: string
-        customerTaxCodeID:
-          type: string
-        supplierPaymentTermID:
-          type: string
-        supplierTaxCodeID:
-          type: string
-        currencyCode:
-          type: string
-        websiteUrl:
-          type: string
-        comments:
-          type: string
-        salesAccountID:
-          type: string
-        leadTimeDays:
-          type: integer
-          format: int32
-        minimumOrderAmount:
-          type: number
-          format: double
-        customerStatus:
-          type: integer
-        supplierStatus:
-          type: integer
-    Contact:
-      title: Contact
-      type: object
-      properties:
-        uniqueID:
-          type: string
-        rowVersion:
-          type: integer
-          format: int64
-        contactID:
-          type: string
-        name:
-          type: string
-        organizationID:
-          type: string
-        organizationTypes:
-          type: array
-          items:
-            type: integer
-            format: int32
-        phoneNumber:
-          type: string
-        emailAddress:
+        description:
           type: string
         isActive:
           type: boolean
-        comments:
+        inactiveDate:
           type: string
-        organization:
-          $ref: '#/components/schemas/Organization'
+          format: date
     Project:
       title: Project
       type: object
@@ -266,6 +206,80 @@ components:
           type: boolean
         customer:
           $ref: '#/components/schemas/Organization'
+    QuoteQuantity:
+      title: QuoteQuantity
+      type: object
+      properties:
+        uniqueID:
+          type: string
+        rowVersion:
+          type: integer
+          format: int64
+        quoteQuantityID:
+          type: string
+        quoteID:
+          type: string
+        quoteLineID:
+          type: string
+        quantity:
+          type: number
+          format: double
+        baseUnitPrice:
+          type: number
+          description: The price expressed in the currency of the seller.
+          format: double
+        foreignUnitPrice:
+          type: number
+          description: The price expressed in the currency of the buyer, if different from that of the seller.
+          format: double
+        quote:
+          $ref: '#/components/schemas/Quote'
+        quoteLine:
+          $ref: '#/components/schemas/QuoteLine'
+    QuoteQuantityListResponse:
+      type: object
+      properties:
+        data:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/QuoteQuantity'
+          readOnly: true
+        resultCount:
+          type: integer
+          format: int32
+      additionalProperties: false
+    Contact:
+      title: Contact
+      type: object
+      properties:
+        uniqueID:
+          type: string
+        rowVersion:
+          type: integer
+          format: int64
+        contactID:
+          type: string
+        name:
+          type: string
+        organizationID:
+          type: string
+        organizationTypes:
+          type: array
+          items:
+            type: integer
+            format: int32
+        phoneNumber:
+          type: string
+        emailAddress:
+          type: string
+        isActive:
+          type: boolean
+        comments:
+          type: string
+        organization:
+          $ref: '#/components/schemas/Organization'
     QuoteLine:
       title: QuoteLine
       type: object
@@ -300,85 +314,6 @@ components:
           $ref: '#/components/schemas/Reason'
         partGroup:
           $ref: '#/components/schemas/PartGroup'
-    QuoteQuantityListResponse:
-      type: object
-      properties:
-        data:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/QuoteQuantity'
-          readOnly: true
-        resultCount:
-          type: integer
-          format: int32
-      additionalProperties: false
-    PartGroup:
-      title: PartGroup
-      type: object
-      properties:
-        uniqueID:
-          type: string
-        rowVersion:
-          type: integer
-          format: int64
-        partGroupID:
-          type: string
-        parentPartGroupID:
-          type: string
-        description:
-          type: string
-        isActive:
-          type: boolean
-        inactiveDate:
-          type: string
-          format: date
-    QuoteQuantity:
-      title: QuoteQuantity
-      type: object
-      properties:
-        uniqueID:
-          type: string
-        rowVersion:
-          type: integer
-          format: int64
-        quoteQuantityID:
-          type: string
-        quoteID:
-          type: string
-        quoteLineID:
-          type: string
-        quantity:
-          type: number
-          format: double
-        baseUnitPrice:
-          type: number
-          description: The price expressed in the currency of the seller.
-          format: double
-        foreignUnitPrice:
-          type: number
-          description: The price expressed in the currency of the buyer, if different from that of the seller.
-          format: double
-        quote:
-          $ref: '#/components/schemas/Quote'
-        quoteLine:
-          $ref: '#/components/schemas/QuoteLine'
-    Reason:
-      title: Reason
-      type: object
-      properties:
-        reasonID:
-          type: string
-        description:
-          type: string
-        name:
-          type: string
-        uniqueID:
-          type: string
-        rowVersion:
-          type: integer
-          format: int64
     Quote:
       title: Quote
       type: object
@@ -448,6 +383,71 @@ components:
           $ref: '#/components/schemas/Contact'
         project:
           $ref: '#/components/schemas/Project'
+    Reason:
+      title: Reason
+      type: object
+      properties:
+        reasonID:
+          type: string
+        description:
+          type: string
+        name:
+          type: string
+        uniqueID:
+          type: string
+        rowVersion:
+          type: integer
+          format: int64
+    Organization:
+      title: Organization
+      type: object
+      properties:
+        uniqueID:
+          type: string
+        rowVersion:
+          type: integer
+          format: int64
+        name:
+          type: string
+        organizationID:
+          type: string
+        country:
+          type: string
+        isActive:
+          type: boolean
+        organizationTypes:
+          type: array
+          items:
+            type: integer
+            format: int32
+        phoneNumber:
+          type: string
+        customerPaymentTermID:
+          type: string
+        customerTaxCodeID:
+          type: string
+        supplierPaymentTermID:
+          type: string
+        supplierTaxCodeID:
+          type: string
+        currencyCode:
+          type: string
+        websiteUrl:
+          type: string
+        comments:
+          type: string
+        salesAccountID:
+          type: string
+        leadTimeDays:
+          type: integer
+          format: int32
+        minimumOrderAmount:
+          type: number
+          format: double
+        customerStatus:
+          type: integer
+        supplierStatus:
+          type: integer
   securitySchemes:
     Bearer:
       type: oauth2

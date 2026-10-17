@@ -346,6 +346,111 @@ paths:
                 $ref: '#/components/schemas/VendorPaymentResponse'
 components:
   schemas:
+    CreateVendorInvoiceRequestModel:
+      required:
+      - amount
+      - date
+      - dueDate
+      - invoiceNo
+      type: object
+      properties:
+        invoiceNo:
+          maxLength: 200
+          minLength: 0
+          type: string
+        date:
+          type: string
+          format: date
+        dueDate:
+          type: string
+          format: date
+        amount:
+          type: number
+          format: double
+        balance:
+          type:
+          - number
+          - 'null'
+          format: double
+        discountAmount:
+          type:
+          - number
+          - 'null'
+          format: double
+        discountDate:
+          type:
+          - string
+          - 'null'
+          format: date
+        comment:
+          maxLength: 200
+          minLength: 0
+          type:
+          - string
+          - 'null'
+        purchaseOrderNumber:
+          maxLength: 50
+          minLength: 0
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    VendorRequestModel:
+      required:
+      - address
+      - emailAddress
+      - vendorName
+      type: object
+      properties:
+        externalVendorId:
+          maxLength: 50
+          minLength: 0
+          type:
+          - string
+          - 'null'
+        vendorName:
+          maxLength: 255
+          minLength: 0
+          type: string
+        address:
+          $ref: '#/components/schemas/Address'
+        contactGivenName:
+          maxLength: 50
+          minLength: 0
+          type:
+          - string
+          - 'null'
+        contactSurname:
+          maxLength: 50
+          minLength: 0
+          type:
+          - string
+          - 'null'
+        emailAddress:
+          minLength: 1
+          type: string
+        comment:
+          type:
+          - string
+          - 'null'
+        defaultPaymentMethod:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    VendorResponseListResponse:
+      type: object
+      properties:
+        count:
+          type: integer
+          format: int32
+        data:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/VendorResponse'
+      additionalProperties: false
     UpdateVendorInvoiceRequestModel:
       type: object
       properties:
@@ -489,85 +594,6 @@ components:
           items:
             $ref: '#/components/schemas/VendorPaymentInvoice'
       additionalProperties: false
-    CreateVendorPaymentModel:
-      required:
-      - invoices
-      - statusDate
-      - transactionNo
-      type: object
-      properties:
-        transactionNo:
-          maxLength: 10
-          minLength: 0
-          type: string
-          description: The transaction number for the payment.
-        paymentMethod:
-          type:
-          - string
-          - 'null'
-          description: 'The payment method used for the payment.
-
-            * Nuvei: ACH, CHECK'
-        statusDate:
-          type: string
-          description: The date the status of the payment was last updated.
-          format: date-time
-        payDate:
-          type:
-          - string
-          - 'null'
-          description: The date when the payment will be paid. If not provided, the <see cref="P:APARCommerceIntegration.Domain.RequestModels.CreateVendorPaymentModel.PaymentInitiatedDate">PaymentInitiatedDate</see> must be set.
-          format: date-time
-        paymentInitiatedDate:
-          type:
-          - string
-          - 'null'
-          description: The date when the payment process will be initiated or scheduled.
-          format: date-time
-        invoices:
-          type: array
-          items:
-            $ref: '#/components/schemas/InvoiceRequestModel'
-          description: The vendor invoices and amounts that will be paid with this payment.
-      additionalProperties: false
-    VendorResponse:
-      type: object
-      properties:
-        vendorId:
-          type:
-          - string
-          - 'null'
-        externalVendorId:
-          type:
-          - string
-          - 'null'
-        vendorName:
-          type:
-          - string
-          - 'null'
-        address:
-          $ref: '#/components/schemas/Address'
-        contactGivenName:
-          type:
-          - string
-          - 'null'
-        contactSurname:
-          type:
-          - string
-          - 'null'
-        emailAddress:
-          type:
-          - string
-          - 'null'
-        comment:
-          type:
-          - string
-          - 'null'
-        defaultPaymentMethod:
-          type:
-          - string
-          - 'null'
-      additionalProperties: false
     VendorInvoiceResponse:
       type: object
       properties:
@@ -626,67 +652,84 @@ components:
           - string
           - 'null'
       additionalProperties: false
-    VendorResponseListResponse:
+    VendorResponse:
       type: object
       properties:
-        count:
-          type: integer
-          format: int32
-        data:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/VendorResponse'
-      additionalProperties: false
-    CreateVendorInvoiceRequestModel:
-      required:
-      - amount
-      - date
-      - dueDate
-      - invoiceNo
-      type: object
-      properties:
-        invoiceNo:
-          maxLength: 200
-          minLength: 0
-          type: string
-        date:
-          type: string
-          format: date
-        dueDate:
-          type: string
-          format: date
-        amount:
-          type: number
-          format: double
-        balance:
-          type:
-          - number
-          - 'null'
-          format: double
-        discountAmount:
-          type:
-          - number
-          - 'null'
-          format: double
-        discountDate:
+        vendorId:
           type:
           - string
           - 'null'
-          format: date
+        externalVendorId:
+          type:
+          - string
+          - 'null'
+        vendorName:
+          type:
+          - string
+          - 'null'
+        address:
+          $ref: '#/components/schemas/Address'
+        contactGivenName:
+          type:
+          - string
+          - 'null'
+        contactSurname:
+          type:
+          - string
+          - 'null'
+        emailAddress:
+          type:
+          - string
+          - 'null'
         comment:
-          maxLength: 200
-          minLength: 0
           type:
           - string
           - 'null'
-        purchaseOrderNumber:
-          maxLength: 50
-          minLength: 0
+        defaultPaymentMethod:
           type:
           - string
           - 'null'
+      additionalProperties: false
+    CreateVendorPaymentModel:
+      required:
+      - invoices
+      - statusDate
+      - transactionNo
+      type: object
+      properties:
+        transactionNo:
+          maxLength: 10
+          minLength: 0
+          type: string
+          description: The transaction number for the payment.
+        paymentMethod:
+          type:
+          - string
+          - 'null'
+          description: 'The payment method used for the payment.
+
+            * Nuvei: ACH, CHECK'
+        statusDate:
+          type: string
+          description: The date the status of the payment was last updated.
+          format: date-time
+        payDate:
+          type:
+          - string
+          - 'null'
+          description: The date when the payment will be paid. If not provided, the <see cref="P:APARCommerceIntegration.Domain.RequestModels.CreateVendorPaymentModel.PaymentInitiatedDate">PaymentInitiatedDate</see> must be set.
+          format: date-time
+        paymentInitiatedDate:
+          type:
+          - string
+          - 'null'
+          description: The date when the payment process will be initiated or scheduled.
+          format: date-time
+        invoices:
+          type: array
+          items:
+            $ref: '#/components/schemas/InvoiceRequestModel'
+          description: The vendor invoices and amounts that will be paid with this payment.
       additionalProperties: false
     InvoiceRequestModel:
       required:
@@ -701,48 +744,18 @@ components:
           type: number
           format: double
       additionalProperties: false
-    VendorRequestModel:
-      required:
-      - address
-      - emailAddress
-      - vendorName
+    VendorPaymentInvoice:
       type: object
       properties:
-        externalVendorId:
-          maxLength: 50
-          minLength: 0
+        invoiceId:
           type:
           - string
           - 'null'
-        vendorName:
-          maxLength: 255
-          minLength: 0
-          type: string
-        address:
-          $ref: '#/components/schemas/Address'
-        contactGivenName:
-          maxLength: 50
-          minLength: 0
+        amount:
           type:
-          - string
+          - number
           - 'null'
-        contactSurname:
-          maxLength: 50
-          minLength: 0
-          type:
-          - string
-          - 'null'
-        emailAddress:
-          minLength: 1
-          type: string
-        comment:
-          type:
-          - string
-          - 'null'
-        defaultPaymentMethod:
-          type:
-          - string
-          - 'null'
+          format: double
       additionalProperties: false
     UpdateVendorRequestModel:
       type: object
@@ -781,19 +794,6 @@ components:
           type:
           - string
           - 'null'
-      additionalProperties: false
-    VendorPaymentInvoice:
-      type: object
-      properties:
-        invoiceId:
-          type:
-          - string
-          - 'null'
-        amount:
-          type:
-          - number
-          - 'null'
-          format: double
       additionalProperties: false
   securitySchemes:
     Bearer:

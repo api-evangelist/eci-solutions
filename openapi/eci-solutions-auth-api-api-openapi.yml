@@ -271,29 +271,24 @@ paths:
           description: Server Error
 components:
   schemas:
-    DeviceActivatedResponse:
+    DeviceCreateResponse:
       type: object
       properties:
+        code:
+          type:
+          - string
+          - 'null'
+          description: The device activation code to be displayed to the user
         id:
           type: string
-          description: The device unique ID
+          description: The device unique id
           format: uuid
-        isActivated:
-          type: boolean
-          description: Indicates if the device is activated
-        properties:
+        codeExpires:
           type:
-          - object
+          - string
           - 'null'
-          additionalProperties:
-            type: string
-          description: Additional information provided by the activator
-        credential:
-          allOf:
-          - $ref: '#/components/schemas/DeviceCredentialModel'
-          description: 'If the device activation requested an access token and refresh token
-
-            for the device, this property will contain the token information'
+          description: The expiration date/time of the activation code in UTC
+          format: date-time
       additionalProperties: false
     DeviceActivateRequestModel:
       required:
@@ -304,53 +299,31 @@ components:
           minLength: 1
           type: string
       additionalProperties: false
-    DeviceCredentialType:
-      enum:
-      - None
-      - Token
-      - Secret
-      - TokenAndSecret
-      type: string
-    DeviceCreateModel:
-      required:
-      - clientId
+    ProblemDetails:
       type: object
       properties:
-        clientId:
-          type: string
-          description: The client ID of the application registered to create devices.
-          format: uuid
-        credentialType:
-          allOf:
-          - $ref: '#/components/schemas/DeviceCredentialType'
-          description: 'The requested type of credential to obtain along with the device
-
-            registration. This is not required and will default to None.'
-        description:
-          maxLength: 100
+        type:
           type:
           - string
           - 'null'
-          description: 'A description of the device to be displayed to the
-
-            user who will authorize activation of the device.'
-        origin:
-          maxLength: 250
+        title:
           type:
           - string
           - 'null'
-          description: 'The domain origin, if applicable, of the device.
-
-            Will be displayed to the user who will authorize activation of the device.'
-        deviceType:
-          maxLength: 50
+        status:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        detail:
           type:
           - string
           - 'null'
-          description: 'An application specific identifier for the type of device.
-
-            Will be displayed to the user who will authorize activation of the device.'
-      additionalProperties: false
+        instance:
+          type:
+          - string
+          - 'null'
+      additionalProperties: {}
     DeviceCredentialModel:
       type: object
       properties:
@@ -401,6 +374,37 @@ components:
           - string
           - 'null'
       additionalProperties: false
+    DeviceActivatedResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The device unique ID
+          format: uuid
+        isActivated:
+          type: boolean
+          description: Indicates if the device is activated
+        properties:
+          type:
+          - object
+          - 'null'
+          additionalProperties:
+            type: string
+          description: Additional information provided by the activator
+        credential:
+          allOf:
+          - $ref: '#/components/schemas/DeviceCredentialModel'
+          description: 'If the device activation requested an access token and refresh token
+
+            for the device, this property will contain the token information'
+      additionalProperties: false
+    DeviceCredentialType:
+      enum:
+      - None
+      - Token
+      - Secret
+      - TokenAndSecret
+      type: string
     OAuthAccessTokenResponse:
       type: object
       properties:
@@ -420,49 +424,45 @@ components:
           - string
           - 'null'
       additionalProperties: false
-    ProblemDetails:
+    DeviceCreateModel:
+      required:
+      - clientId
       type: object
       properties:
-        type:
-          type:
-          - string
-          - 'null'
-        title:
-          type:
-          - string
-          - 'null'
-        status:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        detail:
-          type:
-          - string
-          - 'null'
-        instance:
-          type:
-          - string
-          - 'null'
-      additionalProperties: {}
-    DeviceCreateResponse:
-      type: object
-      properties:
-        code:
-          type:
-          - string
-          - 'null'
-          description: The device activation code to be displayed to the user
-        id:
+        clientId:
           type: string
-          description: The device unique id
+          description: The client ID of the application registered to create devices.
           format: uuid
-        codeExpires:
+        credentialType:
+          allOf:
+          - $ref: '#/components/schemas/DeviceCredentialType'
+          description: 'The requested type of credential to obtain along with the device
+
+            registration. This is not required and will default to None.'
+        description:
+          maxLength: 100
           type:
           - string
           - 'null'
-          description: The expiration date/time of the activation code in UTC
-          format: date-time
+          description: 'A description of the device to be displayed to the
+
+            user who will authorize activation of the device.'
+        origin:
+          maxLength: 250
+          type:
+          - string
+          - 'null'
+          description: 'The domain origin, if applicable, of the device.
+
+            Will be displayed to the user who will authorize activation of the device.'
+        deviceType:
+          maxLength: 50
+          type:
+          - string
+          - 'null'
+          description: 'An application specific identifier for the type of device.
+
+            Will be displayed to the user who will authorize activation of the device.'
       additionalProperties: false
   securitySchemes:
     oidc:

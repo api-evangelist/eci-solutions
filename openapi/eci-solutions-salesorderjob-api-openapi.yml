@@ -190,22 +190,8 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    SalesOrderJobListResponse:
-      type: object
-      properties:
-        data:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/SalesOrderJob'
-          readOnly: true
-        resultCount:
-          type: integer
-          format: int32
-      additionalProperties: false
-    Organization:
-      title: Organization
+    PartGroup:
+      title: PartGroup
       type: object
       properties:
         uniqueID:
@@ -213,47 +199,17 @@ components:
         rowVersion:
           type: integer
           format: int64
-        name:
+        partGroupID:
           type: string
-        organizationID:
+        parentPartGroupID:
           type: string
-        country:
+        description:
           type: string
         isActive:
           type: boolean
-        organizationTypes:
-          type: array
-          items:
-            type: integer
-            format: int32
-        phoneNumber:
+        inactiveDate:
           type: string
-        customerPaymentTermID:
-          type: string
-        customerTaxCodeID:
-          type: string
-        supplierPaymentTermID:
-          type: string
-        supplierTaxCodeID:
-          type: string
-        currencyCode:
-          type: string
-        websiteUrl:
-          type: string
-        comments:
-          type: string
-        salesAccountID:
-          type: string
-        leadTimeDays:
-          type: integer
-          format: int32
-        minimumOrderAmount:
-          type: number
-          format: double
-        customerStatus:
-          type: integer
-        supplierStatus:
-          type: integer
+          format: date
     Project:
       title: Project
       type: object
@@ -290,66 +246,6 @@ components:
           type: boolean
         customer:
           $ref: '#/components/schemas/Organization'
-    SalesOrder:
-      title: SalesOrder
-      type: object
-      properties:
-        uniqueID:
-          type: string
-        rowVersion:
-          type: integer
-          format: int64
-        salesOrderID:
-          type: string
-        customerID:
-          type: string
-        orderDate:
-          type: string
-          format: date
-        plantID:
-          type: string
-        projectID:
-          type: string
-        salesOrderType:
-          type: string
-        totalSalesAmount:
-          type: number
-          format: double
-        status:
-          type: string
-        originalOrderType:
-          type: string
-        quoteID:
-          type: string
-        closedDate:
-          type: string
-          format: date
-        customer:
-          $ref: '#/components/schemas/Organization'
-        plant:
-          $ref: '#/components/schemas/Plant'
-        project:
-          $ref: '#/components/schemas/Project'
-    PartGroup:
-      title: PartGroup
-      type: object
-      properties:
-        uniqueID:
-          type: string
-        rowVersion:
-          type: integer
-          format: int64
-        partGroupID:
-          type: string
-        parentPartGroupID:
-          type: string
-        description:
-          type: string
-        isActive:
-          type: boolean
-        inactiveDate:
-          type: string
-          format: date
     Plant:
       title: Plant
       type: object
@@ -363,46 +259,8 @@ components:
         rowVersion:
           type: integer
           format: int64
-    PartRevision:
-      title: PartRevision
-      type: object
-      properties:
-        partID:
-          type: string
-        partRevisionID:
-          type: string
-        shortDesc:
-          type: string
-        longDescText:
-          type: string
-        longDescFormatted:
-          type: string
-        uniqueID:
-          type: string
-        rowVersion:
-          type: integer
-          format: int64
-        partCost:
-          type: number
-          format: double
-        effectiveStartDate:
-          type: string
-          format: date
-        expirationEndDate:
-          type: string
-          format: date
-        supplierOrganizationID:
-          type: string
-        leadTime:
-          type: integer
-          format: int32
-        quantityOnHand:
-          type: number
-          format: double
-        pricingUnitOfMeasure:
-          type: string
-    SalesOrderDelivery:
-      title: SalesOrderDelivery
+    SalesOrderJob:
+      title: SalesOrderJob
       type: object
       properties:
         salesOrderID:
@@ -411,31 +269,16 @@ components:
           type: integer
         orderLineDelivery:
           type: string
-        promisedDate:
+        jobID:
           type: string
-          format: date-time
-        promisedQty:
-          type: number
-          format: double
-        shippedDate:
-          type: string
-          format: date-time
-        shippedQty:
-          type: number
-          format: double
+        orderJobSeq:
+          type: integer
+          format: int32
         uniqueID:
           type: string
         rowVersion:
           type: integer
           format: int64
-        deliveryTypeCode:
-          type: string
-        salesOrderType:
-          type: string
-        salesOrderJobs:
-          type: array
-          items:
-            $ref: '#/components/schemas/SalesOrderJob'
     SalesOrderLine:
       title: SalesOrderLine
       type: object
@@ -514,8 +357,48 @@ components:
           $ref: '#/components/schemas/PartRevision'
         partGroup:
           $ref: '#/components/schemas/PartGroup'
-    SalesOrderJob:
-      title: SalesOrderJob
+    SalesOrder:
+      title: SalesOrder
+      type: object
+      properties:
+        uniqueID:
+          type: string
+        rowVersion:
+          type: integer
+          format: int64
+        salesOrderID:
+          type: string
+        customerID:
+          type: string
+        orderDate:
+          type: string
+          format: date
+        plantID:
+          type: string
+        projectID:
+          type: string
+        salesOrderType:
+          type: string
+        totalSalesAmount:
+          type: number
+          format: double
+        status:
+          type: string
+        originalOrderType:
+          type: string
+        quoteID:
+          type: string
+        closedDate:
+          type: string
+          format: date
+        customer:
+          $ref: '#/components/schemas/Organization'
+        plant:
+          $ref: '#/components/schemas/Plant'
+        project:
+          $ref: '#/components/schemas/Project'
+    SalesOrderDelivery:
+      title: SalesOrderDelivery
       type: object
       properties:
         salesOrderID:
@@ -524,16 +407,133 @@ components:
           type: integer
         orderLineDelivery:
           type: string
-        jobID:
+        promisedDate:
           type: string
-        orderJobSeq:
-          type: integer
-          format: int32
+          format: date-time
+        promisedQty:
+          type: number
+          format: double
+        shippedDate:
+          type: string
+          format: date-time
+        shippedQty:
+          type: number
+          format: double
         uniqueID:
           type: string
         rowVersion:
           type: integer
           format: int64
+        deliveryTypeCode:
+          type: string
+        salesOrderType:
+          type: string
+        salesOrderJobs:
+          type: array
+          items:
+            $ref: '#/components/schemas/SalesOrderJob'
+    PartRevision:
+      title: PartRevision
+      type: object
+      properties:
+        partID:
+          type: string
+        partRevisionID:
+          type: string
+        shortDesc:
+          type: string
+        longDescText:
+          type: string
+        longDescFormatted:
+          type: string
+        uniqueID:
+          type: string
+        rowVersion:
+          type: integer
+          format: int64
+        partCost:
+          type: number
+          format: double
+        effectiveStartDate:
+          type: string
+          format: date
+        expirationEndDate:
+          type: string
+          format: date
+        supplierOrganizationID:
+          type: string
+        leadTime:
+          type: integer
+          format: int32
+        quantityOnHand:
+          type: number
+          format: double
+        pricingUnitOfMeasure:
+          type: string
+    SalesOrderJobListResponse:
+      type: object
+      properties:
+        data:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/SalesOrderJob'
+          readOnly: true
+        resultCount:
+          type: integer
+          format: int32
+      additionalProperties: false
+    Organization:
+      title: Organization
+      type: object
+      properties:
+        uniqueID:
+          type: string
+        rowVersion:
+          type: integer
+          format: int64
+        name:
+          type: string
+        organizationID:
+          type: string
+        country:
+          type: string
+        isActive:
+          type: boolean
+        organizationTypes:
+          type: array
+          items:
+            type: integer
+            format: int32
+        phoneNumber:
+          type: string
+        customerPaymentTermID:
+          type: string
+        customerTaxCodeID:
+          type: string
+        supplierPaymentTermID:
+          type: string
+        supplierTaxCodeID:
+          type: string
+        currencyCode:
+          type: string
+        websiteUrl:
+          type: string
+        comments:
+          type: string
+        salesAccountID:
+          type: string
+        leadTimeDays:
+          type: integer
+          format: int32
+        minimumOrderAmount:
+          type: number
+          format: double
+        customerStatus:
+          type: integer
+        supplierStatus:
+          type: integer
   securitySchemes:
     Bearer:
       type: oauth2

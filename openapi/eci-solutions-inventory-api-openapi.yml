@@ -253,6 +253,254 @@ paths:
           $ref: '#/components/responses/InternalServerError'
 components:
   schemas:
+    InventoryRead:
+      title: InventoryRead
+      properties:
+        statusOverwrite:
+          type: string
+          description: Current status of inventory. Will default to existing value if not provided.
+          enum:
+          - Available
+          - Unavailable
+          - Reserved
+          - Subject
+          - Firm
+          - Firm(R)
+          - Offer
+          - Closed
+          example: Available
+        plan:
+          type: string
+          example: E2
+          description: This field has to be set up in Lasso. It is matched to an existing option via the name. If no existing option is found, a new one is created. Will default to existing value if not provided.
+        squareFootage:
+          type: number
+          example: 1251
+          description: Will default to existing value if not provided.
+        patioSquareFootage:
+          type: number
+          example: 70
+          description: Will default to existing value if not provided.
+        colorScheme:
+          type: string
+          example: Beige
+          description: This field has to be set up in Lasso. It is matched to an existing option via the name. If no existing option is found, a new one is created. Will default to existing value if not provided.
+        maintenanceFee:
+          type: number
+          example: '351.12'
+          description: Will default to existing value if not provided.
+        floor:
+          type: number
+          example: 11
+          description: Will default to existing value if not provided.
+        bedrooms:
+          type: string
+          example: 2 Bedroom + Den
+          description: This field has to be set up in Lasso. It is matched to an existing option via the name. If no existing option is found, a new one is created. Will default to existing value if not provided.
+        bathrooms:
+          type: string
+          example: 2 1/2
+          description: Will default to existing value if not provided.
+        direction:
+          type: string
+          example: SE
+          description: This field has to be set up in Lasso. It is matched to an existing option via the name. If no existing option is found, a new one is created. Will default to existing value if not provided.
+        exposure:
+          type: string
+          example: South East
+          description: This field has to be set up in Lasso. It is matched to an existing option via the name. If no existing option is found, a new one is created. Will default to existing value if not provided.
+        definition:
+          type: string
+          enum:
+          - Unit
+          - Townhome
+          - Lot
+          - Homesite
+          example: Unit
+          description: Will default to existing value if not provided.
+        dates:
+          $ref: '#/components/schemas/Dates'
+        pricing:
+          $ref: '#/components/schemas/Pricing'
+        _links:
+          type: object
+          properties:
+            self:
+              type: string
+              example: /inventory/123-123
+            delete:
+              type: string
+              example: /inventory/123-123
+        inventoryId:
+          type: string
+          description: Lasso-internal inventory ID
+          example: 123
+        component:
+          $ref: '#/components/schemas/Component'
+        project:
+          $ref: '#/components/schemas/Project'
+        strataLot:
+          type: string
+          example: 123
+        inventoryNumber:
+          type: string
+          example: 123
+    Deposit:
+      title: Deposit
+      required:
+      - amount
+      - dueDate
+      properties:
+        depositId:
+          type: string
+          example: '123'
+        amount:
+          type: number
+          example: '145000'
+        dueDate:
+          type: string
+          format: date
+          example: '2017-08-30'
+        amountReceived:
+          type: number
+          example: '145000'
+        receivedDate:
+          type: string
+          format: date
+          example: '2017-09-10'
+    Note:
+      title: Note
+      type: object
+      required:
+      - note
+      properties:
+        noteId:
+          type: string
+          example: '123'
+        note:
+          type: string
+          example: Offered $10.000 credit
+        createdAt:
+          type: string
+          description: Date in the ISO 8601 UTC format
+          example: '2017-08-30T05:48:35Z'
+    RealtorCompensation:
+      type: object
+      properties:
+        bonuses:
+          type: array
+          items:
+            type: number
+            example: '10000.00'
+        percentages:
+          type: array
+          items:
+            type: object
+            properties:
+              cutOff:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    enum:
+                    - under
+                    - over
+                    example: under
+                  value:
+                    type: number
+                    example: '100000'
+              margin:
+                type: number
+                description: Percentage as fraction of 100 as float, e.g. '0.0125' => 1.25%
+                example: '0.022'
+    InventoryUpdate:
+      title: InventoryUpdate
+      properties:
+        statusOverwrite:
+          type: string
+          description: Current status of inventory. Will default to existing value if not provided.
+          enum:
+          - Available
+          - Unavailable
+          - Reserved
+          - Subject
+          - Firm
+          - Firm(R)
+          - Offer
+          - Closed
+          example: Available
+        plan:
+          type: string
+          example: E2
+          description: This field has to be set up in Lasso. It is matched to an existing option via the name. If no existing option is found, a new one is created. Will default to existing value if not provided.
+        squareFootage:
+          type: number
+          example: 1251
+          description: Will default to existing value if not provided.
+        patioSquareFootage:
+          type: number
+          example: 70
+          description: Will default to existing value if not provided.
+        colorScheme:
+          type: string
+          example: Beige
+          description: This field has to be set up in Lasso. It is matched to an existing option via the name. If no existing option is found, a new one is created. Will default to existing value if not provided.
+        maintenanceFee:
+          type: number
+          example: '351.12'
+          description: Will default to existing value if not provided.
+        floor:
+          type: number
+          example: 11
+          description: Will default to existing value if not provided.
+        bedrooms:
+          type: string
+          example: 2 Bedroom + Den
+          description: This field has to be set up in Lasso. It is matched to an existing option via the name. If no existing option is found, a new one is created. Will default to existing value if not provided.
+        bathrooms:
+          type: string
+          example: 2 1/2
+          description: Will default to existing value if not provided.
+        direction:
+          type: string
+          example: SE
+          description: This field has to be set up in Lasso. It is matched to an existing option via the name. If no existing option is found, a new one is created. Will default to existing value if not provided.
+        exposure:
+          type: string
+          example: South East
+          description: This field has to be set up in Lasso. It is matched to an existing option via the name. If no existing option is found, a new one is created. Will default to existing value if not provided.
+        definition:
+          type: string
+          enum:
+          - Unit
+          - Townhome
+          - Lot
+          - Homesite
+          example: Unit
+          description: Will default to existing value if not provided.
+        dates:
+          $ref: '#/components/schemas/Dates'
+        pricing:
+          $ref: '#/components/schemas/Pricing'
+        _links:
+          type: object
+          properties:
+            self:
+              type: string
+              example: /inventory/123-123
+            delete:
+              type: string
+              example: /inventory/123-123
+        strataLot:
+          type: string
+          example: 123
+          minLength: 1
+          maxLength: 15
+        inventoryNumber:
+          type: string
+          example: 123
+          minLength: 1
+          maxLength: 11
     StorageLocker:
       title: Storage Locker
       properties:
@@ -276,129 +524,6 @@ components:
         description:
           type: string
           example: Part of storage package
-    InventorySalesRep:
-      type: object
-      title: SalesRep Read Model
-      description: Describes a sales rep.
-      properties:
-        firstName:
-          type: string
-          example: John
-        lastName:
-          type: string
-          example: Doe
-    Subject:
-      type: object
-      required:
-      - purchaser
-      - subjectDate
-      - description
-      properties:
-        purchaser:
-          type: string
-          example: '123'
-          description: RegistrantId of a registrant assigned to the inventory
-        subjectDate:
-          type: string
-          format: date
-          example: '2017-08-14'
-        description:
-          type: string
-          example: Adjust doors that do not close properly
-        removed:
-          type: boolean
-          example: false
-        removalDate:
-          type: string
-          format: date
-          example: '2017-08-25'
-        removalDescription:
-          type: string
-          example: Contractor sanded doors, all close properly now
-    Realtor:
-      type: object
-      required:
-      - firstName
-      - lastName
-      - company
-      properties:
-        realtorId:
-          type: string
-          example: '123'
-        nameTitle:
-          type: string
-          example: Mrs
-        firstName:
-          type: string
-          example: Susan
-        lastName:
-          type: string
-          example: Smith
-        email:
-          type: string
-          example: susan.smith@example.com
-        fax:
-          type: string
-          example: (604) 123-1234
-        phone:
-          type: string
-          example: (604) 555-1234
-        company:
-          type: string
-          example: Realtor Inc
-        address:
-          type: string
-          example: 123 Street
-        city:
-          type: string
-          example: Vancouver
-        province:
-          type: string
-          example: BC
-        postalCode:
-          type: string
-          example: V6V1T1
-        country:
-          type: string
-          example: Canada
-        gender:
-          type: string
-          enum:
-          - unspecified
-          - male
-          - female
-          example: female
-        compensation:
-          $ref: '#/components/schemas/RealtorCompensation'
-    PricingRevision:
-      title: PricingRevision
-      type: object
-      required:
-      - name
-      - amount
-      properties:
-        name:
-          type: string
-          example: Adapt to higher mortgage rates
-        amount:
-          type: number
-          example: '-100000'
-    Note:
-      title: Note
-      type: object
-      required:
-      - note
-      properties:
-        noteId:
-          type: string
-          example: '123'
-        note:
-          type: string
-          example: Offered $10.000 credit
-        createdAt:
-          type: string
-          description: Date in the ISO 8601 UTC format
-          example: '2017-08-30T05:48:35Z'
     Project:
       title: Project
       type: object
@@ -407,6 +532,95 @@ components:
           type: string
           example: Birch Towers
         projectId:
+          type: string
+          example: 123
+    InventoryCreate:
+      title: InventoryCreate
+      required:
+      - strataLot
+      - inventoryNumber
+      properties:
+        statusOverwrite:
+          type: string
+          description: Current status of inventory. Will default to existing value if not provided.
+          enum:
+          - Available
+          - Unavailable
+          - Reserved
+          - Subject
+          - Firm
+          - Firm(R)
+          - Offer
+          - Closed
+          example: Available
+        plan:
+          type: string
+          example: E2
+          description: This field has to be set up in Lasso. It is matched to an existing option via the name. If no existing option is found, a new one is created. Will default to existing value if not provided.
+        squareFootage:
+          type: number
+          example: 1251
+          description: Will default to existing value if not provided.
+        patioSquareFootage:
+          type: number
+          example: 70
+          description: Will default to existing value if not provided.
+        colorScheme:
+          type: string
+          example: Beige
+          description: This field has to be set up in Lasso. It is matched to an existing option via the name. If no existing option is found, a new one is created. Will default to existing value if not provided.
+        maintenanceFee:
+          type: number
+          example: '351.12'
+          description: Will default to existing value if not provided.
+        floor:
+          type: number
+          example: 11
+          description: Will default to existing value if not provided.
+        bedrooms:
+          type: string
+          example: 2 Bedroom + Den
+          description: This field has to be set up in Lasso. It is matched to an existing option via the name. If no existing option is found, a new one is created. Will default to existing value if not provided.
+        bathrooms:
+          type: string
+          example: 2 1/2
+          description: Will default to existing value if not provided.
+        direction:
+          type: string
+          example: SE
+          description: This field has to be set up in Lasso. It is matched to an existing option via the name. If no existing option is found, a new one is created. Will default to existing value if not provided.
+        exposure:
+          type: string
+          example: South East
+          description: This field has to be set up in Lasso. It is matched to an existing option via the name. If no existing option is found, a new one is created. Will default to existing value if not provided.
+        definition:
+          type: string
+          enum:
+          - Unit
+          - Townhome
+          - Lot
+          - Homesite
+          example: Unit
+          description: Will default to existing value if not provided.
+        dates:
+          $ref: '#/components/schemas/Dates'
+        pricing:
+          $ref: '#/components/schemas/Pricing'
+        _links:
+          type: object
+          properties:
+            self:
+              type: string
+              example: /inventory/123-123
+            delete:
+              type: string
+              example: /inventory/123-123
+        component:
+          $ref: '#/components/schemas/Component'
+        strataLot:
+          type: string
+          example: 123
+        inventoryNumber:
           type: string
           example: 123
     ParkingStall:
@@ -478,6 +692,162 @@ components:
             update:
               type: string
               example: /inventory/123-123/dates
+    PricingRevision:
+      title: PricingRevision
+      type: object
+      required:
+      - name
+      - amount
+      properties:
+        name:
+          type: string
+          example: Adapt to higher mortgage rates
+        amount:
+          type: number
+          example: '-100000'
+    InventorySalesRep:
+      type: object
+      title: SalesRep Read Model
+      description: Describes a sales rep.
+      properties:
+        firstName:
+          type: string
+          example: John
+        lastName:
+          type: string
+          example: Doe
+    StandardError:
+      type: object
+      title: Standard Error
+      description: A standard error response format.
+      properties:
+        errorCode:
+          type: integer
+          example: 4xx
+        error:
+          type: string
+          description: A summary of the error
+          example: A summary of the error
+        errorMessage:
+          type: string
+          description: Details of the error
+          example: Details of the error
+    Realtor:
+      type: object
+      required:
+      - firstName
+      - lastName
+      - company
+      properties:
+        realtorId:
+          type: string
+          example: '123'
+        nameTitle:
+          type: string
+          example: Mrs
+        firstName:
+          type: string
+          example: Susan
+        lastName:
+          type: string
+          example: Smith
+        email:
+          type: string
+          example: susan.smith@example.com
+        fax:
+          type: string
+          example: (604) 123-1234
+        phone:
+          type: string
+          example: (604) 555-1234
+        company:
+          type: string
+          example: Realtor Inc
+        address:
+          type: string
+          example: 123 Street
+        city:
+          type: string
+          example: Vancouver
+        province:
+          type: string
+          example: BC
+        postalCode:
+          type: string
+          example: V6V1T1
+        country:
+          type: string
+          example: Canada
+        gender:
+          type: string
+          enum:
+          - unspecified
+          - male
+          - female
+          example: female
+        compensation:
+          $ref: '#/components/schemas/RealtorCompensation'
+    Component:
+      title: Component
+      type: object
+      properties:
+        name:
+          type: string
+          example: Birch Towers
+        componentId:
+          type: string
+          example: 123
+    BicycleLocker:
+      title: Bicycle Locker
+      properties:
+        uniqueId:
+          type: string
+          example: '077'
+        price:
+          type: number
+          example: '12000'
+        date:
+          type: string
+          format: date
+          example: '2017-08-30'
+        paymentReceivedDate:
+          type: string
+          format: date
+          example: '2017-08-30'
+        outsideOfContract:
+          type: boolean
+          example: true
+        description:
+          type: string
+          example: Part of storage package
+    Subject:
+      type: object
+      required:
+      - purchaser
+      - subjectDate
+      - description
+      properties:
+        purchaser:
+          type: string
+          example: '123'
+          description: RegistrantId of a registrant assigned to the inventory
+        subjectDate:
+          type: string
+          format: date
+          example: '2017-08-14'
+        description:
+          type: string
+          example: Adjust doors that do not close properly
+        removed:
+          type: boolean
+          example: false
+        removalDate:
+          type: string
+          format: date
+          example: '2017-08-25'
+        removalDescription:
+          type: string
+          example: Contractor sanded doors, all close properly now
     InventorySync:
       title: InventorySync
       properties:
@@ -613,287 +983,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Option'
-    StandardError:
-      type: object
-      title: Standard Error
-      description: A standard error response format.
-      properties:
-        errorCode:
-          type: integer
-          example: 4xx
-        error:
-          type: string
-          description: A summary of the error
-          example: A summary of the error
-        errorMessage:
-          type: string
-          description: Details of the error
-          example: Details of the error
-    InventoryRead:
-      title: InventoryRead
-      properties:
-        statusOverwrite:
-          type: string
-          description: Current status of inventory. Will default to existing value if not provided.
-          enum:
-          - Available
-          - Unavailable
-          - Reserved
-          - Subject
-          - Firm
-          - Firm(R)
-          - Offer
-          - Closed
-          example: Available
-        plan:
-          type: string
-          example: E2
-          description: This field has to be set up in Lasso. It is matched to an existing option via the name. If no existing option is found, a new one is created. Will default to existing value if not provided.
-        squareFootage:
-          type: number
-          example: 1251
-          description: Will default to existing value if not provided.
-        patioSquareFootage:
-          type: number
-          example: 70
-          description: Will default to existing value if not provided.
-        colorScheme:
-          type: string
-          example: Beige
-          description: This field has to be set up in Lasso. It is matched to an existing option via the name. If no existing option is found, a new one is created. Will default to existing value if not provided.
-        maintenanceFee:
-          type: number
-          example: '351.12'
-          description: Will default to existing value if not provided.
-        floor:
-          type: number
-          example: 11
-          description: Will default to existing value if not provided.
-        bedrooms:
-          type: string
-          example: 2 Bedroom + Den
-          description: This field has to be set up in Lasso. It is matched to an existing option via the name. If no existing option is found, a new one is created. Will default to existing value if not provided.
-        bathrooms:
-          type: string
-          example: 2 1/2
-          description: Will default to existing value if not provided.
-        direction:
-          type: string
-          example: SE
-          description: This field has to be set up in Lasso. It is matched to an existing option via the name. If no existing option is found, a new one is created. Will default to existing value if not provided.
-        exposure:
-          type: string
-          example: South East
-          description: This field has to be set up in Lasso. It is matched to an existing option via the name. If no existing option is found, a new one is created. Will default to existing value if not provided.
-        definition:
-          type: string
-          enum:
-          - Unit
-          - Townhome
-          - Lot
-          - Homesite
-          example: Unit
-          description: Will default to existing value if not provided.
-        dates:
-          $ref: '#/components/schemas/Dates'
-        pricing:
-          $ref: '#/components/schemas/Pricing'
-        _links:
-          type: object
-          properties:
-            self:
-              type: string
-              example: /inventory/123-123
-            delete:
-              type: string
-              example: /inventory/123-123
-        inventoryId:
-          type: string
-          description: Lasso-internal inventory ID
-          example: 123
-        component:
-          $ref: '#/components/schemas/Component'
-        project:
-          $ref: '#/components/schemas/Project'
-        strataLot:
-          type: string
-          example: 123
-        inventoryNumber:
-          type: string
-          example: 123
-    InventoryCreate:
-      title: InventoryCreate
-      required:
-      - strataLot
-      - inventoryNumber
-      properties:
-        statusOverwrite:
-          type: string
-          description: Current status of inventory. Will default to existing value if not provided.
-          enum:
-          - Available
-          - Unavailable
-          - Reserved
-          - Subject
-          - Firm
-          - Firm(R)
-          - Offer
-          - Closed
-          example: Available
-        plan:
-          type: string
-          example: E2
-          description: This field has to be set up in Lasso. It is matched to an existing option via the name. If no existing option is found, a new one is created. Will default to existing value if not provided.
-        squareFootage:
-          type: number
-          example: 1251
-          description: Will default to existing value if not provided.
-        patioSquareFootage:
-          type: number
-          example: 70
-          description: Will default to existing value if not provided.
-        colorScheme:
-          type: string
-          example: Beige
-          description: This field has to be set up in Lasso. It is matched to an existing option via the name. If no existing option is found, a new one is created. Will default to existing value if not provided.
-        maintenanceFee:
-          type: number
-          example: '351.12'
-          description: Will default to existing value if not provided.
-        floor:
-          type: number
-          example: 11
-          description: Will default to existing value if not provided.
-        bedrooms:
-          type: string
-          example: 2 Bedroom + Den
-          description: This field has to be set up in Lasso. It is matched to an existing option via the name. If no existing option is found, a new one is created. Will default to existing value if not provided.
-        bathrooms:
-          type: string
-          example: 2 1/2
-          description: Will default to existing value if not provided.
-        direction:
-          type: string
-          example: SE
-          description: This field has to be set up in Lasso. It is matched to an existing option via the name. If no existing option is found, a new one is created. Will default to existing value if not provided.
-        exposure:
-          type: string
-          example: South East
-          description: This field has to be set up in Lasso. It is matched to an existing option via the name. If no existing option is found, a new one is created. Will default to existing value if not provided.
-        definition:
-          type: string
-          enum:
-          - Unit
-          - Townhome
-          - Lot
-          - Homesite
-          example: Unit
-          description: Will default to existing value if not provided.
-        dates:
-          $ref: '#/components/schemas/Dates'
-        pricing:
-          $ref: '#/components/schemas/Pricing'
-        _links:
-          type: object
-          properties:
-            self:
-              type: string
-              example: /inventory/123-123
-            delete:
-              type: string
-              example: /inventory/123-123
-        component:
-          $ref: '#/components/schemas/Component'
-        strataLot:
-          type: string
-          example: 123
-        inventoryNumber:
-          type: string
-          example: 123
-    Deposit:
-      title: Deposit
-      required:
-      - amount
-      - dueDate
-      properties:
-        depositId:
-          type: string
-          example: '123'
-        amount:
-          type: number
-          example: '145000'
-        dueDate:
-          type: string
-          format: date
-          example: '2017-08-30'
-        amountReceived:
-          type: number
-          example: '145000'
-        receivedDate:
-          type: string
-          format: date
-          example: '2017-09-10'
-    RealtorCompensation:
-      type: object
-      properties:
-        bonuses:
-          type: array
-          items:
-            type: number
-            example: '10000.00'
-        percentages:
-          type: array
-          items:
-            type: object
-            properties:
-              cutOff:
-                type: object
-                properties:
-                  type:
-                    type: string
-                    enum:
-                    - under
-                    - over
-                    example: under
-                  value:
-                    type: number
-                    example: '100000'
-              margin:
-                type: number
-                description: Percentage as fraction of 100 as float, e.g. '0.0125' => 1.25%
-                example: '0.022'
-    Pricing:
-      title: Pricing
-      type: object
-      description: Sets the pricing information for the inventory in Lasso. Setting all fields to 0 except the `initialPrice` allows you to specify an exact sales price.
-      required:
-      - initialPrice
-      properties:
-        initialPrice:
-          type: number
-          description: Base price of inventory
-          example: '4300000'
-        adjustedGrossPrice:
-          type: number
-          example: '-50000'
-        offTheTopDiscount:
-          type: number
-          example: '-10000'
-        inLieuOfIncentive:
-          type: number
-          example: '10000'
-        credit:
-          type: number
-          example: '25000'
-        _links:
-          type: object
-          properties:
-            self:
-              type: string
-              example: /inventory/123-123/pricing
-            update:
-              type: string
-              example: /inventory/123-123/pricing
     InventoryFull:
       title: InventoryFull
       properties:
@@ -1042,127 +1131,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Option'
-    Component:
-      title: Component
-      type: object
-      properties:
-        name:
-          type: string
-          example: Birch Towers
-        componentId:
-          type: string
-          example: 123
-    BicycleLocker:
-      title: Bicycle Locker
-      properties:
-        uniqueId:
-          type: string
-          example: '077'
-        price:
-          type: number
-          example: '12000'
-        date:
-          type: string
-          format: date
-          example: '2017-08-30'
-        paymentReceivedDate:
-          type: string
-          format: date
-          example: '2017-08-30'
-        outsideOfContract:
-          type: boolean
-          example: true
-        description:
-          type: string
-          example: Part of storage package
-    InventoryUpdate:
-      title: InventoryUpdate
-      properties:
-        statusOverwrite:
-          type: string
-          description: Current status of inventory. Will default to existing value if not provided.
-          enum:
-          - Available
-          - Unavailable
-          - Reserved
-          - Subject
-          - Firm
-          - Firm(R)
-          - Offer
-          - Closed
-          example: Available
-        plan:
-          type: string
-          example: E2
-          description: This field has to be set up in Lasso. It is matched to an existing option via the name. If no existing option is found, a new one is created. Will default to existing value if not provided.
-        squareFootage:
-          type: number
-          example: 1251
-          description: Will default to existing value if not provided.
-        patioSquareFootage:
-          type: number
-          example: 70
-          description: Will default to existing value if not provided.
-        colorScheme:
-          type: string
-          example: Beige
-          description: This field has to be set up in Lasso. It is matched to an existing option via the name. If no existing option is found, a new one is created. Will default to existing value if not provided.
-        maintenanceFee:
-          type: number
-          example: '351.12'
-          description: Will default to existing value if not provided.
-        floor:
-          type: number
-          example: 11
-          description: Will default to existing value if not provided.
-        bedrooms:
-          type: string
-          example: 2 Bedroom + Den
-          description: This field has to be set up in Lasso. It is matched to an existing option via the name. If no existing option is found, a new one is created. Will default to existing value if not provided.
-        bathrooms:
-          type: string
-          example: 2 1/2
-          description: Will default to existing value if not provided.
-        direction:
-          type: string
-          example: SE
-          description: This field has to be set up in Lasso. It is matched to an existing option via the name. If no existing option is found, a new one is created. Will default to existing value if not provided.
-        exposure:
-          type: string
-          example: South East
-          description: This field has to be set up in Lasso. It is matched to an existing option via the name. If no existing option is found, a new one is created. Will default to existing value if not provided.
-        definition:
-          type: string
-          enum:
-          - Unit
-          - Townhome
-          - Lot
-          - Homesite
-          example: Unit
-          description: Will default to existing value if not provided.
-        dates:
-          $ref: '#/components/schemas/Dates'
-        pricing:
-          $ref: '#/components/schemas/Pricing'
-        _links:
-          type: object
-          properties:
-            self:
-              type: string
-              example: /inventory/123-123
-            delete:
-              type: string
-              example: /inventory/123-123
-        strataLot:
-          type: string
-          example: 123
-          minLength: 1
-          maxLength: 15
-        inventoryNumber:
-          type: string
-          example: 123
-          minLength: 1
-          maxLength: 11
     Option:
       type: object
       required:
@@ -1189,11 +1157,49 @@ components:
         outsideContract:
           type: boolean
           example: true
+    Pricing:
+      title: Pricing
+      type: object
+      description: Sets the pricing information for the inventory in Lasso. Setting all fields to 0 except the `initialPrice` allows you to specify an exact sales price.
+      required:
+      - initialPrice
+      properties:
+        initialPrice:
+          type: number
+          description: Base price of inventory
+          example: '4300000'
+        adjustedGrossPrice:
+          type: number
+          example: '-50000'
+        offTheTopDiscount:
+          type: number
+          example: '-10000'
+        inLieuOfIncentive:
+          type: number
+          example: '10000'
+        credit:
+          type: number
+          example: '25000'
+        _links:
+          type: object
+          properties:
+            self:
+              type: string
+              example: /inventory/123-123/pricing
+            update:
+              type: string
+              example: /inventory/123-123/pricing
   responses:
     InternalServerError:
       description: Receiving a 5xx response indicates an error on Lasso's end. Please contact us to report the problem
     NotFound:
       description: The specified resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/StandardError'
+    Unauthorized:
+      description: The request has not been fulfilled because it lacks valid authentication credentials
       content:
         application/json:
           schema:
@@ -1229,18 +1235,6 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/StandardError'
-    ErrorInventoryCannotBeDeleted:
-      description: The inventory you tried to delete was either "locked" or its status is not "Available"
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/StandardError'
-    Forbidden:
-      description: The provided authentication credentials does not have sufficient privileges to access this resource
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/StandardError'
     BadRequest:
       description: 'The request could not be processed due to invalid input:
 
@@ -1262,8 +1256,14 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/StandardError'
-    Unauthorized:
-      description: The request has not been fulfilled because it lacks valid authentication credentials
+    Forbidden:
+      description: The provided authentication credentials does not have sufficient privileges to access this resource
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/StandardError'
+    ErrorInventoryCannotBeDeleted:
+      description: The inventory you tried to delete was either "locked" or its status is not "Available"
       content:
         application/json:
           schema:

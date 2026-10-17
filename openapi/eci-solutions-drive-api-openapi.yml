@@ -104,6 +104,23 @@ paths:
                 $ref: '#/components/schemas/ProblemDetails'
 components:
   schemas:
+    DriveItemResponseListResponse:
+      type: object
+      properties:
+        value:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/DriveItemResponse'
+          description: Response value, containing a list of T items
+        nextPageToken:
+          type:
+          - string
+          - 'null'
+          description: The next page token
+      additionalProperties: false
+      description: Response for a list of T items
     DriveItemResponse:
       type: object
       properties:
@@ -145,23 +162,31 @@ components:
           description: Gets or sets the web URL of the drive item. This can be null.
       additionalProperties: false
       description: Response for the GetDriveItemsRequest, representing a drive item
-    DriveItemResponseListResponse:
+    ProblemDetails:
       type: object
       properties:
-        value:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/DriveItemResponse'
-          description: Response value, containing a list of T items
-        nextPageToken:
+        type:
           type:
           - string
           - 'null'
-          description: The next page token
-      additionalProperties: false
-      description: Response for a list of T items
+        title:
+          type:
+          - string
+          - 'null'
+        status:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        detail:
+          type:
+          - string
+          - 'null'
+        instance:
+          type:
+          - string
+          - 'null'
+      additionalProperties: {}
     GetDrivesResponse:
       type: object
       properties:
@@ -210,31 +235,6 @@ components:
           description: The WebUrl of the drive
       additionalProperties: false
       description: Custom Drive object
-    ProblemDetails:
-      type: object
-      properties:
-        type:
-          type:
-          - string
-          - 'null'
-        title:
-          type:
-          - string
-          - 'null'
-        status:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        detail:
-          type:
-          - string
-          - 'null'
-        instance:
-          type:
-          - string
-          - 'null'
-      additionalProperties: {}
   securitySchemes:
     Bearer:
       type: oauth2

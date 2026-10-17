@@ -185,54 +185,31 @@ paths:
                 $ref: '#/components/schemas/ProblemDetails'
 components:
   schemas:
-    DeviceModelCountResponse:
+    ProblemDetails:
       type: object
       properties:
-        count:
-          type: integer
-          format: int64
-        value:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/DeviceModel'
-      additionalProperties: false
-    DeviceAuthorizationModel:
-      required:
-      - code
-      type: object
-      properties:
-        code:
-          minLength: 1
-          type: string
-          description: The activation code displayed on the device.
-        companyId:
+        type:
           type:
           - string
           - 'null'
-          description: "The Company ID of the Customer that the device is being activated for, or a string in the format 'PREFIX:VALUE' where prefix\nis CustomerID, NexusID, or a customer alias value available in Nexus by which the company can be \nidentified."
-        properties:
+        title:
           type:
-          - object
+          - string
           - 'null'
-          additionalProperties:
-            type: string
-          description: Application specific to provide the device on activation
-        credential:
-          allOf:
-          - $ref: '#/components/schemas/DeviceCredentialModel'
-          description: 'If set, this credential will be provided to the device
-
-            on activation.'
-      additionalProperties: false
-    DeviceCredentialType:
-      enum:
-      - None
-      - Token
-      - Secret
-      - TokenAndSecret
-      type: string
+        status:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        detail:
+          type:
+          - string
+          - 'null'
+        instance:
+          type:
+          - string
+          - 'null'
+      additionalProperties: {}
     DeviceCredentialModel:
       type: object
       properties:
@@ -283,31 +260,54 @@ components:
           - string
           - 'null'
       additionalProperties: false
-    ProblemDetails:
+    DeviceCredentialType:
+      enum:
+      - None
+      - Token
+      - Secret
+      - TokenAndSecret
+      type: string
+    DeviceModelCountResponse:
       type: object
       properties:
-        type:
+        count:
+          type: integer
+          format: int64
+        value:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/DeviceModel'
+      additionalProperties: false
+    DeviceAuthorizationModel:
+      required:
+      - code
+      type: object
+      properties:
+        code:
+          minLength: 1
+          type: string
+          description: The activation code displayed on the device.
+        companyId:
           type:
           - string
           - 'null'
-        title:
+          description: "The Company ID of the Customer that the device is being activated for, or a string in the format 'PREFIX:VALUE' where prefix\nis CustomerID, NexusID, or a customer alias value available in Nexus by which the company can be \nidentified."
+        properties:
           type:
-          - string
+          - object
           - 'null'
-        status:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        detail:
-          type:
-          - string
-          - 'null'
-        instance:
-          type:
-          - string
-          - 'null'
-      additionalProperties: {}
+          additionalProperties:
+            type: string
+          description: Application specific to provide the device on activation
+        credential:
+          allOf:
+          - $ref: '#/components/schemas/DeviceCredentialModel'
+          description: 'If set, this credential will be provided to the device
+
+            on activation.'
+      additionalProperties: false
     DeviceModel:
       type: object
       properties:

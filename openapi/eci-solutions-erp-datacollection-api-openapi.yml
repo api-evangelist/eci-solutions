@@ -1974,21 +1974,18 @@ paths:
                 $ref: '#/components/schemas/APIResponseMessageDto'
 components:
   schemas:
-    MesTimecardDto:
+    ERPResponseMessageDto_IList_ERPTimecardLineDto:
       type: object
       properties:
-        employeeId:
-          type: string
-        timecardDate:
-          type: string
-          format: date-time
-        shiftID:
-          type: integer
-          format: int32
-        timecardLines:
+        responseInfo:
+          $ref: '#/components/schemas/APIResponseMessageDto'
+        returnObject:
           type: array
           items:
-            $ref: '#/components/schemas/MesTimecardLineDto'
+            $ref: '#/components/schemas/ERPTimecardLineDto'
+        recordCount:
+          type: integer
+          format: int32
     ERPResponseMessageDto_IList_ERPIndirectLaborCodeDto:
       type: object
       properties:
@@ -2034,38 +2031,21 @@ components:
           format: double
         comments:
           type: string
-    ERPResponseMessageDto_ERPTimecardDto:
-      type: object
-      properties:
-        responseInfo:
-          $ref: '#/components/schemas/APIResponseMessageDto'
-        returnObject:
-          $ref: '#/components/schemas/ERPTimecardDto'
-        recordCount:
-          type: integer
-          format: int32
-    ERPResponseMessageDto_IList_ERPExpenseDto:
-      type: object
-      properties:
-        responseInfo:
-          $ref: '#/components/schemas/APIResponseMessageDto'
-        returnObject:
-          type: array
-          items:
-            $ref: '#/components/schemas/ERPExpenseDto'
-        recordCount:
-          type: integer
-          format: int32
-    Warning:
-      type: object
-      properties:
-        innerText:
-          type: string
     Error:
       type: object
       properties:
         innerText:
           type: string
+    ERPResponseMessageDto_ERPTimecardLineDto:
+      type: object
+      properties:
+        responseInfo:
+          $ref: '#/components/schemas/APIResponseMessageDto'
+        returnObject:
+          $ref: '#/components/schemas/ERPTimecardLineDto'
+        recordCount:
+          type: integer
+          format: int32
     ERPExpenseDto:
       required:
       - lmxExpenseID
@@ -2088,7 +2068,26 @@ components:
         lmxRowVersion:
           type: integer
           format: int64
-    ERPResponseMessageDto_IList_ERPTimecardLineDto:
+    APIResponseMessageDto:
+      type: object
+      properties:
+        description:
+          type: string
+        status:
+          type: string
+        payloadID:
+          type: string
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+          readOnly: true
+        warnings:
+          type: array
+          items:
+            $ref: '#/components/schemas/Warning'
+          readOnly: true
+    ERPResponseMessageDto_IList_ERPExpenseDto:
       type: object
       properties:
         responseInfo:
@@ -2096,32 +2095,15 @@ components:
         returnObject:
           type: array
           items:
-            $ref: '#/components/schemas/ERPTimecardLineDto'
+            $ref: '#/components/schemas/ERPExpenseDto'
         recordCount:
           type: integer
           format: int32
-    ERPResponseMessageDto_IList_ERPTimecardDto:
+    Warning:
       type: object
       properties:
-        responseInfo:
-          $ref: '#/components/schemas/APIResponseMessageDto'
-        returnObject:
-          type: array
-          items:
-            $ref: '#/components/schemas/ERPTimecardDto'
-        recordCount:
-          type: integer
-          format: int32
-    ERPResponseMessageDto_ERPExpenseDto:
-      type: object
-      properties:
-        responseInfo:
-          $ref: '#/components/schemas/APIResponseMessageDto'
-        returnObject:
-          $ref: '#/components/schemas/ERPExpenseDto'
-        recordCount:
-          type: integer
-          format: int32
+        innerText:
+          type: string
     ERPResponseMessageDto_MesIntegrationTransactionQueueInformationDto:
       type: object
       properties:
@@ -2132,13 +2114,13 @@ components:
         recordCount:
           type: integer
           format: int32
-    ERPResponseMessageDto_ERPTimecardLineDto:
+    ERPResponseMessageDto_ERPExpenseDto:
       type: object
       properties:
         responseInfo:
           $ref: '#/components/schemas/APIResponseMessageDto'
         returnObject:
-          $ref: '#/components/schemas/ERPTimecardLineDto'
+          $ref: '#/components/schemas/ERPExpenseDto'
         recordCount:
           type: integer
           format: int32
@@ -2281,55 +2263,79 @@ components:
         lmpUtcOffset:
           type: integer
           format: int32
-    APIResponseMessageDto:
+    ERPResponseMessageDto_ERPTimecardDto:
       type: object
       properties:
-        description:
-          type: string
-        status:
-          type: string
-        payloadID:
-          type: string
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/Error'
-          readOnly: true
-        warnings:
-          type: array
-          items:
-            $ref: '#/components/schemas/Warning'
-          readOnly: true
-    ERPIndirectLaborCodeDto:
-      required:
-      - lmiDescription
-      - lmiIndirectLaborID
+        responseInfo:
+          $ref: '#/components/schemas/APIResponseMessageDto'
+        returnObject:
+          $ref: '#/components/schemas/ERPTimecardDto'
+        recordCount:
+          type: integer
+          format: int32
+    MesIntegrationTransactionQueueInformationDto:
       type: object
       properties:
-        lmiCreatedBy:
+        itqApIAction:
           type: string
-        lmiCreatedDate:
+        itqCreatedBy:
+          type: string
+        itqCreatedDate:
           type: string
           format: date-time
-        lmiDescription:
+        itqEntityType:
           type: string
-        lmiUniqueID:
+        itqUniqueID:
           type: string
           format: uuid
           example: 00000000-0000-0000-0000-000000000000
-        lmiInactiveDate:
+        itqErrorCode:
+          type: string
+        itqErrorMessage:
+          type: string
+        itqIntegrationType:
+          type: string
+        itqNextRetryTime:
           type: string
           format: date-time
-        lmiIndirectLaborID:
+        itqParentUniqueID:
           type: string
-        lmiIndirectLaborType:
+          format: uuid
+          example: 00000000-0000-0000-0000-000000000000
+        itqRequest:
+          type: string
+        itqResponse:
+          type: string
+        itqRetryCount:
           type: integer
           format: int32
-        lmiInactive:
-          type: boolean
-        lmiRowVersion:
+        itqSourceTableName:
+          type: string
+        itqSourceTableUniqueID:
+          type: string
+          format: uuid
+          example: 00000000-0000-0000-0000-000000000000
+        itqStatus:
+          type: string
+        itqStatusUpdatedDate:
+          type: string
+          format: date-time
+        itqTransactionType:
+          type: string
+        customFields:
+          type: object
+          additionalProperties:
+            type: object
+    ERPResponseMessageDto_ERPIndirectLaborCodeDto:
+      type: object
+      properties:
+        responseInfo:
+          $ref: '#/components/schemas/APIResponseMessageDto'
+        returnObject:
+          $ref: '#/components/schemas/ERPIndirectLaborCodeDto'
+        recordCount:
           type: integer
-          format: int64
+          format: int32
     ERPTimecardLineDto:
       required:
       - lmlEmployeeID
@@ -2461,69 +2467,63 @@ components:
         lmlWorkType:
           type: integer
           format: int32
-    ERPResponseMessageDto_ERPIndirectLaborCodeDto:
+    ERPIndirectLaborCodeDto:
+      required:
+      - lmiDescription
+      - lmiIndirectLaborID
+      type: object
+      properties:
+        lmiCreatedBy:
+          type: string
+        lmiCreatedDate:
+          type: string
+          format: date-time
+        lmiDescription:
+          type: string
+        lmiUniqueID:
+          type: string
+          format: uuid
+          example: 00000000-0000-0000-0000-000000000000
+        lmiInactiveDate:
+          type: string
+          format: date-time
+        lmiIndirectLaborID:
+          type: string
+        lmiIndirectLaborType:
+          type: integer
+          format: int32
+        lmiInactive:
+          type: boolean
+        lmiRowVersion:
+          type: integer
+          format: int64
+    MesTimecardDto:
+      type: object
+      properties:
+        employeeId:
+          type: string
+        timecardDate:
+          type: string
+          format: date-time
+        shiftID:
+          type: integer
+          format: int32
+        timecardLines:
+          type: array
+          items:
+            $ref: '#/components/schemas/MesTimecardLineDto'
+    ERPResponseMessageDto_IList_ERPTimecardDto:
       type: object
       properties:
         responseInfo:
           $ref: '#/components/schemas/APIResponseMessageDto'
         returnObject:
-          $ref: '#/components/schemas/ERPIndirectLaborCodeDto'
+          type: array
+          items:
+            $ref: '#/components/schemas/ERPTimecardDto'
         recordCount:
           type: integer
           format: int32
-    MesIntegrationTransactionQueueInformationDto:
-      type: object
-      properties:
-        itqApIAction:
-          type: string
-        itqCreatedBy:
-          type: string
-        itqCreatedDate:
-          type: string
-          format: date-time
-        itqEntityType:
-          type: string
-        itqUniqueID:
-          type: string
-          format: uuid
-          example: 00000000-0000-0000-0000-000000000000
-        itqErrorCode:
-          type: string
-        itqErrorMessage:
-          type: string
-        itqIntegrationType:
-          type: string
-        itqNextRetryTime:
-          type: string
-          format: date-time
-        itqParentUniqueID:
-          type: string
-          format: uuid
-          example: 00000000-0000-0000-0000-000000000000
-        itqRequest:
-          type: string
-        itqResponse:
-          type: string
-        itqRetryCount:
-          type: integer
-          format: int32
-        itqSourceTableName:
-          type: string
-        itqSourceTableUniqueID:
-          type: string
-          format: uuid
-          example: 00000000-0000-0000-0000-000000000000
-        itqStatus:
-          type: string
-        itqStatusUpdatedDate:
-          type: string
-          format: date-time
-        itqTransactionType:
-          type: string
-        customFields:
-          type: object
-          additionalProperties:
-            type: object
   securitySchemes:
     oauth2:
       type: oauth2

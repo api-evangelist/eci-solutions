@@ -1858,15 +1858,13 @@ paths:
                 $ref: '#/components/schemas/APIResponseMessageDto'
 components:
   schemas:
-    ERPResponseMessageDto_IList_ERPDocumentLinkDto:
+    ERPResponseMessageDto_ERPAttachmentMemoDto:
       type: object
       properties:
         responseInfo:
           $ref: '#/components/schemas/APIResponseMessageDto'
         returnObject:
-          type: array
-          items:
-            $ref: '#/components/schemas/ERPDocumentLinkDto'
+          $ref: '#/components/schemas/ERPAttachmentMemoDto'
         recordCount:
           type: integer
           format: int32
@@ -1896,23 +1894,6 @@ components:
         cmtRowVersion:
           type: integer
           format: int64
-    ERPResponseMessageDto_IList_ERPAttachmentTypeDto:
-      type: object
-      properties:
-        responseInfo:
-          $ref: '#/components/schemas/APIResponseMessageDto'
-        returnObject:
-          type: array
-          items:
-            $ref: '#/components/schemas/ERPAttachmentTypeDto'
-        recordCount:
-          type: integer
-          format: int32
-    Error:
-      type: object
-      properties:
-        innerText:
-          type: string
     ERPResponseMessageDto_IList_ERPAttachmentDto:
       type: object
       properties:
@@ -1922,57 +1903,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ERPAttachmentDto'
-        recordCount:
-          type: integer
-          format: int32
-    ERPResponseMessageDto_IList_ERPAttachmentMemoDto:
-      type: object
-      properties:
-        responseInfo:
-          $ref: '#/components/schemas/APIResponseMessageDto'
-        returnObject:
-          type: array
-          items:
-            $ref: '#/components/schemas/ERPAttachmentMemoDto'
-        recordCount:
-          type: integer
-          format: int32
-    APIResponseMessageDto:
-      type: object
-      properties:
-        description:
-          type: string
-        status:
-          type: string
-        payloadID:
-          type: string
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/Error'
-          readOnly: true
-        warnings:
-          type: array
-          items:
-            $ref: '#/components/schemas/Warning'
-          readOnly: true
-    ERPResponseMessageDto_ERPAttachmentDto:
-      type: object
-      properties:
-        responseInfo:
-          $ref: '#/components/schemas/APIResponseMessageDto'
-        returnObject:
-          $ref: '#/components/schemas/ERPAttachmentDto'
-        recordCount:
-          type: integer
-          format: int32
-    ERPResponseMessageDto_ERPDocumentLinkDto:
-      type: object
-      properties:
-        responseInfo:
-          $ref: '#/components/schemas/APIResponseMessageDto'
-        returnObject:
-          $ref: '#/components/schemas/ERPDocumentLinkDto'
         recordCount:
           type: integer
           format: int32
@@ -2026,50 +1956,16 @@ components:
           format: int32
         xalType:
           type: string
-    ERPResponseMessageDto_ERPAttachmentTypeDto:
+    ERPResponseMessageDto_ERPDocumentLinkDto:
       type: object
       properties:
         responseInfo:
           $ref: '#/components/schemas/APIResponseMessageDto'
         returnObject:
-          $ref: '#/components/schemas/ERPAttachmentTypeDto'
+          $ref: '#/components/schemas/ERPDocumentLinkDto'
         recordCount:
           type: integer
           format: int32
-    ERPAttachmentMemoDto:
-      required:
-      - cmqAttachmentID
-      - cmqMemoDate
-      - cmqAttachmentMemoID
-      - cmqShortDescription
-      type: object
-      properties:
-        cmqAttachmentID:
-          type: string
-        cmqCreatedBy:
-          type: string
-        cmqCreatedDate:
-          type: string
-          format: date-time
-        cmqUniqueID:
-          type: string
-          format: uuid
-          example: 00000000-0000-0000-0000-000000000000
-        cmqLongDescriptionRtf:
-          type: string
-        cmqLongDescriptionText:
-          type: string
-        cmqMemoDate:
-          type: string
-          format: date-time
-        cmqRowVersion:
-          type: integer
-          format: int64
-        cmqAttachmentMemoID:
-          type: integer
-          format: int32
-        cmqShortDescription:
-          type: string
     ERPAttachmentDto:
       required:
       - cmaAttachmentID
@@ -2170,13 +2066,44 @@ components:
         cmaWorkFlowLineID:
           type: integer
           format: int32
-    ERPResponseMessageDto_ERPAttachmentMemoDto:
+    APIResponseMessageDto:
+      type: object
+      properties:
+        description:
+          type: string
+        status:
+          type: string
+        payloadID:
+          type: string
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+          readOnly: true
+        warnings:
+          type: array
+          items:
+            $ref: '#/components/schemas/Warning'
+          readOnly: true
+    ERPResponseMessageDto_ERPAttachmentDto:
       type: object
       properties:
         responseInfo:
           $ref: '#/components/schemas/APIResponseMessageDto'
         returnObject:
-          $ref: '#/components/schemas/ERPAttachmentMemoDto'
+          $ref: '#/components/schemas/ERPAttachmentDto'
+        recordCount:
+          type: integer
+          format: int32
+    ERPResponseMessageDto_IList_ERPAttachmentTypeDto:
+      type: object
+      properties:
+        responseInfo:
+          $ref: '#/components/schemas/APIResponseMessageDto'
+        returnObject:
+          type: array
+          items:
+            $ref: '#/components/schemas/ERPAttachmentTypeDto'
         recordCount:
           type: integer
           format: int32
@@ -2185,6 +2112,79 @@ components:
       properties:
         innerText:
           type: string
+    ERPAttachmentMemoDto:
+      required:
+      - cmqAttachmentID
+      - cmqMemoDate
+      - cmqAttachmentMemoID
+      - cmqShortDescription
+      type: object
+      properties:
+        cmqAttachmentID:
+          type: string
+        cmqCreatedBy:
+          type: string
+        cmqCreatedDate:
+          type: string
+          format: date-time
+        cmqUniqueID:
+          type: string
+          format: uuid
+          example: 00000000-0000-0000-0000-000000000000
+        cmqLongDescriptionRtf:
+          type: string
+        cmqLongDescriptionText:
+          type: string
+        cmqMemoDate:
+          type: string
+          format: date-time
+        cmqRowVersion:
+          type: integer
+          format: int64
+        cmqAttachmentMemoID:
+          type: integer
+          format: int32
+        cmqShortDescription:
+          type: string
+    ERPResponseMessageDto_IList_ERPDocumentLinkDto:
+      type: object
+      properties:
+        responseInfo:
+          $ref: '#/components/schemas/APIResponseMessageDto'
+        returnObject:
+          type: array
+          items:
+            $ref: '#/components/schemas/ERPDocumentLinkDto'
+        recordCount:
+          type: integer
+          format: int32
+    Error:
+      type: object
+      properties:
+        innerText:
+          type: string
+    ERPResponseMessageDto_ERPAttachmentTypeDto:
+      type: object
+      properties:
+        responseInfo:
+          $ref: '#/components/schemas/APIResponseMessageDto'
+        returnObject:
+          $ref: '#/components/schemas/ERPAttachmentTypeDto'
+        recordCount:
+          type: integer
+          format: int32
+    ERPResponseMessageDto_IList_ERPAttachmentMemoDto:
+      type: object
+      properties:
+        responseInfo:
+          $ref: '#/components/schemas/APIResponseMessageDto'
+        returnObject:
+          type: array
+          items:
+            $ref: '#/components/schemas/ERPAttachmentMemoDto'
+        recordCount:
+          type: integer
+          format: int32
   securitySchemes:
     oauth2:
       type: oauth2

@@ -167,6 +167,110 @@ paths:
                 $ref: '#/components/schemas/NexusAliasCompaniesResponseModelIReadOnlyListAPIResponse'
 components:
   schemas:
+    ValidationError:
+      type: object
+      properties:
+        field:
+          type:
+          - string
+          - 'null'
+        message:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    NexusAliasCompaniesResponseModelIReadOnlyListAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        result:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/NexusAliasCompaniesResponseModel'
+      additionalProperties: false
+    NexusCompanyRequestModel:
+      required:
+      - companyName
+      - customerId
+      - nexusId
+      - productId
+      type: object
+      properties:
+        productId:
+          type: integer
+          format: int32
+        companyName:
+          maxLength: 150
+          minLength: 0
+          type: string
+        customerId:
+          minLength: 1
+          type: string
+        nexusId:
+          type: integer
+          format: int32
+      additionalProperties: false
+    NexusAliasCompaniesResponseModel:
+      type: object
+      properties:
+        nexusId:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        companyDisplayName:
+          type:
+          - string
+          - 'null'
+        isActive:
+          type:
+          - boolean
+          - 'null'
+        levenshteinDistance:
+          type:
+          - integer
+          - 'null'
+          format: int32
+      additionalProperties: false
+    NexusCompaniesResponseModelListAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        result:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/NexusCompaniesResponseModel'
+      additionalProperties: false
     ApiError:
       type: object
       properties:
@@ -195,107 +299,6 @@ components:
           items:
             $ref: '#/components/schemas/ValidationError'
       additionalProperties: false
-    NexusCompaniesResponseModelListAPIResponse:
-      type: object
-      properties:
-        version:
-          type:
-          - string
-          - 'null'
-        statusCode:
-          type: integer
-          format: int32
-        message:
-          type:
-          - string
-          - 'null'
-        responseException:
-          allOf:
-          - $ref: '#/components/schemas/ApiError'
-        result:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/NexusCompaniesResponseModel'
-      additionalProperties: false
-    NexusAliasCompaniesResponseModelIReadOnlyListAPIResponse:
-      type: object
-      properties:
-        version:
-          type:
-          - string
-          - 'null'
-        statusCode:
-          type: integer
-          format: int32
-        message:
-          type:
-          - string
-          - 'null'
-        responseException:
-          allOf:
-          - $ref: '#/components/schemas/ApiError'
-        result:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/NexusAliasCompaniesResponseModel'
-      additionalProperties: false
-    NexusCompaniesResponseModel:
-      type: object
-      properties:
-        id:
-          type: integer
-          format: int32
-        displayName:
-          type:
-          - string
-          - 'null'
-      additionalProperties: false
-    AddNexusCompanyResponseModelAPIResponse:
-      type: object
-      properties:
-        version:
-          type:
-          - string
-          - 'null'
-        statusCode:
-          type: integer
-          format: int32
-        message:
-          type:
-          - string
-          - 'null'
-        responseException:
-          allOf:
-          - $ref: '#/components/schemas/ApiError'
-        result:
-          allOf:
-          - $ref: '#/components/schemas/AddNexusCompanyResponseModel'
-      additionalProperties: false
-    NexusCompanyResponseModelAPIResponse:
-      type: object
-      properties:
-        version:
-          type:
-          - string
-          - 'null'
-        statusCode:
-          type: integer
-          format: int32
-        message:
-          type:
-          - string
-          - 'null'
-        responseException:
-          allOf:
-          - $ref: '#/components/schemas/ApiError'
-        result:
-          allOf:
-          - $ref: '#/components/schemas/NexusCompanyResponseModel'
-      additionalProperties: false
     NexusCompanyResponseModel:
       type: object
       properties:
@@ -323,6 +326,27 @@ components:
             - string
             - 'null'
       additionalProperties: false
+    AddNexusCompanyResponseModelAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        result:
+          allOf:
+          - $ref: '#/components/schemas/AddNexusCompanyResponseModel'
+      additionalProperties: false
     AddNexusCompanyResponseModel:
       type: object
       properties:
@@ -344,61 +368,37 @@ components:
           type: integer
           format: int32
       additionalProperties: false
-    NexusAliasCompaniesResponseModel:
+    NexusCompaniesResponseModel:
       type: object
       properties:
-        nexusId:
-          type:
-          - integer
-          - 'null'
+        id:
+          type: integer
           format: int32
-        companyDisplayName:
+        displayName:
           type:
           - string
           - 'null'
-        isActive:
-          type:
-          - boolean
-          - 'null'
-        levenshteinDistance:
-          type:
-          - integer
-          - 'null'
-          format: int32
       additionalProperties: false
-    NexusCompanyRequestModel:
-      required:
-      - companyName
-      - customerId
-      - nexusId
-      - productId
+    NexusCompanyResponseModelAPIResponse:
       type: object
       properties:
-        productId:
-          type: integer
-          format: int32
-        companyName:
-          maxLength: 150
-          minLength: 0
-          type: string
-        customerId:
-          minLength: 1
-          type: string
-        nexusId:
-          type: integer
-          format: int32
-      additionalProperties: false
-    ValidationError:
-      type: object
-      properties:
-        field:
+        version:
           type:
           - string
           - 'null'
+        statusCode:
+          type: integer
+          format: int32
         message:
           type:
           - string
           - 'null'
+        responseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        result:
+          allOf:
+          - $ref: '#/components/schemas/NexusCompanyResponseModel'
       additionalProperties: false
   securitySchemes:
     oidc:

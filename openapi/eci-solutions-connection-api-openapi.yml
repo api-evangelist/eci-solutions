@@ -596,6 +596,58 @@ paths:
                 $ref: '#/components/schemas/ValidateFinancialKeysResponseAPIResponse'
 components:
   schemas:
+    InitiateConnectionResponse:
+      type: object
+      properties:
+        sessionId:
+          type:
+          - string
+          - 'null'
+        url:
+          type:
+          - string
+          - 'null'
+        companyId:
+          type: integer
+          format: int32
+        clientId:
+          type:
+          - string
+          - 'null'
+          description: 'Pre-provisioned API credential client ID (username).
+
+            Populated for partner-initiated connections. Null for standard direct connections
+
+            (credentials generated at completion) and for the Nexus user_token flow.'
+      additionalProperties: false
+    AuthSessionType:
+      enum:
+      - Connect
+      - Update
+      type: string
+    UpdateConnectionSystemRequest:
+      required:
+      - systemId
+      type: object
+      properties:
+        systemId:
+          type: integer
+          format: int32
+        environment:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    UpdateChallengeRequest:
+      type: object
+      properties:
+        properties:
+          type:
+          - object
+          - 'null'
+          additionalProperties:
+            type: string
+      additionalProperties: false
     ConnectionValidationItem:
       type: object
       properties:
@@ -608,6 +660,127 @@ components:
           - string
           - 'null'
         type:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    StringAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        result:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    AuthRequest:
+      required:
+      - code
+      type: object
+      properties:
+        code:
+          minLength: 1
+          type: string
+        realmId:
+          type:
+          - string
+          - 'null'
+        redirectUrl:
+          type:
+          - string
+          - 'null'
+        apMerchantId:
+          type:
+          - string
+          - 'null'
+        arMerchantId:
+          type:
+          - string
+          - 'null'
+        codeVerifier:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    ValidationError:
+      type: object
+      properties:
+        field:
+          type:
+          - string
+          - 'null'
+        message:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    CompleteConnectionRequest:
+      required:
+      - code
+      type: object
+      properties:
+        code:
+          minLength: 1
+          type: string
+      additionalProperties: false
+    ConnectionPartnerBrandModel:
+      type: object
+      properties:
+        displayName:
+          type:
+          - string
+          - 'null'
+        logoUrl:
+          type:
+          - string
+          - 'null'
+        terms:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    ConnectionResponseModel:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        financialProductCompanyName:
+          type:
+          - string
+          - 'null'
+        companyId:
+          type: integer
+          format: int32
+        companyName:
+          type:
+          - string
+          - 'null'
+        systemId:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        systemName:
+          type:
+          - string
+          - 'null'
+        useEciKey:
+          type: boolean
+        environment:
           type:
           - string
           - 'null'
@@ -690,36 +863,138 @@ components:
           - $ref: '#/components/schemas/ConnectionPartnerBrandModel'
           description: The partner application brand information.
       additionalProperties: false
-    UpdateConnectionSystemRequest:
-      required:
-      - systemId
+    InitiateConnectionResponseAPIResponse:
       type: object
       properties:
-        systemId:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
           type: integer
           format: int32
-        environment:
+        message:
           type:
           - string
           - 'null'
+        responseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        result:
+          allOf:
+          - $ref: '#/components/schemas/InitiateConnectionResponse'
       additionalProperties: false
-    ConnectionPartnerBrandModel:
+    ConnectionSessionModelAPIResponse:
       type: object
       properties:
-        displayName:
+        version:
           type:
           - string
           - 'null'
-        logoUrl:
+        statusCode:
+          type: integer
+          format: int32
+        message:
           type:
           - string
           - 'null'
-        terms:
+        responseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        result:
+          allOf:
+          - $ref: '#/components/schemas/ConnectionSessionModel'
+      additionalProperties: false
+    ValidateConnectionRequest:
+      type: object
+      properties:
+        clientId:
+          type:
+          - string
+          - 'null'
+        clientSecret:
           type:
           - string
           - 'null'
       additionalProperties: false
-    StringAPIResponse:
+    ConnectionBrandModel:
+      type: object
+      properties:
+        title:
+          type:
+          - string
+          - 'null'
+        shortDescription:
+          type:
+          - string
+          - 'null'
+        longDescription:
+          type:
+          - string
+          - 'null'
+        vendorName:
+          type:
+          - string
+          - 'null'
+        vendorUrl:
+          type:
+          - string
+          - 'null'
+        vendorLogoUrl:
+          type:
+          - string
+          - 'null'
+        vendorLogoThumbmailUrl:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    UpdateSessionModel:
+      type: object
+      properties:
+        properties:
+          type:
+          - object
+          - 'null'
+          additionalProperties:
+            type: string
+          description: The properties that are being updated. This payload varies by the type of integration/system.
+        finalize:
+          type:
+          - boolean
+          - 'null'
+          description: 'If the session is being requested to be finalized or not.
+
+            Finallized sessions can no longer be modified. An authorization code will be generated
+
+            and returned in the response this one time. It will not be stored or available to return again.'
+      additionalProperties: false
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+        title:
+          type:
+          - string
+          - 'null'
+        status:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        detail:
+          type:
+          - string
+          - 'null'
+        instance:
+          type:
+          - string
+          - 'null'
+      additionalProperties: {}
+    StringObjectDictionaryAPIResponse:
       type: object
       properties:
         version:
@@ -738,140 +1013,90 @@ components:
           - $ref: '#/components/schemas/ApiError'
         result:
           type:
+          - object
+          - 'null'
+          additionalProperties: {}
+      additionalProperties: false
+    ConnectionResponseModelAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
           - string
           - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        result:
+          allOf:
+          - $ref: '#/components/schemas/ConnectionResponseModel'
       additionalProperties: false
-    ConnectionResponseModel:
+    ConnectionMasterKeyModel:
       type: object
       properties:
         id:
           type: integer
           format: int32
-        financialProductCompanyName:
+        displayName:
           type:
           - string
           - 'null'
-        companyId:
+        description:
+          type:
+          - string
+          - 'null'
+        displayOrdinal:
           type: integer
           format: int32
-        companyName:
+        key:
           type:
           - string
           - 'null'
-        systemId:
+        dataType:
+          type:
+          - string
+          - 'null'
+        isRequired:
+          type: boolean
+        isUpdateable:
+          type: boolean
+        defaultValue:
+          type:
+          - string
+          - 'null'
+        minLength:
           type:
           - integer
           - 'null'
           format: int32
-        systemName:
+        maxLength:
           type:
-          - string
+          - integer
           - 'null'
-        useEciKey:
-          type: boolean
-        environment:
-          type:
-          - string
-          - 'null'
-      additionalProperties: false
-    InitiateUpdateConnectionRequest:
-      required:
-      - clientId
-      - redirectUri
-      - state
-      type: object
-      properties:
-        clientId:
-          minLength: 1
-          type: string
-        redirectUri:
-          minLength: 1
-          type: string
-        state:
-          minLength: 10
-          type: string
-      additionalProperties: false
-    AuthRequest:
-      required:
-      - code
-      type: object
-      properties:
-        code:
-          minLength: 1
-          type: string
-        realmId:
-          type:
-          - string
-          - 'null'
-        redirectUrl:
-          type:
-          - string
-          - 'null'
-        apMerchantId:
-          type:
-          - string
-          - 'null'
-        arMerchantId:
-          type:
-          - string
-          - 'null'
-        codeVerifier:
-          type:
-          - string
-          - 'null'
-      additionalProperties: false
-    AuthSessionType:
-      enum:
-      - Connect
-      - Update
-      type: string
-    InitiateConnectionResponse:
-      type: object
-      properties:
-        sessionId:
-          type:
-          - string
-          - 'null'
-        url:
-          type:
-          - string
-          - 'null'
-        companyId:
-          type: integer
           format: int32
-        clientId:
+        isSecret:
+          type: boolean
+        validationPattern:
           type:
           - string
           - 'null'
-          description: 'Pre-provisioned API credential client ID (username).
-
-            Populated for partner-initiated connections. Null for standard direct connections
-
-            (credentials generated at completion) and for the Nexus user_token flow.'
-      additionalProperties: false
-    ValidationError:
-      type: object
-      properties:
-        field:
+        validationPatternMessage:
           type:
           - string
           - 'null'
-        message:
+        dropdownValues:
           type:
-          - string
+          - array
           - 'null'
-      additionalProperties: false
-    ValidateConnectionRequest:
-      type: object
-      properties:
-        clientId:
-          type:
-          - string
-          - 'null'
-        clientSecret:
-          type:
-          - string
-          - 'null'
+          items:
+            type: string
       additionalProperties: false
     InitiateConnectionRequest:
       required:
@@ -963,270 +1188,6 @@ components:
 
             All required properties for the integration must be included.'
       additionalProperties: false
-    CompleteConnectionRequest:
-      required:
-      - code
-      type: object
-      properties:
-        code:
-          minLength: 1
-          type: string
-      additionalProperties: false
-    ConnectionResponseModelAPIResponse:
-      type: object
-      properties:
-        version:
-          type:
-          - string
-          - 'null'
-        statusCode:
-          type: integer
-          format: int32
-        message:
-          type:
-          - string
-          - 'null'
-        responseException:
-          allOf:
-          - $ref: '#/components/schemas/ApiError'
-        result:
-          allOf:
-          - $ref: '#/components/schemas/ConnectionResponseModel'
-      additionalProperties: false
-    ConnectionChallengeItem:
-      type: object
-      properties:
-        id:
-          type:
-          - string
-          - 'null'
-          description: The unique id of the challenge. This information is only used for the connection manager to identify the challenge.
-        type:
-          type:
-          - string
-          - 'null'
-          description: The type of the challenge
-          readOnly: true
-        redirectUrl:
-          type:
-          - string
-          - 'null'
-          description: The redirectUrl for a redirection challenge.
-      additionalProperties: false
-    ConnectionBrandModel:
-      type: object
-      properties:
-        title:
-          type:
-          - string
-          - 'null'
-        shortDescription:
-          type:
-          - string
-          - 'null'
-        longDescription:
-          type:
-          - string
-          - 'null'
-        vendorName:
-          type:
-          - string
-          - 'null'
-        vendorUrl:
-          type:
-          - string
-          - 'null'
-        vendorLogoUrl:
-          type:
-          - string
-          - 'null'
-        vendorLogoThumbmailUrl:
-          type:
-          - string
-          - 'null'
-      additionalProperties: false
-    ValidateFinancialKeysResponseAPIResponse:
-      type: object
-      properties:
-        version:
-          type:
-          - string
-          - 'null'
-        statusCode:
-          type: integer
-          format: int32
-        message:
-          type:
-          - string
-          - 'null'
-        responseException:
-          allOf:
-          - $ref: '#/components/schemas/ApiError'
-        result:
-          allOf:
-          - $ref: '#/components/schemas/ValidateFinancialKeysResponse'
-      additionalProperties: false
-    CompleteConnectionResponseAPIResponse:
-      type: object
-      properties:
-        version:
-          type:
-          - string
-          - 'null'
-        statusCode:
-          type: integer
-          format: int32
-        message:
-          type:
-          - string
-          - 'null'
-        responseException:
-          allOf:
-          - $ref: '#/components/schemas/ApiError'
-        result:
-          allOf:
-          - $ref: '#/components/schemas/CompleteConnectionResponse'
-      additionalProperties: false
-    InitiateConnectionResponseAPIResponse:
-      type: object
-      properties:
-        version:
-          type:
-          - string
-          - 'null'
-        statusCode:
-          type: integer
-          format: int32
-        message:
-          type:
-          - string
-          - 'null'
-        responseException:
-          allOf:
-          - $ref: '#/components/schemas/ApiError'
-        result:
-          allOf:
-          - $ref: '#/components/schemas/InitiateConnectionResponse'
-      additionalProperties: false
-    ConnectionSessionModelAPIResponse:
-      type: object
-      properties:
-        version:
-          type:
-          - string
-          - 'null'
-        statusCode:
-          type: integer
-          format: int32
-        message:
-          type:
-          - string
-          - 'null'
-        responseException:
-          allOf:
-          - $ref: '#/components/schemas/ApiError'
-        result:
-          allOf:
-          - $ref: '#/components/schemas/ConnectionSessionModel'
-      additionalProperties: false
-    UpdateChallengeRequest:
-      type: object
-      properties:
-        properties:
-          type:
-          - object
-          - 'null'
-          additionalProperties:
-            type: string
-      additionalProperties: false
-    ConnectionMasterKeyModel:
-      type: object
-      properties:
-        id:
-          type: integer
-          format: int32
-        displayName:
-          type:
-          - string
-          - 'null'
-        description:
-          type:
-          - string
-          - 'null'
-        displayOrdinal:
-          type: integer
-          format: int32
-        key:
-          type:
-          - string
-          - 'null'
-        dataType:
-          type:
-          - string
-          - 'null'
-        isRequired:
-          type: boolean
-        isUpdateable:
-          type: boolean
-        defaultValue:
-          type:
-          - string
-          - 'null'
-        minLength:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        maxLength:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        isSecret:
-          type: boolean
-        validationPattern:
-          type:
-          - string
-          - 'null'
-        validationPatternMessage:
-          type:
-          - string
-          - 'null'
-        dropdownValues:
-          type:
-          - array
-          - 'null'
-          items:
-            type: string
-      additionalProperties: false
-    ApiError:
-      type: object
-      properties:
-        isError:
-          type: boolean
-        exceptionMessage:
-          type:
-          - string
-          - 'null'
-        details:
-          type:
-          - string
-          - 'null'
-        referenceErrorCode:
-          type:
-          - string
-          - 'null'
-        referenceDocumentLink:
-          type:
-          - string
-          - 'null'
-        validationErrors:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/ValidationError'
-      additionalProperties: false
     CompleteConnectionResponse:
       type: object
       properties:
@@ -1287,7 +1248,27 @@ components:
           additionalProperties:
             type: string
       additionalProperties: false
-    StringObjectDictionaryAPIResponse:
+    ConnectionChallengeItem:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: The unique id of the challenge. This information is only used for the connection manager to identify the challenge.
+        type:
+          type:
+          - string
+          - 'null'
+          description: The type of the challenge
+          readOnly: true
+        redirectUrl:
+          type:
+          - string
+          - 'null'
+          description: The redirectUrl for a redirection challenge.
+      additionalProperties: false
+    CompleteConnectionResponseAPIResponse:
       type: object
       properties:
         version:
@@ -1305,30 +1286,25 @@ components:
           allOf:
           - $ref: '#/components/schemas/ApiError'
         result:
-          type:
-          - object
-          - 'null'
-          additionalProperties: {}
+          allOf:
+          - $ref: '#/components/schemas/CompleteConnectionResponse'
       additionalProperties: false
-    UpdateSessionModel:
+    InitiateUpdateConnectionRequest:
+      required:
+      - clientId
+      - redirectUri
+      - state
       type: object
       properties:
-        properties:
-          type:
-          - object
-          - 'null'
-          additionalProperties:
-            type: string
-          description: The properties that are being updated. This payload varies by the type of integration/system.
-        finalize:
-          type:
-          - boolean
-          - 'null'
-          description: 'If the session is being requested to be finalized or not.
-
-            Finallized sessions can no longer be modified. An authorization code will be generated
-
-            and returned in the response this one time. It will not be stored or available to return again.'
+        clientId:
+          minLength: 1
+          type: string
+        redirectUri:
+          minLength: 1
+          type: string
+        state:
+          minLength: 10
+          type: string
       additionalProperties: false
     ValidateFinancialKeysResponse:
       type: object
@@ -1342,31 +1318,55 @@ components:
           - string
           - 'null'
       additionalProperties: false
-    ProblemDetails:
+    ApiError:
       type: object
       properties:
-        type:
+        isError:
+          type: boolean
+        exceptionMessage:
           type:
           - string
           - 'null'
-        title:
+        details:
           type:
           - string
           - 'null'
-        status:
+        referenceErrorCode:
           type:
-          - integer
+          - string
           - 'null'
+        referenceDocumentLink:
+          type:
+          - string
+          - 'null'
+        validationErrors:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ValidationError'
+      additionalProperties: false
+    ValidateFinancialKeysResponseAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
           format: int32
-        detail:
+        message:
           type:
           - string
           - 'null'
-        instance:
-          type:
-          - string
-          - 'null'
-      additionalProperties: {}
+        responseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        result:
+          allOf:
+          - $ref: '#/components/schemas/ValidateFinancialKeysResponse'
+      additionalProperties: false
   securitySchemes:
     oidc:
       type: openIdConnect

@@ -7366,7 +7366,7 @@ paths:
                 $ref: '#/components/schemas/APIResponseMessageDto'
 components:
   schemas:
-    ERPResponseMessageDto_IList_ERPPurchasePlannerLineDto:
+    ERPResponseMessageDto_IList_ERPPurchasePlannerSessionDto:
       type: object
       properties:
         responseInfo:
@@ -7374,17 +7374,77 @@ components:
         returnObject:
           type: array
           items:
-            $ref: '#/components/schemas/ERPPurchasePlannerLineDto'
+            $ref: '#/components/schemas/ERPPurchasePlannerSessionDto'
         recordCount:
           type: integer
           format: int32
-    ERPResponseMessageDto_ERPRFQDto:
+    ERPPurchasePlannerSessionDto:
+      required:
+      - ppsBuyerEmployeeID
+      - ppsCutoffDate
+      - ppsSessionID
+      type: object
+      properties:
+        ppsBuyerEmployeeID:
+          type: string
+        ppsCompletedDate:
+          type: string
+          format: date-time
+        ppsCreatedBy:
+          type: string
+        ppsCreatedDate:
+          type: string
+          format: date-time
+        ppsCutoffDate:
+          type: string
+          format: date-time
+        ppsCutoffDatePosupply:
+          type: string
+          format: date-time
+        ppsUniqueID:
+          type: string
+          format: uuid
+          example: 00000000-0000-0000-0000-000000000000
+        ppsCalculateForAllParts:
+          type: boolean
+        ppsCompleted:
+          type: boolean
+        ppsFirmOnly:
+          type: boolean
+        ppsGenerated:
+          type: boolean
+        ppsJobIDs:
+          type: string
+        ppsPartClassIDs:
+          type: string
+        ppsPartIDs:
+          type: string
+        ppsPlantID:
+          type: string
+        ppsRowVersion:
+          type: integer
+          format: int64
+        ppsSalesOrderIDs:
+          type: string
+        ppsSessionID:
+          type: string
+        ppsSessionSubtotalBase:
+          minimum: 0
+          type: number
+          format: double
+        ppsShowAllDemandForPartsOnJobs:
+          type: boolean
+        ppsSupplierIDs:
+          type: string
+        ppsWarehouseID:
+          type: string
+    ERPResponseMessageDto_ERPPurchaseOrderLineDto:
       type: object
       properties:
         responseInfo:
           $ref: '#/components/schemas/APIResponseMessageDto'
         returnObject:
-          $ref: '#/components/schemas/ERPRFQDto'
+          $ref: '#/components/schemas/ERPPurchaseOrderLineDto'
         recordCount:
           type: integer
           format: int32
@@ -7464,37 +7524,226 @@ components:
           type: string
         pprSource:
           type: string
-    ERPResponseMessageDto_IList_ERPRFQLineDto:
+    ERPPurchaseOrderDto:
+      required:
+      - pmpPurchaseOrderID
+      - pmpOrderDate
+      - pmpStatus
+      - pmpSupplierOrganizationID
+      type: object
+      properties:
+        pmpApInvoiceContactID:
+          type: string
+        pmpApInvoiceLocationID:
+          type: string
+        pmpApprovalDecisionDate:
+          type: string
+          format: date-time
+        pmpApprovalRequestDate:
+          type: string
+          format: date-time
+        pmpBuyerEmployeeID:
+          type: string
+        pmpClosedDate:
+          type: string
+          format: date-time
+        pmpPurchaseOrderID:
+          type: string
+        pmpCreatedBy:
+          type: string
+        pmpCreatedDate:
+          type: string
+          format: date-time
+        pmpCurrencyRateID:
+          type: string
+        pmpDocuments:
+          type: string
+        pmpDropShipContactID:
+          type: string
+        pmpDropShipLocationID:
+          type: string
+        pmpDropShipOrganizationID:
+          type: string
+        pmpDueDate:
+          type: string
+          format: date-time
+        pmpUniqueID:
+          type: string
+          format: uuid
+          example: 00000000-0000-0000-0000-000000000000
+        pmpExchangeRate:
+          minimum: 0
+          type: number
+          format: double
+        pmpFreeOnBoardDescription:
+          type: string
+        pmpIntraCompanyPostedDate:
+          type: string
+          format: date-time
+        pmpClosed:
+          type: boolean
+        pmpCustomRate:
+          type: boolean
+        pmpIntraCompany:
+          type: boolean
+        pmpIntraCompanyPosted:
+          type: boolean
+        pmpReadyToPrint:
+          type: boolean
+        pmpNextApprovalEmployeeID:
+          type: string
+        pmpOrderCommentsRTF:
+          type: string
+        pmpOrderCommentsText:
+          type: string
+        pmpOrderDate:
+          type: string
+          format: date-time
+        pmpOrderSubtotalBase:
+          minimum: 0
+          type: number
+          format: double
+        pmpOrderSubtotalForeign:
+          minimum: 0
+          type: number
+          format: double
+        pmpOrderTaxAmountBase:
+          minimum: 0
+          type: number
+          format: double
+        pmpOrderTaxAmountForeign:
+          minimum: 0
+          type: number
+          format: double
+        pmpOrderTotalBase:
+          minimum: 0
+          type: number
+          format: double
+        pmpOrderTotalForeign:
+          minimum: 0
+          type: number
+          format: double
+        pmpPaymentTermID:
+          type: string
+        pmpPlantDepartmentID:
+          type: string
+        pmpPlantID:
+          type: string
+        pmpProjectID:
+          type: string
+        pmpPurchaseContactID:
+          type: string
+        pmpPurchaseLocationID:
+          type: string
+        pmpRowVersion:
+          type: integer
+          format: int64
+        pmpShippingMethodID:
+          type: string
+        pmpStandardMessageID:
+          type: string
+        pmpStatus:
+          type: integer
+          format: int32
+        pmpSupplierOrganizationID:
+          type: string
+    ERPResponseMessageDto_ERPRFQSupplierDto:
       type: object
       properties:
         responseInfo:
           $ref: '#/components/schemas/APIResponseMessageDto'
         returnObject:
-          type: array
-          items:
-            $ref: '#/components/schemas/ERPRFQLineDto'
+          $ref: '#/components/schemas/ERPRFQSupplierDto'
         recordCount:
           type: integer
           format: int32
-    ERPResponseMessageDto_IList_ERPPurchaseOrderAccountDto:
+    ERPPurchasePlannerLineDto:
+      required:
+      - pplLineID
+      - pplSessionID
+      type: object
+      properties:
+        pplCreatedBy:
+          type: string
+        pplCreatedDate:
+          type: string
+          format: date-time
+        pplDataMissing:
+          maximum: 9999
+          minimum: 0
+          type: integer
+          format: int32
+        pplUniqueID:
+          type: string
+          format: uuid
+          example: 00000000-0000-0000-0000-000000000000
+        pplExtendedCostBase:
+          minimum: 0
+          type: number
+          format: double
+        pplCompleted:
+          type: boolean
+        pplNonStockedItem:
+          type: boolean
+        pplPhantomOrKitPart:
+          type: boolean
+        pplLastRunDate:
+          type: string
+          format: date-time
+        pplLineID:
+          type: integer
+          format: int32
+        pplLotSize:
+          minimum: 0
+          type: number
+          format: double
+        pplMaximumQuantity:
+          minimum: 0
+          type: number
+          format: double
+        pplMinimumQuantity:
+          minimum: 0
+          type: number
+          format: double
+        pplPartID:
+          type: string
+        pplPartRevisionID:
+          type: string
+        pplPartShortDescription:
+          type: string
+        pplPlantID:
+          type: string
+        pplQuantityOnHand:
+          minimum: 0
+          type: number
+          format: double
+        pplReorderMethod:
+          type: integer
+          format: int32
+        pplRowVersion:
+          type: integer
+          format: int64
+        pplSessionID:
+          type: string
+        pplWarehouseID:
+          type: string
+    ERPResponseMessageDto_ERPPurchaseOrderAccountDto:
       type: object
       properties:
         responseInfo:
           $ref: '#/components/schemas/APIResponseMessageDto'
         returnObject:
-          type: array
-          items:
-            $ref: '#/components/schemas/ERPPurchaseOrderAccountDto'
+          $ref: '#/components/schemas/ERPPurchaseOrderAccountDto'
         recordCount:
           type: integer
           format: int32
-    ERPResponseMessageDto_ERPPurchaseOrderDeliveryDto:
+    ERPResponseMessageDto_ERPRFQMemoDto:
       type: object
       properties:
         responseInfo:
           $ref: '#/components/schemas/APIResponseMessageDto'
         returnObject:
-          $ref: '#/components/schemas/ERPPurchaseOrderDeliveryDto'
+          $ref: '#/components/schemas/ERPRFQMemoDto'
         recordCount:
           type: integer
           format: int32
@@ -7580,17 +7829,17 @@ components:
         rqlRfqLineID:
           type: integer
           format: int32
-    ERPResponseMessageDto_ERPPurchaseOrderComponentDto:
+    ERPResponseMessageDto_ERPRFQQuantityDto:
       type: object
       properties:
         responseInfo:
           $ref: '#/components/schemas/APIResponseMessageDto'
         returnObject:
-          $ref: '#/components/schemas/ERPPurchaseOrderComponentDto'
+          $ref: '#/components/schemas/ERPRFQQuantityDto'
         recordCount:
           type: integer
           format: int32
-    ERPResponseMessageDto_IList_ERPRFQDto:
+    ERPResponseMessageDto_IList_ERPPurchaseOrderDeliveryDto:
       type: object
       properties:
         responseInfo:
@@ -7598,42 +7847,29 @@ components:
         returnObject:
           type: array
           items:
-            $ref: '#/components/schemas/ERPRFQDto'
+            $ref: '#/components/schemas/ERPPurchaseOrderDeliveryDto'
         recordCount:
           type: integer
           format: int32
-    ERPResponseMessageDto_ERPRFQMemoDto:
+    ERPResponseMessageDto_IList_ERPPurchasePlannerOrderDetailDto:
       type: object
       properties:
         responseInfo:
           $ref: '#/components/schemas/APIResponseMessageDto'
         returnObject:
-          $ref: '#/components/schemas/ERPRFQMemoDto'
+          type: array
+          items:
+            $ref: '#/components/schemas/ERPPurchasePlannerOrderDetailDto'
         recordCount:
           type: integer
           format: int32
-    Warning:
-      type: object
-      properties:
-        innerText:
-          type: string
-    ERPResponseMessageDto_ERPPurchasePlannerOrderDetailDto:
+    ERPResponseMessageDto_ERPPurchasePlannerLineDto:
       type: object
       properties:
         responseInfo:
           $ref: '#/components/schemas/APIResponseMessageDto'
         returnObject:
-          $ref: '#/components/schemas/ERPPurchasePlannerOrderDetailDto'
-        recordCount:
-          type: integer
-          format: int32
-    ERPResponseMessageDto_ERPPurchaseOrderAccountDto:
-      type: object
-      properties:
-        responseInfo:
-          $ref: '#/components/schemas/APIResponseMessageDto'
-        returnObject:
-          $ref: '#/components/schemas/ERPPurchaseOrderAccountDto'
+          $ref: '#/components/schemas/ERPPurchasePlannerLineDto'
         recordCount:
           type: integer
           format: int32
@@ -7642,6 +7878,130 @@ components:
       properties:
         innerText:
           type: string
+    ERPResponseMessageDto_IList_ERPPurchaseOrderApprovalDto:
+      type: object
+      properties:
+        responseInfo:
+          $ref: '#/components/schemas/APIResponseMessageDto'
+        returnObject:
+          type: array
+          items:
+            $ref: '#/components/schemas/ERPPurchaseOrderApprovalDto'
+        recordCount:
+          type: integer
+          format: int32
+    ERPPurchaseOrderAccountDto:
+      required:
+      - pmxExpenseGlAccountID
+      - pmxPurchaseOrderID
+      - pmxPurchaseOrderLineID
+      - pmxPurchaseOrderAccountID
+      type: object
+      properties:
+        pmxAmount:
+          minimum: 0
+          type: number
+          format: double
+        pmxCreatedBy:
+          type: string
+        pmxCreatedDate:
+          type: string
+          format: date-time
+        pmxUniqueID:
+          type: string
+          format: uuid
+          example: 00000000-0000-0000-0000-000000000000
+        pmxExpenseGlAccountID:
+          type: string
+        pmxClosed:
+          type: boolean
+        pmxPercent:
+          minimum: 0
+          type: number
+          format: double
+        pmxPurchaseOrderID:
+          type: string
+        pmxPurchaseOrderLineID:
+          type: integer
+          format: int32
+        pmxRowVersion:
+          type: integer
+          format: int64
+        pmxPurchaseOrderAccountID:
+          type: integer
+          format: int32
+    ERPResponseMessageDto_ERPPurchaseOrderMemoDto:
+      type: object
+      properties:
+        responseInfo:
+          $ref: '#/components/schemas/APIResponseMessageDto'
+        returnObject:
+          $ref: '#/components/schemas/ERPPurchaseOrderMemoDto'
+        recordCount:
+          type: integer
+          format: int32
+    ERPResponseMessageDto_ERPRFQDto:
+      type: object
+      properties:
+        responseInfo:
+          $ref: '#/components/schemas/APIResponseMessageDto'
+        returnObject:
+          $ref: '#/components/schemas/ERPRFQDto'
+        recordCount:
+          type: integer
+          format: int32
+    APIResponseMessageDto:
+      type: object
+      properties:
+        description:
+          type: string
+        status:
+          type: string
+        payloadID:
+          type: string
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+          readOnly: true
+        warnings:
+          type: array
+          items:
+            $ref: '#/components/schemas/Warning'
+          readOnly: true
+    ERPPurchaseOrderApprovalDto:
+      required:
+      - pmaPurchaseOrderID
+      - pmaPurchaseOrderApprovalID
+      type: object
+      properties:
+        pmaApprovalEmployeeID:
+          type: string
+        pmaCreatedBy:
+          type: string
+        pmaCreatedDate:
+          type: string
+          format: date-time
+        pmaDescription:
+          type: string
+        pmaUniqueID:
+          type: string
+          format: uuid
+          example: 00000000-0000-0000-0000-000000000000
+        pmaPurchaseOrderID:
+          type: string
+        pmaRowVersion:
+          type: integer
+          format: int64
+        pmaPurchaseOrderApprovalID:
+          type: integer
+          format: int32
+        pmaStatus:
+          type: integer
+          format: int32
+        pmaStatusDate:
+          type: string
+          format: date-time
     ERPResponseMessageDto_IList_ERPPurchasePlannerRequirementDto:
       type: object
       properties:
@@ -7651,6 +8011,316 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ERPPurchasePlannerRequirementDto'
+        recordCount:
+          type: integer
+          format: int32
+    Warning:
+      type: object
+      properties:
+        innerText:
+          type: string
+    ERPResponseMessageDto_IList_ERPPurchaseOrderAccountDto:
+      type: object
+      properties:
+        responseInfo:
+          $ref: '#/components/schemas/APIResponseMessageDto'
+        returnObject:
+          type: array
+          items:
+            $ref: '#/components/schemas/ERPPurchaseOrderAccountDto'
+        recordCount:
+          type: integer
+          format: int32
+    ERPRFQMemoDto:
+      required:
+      - rqkMemoDate
+      - rqkRfqID
+      - rqkRfqMemoID
+      - rqkShortDescription
+      type: object
+      properties:
+        rqkCreatedBy:
+          type: string
+        rqkCreatedDate:
+          type: string
+          format: date-time
+        rqkUniqueID:
+          type: string
+          format: uuid
+          example: 00000000-0000-0000-0000-000000000000
+        rqkClosed:
+          type: boolean
+        rqkLongDescriptionRtf:
+          type: string
+        rqkLongDescriptionText:
+          type: string
+        rqkMemoDate:
+          type: string
+          format: date-time
+        rqkRfqID:
+          type: string
+        rqkRowVersion:
+          type: integer
+          format: int64
+        rqkRfqMemoID:
+          type: integer
+          format: int32
+        rqkShortDescription:
+          type: string
+    ERPResponseMessageDto_IList_ERPRFQQuantityDto:
+      type: object
+      properties:
+        responseInfo:
+          $ref: '#/components/schemas/APIResponseMessageDto'
+        returnObject:
+          type: array
+          items:
+            $ref: '#/components/schemas/ERPRFQQuantityDto'
+        recordCount:
+          type: integer
+          format: int32
+    ERPResponseMessageDto_ERPPurchaseOrderApprovalDto:
+      type: object
+      properties:
+        responseInfo:
+          $ref: '#/components/schemas/APIResponseMessageDto'
+        returnObject:
+          $ref: '#/components/schemas/ERPPurchaseOrderApprovalDto'
+        recordCount:
+          type: integer
+          format: int32
+    ERPRFQSupplierDto:
+      required:
+      - rqsRfqID
+      - rqsRfqLineID
+      - rqsRfqSupplierID
+      - rqsSupplierOrganizationID
+      type: object
+      properties:
+        rqsCreatedBy:
+          type: string
+        rqsCreatedDate:
+          type: string
+          format: date-time
+        rqsCurrencyRateID:
+          type: string
+        rqsDueDate:
+          type: string
+          format: date-time
+        rqsUniqueID:
+          type: string
+          format: uuid
+          example: 00000000-0000-0000-0000-000000000000
+        rqsExchangeRate:
+          minimum: 0
+          type: number
+          format: double
+        rqsClosed:
+          type: boolean
+        rqsComplete:
+          type: boolean
+        rqsCustomRate:
+          type: boolean
+        rqsSelectedSupplier:
+          type: boolean
+        rqsUpdatedPartPrices:
+          type: boolean
+        rqsOrgPartID:
+          type: string
+        rqsPurchaseContactID:
+          type: string
+        rqsPurchaseLocationID:
+          type: string
+        rqsRfqID:
+          type: string
+        rqsRfqLineID:
+          type: integer
+          format: int32
+        rqsRowVersion:
+          type: integer
+          format: int64
+        rqsSelectedSupplierDate:
+          type: string
+          format: date-time
+        rqsRfqSupplierID:
+          type: integer
+          format: int32
+        rqsSupplierOrganizationID:
+          type: string
+    ERPResponseMessageDto_ERPPurchasePlannerSessionDto:
+      type: object
+      properties:
+        responseInfo:
+          $ref: '#/components/schemas/APIResponseMessageDto'
+        returnObject:
+          $ref: '#/components/schemas/ERPPurchasePlannerSessionDto'
+        recordCount:
+          type: integer
+          format: int32
+    ERPResponseMessageDto_IList_ERPPurchaseOrderMemoDto:
+      type: object
+      properties:
+        responseInfo:
+          $ref: '#/components/schemas/APIResponseMessageDto'
+        returnObject:
+          type: array
+          items:
+            $ref: '#/components/schemas/ERPPurchaseOrderMemoDto'
+        recordCount:
+          type: integer
+          format: int32
+    ERPResponseMessageDto_IList_ERPRFQLineDto:
+      type: object
+      properties:
+        responseInfo:
+          $ref: '#/components/schemas/APIResponseMessageDto'
+        returnObject:
+          type: array
+          items:
+            $ref: '#/components/schemas/ERPRFQLineDto'
+        recordCount:
+          type: integer
+          format: int32
+    ERPPurchaseOrderComponentDto:
+      required:
+      - pmoDeliveryQuantity
+      - pmoDescription
+      - pmoPartBinID
+      - pmoPartID
+      - pmoPartWarehouseLocationID
+      - pmoPurchaseOrderID
+      - pmoPurchaseOrderLineID
+      - pmoPurchaseOrderComponentID
+      type: object
+      properties:
+        pmoAdditionalQuantity:
+          minimum: 0
+          type: number
+          format: double
+        pmoCreatedBy:
+          type: string
+        pmoCreatedDate:
+          type: string
+          format: date-time
+        pmoDeliveryQuantity:
+          minimum: 0
+          type: number
+          format: double
+        pmoDescription:
+          type: string
+        pmoUniqueID:
+          type: string
+          format: uuid
+          example: 00000000-0000-0000-0000-000000000000
+        pmoExtendedCostBase:
+          minimum: 0
+          type: number
+          format: double
+        pmoExtendedCostForeign:
+          minimum: 0
+          type: number
+          format: double
+        pmoClosed:
+          type: boolean
+        pmoIntraCompanyPosted:
+          type: boolean
+        pmoReceivedComplete:
+          type: boolean
+        pmoJobAssemblyID:
+          type: integer
+          format: int32
+        pmoJobID:
+          type: string
+        pmoJobMaterialComponentID:
+          type: integer
+          format: int32
+        pmoJobMaterialID:
+          type: integer
+          format: int32
+        pmoParentQuantity:
+          minimum: 0
+          type: number
+          format: double
+        pmoPartBinID:
+          type: string
+        pmoPartID:
+          type: string
+        pmoPartRevisionID:
+          type: string
+        pmoPartWarehouseLocationID:
+          type: string
+        pmoPurchaseOrderID:
+          type: string
+        pmoPurchaseOrderLineID:
+          type: integer
+          format: int32
+        pmoPurchaseUnitCost:
+          minimum: 0
+          type: number
+          format: double
+        pmoPurchaseUnitCostForeign:
+          minimum: 0
+          type: number
+          format: double
+        pmoQuantityPerParent:
+          minimum: 0
+          type: number
+          format: double
+        pmoQuantityReceived:
+          minimum: 0
+          type: number
+          format: double
+        pmoRowVersion:
+          type: integer
+          format: int64
+        pmoPurchaseOrderComponentID:
+          type: integer
+          format: int32
+        pmoUnitOfMeasure:
+          type: string
+        pmoWeight:
+          minimum: 0
+          type: number
+          format: double
+    ERPResponseMessageDto_ERPPurchaseOrderDto:
+      type: object
+      properties:
+        responseInfo:
+          $ref: '#/components/schemas/APIResponseMessageDto'
+        returnObject:
+          $ref: '#/components/schemas/ERPPurchaseOrderDto'
+        recordCount:
+          type: integer
+          format: int32
+    ERPResponseMessageDto_ERPPurchaseOrderDeliveryDto:
+      type: object
+      properties:
+        responseInfo:
+          $ref: '#/components/schemas/APIResponseMessageDto'
+        returnObject:
+          $ref: '#/components/schemas/ERPPurchaseOrderDeliveryDto'
+        recordCount:
+          type: integer
+          format: int32
+    ERPResponseMessageDto_ERPRFQLineDto:
+      type: object
+      properties:
+        responseInfo:
+          $ref: '#/components/schemas/APIResponseMessageDto'
+        returnObject:
+          $ref: '#/components/schemas/ERPRFQLineDto'
+        recordCount:
+          type: integer
+          format: int32
+    ERPResponseMessageDto_IList_ERPPurchaseOrderDto:
+      type: object
+      properties:
+        responseInfo:
+          $ref: '#/components/schemas/APIResponseMessageDto'
+        returnObject:
+          type: array
+          items:
+            $ref: '#/components/schemas/ERPPurchaseOrderDto'
         recordCount:
           type: integer
           format: int32
@@ -7733,59 +8403,128 @@ components:
           type: string
         pmdTrackingNumber:
           type: string
-    ERPResponseMessageDto_IList_ERPPurchasePlannerSessionDto:
+    ERPPurchasePlannerOrderDetailDto:
+      required:
+      - ppoLineID
+      - ppoOrderDetailID
+      - ppoPartBinID
+      - ppoPartID
+      - ppoPartWarehouseLocationID
+      - ppoSessionID
+      - ppoSupplierOrganizationID
       type: object
       properties:
-        responseInfo:
-          $ref: '#/components/schemas/APIResponseMessageDto'
-        returnObject:
-          type: array
-          items:
-            $ref: '#/components/schemas/ERPPurchasePlannerSessionDto'
-        recordCount:
+        ppoConversionFactor:
+          minimum: 0
+          type: number
+          format: double
+        ppoCreatedBy:
+          type: string
+        ppoCreatedDate:
+          type: string
+          format: date-time
+        ppoCurrencyRateID:
+          type: string
+        ppoDataMissing:
+          maximum: 9999
+          minimum: 0
           type: integer
           format: int32
-    ERPRFQDto:
-      required:
-      - rqpRfqID
-      type: object
-      properties:
-        rqpBuyerEmployeeID:
-          type: string
-        rqpClosedDate:
+        ppoDueDate:
           type: string
           format: date-time
-        rqpRfqID:
-          type: string
-        rqpCreatedBy:
-          type: string
-        rqpCreatedDate:
-          type: string
-          format: date-time
-        rqpDueDate:
-          type: string
-          format: date-time
-        rqpUniqueID:
+        ppoUniqueID:
           type: string
           format: uuid
           example: 00000000-0000-0000-0000-000000000000
-        rqpClosed:
+        ppoExtendedCostBase:
+          minimum: 0
+          type: number
+          format: double
+        ppoInventoryQuantity:
+          minimum: 0
+          type: number
+          format: double
+        ppoInventoryUnitOfMeasure:
+          type: string
+        ppoCompleted:
           type: boolean
-        rqpReadyToPrint:
+        ppoSupplierRequirement:
           type: boolean
-        rqpPlantDepartmentID:
+        ppoJobAssemblyID:
+          type: integer
+          format: int32
+        ppoJobID:
           type: string
-        rqpPlantID:
+        ppoJobMaterialID:
+          type: integer
+          format: int32
+        ppoLeadTime:
+          type: integer
+          format: int32
+        ppoLineID:
+          type: integer
+          format: int32
+        ppoOrderDetailID:
+          type: integer
+          format: int32
+        ppoPartBinID:
           type: string
-        rqpRfqDate:
+        ppoPartID:
           type: string
-          format: date-time
-        rqpRowVersion:
+        ppoPartRevisionID:
+          type: string
+        ppoPartWarehouseLocationID:
+          type: string
+        ppoProjectAreaID:
+          type: string
+        ppoProjectID:
+          type: string
+        ppoPurchaseLocationID:
+          type: string
+        ppoPurchaseQuantity:
+          minimum: 0
+          type: number
+          format: double
+        ppoPurchaseType:
+          type: integer
+          format: int32
+        ppoPurchaseUnitOfMeasure:
+          type: string
+        ppoRowVersion:
           type: integer
           format: int64
-        rqpStandardMessageID:
+        ppoSalesOrderDeliveryID:
+          type: integer
+          format: int32
+        ppoSalesOrderID:
           type: string
-    ERPResponseMessageDto_IList_ERPPurchasePlannerOrderDetailDto:
+        ppoSalesOrderLineID:
+          type: integer
+          format: int32
+        ppoSessionID:
+          type: string
+        ppoSupplierOrganizationID:
+          type: string
+        ppoUnitCostBase:
+          minimum: 0
+          type: number
+          format: double
+        ppoUnitCostForeign:
+          minimum: 0
+          type: number
+          format: double
+    ERPResponseMessageDto_ERPPurchaseOrderComponentDto:
+      type: object
+      properties:
+        responseInfo:
+          $ref: '#/components/schemas/APIResponseMessageDto'
+        returnObject:
+          $ref: '#/components/schemas/ERPPurchaseOrderComponentDto'
+        recordCount:
+          type: integer
+          format: int32
+    ERPResponseMessageDto_IList_ERPPurchaseOrderComponentDto:
       type: object
       properties:
         responseInfo:
@@ -7793,7 +8532,7 @@ components:
         returnObject:
           type: array
           items:
-            $ref: '#/components/schemas/ERPPurchasePlannerOrderDetailDto'
+            $ref: '#/components/schemas/ERPPurchaseOrderComponentDto'
         recordCount:
           type: integer
           format: int32
@@ -8052,105 +8791,55 @@ components:
         recordCount:
           type: integer
           format: int32
-    ERPResponseMessageDto_IList_ERPPurchaseOrderDeliveryDto:
-      type: object
-      properties:
-        responseInfo:
-          $ref: '#/components/schemas/APIResponseMessageDto'
-        returnObject:
-          type: array
-          items:
-            $ref: '#/components/schemas/ERPPurchaseOrderDeliveryDto'
-        recordCount:
-          type: integer
-          format: int32
-    ERPResponseMessageDto_IList_ERPPurchaseOrderComponentDto:
-      type: object
-      properties:
-        responseInfo:
-          $ref: '#/components/schemas/APIResponseMessageDto'
-        returnObject:
-          type: array
-          items:
-            $ref: '#/components/schemas/ERPPurchaseOrderComponentDto'
-        recordCount:
-          type: integer
-          format: int32
-    ERPRFQSupplierDto:
+    ERPPurchaseOrderMemoDto:
       required:
-      - rqsRfqID
-      - rqsRfqLineID
-      - rqsRfqSupplierID
-      - rqsSupplierOrganizationID
+      - pmkMemoDate
+      - pmkPurchaseOrderID
+      - pmkPurchaseOrderMemoID
+      - pmkShortDescription
       type: object
       properties:
-        rqsCreatedBy:
+        pmkCreatedBy:
           type: string
-        rqsCreatedDate:
-          type: string
-          format: date-time
-        rqsCurrencyRateID:
-          type: string
-        rqsDueDate:
+        pmkCreatedDate:
           type: string
           format: date-time
-        rqsUniqueID:
+        pmkUniqueID:
           type: string
           format: uuid
           example: 00000000-0000-0000-0000-000000000000
-        rqsExchangeRate:
-          minimum: 0
-          type: number
-          format: double
-        rqsClosed:
+        pmkClosed:
           type: boolean
-        rqsComplete:
-          type: boolean
-        rqsCustomRate:
-          type: boolean
-        rqsSelectedSupplier:
-          type: boolean
-        rqsUpdatedPartPrices:
-          type: boolean
-        rqsOrgPartID:
+        pmkLongDescriptionRtf:
           type: string
-        rqsPurchaseContactID:
+        pmkLongDescriptionText:
           type: string
-        rqsPurchaseLocationID:
-          type: string
-        rqsRfqID:
-          type: string
-        rqsRfqLineID:
-          type: integer
-          format: int32
-        rqsRowVersion:
-          type: integer
-          format: int64
-        rqsSelectedSupplierDate:
+        pmkMemoDate:
           type: string
           format: date-time
-        rqsRfqSupplierID:
-          type: integer
-          format: int32
-        rqsSupplierOrganizationID:
+        pmkPurchaseOrderID:
           type: string
-    ERPResponseMessageDto_ERPPurchasePlannerRequirementDto:
-      type: object
-      properties:
-        responseInfo:
-          $ref: '#/components/schemas/APIResponseMessageDto'
-        returnObject:
-          $ref: '#/components/schemas/ERPPurchasePlannerRequirementDto'
-        recordCount:
+        pmkRowVersion:
+          type: integer
+          format: int64
+        pmkPurchaseOrderMemoID:
           type: integer
           format: int32
-    ERPResponseMessageDto_ERPPurchaseOrderDto:
+        pmkShortDescription:
+          type: string
+        pmkShowInApInvoices:
+          type: boolean
+        pmkShowInPurchaseOrders:
+          type: boolean
+        pmkShowInReceipts:
+          type: boolean
+    ERPResponseMessageDto_ERPPurchasePlannerOrderDetailDto:
       type: object
       properties:
         responseInfo:
           $ref: '#/components/schemas/APIResponseMessageDto'
         returnObject:
-          $ref: '#/components/schemas/ERPPurchaseOrderDto'
+          $ref: '#/components/schemas/ERPPurchasePlannerOrderDetailDto'
         recordCount:
           type: integer
           format: int32
@@ -8202,127 +8891,6 @@ components:
         rqqRfqQuantityID:
           type: integer
           format: int32
-    ERPPurchasePlannerOrderDetailDto:
-      required:
-      - ppoLineID
-      - ppoOrderDetailID
-      - ppoPartBinID
-      - ppoPartID
-      - ppoPartWarehouseLocationID
-      - ppoSessionID
-      - ppoSupplierOrganizationID
-      type: object
-      properties:
-        ppoConversionFactor:
-          minimum: 0
-          type: number
-          format: double
-        ppoCreatedBy:
-          type: string
-        ppoCreatedDate:
-          type: string
-          format: date-time
-        ppoCurrencyRateID:
-          type: string
-        ppoDataMissing:
-          maximum: 9999
-          minimum: 0
-          type: integer
-          format: int32
-        ppoDueDate:
-          type: string
-          format: date-time
-        ppoUniqueID:
-          type: string
-          format: uuid
-          example: 00000000-0000-0000-0000-000000000000
-        ppoExtendedCostBase:
-          minimum: 0
-          type: number
-          format: double
-        ppoInventoryQuantity:
-          minimum: 0
-          type: number
-          format: double
-        ppoInventoryUnitOfMeasure:
-          type: string
-        ppoCompleted:
-          type: boolean
-        ppoSupplierRequirement:
-          type: boolean
-        ppoJobAssemblyID:
-          type: integer
-          format: int32
-        ppoJobID:
-          type: string
-        ppoJobMaterialID:
-          type: integer
-          format: int32
-        ppoLeadTime:
-          type: integer
-          format: int32
-        ppoLineID:
-          type: integer
-          format: int32
-        ppoOrderDetailID:
-          type: integer
-          format: int32
-        ppoPartBinID:
-          type: string
-        ppoPartID:
-          type: string
-        ppoPartRevisionID:
-          type: string
-        ppoPartWarehouseLocationID:
-          type: string
-        ppoProjectAreaID:
-          type: string
-        ppoProjectID:
-          type: string
-        ppoPurchaseLocationID:
-          type: string
-        ppoPurchaseQuantity:
-          minimum: 0
-          type: number
-          format: double
-        ppoPurchaseType:
-          type: integer
-          format: int32
-        ppoPurchaseUnitOfMeasure:
-          type: string
-        ppoRowVersion:
-          type: integer
-          format: int64
-        ppoSalesOrderDeliveryID:
-          type: integer
-          format: int32
-        ppoSalesOrderID:
-          type: string
-        ppoSalesOrderLineID:
-          type: integer
-          format: int32
-        ppoSessionID:
-          type: string
-        ppoSupplierOrganizationID:
-          type: string
-        ppoUnitCostBase:
-          minimum: 0
-          type: number
-          format: double
-        ppoUnitCostForeign:
-          minimum: 0
-          type: number
-          format: double
-    ERPResponseMessageDto_ERPRFQSupplierDto:
-      type: object
-      properties:
-        responseInfo:
-          $ref: '#/components/schemas/APIResponseMessageDto'
-        returnObject:
-          $ref: '#/components/schemas/ERPRFQSupplierDto'
-        recordCount:
-          type: integer
-          format: int32
     ERPResponseMessageDto_IList_ERPRFQSupplierDto:
       type: object
       properties:
@@ -8332,28 +8900,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ERPRFQSupplierDto'
-        recordCount:
-          type: integer
-          format: int32
-    ERPResponseMessageDto_IList_ERPPurchaseOrderMemoDto:
-      type: object
-      properties:
-        responseInfo:
-          $ref: '#/components/schemas/APIResponseMessageDto'
-        returnObject:
-          type: array
-          items:
-            $ref: '#/components/schemas/ERPPurchaseOrderMemoDto'
-        recordCount:
-          type: integer
-          format: int32
-    ERPResponseMessageDto_ERPRFQQuantityDto:
-      type: object
-      properties:
-        responseInfo:
-          $ref: '#/components/schemas/APIResponseMessageDto'
-        returnObject:
-          $ref: '#/components/schemas/ERPRFQQuantityDto'
         recordCount:
           type: integer
           format: int32
@@ -8369,7 +8915,57 @@ components:
         recordCount:
           type: integer
           format: int32
-    ERPResponseMessageDto_IList_ERPPurchaseOrderApprovalDto:
+    ERPRFQDto:
+      required:
+      - rqpRfqID
+      type: object
+      properties:
+        rqpBuyerEmployeeID:
+          type: string
+        rqpClosedDate:
+          type: string
+          format: date-time
+        rqpRfqID:
+          type: string
+        rqpCreatedBy:
+          type: string
+        rqpCreatedDate:
+          type: string
+          format: date-time
+        rqpDueDate:
+          type: string
+          format: date-time
+        rqpUniqueID:
+          type: string
+          format: uuid
+          example: 00000000-0000-0000-0000-000000000000
+        rqpClosed:
+          type: boolean
+        rqpReadyToPrint:
+          type: boolean
+        rqpPlantDepartmentID:
+          type: string
+        rqpPlantID:
+          type: string
+        rqpRfqDate:
+          type: string
+          format: date-time
+        rqpRowVersion:
+          type: integer
+          format: int64
+        rqpStandardMessageID:
+          type: string
+    ERPResponseMessageDto_ERPPurchasePlannerRequirementDto:
+      type: object
+      properties:
+        responseInfo:
+          $ref: '#/components/schemas/APIResponseMessageDto'
+        returnObject:
+          $ref: '#/components/schemas/ERPPurchasePlannerRequirementDto'
+        recordCount:
+          type: integer
+          format: int32
+    ERPResponseMessageDto_IList_ERPPurchasePlannerLineDto:
       type: object
       properties:
         responseInfo:
@@ -8377,11 +8973,11 @@ components:
         returnObject:
           type: array
           items:
-            $ref: '#/components/schemas/ERPPurchaseOrderApprovalDto'
+            $ref: '#/components/schemas/ERPPurchasePlannerLineDto'
         recordCount:
           type: integer
           format: int32
-    ERPResponseMessageDto_IList_ERPPurchaseOrderDto:
+    ERPResponseMessageDto_IList_ERPRFQDto:
       type: object
       properties:
         responseInfo:
@@ -8389,606 +8985,10 @@ components:
         returnObject:
           type: array
           items:
-            $ref: '#/components/schemas/ERPPurchaseOrderDto'
+            $ref: '#/components/schemas/ERPRFQDto'
         recordCount:
           type: integer
           format: int32
-    ERPResponseMessageDto_ERPPurchaseOrderApprovalDto:
-      type: object
-      properties:
-        responseInfo:
-          $ref: '#/components/schemas/APIResponseMessageDto'
-        returnObject:
-          $ref: '#/components/schemas/ERPPurchaseOrderApprovalDto'
-        recordCount:
-          type: integer
-          format: int32
-    ERPPurchaseOrderComponentDto:
-      required:
-      - pmoDeliveryQuantity
-      - pmoDescription
-      - pmoPartBinID
-      - pmoPartID
-      - pmoPartWarehouseLocationID
-      - pmoPurchaseOrderID
-      - pmoPurchaseOrderLineID
-      - pmoPurchaseOrderComponentID
-      type: object
-      properties:
-        pmoAdditionalQuantity:
-          minimum: 0
-          type: number
-          format: double
-        pmoCreatedBy:
-          type: string
-        pmoCreatedDate:
-          type: string
-          format: date-time
-        pmoDeliveryQuantity:
-          minimum: 0
-          type: number
-          format: double
-        pmoDescription:
-          type: string
-        pmoUniqueID:
-          type: string
-          format: uuid
-          example: 00000000-0000-0000-0000-000000000000
-        pmoExtendedCostBase:
-          minimum: 0
-          type: number
-          format: double
-        pmoExtendedCostForeign:
-          minimum: 0
-          type: number
-          format: double
-        pmoClosed:
-          type: boolean
-        pmoIntraCompanyPosted:
-          type: boolean
-        pmoReceivedComplete:
-          type: boolean
-        pmoJobAssemblyID:
-          type: integer
-          format: int32
-        pmoJobID:
-          type: string
-        pmoJobMaterialComponentID:
-          type: integer
-          format: int32
-        pmoJobMaterialID:
-          type: integer
-          format: int32
-        pmoParentQuantity:
-          minimum: 0
-          type: number
-          format: double
-        pmoPartBinID:
-          type: string
-        pmoPartID:
-          type: string
-        pmoPartRevisionID:
-          type: string
-        pmoPartWarehouseLocationID:
-          type: string
-        pmoPurchaseOrderID:
-          type: string
-        pmoPurchaseOrderLineID:
-          type: integer
-          format: int32
-        pmoPurchaseUnitCost:
-          minimum: 0
-          type: number
-          format: double
-        pmoPurchaseUnitCostForeign:
-          minimum: 0
-          type: number
-          format: double
-        pmoQuantityPerParent:
-          minimum: 0
-          type: number
-          format: double
-        pmoQuantityReceived:
-          minimum: 0
-          type: number
-          format: double
-        pmoRowVersion:
-          type: integer
-          format: int64
-        pmoPurchaseOrderComponentID:
-          type: integer
-          format: int32
-        pmoUnitOfMeasure:
-          type: string
-        pmoWeight:
-          minimum: 0
-          type: number
-          format: double
-    ERPRFQMemoDto:
-      required:
-      - rqkMemoDate
-      - rqkRfqID
-      - rqkRfqMemoID
-      - rqkShortDescription
-      type: object
-      properties:
-        rqkCreatedBy:
-          type: string
-        rqkCreatedDate:
-          type: string
-          format: date-time
-        rqkUniqueID:
-          type: string
-          format: uuid
-          example: 00000000-0000-0000-0000-000000000000
-        rqkClosed:
-          type: boolean
-        rqkLongDescriptionRtf:
-          type: string
-        rqkLongDescriptionText:
-          type: string
-        rqkMemoDate:
-          type: string
-          format: date-time
-        rqkRfqID:
-          type: string
-        rqkRowVersion:
-          type: integer
-          format: int64
-        rqkRfqMemoID:
-          type: integer
-          format: int32
-        rqkShortDescription:
-          type: string
-    ERPResponseMessageDto_ERPPurchaseOrderLineDto:
-      type: object
-      properties:
-        responseInfo:
-          $ref: '#/components/schemas/APIResponseMessageDto'
-        returnObject:
-          $ref: '#/components/schemas/ERPPurchaseOrderLineDto'
-        recordCount:
-          type: integer
-          format: int32
-    ERPResponseMessageDto_ERPPurchasePlannerLineDto:
-      type: object
-      properties:
-        responseInfo:
-          $ref: '#/components/schemas/APIResponseMessageDto'
-        returnObject:
-          $ref: '#/components/schemas/ERPPurchasePlannerLineDto'
-        recordCount:
-          type: integer
-          format: int32
-    ERPPurchasePlannerSessionDto:
-      required:
-      - ppsBuyerEmployeeID
-      - ppsCutoffDate
-      - ppsSessionID
-      type: object
-      properties:
-        ppsBuyerEmployeeID:
-          type: string
-        ppsCompletedDate:
-          type: string
-          format: date-time
-        ppsCreatedBy:
-          type: string
-        ppsCreatedDate:
-          type: string
-          format: date-time
-        ppsCutoffDate:
-          type: string
-          format: date-time
-        ppsCutoffDatePosupply:
-          type: string
-          format: date-time
-        ppsUniqueID:
-          type: string
-          format: uuid
-          example: 00000000-0000-0000-0000-000000000000
-        ppsCalculateForAllParts:
-          type: boolean
-        ppsCompleted:
-          type: boolean
-        ppsFirmOnly:
-          type: boolean
-        ppsGenerated:
-          type: boolean
-        ppsJobIDs:
-          type: string
-        ppsPartClassIDs:
-          type: string
-        ppsPartIDs:
-          type: string
-        ppsPlantID:
-          type: string
-        ppsRowVersion:
-          type: integer
-          format: int64
-        ppsSalesOrderIDs:
-          type: string
-        ppsSessionID:
-          type: string
-        ppsSessionSubtotalBase:
-          minimum: 0
-          type: number
-          format: double
-        ppsShowAllDemandForPartsOnJobs:
-          type: boolean
-        ppsSupplierIDs:
-          type: string
-        ppsWarehouseID:
-          type: string
-    ERPResponseMessageDto_IList_ERPRFQQuantityDto:
-      type: object
-      properties:
-        responseInfo:
-          $ref: '#/components/schemas/APIResponseMessageDto'
-        returnObject:
-          type: array
-          items:
-            $ref: '#/components/schemas/ERPRFQQuantityDto'
-        recordCount:
-          type: integer
-          format: int32
-    ERPResponseMessageDto_ERPPurchaseOrderMemoDto:
-      type: object
-      properties:
-        responseInfo:
-          $ref: '#/components/schemas/APIResponseMessageDto'
-        returnObject:
-          $ref: '#/components/schemas/ERPPurchaseOrderMemoDto'
-        recordCount:
-          type: integer
-          format: int32
-    ERPPurchaseOrderDto:
-      required:
-      - pmpPurchaseOrderID
-      - pmpOrderDate
-      - pmpStatus
-      - pmpSupplierOrganizationID
-      type: object
-      properties:
-        pmpApInvoiceContactID:
-          type: string
-        pmpApInvoiceLocationID:
-          type: string
-        pmpApprovalDecisionDate:
-          type: string
-          format: date-time
-        pmpApprovalRequestDate:
-          type: string
-          format: date-time
-        pmpBuyerEmployeeID:
-          type: string
-        pmpClosedDate:
-          type: string
-          format: date-time
-        pmpPurchaseOrderID:
-          type: string
-        pmpCreatedBy:
-          type: string
-        pmpCreatedDate:
-          type: string
-          format: date-time
-        pmpCurrencyRateID:
-          type: string
-        pmpDocuments:
-          type: string
-        pmpDropShipContactID:
-          type: string
-        pmpDropShipLocationID:
-          type: string
-        pmpDropShipOrganizationID:
-          type: string
-        pmpDueDate:
-          type: string
-          format: date-time
-        pmpUniqueID:
-          type: string
-          format: uuid
-          example: 00000000-0000-0000-0000-000000000000
-        pmpExchangeRate:
-          minimum: 0
-          type: number
-          format: double
-        pmpFreeOnBoardDescription:
-          type: string
-        pmpIntraCompanyPostedDate:
-          type: string
-          format: date-time
-        pmpClosed:
-          type: boolean
-        pmpCustomRate:
-          type: boolean
-        pmpIntraCompany:
-          type: boolean
-        pmpIntraCompanyPosted:
-          type: boolean
-        pmpReadyToPrint:
-          type: boolean
-        pmpNextApprovalEmployeeID:
-          type: string
-        pmpOrderCommentsRTF:
-          type: string
-        pmpOrderCommentsText:
-          type: string
-        pmpOrderDate:
-          type: string
-          format: date-time
-        pmpOrderSubtotalBase:
-          minimum: 0
-          type: number
-          format: double
-        pmpOrderSubtotalForeign:
-          minimum: 0
-          type: number
-          format: double
-        pmpOrderTaxAmountBase:
-          minimum: 0
-          type: number
-          format: double
-        pmpOrderTaxAmountForeign:
-          minimum: 0
-          type: number
-          format: double
-        pmpOrderTotalBase:
-          minimum: 0
-          type: number
-          format: double
-        pmpOrderTotalForeign:
-          minimum: 0
-          type: number
-          format: double
-        pmpPaymentTermID:
-          type: string
-        pmpPlantDepartmentID:
-          type: string
-        pmpPlantID:
-          type: string
-        pmpProjectID:
-          type: string
-        pmpPurchaseContactID:
-          type: string
-        pmpPurchaseLocationID:
-          type: string
-        pmpRowVersion:
-          type: integer
-          format: int64
-        pmpShippingMethodID:
-          type: string
-        pmpStandardMessageID:
-          type: string
-        pmpStatus:
-          type: integer
-          format: int32
-        pmpSupplierOrganizationID:
-          type: string
-    APIResponseMessageDto:
-      type: object
-      properties:
-        description:
-          type: string
-        status:
-          type: string
-        payloadID:
-          type: string
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/Error'
-          readOnly: true
-        warnings:
-          type: array
-          items:
-            $ref: '#/components/schemas/Warning'
-          readOnly: true
-    ERPPurchasePlannerLineDto:
-      required:
-      - pplLineID
-      - pplSessionID
-      type: object
-      properties:
-        pplCreatedBy:
-          type: string
-        pplCreatedDate:
-          type: string
-          format: date-time
-        pplDataMissing:
-          maximum: 9999
-          minimum: 0
-          type: integer
-          format: int32
-        pplUniqueID:
-          type: string
-          format: uuid
-          example: 00000000-0000-0000-0000-000000000000
-        pplExtendedCostBase:
-          minimum: 0
-          type: number
-          format: double
-        pplCompleted:
-          type: boolean
-        pplNonStockedItem:
-          type: boolean
-        pplPhantomOrKitPart:
-          type: boolean
-        pplLastRunDate:
-          type: string
-          format: date-time
-        pplLineID:
-          type: integer
-          format: int32
-        pplLotSize:
-          minimum: 0
-          type: number
-          format: double
-        pplMaximumQuantity:
-          minimum: 0
-          type: number
-          format: double
-        pplMinimumQuantity:
-          minimum: 0
-          type: number
-          format: double
-        pplPartID:
-          type: string
-        pplPartRevisionID:
-          type: string
-        pplPartShortDescription:
-          type: string
-        pplPlantID:
-          type: string
-        pplQuantityOnHand:
-          minimum: 0
-          type: number
-          format: double
-        pplReorderMethod:
-          type: integer
-          format: int32
-        pplRowVersion:
-          type: integer
-          format: int64
-        pplSessionID:
-          type: string
-        pplWarehouseID:
-          type: string
-    ERPPurchaseOrderApprovalDto:
-      required:
-      - pmaPurchaseOrderID
-      - pmaPurchaseOrderApprovalID
-      type: object
-      properties:
-        pmaApprovalEmployeeID:
-          type: string
-        pmaCreatedBy:
-          type: string
-        pmaCreatedDate:
-          type: string
-          format: date-time
-        pmaDescription:
-          type: string
-        pmaUniqueID:
-          type: string
-          format: uuid
-          example: 00000000-0000-0000-0000-000000000000
-        pmaPurchaseOrderID:
-          type: string
-        pmaRowVersion:
-          type: integer
-          format: int64
-        pmaPurchaseOrderApprovalID:
-          type: integer
-          format: int32
-        pmaStatus:
-          type: integer
-          format: int32
-        pmaStatusDate:
-          type: string
-          format: date-time
-    ERPPurchaseOrderAccountDto:
-      required:
-      - pmxExpenseGlAccountID
-      - pmxPurchaseOrderID
-      - pmxPurchaseOrderLineID
-      - pmxPurchaseOrderAccountID
-      type: object
-      properties:
-        pmxAmount:
-          minimum: 0
-          type: number
-          format: double
-        pmxCreatedBy:
-          type: string
-        pmxCreatedDate:
-          type: string
-          format: date-time
-        pmxUniqueID:
-          type: string
-          format: uuid
-          example: 00000000-0000-0000-0000-000000000000
-        pmxExpenseGlAccountID:
-          type: string
-        pmxClosed:
-          type: boolean
-        pmxPercent:
-          minimum: 0
-          type: number
-          format: double
-        pmxPurchaseOrderID:
-          type: string
-        pmxPurchaseOrderLineID:
-          type: integer
-          format: int32
-        pmxRowVersion:
-          type: integer
-          format: int64
-        pmxPurchaseOrderAccountID:
-          type: integer
-          format: int32
-    ERPResponseMessageDto_ERPPurchasePlannerSessionDto:
-      type: object
-      properties:
-        responseInfo:
-          $ref: '#/components/schemas/APIResponseMessageDto'
-        returnObject:
-          $ref: '#/components/schemas/ERPPurchasePlannerSessionDto'
-        recordCount:
-          type: integer
-          format: int32
-    ERPResponseMessageDto_ERPRFQLineDto:
-      type: object
-      properties:
-        responseInfo:
-          $ref: '#/components/schemas/APIResponseMessageDto'
-        returnObject:
-          $ref: '#/components/schemas/ERPRFQLineDto'
-        recordCount:
-          type: integer
-          format: int32
-    ERPPurchaseOrderMemoDto:
-      required:
-      - pmkMemoDate
-      - pmkPurchaseOrderID
-      - pmkPurchaseOrderMemoID
-      - pmkShortDescription
-      type: object
-      properties:
-        pmkCreatedBy:
-          type: string
-        pmkCreatedDate:
-          type: string
-          format: date-time
-        pmkUniqueID:
-          type: string
-          format: uuid
-          example: 00000000-0000-0000-0000-000000000000
-        pmkClosed:
-          type: boolean
-        pmkLongDescriptionRtf:
-          type: string
-        pmkLongDescriptionText:
-          type: string
-        pmkMemoDate:
-          type: string
-          format: date-time
-        pmkPurchaseOrderID:
-          type: string
-        pmkRowVersion:
-          type: integer
-          format: int64
-        pmkPurchaseOrderMemoID:
-          type: integer
-          format: int32
-        pmkShortDescription:
-          type: string
-        pmkShowInApInvoices:
-          type: boolean
-        pmkShowInPurchaseOrders:
-          type: boolean
-        pmkShowInReceipts:
-          type: boolean
   securitySchemes:
     oauth2:
       type: oauth2

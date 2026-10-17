@@ -69,63 +69,37 @@ paths:
           description: Server Error
 components:
   schemas:
-    ApiError:
+    ValidationError:
       type: object
       properties:
-        isError:
-          type: boolean
-        exceptionMessage:
+        field:
           type:
           - string
           - 'null'
-        details:
+        message:
           type:
           - string
           - 'null'
-        referenceErrorCode:
-          type:
-          - string
-          - 'null'
-        referenceDocumentLink:
-          type:
-          - string
-          - 'null'
-        validationErrors:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/ValidationError'
       additionalProperties: false
-    KeyValuePair:
+    ResourceLog:
       type: object
       properties:
-        key:
-          type:
-          - string
-          - 'null'
-        value:
+        resource:
           allOf:
-          - $ref: '#/components/schemas/AnyValue'
-          description: 'AnyValue - can hold different types
-
-            Spec: https://opentelemetry.io/docs/specs/otel/logs/data-model/#type-any'
-      additionalProperties: false
-      description: Key-Value pair for attributes
-    OtelResource:
-      type: object
-      properties:
-        attributes:
+          - $ref: '#/components/schemas/OtelResource'
+          description: Resource attributes (e.g., service.name, service.version)
+        scopeLogs:
           type:
           - array
           - 'null'
           items:
-            $ref: '#/components/schemas/KeyValuePair'
-        droppedAttributesCount:
-          type: integer
-          format: int32
+            $ref: '#/components/schemas/ScopeLog'
+        schemaUrl:
+          type:
+          - string
+          - 'null'
       additionalProperties: false
-      description: Resource attributes (e.g., service.name, service.version)
+      description: A collection of logs from a Resource
     OtelLogRecord:
       type: object
       properties:
@@ -179,6 +153,30 @@ components:
           format: int32
       additionalProperties: false
       description: Individual log record following OTLP spec
+    OtelLogRequest:
+      type: object
+      properties:
+        resourceLogs:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ResourceLog'
+      additionalProperties: false
+      description: 'OTLP Log Export Request (HTTP JSON format)
+
+        Spec: https://opentelemetry.io/docs/specs/otlp/#otlphttp-request'
+    ArrayValue:
+      type: object
+      properties:
+        values:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/AnyValue'
+      additionalProperties: false
+      description: Array of AnyValue
     InsertOtelLogsResultAPIResponse:
       type: object
       properties:
@@ -200,17 +198,86 @@ components:
           allOf:
           - $ref: '#/components/schemas/InsertOtelLogsResult'
       additionalProperties: false
-    ArrayValue:
+    AnyValue:
       type: object
       properties:
-        values:
+        stringValue:
+          type:
+          - string
+          - 'null'
+        boolValue:
+          type:
+          - boolean
+          - 'null'
+        intValue:
+          type:
+          - integer
+          - 'null'
+          format: int64
+        doubleValue:
+          type:
+          - number
+          - 'null'
+          format: double
+        arrayValue:
+          allOf:
+          - $ref: '#/components/schemas/ArrayValue'
+          description: Array of AnyValue
+        kvlistValue:
+          allOf:
+          - $ref: '#/components/schemas/KeyValueList'
+          description: List of key-value pairs
+        bytesValue:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+      description: 'AnyValue - can hold different types
+
+        Spec: https://opentelemetry.io/docs/specs/otel/logs/data-model/#type-any'
+    ApiError:
+      type: object
+      properties:
+        isError:
+          type: boolean
+        exceptionMessage:
+          type:
+          - string
+          - 'null'
+        details:
+          type:
+          - string
+          - 'null'
+        referenceErrorCode:
+          type:
+          - string
+          - 'null'
+        referenceDocumentLink:
+          type:
+          - string
+          - 'null'
+        validationErrors:
           type:
           - array
           - 'null'
           items:
-            $ref: '#/components/schemas/AnyValue'
+            $ref: '#/components/schemas/ValidationError'
       additionalProperties: false
-      description: Array of AnyValue
+    KeyValuePair:
+      type: object
+      properties:
+        key:
+          type:
+          - string
+          - 'null'
+        value:
+          allOf:
+          - $ref: '#/components/schemas/AnyValue'
+          description: 'AnyValue - can hold different types
+
+            Spec: https://opentelemetry.io/docs/specs/otel/logs/data-model/#type-any'
+      additionalProperties: false
+      description: Key-Value pair for attributes
     InsertOtelLogsResult:
       type: object
       properties:
@@ -224,19 +291,53 @@ components:
           - string
           - 'null'
       additionalProperties: false
-    OtelLogRequest:
+    StringAPIResponse:
       type: object
       properties:
-        resourceLogs:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        result:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    OtelResource:
+      type: object
+      properties:
+        attributes:
           type:
           - array
           - 'null'
           items:
-            $ref: '#/components/schemas/ResourceLog'
+            $ref: '#/components/schemas/KeyValuePair'
+        droppedAttributesCount:
+          type: integer
+          format: int32
       additionalProperties: false
-      description: 'OTLP Log Export Request (HTTP JSON format)
-
-        Spec: https://opentelemetry.io/docs/specs/otlp/#otlphttp-request'
+      description: Resource attributes (e.g., service.name, service.version)
+    KeyValueList:
+      type: object
+      properties:
+        values:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/KeyValuePair'
+      additionalProperties: false
+      description: List of key-value pairs
     InstrumentationScope:
       type: object
       properties:
@@ -278,107 +379,6 @@ components:
           - 'null'
       additionalProperties: false
       description: A collection of logs from an InstrumentationScope
-    AnyValue:
-      type: object
-      properties:
-        stringValue:
-          type:
-          - string
-          - 'null'
-        boolValue:
-          type:
-          - boolean
-          - 'null'
-        intValue:
-          type:
-          - integer
-          - 'null'
-          format: int64
-        doubleValue:
-          type:
-          - number
-          - 'null'
-          format: double
-        arrayValue:
-          allOf:
-          - $ref: '#/components/schemas/ArrayValue'
-          description: Array of AnyValue
-        kvlistValue:
-          allOf:
-          - $ref: '#/components/schemas/KeyValueList'
-          description: List of key-value pairs
-        bytesValue:
-          type:
-          - string
-          - 'null'
-      additionalProperties: false
-      description: 'AnyValue - can hold different types
-
-        Spec: https://opentelemetry.io/docs/specs/otel/logs/data-model/#type-any'
-    KeyValueList:
-      type: object
-      properties:
-        values:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/KeyValuePair'
-      additionalProperties: false
-      description: List of key-value pairs
-    StringAPIResponse:
-      type: object
-      properties:
-        version:
-          type:
-          - string
-          - 'null'
-        statusCode:
-          type: integer
-          format: int32
-        message:
-          type:
-          - string
-          - 'null'
-        responseException:
-          allOf:
-          - $ref: '#/components/schemas/ApiError'
-        result:
-          type:
-          - string
-          - 'null'
-      additionalProperties: false
-    ValidationError:
-      type: object
-      properties:
-        field:
-          type:
-          - string
-          - 'null'
-        message:
-          type:
-          - string
-          - 'null'
-      additionalProperties: false
-    ResourceLog:
-      type: object
-      properties:
-        resource:
-          allOf:
-          - $ref: '#/components/schemas/OtelResource'
-          description: Resource attributes (e.g., service.name, service.version)
-        scopeLogs:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/ScopeLog'
-        schemaUrl:
-          type:
-          - string
-          - 'null'
-      additionalProperties: false
-      description: A collection of logs from a Resource
   securitySchemes:
     oidc:
       type: openIdConnect

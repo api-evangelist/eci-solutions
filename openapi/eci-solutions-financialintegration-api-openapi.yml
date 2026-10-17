@@ -315,7 +315,32 @@ paths:
                 $ref: '#/components/schemas/ValidateFinancialKeysResponseAPIResponse'
 components:
   schemas:
-    ApiUserIntegrationDetailResponseApiUserListResponseAPIResponse:
+    ApiIntegrationApiUserProperty:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        keyValue:
+          type:
+          - string
+          - 'null'
+        keyId:
+          type: integer
+          format: int32
+        isRequired:
+          type: boolean
+        description:
+          type:
+          - string
+          - 'null'
+        isSecret:
+          type: boolean
+        displayOrdinal:
+          type: integer
+          format: int32
+      additionalProperties: false
+    StringIListAPIResponse:
       type: object
       properties:
         version:
@@ -333,45 +358,11 @@ components:
           allOf:
           - $ref: '#/components/schemas/ApiError'
         result:
-          allOf:
-          - $ref: '#/components/schemas/ApiUserIntegrationDetailResponseApiUserListResponse'
-      additionalProperties: false
-    StringAPIResponse:
-      type: object
-      properties:
-        version:
           type:
-          - string
+          - array
           - 'null'
-        statusCode:
-          type: integer
-          format: int32
-        message:
-          type:
-          - string
-          - 'null'
-        responseException:
-          allOf:
-          - $ref: '#/components/schemas/ApiError'
-        result:
-          type:
-          - string
-          - 'null'
-      additionalProperties: false
-    UpdateFinancialDetailRequestModel:
-      type: object
-      properties:
-        financialCompanyId:
-          type: integer
-          format: int32
-        myobCompanyName:
-          type:
-          - string
-          - 'null'
-        myobCompanyId:
-          type:
-          - string
-          - 'null'
+          items:
+            type: string
       additionalProperties: false
     ApiUserIntegrationDetailResponse:
       type: object
@@ -461,113 +452,6 @@ components:
           - string
           - 'null'
       additionalProperties: false
-    ValidationError:
-      type: object
-      properties:
-        field:
-          type:
-          - string
-          - 'null'
-        message:
-          type:
-          - string
-          - 'null'
-      additionalProperties: false
-    RateLimits:
-      type: object
-      properties:
-        ip:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        ipPeriod:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        company:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        companyPeriod:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        user:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        userPeriod:
-          type:
-          - integer
-          - 'null'
-          format: int32
-      additionalProperties: false
-    AuthResponse:
-      type: object
-      properties:
-        id:
-          type: integer
-          format: int32
-        clientId:
-          type:
-          - string
-          - 'null'
-        secret:
-          type:
-          - string
-          - 'null'
-        systemName:
-          type:
-          - string
-          - 'null'
-        productName:
-          type:
-          - string
-          - 'null'
-      additionalProperties: false
-    ApiIntegrationApiUserProperty:
-      type: object
-      properties:
-        id:
-          type: integer
-          format: int32
-        keyValue:
-          type:
-          - string
-          - 'null'
-        keyId:
-          type: integer
-          format: int32
-        isRequired:
-          type: boolean
-        description:
-          type:
-          - string
-          - 'null'
-        isSecret:
-          type: boolean
-        displayOrdinal:
-          type: integer
-          format: int32
-      additionalProperties: false
-    CompanyMyobFile:
-      type: object
-      properties:
-        name:
-          type:
-          - string
-          - 'null'
-        id:
-          type:
-          - string
-          - 'null'
-          format: uri
-      additionalProperties: false
     CompanyMyobFileIListAPIResponse:
       type: object
       properties:
@@ -592,96 +476,7 @@ components:
           items:
             $ref: '#/components/schemas/CompanyMyobFile'
       additionalProperties: false
-    FinancialAPIUser:
-      required:
-      - eciIntegrationId
-      - erpApiProductId
-      - expireType
-      - financialCompanyId
-      - firstName
-      - userType
-      type: object
-      properties:
-        username:
-          type:
-          - string
-          - 'null'
-        password:
-          type:
-          - string
-          - 'null'
-        email:
-          pattern: ^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$
-          type:
-          - string
-          - 'null'
-        firstName:
-          maxLength: 50
-          minLength: 2
-          type: string
-        lastName:
-          type:
-          - string
-          - 'null'
-        eciIntegrationId:
-          type: integer
-          format: int32
-        systemName:
-          type:
-          - string
-          - 'null'
-        userType:
-          type: integer
-          description: 1 = Person, 2 = System (default)
-          format: int32
-        financialProduct:
-          type:
-          - string
-          - 'null'
-        financialCompanyId:
-          type: integer
-          format: int32
-        erpApiProductId:
-          type: integer
-          format: int32
-        expireType:
-          type: integer
-          format: int32
-        days:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        expireDateTime:
-          type:
-          - string
-          - 'null'
-        companyId:
-          type: integer
-          format: int32
-      additionalProperties: false
-    ValidateFinancialKeysResponseAPIResponse:
-      type: object
-      properties:
-        version:
-          type:
-          - string
-          - 'null'
-        statusCode:
-          type: integer
-          format: int32
-        message:
-          type:
-          - string
-          - 'null'
-        responseException:
-          allOf:
-          - $ref: '#/components/schemas/ApiError'
-        result:
-          allOf:
-          - $ref: '#/components/schemas/ValidateFinancialKeysResponse'
-      additionalProperties: false
-    StringIListAPIResponse:
+    StringAPIResponse:
       type: object
       properties:
         version:
@@ -700,31 +495,33 @@ components:
           - $ref: '#/components/schemas/ApiError'
         result:
           type:
-          - array
+          - string
           - 'null'
-          items:
-            type: string
       additionalProperties: false
-    AuthResponseAPIResponse:
+    ValidationError:
       type: object
       properties:
-        version:
+        field:
           type:
           - string
           - 'null'
-        statusCode:
-          type: integer
-          format: int32
         message:
           type:
           - string
           - 'null'
-        responseException:
-          allOf:
-          - $ref: '#/components/schemas/ApiError'
-        result:
-          allOf:
-          - $ref: '#/components/schemas/AuthResponse'
+      additionalProperties: false
+    CompanyMyobFile:
+      type: object
+      properties:
+        name:
+          type:
+          - string
+          - 'null'
+        id:
+          type:
+          - string
+          - 'null'
+          format: uri
       additionalProperties: false
     GetApiUserResponseModelAPIResponse:
       type: object
@@ -747,66 +544,6 @@ components:
           allOf:
           - $ref: '#/components/schemas/GetApiUserResponseModel'
       additionalProperties: false
-    ApiError:
-      type: object
-      properties:
-        isError:
-          type: boolean
-        exceptionMessage:
-          type:
-          - string
-          - 'null'
-        details:
-          type:
-          - string
-          - 'null'
-        referenceErrorCode:
-          type:
-          - string
-          - 'null'
-        referenceDocumentLink:
-          type:
-          - string
-          - 'null'
-        validationErrors:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/ValidationError'
-      additionalProperties: false
-    ValidateFinancialKeys:
-      required:
-      - financialProductId
-      - isEciKeyRequired
-      - redirectUri
-      type: object
-      properties:
-        clientId:
-          type:
-          - string
-          - 'null'
-        clientSecret:
-          type:
-          - string
-          - 'null'
-        financialProductId:
-          type: integer
-          format: int32
-        redirectUri:
-          minLength: 1
-          type: string
-        isEciKeyRequired:
-          type: boolean
-        environment:
-          type:
-          - string
-          - 'null'
-        systemBaseUrl:
-          type:
-          - string
-          - 'null'
-      additionalProperties: false
     ApiUserIntegrationDetailResponseApiUserListResponse:
       type: object
       properties:
@@ -817,29 +554,25 @@ components:
           items:
             $ref: '#/components/schemas/ApiUserIntegrationDetailResponse'
       additionalProperties: false
-    GetMyobCompanyRequestModel:
+    AuthResponse:
       type: object
       properties:
+        id:
+          type: integer
+          format: int32
         clientId:
           type:
           - string
           - 'null'
-        clientSecret:
+        secret:
           type:
           - string
           - 'null'
-        financialCompanyId:
-          type: integer
-          format: int32
-      additionalProperties: false
-    ValidateFinancialKeysResponse:
-      type: object
-      properties:
-        url:
+        systemName:
           type:
           - string
           - 'null'
-        sessionId:
+        productName:
           type:
           - string
           - 'null'
@@ -969,6 +702,184 @@ components:
           items:
             $ref: '#/components/schemas/ApiIntegrationApiUserProperty'
       additionalProperties: false
+    GetMyobCompanyRequestModel:
+      type: object
+      properties:
+        clientId:
+          type:
+          - string
+          - 'null'
+        clientSecret:
+          type:
+          - string
+          - 'null'
+        financialCompanyId:
+          type: integer
+          format: int32
+      additionalProperties: false
+    RateLimits:
+      type: object
+      properties:
+        ip:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        ipPeriod:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        company:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        companyPeriod:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        user:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        userPeriod:
+          type:
+          - integer
+          - 'null'
+          format: int32
+      additionalProperties: false
+    ApiUserIntegrationDetailResponseApiUserListResponseAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        result:
+          allOf:
+          - $ref: '#/components/schemas/ApiUserIntegrationDetailResponseApiUserListResponse'
+      additionalProperties: false
+    ValidateFinancialKeys:
+      required:
+      - financialProductId
+      - isEciKeyRequired
+      - redirectUri
+      type: object
+      properties:
+        clientId:
+          type:
+          - string
+          - 'null'
+        clientSecret:
+          type:
+          - string
+          - 'null'
+        financialProductId:
+          type: integer
+          format: int32
+        redirectUri:
+          minLength: 1
+          type: string
+        isEciKeyRequired:
+          type: boolean
+        environment:
+          type:
+          - string
+          - 'null'
+        systemBaseUrl:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    UpdateFinancialDetailRequestModel:
+      type: object
+      properties:
+        financialCompanyId:
+          type: integer
+          format: int32
+        myobCompanyName:
+          type:
+          - string
+          - 'null'
+        myobCompanyId:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    ValidateFinancialKeysResponse:
+      type: object
+      properties:
+        url:
+          type:
+          - string
+          - 'null'
+        sessionId:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    ApiError:
+      type: object
+      properties:
+        isError:
+          type: boolean
+        exceptionMessage:
+          type:
+          - string
+          - 'null'
+        details:
+          type:
+          - string
+          - 'null'
+        referenceErrorCode:
+          type:
+          - string
+          - 'null'
+        referenceDocumentLink:
+          type:
+          - string
+          - 'null'
+        validationErrors:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ValidationError'
+      additionalProperties: false
+    AuthResponseAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        result:
+          allOf:
+          - $ref: '#/components/schemas/AuthResponse'
+      additionalProperties: false
     FinancialAuthRequest:
       required:
       - code
@@ -1019,6 +930,95 @@ components:
           type:
           - string
           - 'null'
+      additionalProperties: false
+    ValidateFinancialKeysResponseAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        result:
+          allOf:
+          - $ref: '#/components/schemas/ValidateFinancialKeysResponse'
+      additionalProperties: false
+    FinancialAPIUser:
+      required:
+      - eciIntegrationId
+      - erpApiProductId
+      - expireType
+      - financialCompanyId
+      - firstName
+      - userType
+      type: object
+      properties:
+        username:
+          type:
+          - string
+          - 'null'
+        password:
+          type:
+          - string
+          - 'null'
+        email:
+          pattern: ^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$
+          type:
+          - string
+          - 'null'
+        firstName:
+          maxLength: 50
+          minLength: 2
+          type: string
+        lastName:
+          type:
+          - string
+          - 'null'
+        eciIntegrationId:
+          type: integer
+          format: int32
+        systemName:
+          type:
+          - string
+          - 'null'
+        userType:
+          type: integer
+          description: 1 = Person, 2 = System (default)
+          format: int32
+        financialProduct:
+          type:
+          - string
+          - 'null'
+        financialCompanyId:
+          type: integer
+          format: int32
+        erpApiProductId:
+          type: integer
+          format: int32
+        expireType:
+          type: integer
+          format: int32
+        days:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        expireDateTime:
+          type:
+          - string
+          - 'null'
+        companyId:
+          type: integer
+          format: int32
       additionalProperties: false
   securitySchemes:
     oidc:

@@ -3694,105 +3694,123 @@ paths:
                 $ref: '#/components/schemas/APIResponseMessageDto'
 components:
   schemas:
-    ERPQuoteDto:
-      required:
-      - qmpQuoteID
-      - qmpCustomerOrganizationID
-      - qmpDueDate
-      - qmpQuoterEmployeeID
-      - qmpShipOrganizationID
+    ERPResponseMessageDto_ERPQuoteQuantityDto:
       type: object
       properties:
-        qmpArInvoiceContactID:
+        responseInfo:
+          $ref: '#/components/schemas/APIResponseMessageDto'
+        returnObject:
+          $ref: '#/components/schemas/ERPQuoteQuantityDto'
+        recordCount:
+          type: integer
+          format: int32
+    ERPResponseMessageDto_ERPQuoteMaterialDto:
+      type: object
+      properties:
+        responseInfo:
+          $ref: '#/components/schemas/APIResponseMessageDto'
+        returnObject:
+          $ref: '#/components/schemas/ERPQuoteMaterialDto'
+        recordCount:
+          type: integer
+          format: int32
+    ERPQuoteAssemblyDto:
+      required:
+      - qmaLevel
+      - qmaPartID
+      - qmaPartShortDescription
+      - qmaQuantityPerParent
+      - qmaQuoteID
+      - qmaQuoteLineID
+      - qmaQuoteAssemblyID
+      type: object
+      properties:
+        qmaAssemblyOverlap:
+          type: integer
+          format: int32
+        qmaCreatedBy:
           type: string
-        qmpArInvoiceLocationID:
-          type: string
-        qmpClosedDate:
+        qmaCreatedDate:
           type: string
           format: date-time
-        qmpQuoteID:
+        qmaDocuments:
           type: string
-        qmpCreatedBy:
-          type: string
-        qmpCreatedDate:
-          type: string
-          format: date-time
-        qmpCurrencyRateID:
-          type: string
-        qmpCustomerOrganizationID:
-          type: string
-        qmpDueDate:
-          type: string
-          format: date-time
-        qmpUniqueID:
+        qmaUniqueID:
           type: string
           format: uuid
           example: 00000000-0000-0000-0000-000000000000
-        qmpExchangeRate:
+        qmaClosed:
+          type: boolean
+        qmaPullAllFromStock:
+          type: boolean
+        qmaLevel:
+          type: integer
+          format: int32
+        qmaOverlapDestinationLink:
+          type: integer
+          format: int32
+        qmaOverlapOffsetTime:
           minimum: 0
           type: number
           format: double
-        qmpExpirationDate:
+        qmaOverlapOperationID:
+          type: integer
+          format: int32
+        qmaOverlapSourceLink:
+          type: integer
+          format: int32
+        qmaOverlapSourceOperationID:
+          type: integer
+          format: int32
+        qmaOverlapType:
+          type: integer
+          format: int32
+        qmaParentAssemblyID:
+          type: integer
+          format: int32
+        qmaPartID:
           type: string
-          format: date-time
-        qmpFreeOnBoardDescription:
+        qmaPartLongDescriptionRtf:
           type: string
-        qmpAvalaraTaxCalculated:
-          type: boolean
-        qmpClosed:
-          type: boolean
-        qmpCreatedFromMobile:
-          type: boolean
-        qmpCustomRate:
-          type: boolean
-        qmpPaymentTermID:
+        qmaPartLongDescriptionText:
           type: string
-        qmpPlantDepartmentID:
+        qmaPartRevisionID:
           type: string
-        qmpPlantID:
+        qmaPartShortDescription:
           type: string
-        qmpProjectID:
+        qmaProductionNotesRTF:
           type: string
-        qmpQuoteContactID:
+        qmaProductionNotesText:
           type: string
-        qmpQuoteDate:
+        qmaQuantityPerParent:
+          minimum: 0
+          type: number
+          format: double
+        qmaQuoteID:
           type: string
-          format: date-time
-        qmpQuoteFooterMessageRTF:
-          type: string
-        qmpQuoteFooterMessageText:
-          type: string
-        qmpQuoteHeaderMessageRTF:
-          type: string
-        qmpQuoteHeaderMessageText:
-          type: string
-        qmpQuoteLocationID:
-          type: string
-        qmpQuoterEmployeeID:
-          type: string
-        qmpRowVersion:
+        qmaQuoteLineID:
+          type: integer
+          format: int32
+        qmaRowVersion:
           type: integer
           format: int64
-        qmpShipContactID:
-          type: string
-        qmpShipLocationID:
-          type: string
-        qmpShipOrganizationID:
-          type: string
-        qmpShippingMethodID:
-          type: string
-        qmpShippingPaymentTypeID:
-          type: string
-        qmpSplitPercentTotal:
+        qmaQuoteAssemblyID:
+          maximum: 99999
           minimum: 0
-          type: number
-          format: double
-        qmpStandardMessageID:
+          type: integer
+          format: int32
+        qmaSourceMethodID:
           type: string
-        qmpTaxDate:
+        qmaSourceRevisionID:
           type: string
-          format: date-time
-    ERPResponseMessageDto_IList_ERPQuoteQuantityDto:
+        qmaUnitOfMeasure:
+          type: string
+    Error:
+      type: object
+      properties:
+        innerText:
+          type: string
+    ERPResponseMessageDto_IList_ERPQuoteDto:
       type: object
       properties:
         responseInfo:
@@ -3800,17 +3818,7 @@ components:
         returnObject:
           type: array
           items:
-            $ref: '#/components/schemas/ERPQuoteQuantityDto'
-        recordCount:
-          type: integer
-          format: int32
-    ERPResponseMessageDto_ERPQuoteOperationDto:
-      type: object
-      properties:
-        responseInfo:
-          $ref: '#/components/schemas/APIResponseMessageDto'
-        returnObject:
-          $ref: '#/components/schemas/ERPQuoteOperationDto'
+            $ref: '#/components/schemas/ERPQuoteDto'
         recordCount:
           type: integer
           format: int32
@@ -3918,7 +3926,26 @@ components:
           format: date-time
         qmlUnitOfMeasure:
           type: string
-    ERPResponseMessageDto_IList_ERPQuoteOperationDto:
+    APIResponseMessageDto:
+      type: object
+      properties:
+        description:
+          type: string
+        status:
+          type: string
+        payloadID:
+          type: string
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+          readOnly: true
+        warnings:
+          type: array
+          items:
+            $ref: '#/components/schemas/Warning'
+          readOnly: true
+    ERPResponseMessageDto_IList_ERPQuoteQuantityDto:
       type: object
       properties:
         responseInfo:
@@ -3926,221 +3953,20 @@ components:
         returnObject:
           type: array
           items:
-            $ref: '#/components/schemas/ERPQuoteOperationDto'
+            $ref: '#/components/schemas/ERPQuoteQuantityDto'
         recordCount:
           type: integer
           format: int32
-    ERPResponseMessageDto_IList_ERPQuoteMaterialDto:
+    ERPResponseMessageDto_ERPQuoteMemoDto:
       type: object
       properties:
         responseInfo:
           $ref: '#/components/schemas/APIResponseMessageDto'
         returnObject:
-          type: array
-          items:
-            $ref: '#/components/schemas/ERPQuoteMaterialDto'
+          $ref: '#/components/schemas/ERPQuoteMemoDto'
         recordCount:
           type: integer
           format: int32
-    Warning:
-      type: object
-      properties:
-        innerText:
-          type: string
-    ERPQuoteMaterialDto:
-      required:
-      - qmmPartBinID
-      - qmmPartID
-      - qmmPartShortDescription
-      - qmmPartWarehouseLocationID
-      - qmmQuoteID
-      - qmmQuoteLineID
-      - qmmQuoteMaterialID
-      type: object
-      properties:
-        qmmCreatedBy:
-          type: string
-        qmmCreatedDate:
-          type: string
-          format: date-time
-        qmmDocuments:
-          type: string
-        qmmUniqueID:
-          type: string
-          format: uuid
-          example: 00000000-0000-0000-0000-000000000000
-        qmmEstimatedUnitCost:
-          minimum: 0
-          type: number
-          format: double
-        qmmBackflush:
-          type: boolean
-        qmmClosed:
-          type: boolean
-        qmmCostOverride:
-          type: boolean
-        qmmLeadTime:
-          type: integer
-          format: int32
-        qmmLeadTime1:
-          type: integer
-          format: int32
-        qmmLeadTime2:
-          type: integer
-          format: int32
-        qmmLeadTime3:
-          type: integer
-          format: int32
-        qmmLeadTime4:
-          type: integer
-          format: int32
-        qmmLeadTime5:
-          type: integer
-          format: int32
-        qmmLeadTime6:
-          type: integer
-          format: int32
-        qmmLeadTime7:
-          type: integer
-          format: int32
-        qmmLeadTime8:
-          type: integer
-          format: int32
-        qmmLeadTime9:
-          type: integer
-          format: int32
-        qmmMinimumCharge:
-          minimum: 0
-          type: number
-          format: double
-        qmmPartBinID:
-          type: string
-        qmmPartID:
-          type: string
-        qmmPartLongDescriptionRtf:
-          type: string
-        qmmPartLongDescriptionText:
-          type: string
-        qmmPartRevisionID:
-          type: string
-        qmmPartShortDescription:
-          type: string
-        qmmPartWarehouseLocationID:
-          type: string
-        qmmPurchaseLocationID:
-          type: string
-        qmmQuantityBreak1:
-          minimum: 0
-          type: number
-          format: double
-        qmmQuantityBreak2:
-          minimum: 0
-          type: number
-          format: double
-        qmmQuantityBreak3:
-          minimum: 0
-          type: number
-          format: double
-        qmmQuantityBreak4:
-          minimum: 0
-          type: number
-          format: double
-        qmmQuantityBreak5:
-          minimum: 0
-          type: number
-          format: double
-        qmmQuantityBreak6:
-          minimum: 0
-          type: number
-          format: double
-        qmmQuantityBreak7:
-          minimum: 0
-          type: number
-          format: double
-        qmmQuantityBreak8:
-          minimum: 0
-          type: number
-          format: double
-        qmmQuantityBreak9:
-          minimum: 0
-          type: number
-          format: double
-        qmmQuantityPerAssembly:
-          minimum: 0
-          type: number
-          format: double
-        qmmQuoteAssemblyID:
-          type: integer
-          format: int32
-        qmmQuoteID:
-          type: string
-        qmmQuoteLineID:
-          type: integer
-          format: int32
-        qmmRelatedQuoteOperationID:
-          type: integer
-          format: int32
-        qmmRowVersion:
-          type: integer
-          format: int64
-        qmmScrapPercent:
-          minimum: 0
-          type: number
-          format: double
-        qmmScrapQuantity:
-          minimum: 0
-          type: number
-          format: double
-        qmmQuoteMaterialID:
-          maximum: 99999
-          minimum: 0
-          type: integer
-          format: int32
-        qmmSourcePriceID:
-          type: integer
-          format: int32
-        qmmSourceRfqID:
-          type: string
-        qmmSupplierOrganizationID:
-          type: string
-        qmmUnitCost1:
-          minimum: 0
-          type: number
-          format: double
-        qmmUnitCost2:
-          minimum: 0
-          type: number
-          format: double
-        qmmUnitCost3:
-          minimum: 0
-          type: number
-          format: double
-        qmmUnitCost4:
-          minimum: 0
-          type: number
-          format: double
-        qmmUnitCost5:
-          minimum: 0
-          type: number
-          format: double
-        qmmUnitCost6:
-          minimum: 0
-          type: number
-          format: double
-        qmmUnitCost7:
-          minimum: 0
-          type: number
-          format: double
-        qmmUnitCost8:
-          minimum: 0
-          type: number
-          format: double
-        qmmUnitCost9:
-          minimum: 0
-          type: number
-          format: double
-        qmmUnitOfMeasure:
-          type: string
     ERPQuoteQuantityDto:
       required:
       - qmqQuoteID
@@ -4402,6 +4228,11 @@ components:
           minimum: 0
           type: number
           format: double
+    Warning:
+      type: object
+      properties:
+        innerText:
+          type: string
     ERPResponseMessageDto_ERPQuoteAssemblyDto:
       type: object
       properties:
@@ -4412,12 +4243,149 @@ components:
         recordCount:
           type: integer
           format: int32
-    Error:
+    ERPResponseMessageDto_ERPQuoteSalesPersonDto:
       type: object
       properties:
-        innerText:
+        responseInfo:
+          $ref: '#/components/schemas/APIResponseMessageDto'
+        returnObject:
+          $ref: '#/components/schemas/ERPQuoteSalesPersonDto'
+        recordCount:
+          type: integer
+          format: int32
+    ERPQuoteSalesPersonDto:
+      required:
+      - qmjQuoteID
+      - qmjSalesEmployeeID
+      - qmjSequenceID
+      type: object
+      properties:
+        qmjCreatedBy:
           type: string
-    ERPResponseMessageDto_IList_ERPQuoteLineDto:
+        qmjCreatedDate:
+          type: string
+          format: date-time
+        qmjUniqueID:
+          type: string
+          format: uuid
+          example: 00000000-0000-0000-0000-000000000000
+        qmjClosed:
+          type: boolean
+        qmjCreatedFromMobile:
+          type: boolean
+        qmjPercent:
+          minimum: 0
+          type: number
+          format: double
+        qmjQuoteID:
+          type: string
+        qmjRowVersion:
+          type: integer
+          format: int64
+        qmjSalesEmployeeID:
+          type: string
+        qmjSequenceID:
+          type: integer
+          format: int32
+    ERPQuoteDto:
+      required:
+      - qmpQuoteID
+      - qmpCustomerOrganizationID
+      - qmpDueDate
+      - qmpQuoterEmployeeID
+      - qmpShipOrganizationID
+      type: object
+      properties:
+        qmpArInvoiceContactID:
+          type: string
+        qmpArInvoiceLocationID:
+          type: string
+        qmpClosedDate:
+          type: string
+          format: date-time
+        qmpQuoteID:
+          type: string
+        qmpCreatedBy:
+          type: string
+        qmpCreatedDate:
+          type: string
+          format: date-time
+        qmpCurrencyRateID:
+          type: string
+        qmpCustomerOrganizationID:
+          type: string
+        qmpDueDate:
+          type: string
+          format: date-time
+        qmpUniqueID:
+          type: string
+          format: uuid
+          example: 00000000-0000-0000-0000-000000000000
+        qmpExchangeRate:
+          minimum: 0
+          type: number
+          format: double
+        qmpExpirationDate:
+          type: string
+          format: date-time
+        qmpFreeOnBoardDescription:
+          type: string
+        qmpAvalaraTaxCalculated:
+          type: boolean
+        qmpClosed:
+          type: boolean
+        qmpCreatedFromMobile:
+          type: boolean
+        qmpCustomRate:
+          type: boolean
+        qmpPaymentTermID:
+          type: string
+        qmpPlantDepartmentID:
+          type: string
+        qmpPlantID:
+          type: string
+        qmpProjectID:
+          type: string
+        qmpQuoteContactID:
+          type: string
+        qmpQuoteDate:
+          type: string
+          format: date-time
+        qmpQuoteFooterMessageRTF:
+          type: string
+        qmpQuoteFooterMessageText:
+          type: string
+        qmpQuoteHeaderMessageRTF:
+          type: string
+        qmpQuoteHeaderMessageText:
+          type: string
+        qmpQuoteLocationID:
+          type: string
+        qmpQuoterEmployeeID:
+          type: string
+        qmpRowVersion:
+          type: integer
+          format: int64
+        qmpShipContactID:
+          type: string
+        qmpShipLocationID:
+          type: string
+        qmpShipOrganizationID:
+          type: string
+        qmpShippingMethodID:
+          type: string
+        qmpShippingPaymentTypeID:
+          type: string
+        qmpSplitPercentTotal:
+          minimum: 0
+          type: number
+          format: double
+        qmpStandardMessageID:
+          type: string
+        qmpTaxDate:
+          type: string
+          format: date-time
+    ERPResponseMessageDto_IList_ERPQuoteSalesPersonDto:
       type: object
       properties:
         responseInfo:
@@ -4425,7 +4393,7 @@ components:
         returnObject:
           type: array
           items:
-            $ref: '#/components/schemas/ERPQuoteLineDto'
+            $ref: '#/components/schemas/ERPQuoteSalesPersonDto'
         recordCount:
           type: integer
           format: int32
@@ -4469,7 +4437,17 @@ components:
           type: boolean
         qmkShowInSalesOrders:
           type: boolean
-    ERPResponseMessageDto_IList_ERPQuoteSalesPersonDto:
+    ERPResponseMessageDto_ERPQuoteDto:
+      type: object
+      properties:
+        responseInfo:
+          $ref: '#/components/schemas/APIResponseMessageDto'
+        returnObject:
+          $ref: '#/components/schemas/ERPQuoteDto'
+        recordCount:
+          type: integer
+          format: int32
+    ERPResponseMessageDto_IList_ERPQuoteAssemblyDto:
       type: object
       properties:
         responseInfo:
@@ -4477,225 +4455,7 @@ components:
         returnObject:
           type: array
           items:
-            $ref: '#/components/schemas/ERPQuoteSalesPersonDto'
-        recordCount:
-          type: integer
-          format: int32
-    ERPResponseMessageDto_IList_ERPQuoteMemoDto:
-      type: object
-      properties:
-        responseInfo:
-          $ref: '#/components/schemas/APIResponseMessageDto'
-        returnObject:
-          type: array
-          items:
-            $ref: '#/components/schemas/ERPQuoteMemoDto'
-        recordCount:
-          type: integer
-          format: int32
-    ERPResponseMessageDto_ERPQuoteMemoDto:
-      type: object
-      properties:
-        responseInfo:
-          $ref: '#/components/schemas/APIResponseMessageDto'
-        returnObject:
-          $ref: '#/components/schemas/ERPQuoteMemoDto'
-        recordCount:
-          type: integer
-          format: int32
-    ERPResponseMessageDto_ERPQuoteQuantityDto:
-      type: object
-      properties:
-        responseInfo:
-          $ref: '#/components/schemas/APIResponseMessageDto'
-        returnObject:
-          $ref: '#/components/schemas/ERPQuoteQuantityDto'
-        recordCount:
-          type: integer
-          format: int32
-    ERPQuoteSalesPersonDto:
-      required:
-      - qmjQuoteID
-      - qmjSalesEmployeeID
-      - qmjSequenceID
-      type: object
-      properties:
-        qmjCreatedBy:
-          type: string
-        qmjCreatedDate:
-          type: string
-          format: date-time
-        qmjUniqueID:
-          type: string
-          format: uuid
-          example: 00000000-0000-0000-0000-000000000000
-        qmjClosed:
-          type: boolean
-        qmjCreatedFromMobile:
-          type: boolean
-        qmjPercent:
-          minimum: 0
-          type: number
-          format: double
-        qmjQuoteID:
-          type: string
-        qmjRowVersion:
-          type: integer
-          format: int64
-        qmjSalesEmployeeID:
-          type: string
-        qmjSequenceID:
-          type: integer
-          format: int32
-    ERPResponseMessageDto_ERPQuoteLineDto:
-      type: object
-      properties:
-        responseInfo:
-          $ref: '#/components/schemas/APIResponseMessageDto'
-        returnObject:
-          $ref: '#/components/schemas/ERPQuoteLineDto'
-        recordCount:
-          type: integer
-          format: int32
-    ERPQuoteAssemblyDto:
-      required:
-      - qmaLevel
-      - qmaPartID
-      - qmaPartShortDescription
-      - qmaQuantityPerParent
-      - qmaQuoteID
-      - qmaQuoteLineID
-      - qmaQuoteAssemblyID
-      type: object
-      properties:
-        qmaAssemblyOverlap:
-          type: integer
-          format: int32
-        qmaCreatedBy:
-          type: string
-        qmaCreatedDate:
-          type: string
-          format: date-time
-        qmaDocuments:
-          type: string
-        qmaUniqueID:
-          type: string
-          format: uuid
-          example: 00000000-0000-0000-0000-000000000000
-        qmaClosed:
-          type: boolean
-        qmaPullAllFromStock:
-          type: boolean
-        qmaLevel:
-          type: integer
-          format: int32
-        qmaOverlapDestinationLink:
-          type: integer
-          format: int32
-        qmaOverlapOffsetTime:
-          minimum: 0
-          type: number
-          format: double
-        qmaOverlapOperationID:
-          type: integer
-          format: int32
-        qmaOverlapSourceLink:
-          type: integer
-          format: int32
-        qmaOverlapSourceOperationID:
-          type: integer
-          format: int32
-        qmaOverlapType:
-          type: integer
-          format: int32
-        qmaParentAssemblyID:
-          type: integer
-          format: int32
-        qmaPartID:
-          type: string
-        qmaPartLongDescriptionRtf:
-          type: string
-        qmaPartLongDescriptionText:
-          type: string
-        qmaPartRevisionID:
-          type: string
-        qmaPartShortDescription:
-          type: string
-        qmaProductionNotesRTF:
-          type: string
-        qmaProductionNotesText:
-          type: string
-        qmaQuantityPerParent:
-          minimum: 0
-          type: number
-          format: double
-        qmaQuoteID:
-          type: string
-        qmaQuoteLineID:
-          type: integer
-          format: int32
-        qmaRowVersion:
-          type: integer
-          format: int64
-        qmaQuoteAssemblyID:
-          maximum: 99999
-          minimum: 0
-          type: integer
-          format: int32
-        qmaSourceMethodID:
-          type: string
-        qmaSourceRevisionID:
-          type: string
-        qmaUnitOfMeasure:
-          type: string
-    ERPResponseMessageDto_ERPQuoteSalesPersonDto:
-      type: object
-      properties:
-        responseInfo:
-          $ref: '#/components/schemas/APIResponseMessageDto'
-        returnObject:
-          $ref: '#/components/schemas/ERPQuoteSalesPersonDto'
-        recordCount:
-          type: integer
-          format: int32
-    ERPResponseMessageDto_IList_ERPQuoteDto:
-      type: object
-      properties:
-        responseInfo:
-          $ref: '#/components/schemas/APIResponseMessageDto'
-        returnObject:
-          type: array
-          items:
-            $ref: '#/components/schemas/ERPQuoteDto'
-        recordCount:
-          type: integer
-          format: int32
-    APIResponseMessageDto:
-      type: object
-      properties:
-        description:
-          type: string
-        status:
-          type: string
-        payloadID:
-          type: string
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/Error'
-          readOnly: true
-        warnings:
-          type: array
-          items:
-            $ref: '#/components/schemas/Warning'
-          readOnly: true
-    ERPResponseMessageDto_ERPQuoteMaterialDto:
-      type: object
-      properties:
-        responseInfo:
-          $ref: '#/components/schemas/APIResponseMessageDto'
-        returnObject:
-          $ref: '#/components/schemas/ERPQuoteMaterialDto'
+            $ref: '#/components/schemas/ERPQuoteAssemblyDto'
         recordCount:
           type: integer
           format: int32
@@ -4931,7 +4691,7 @@ components:
         qmoWorkCenterMachineID:
           type: integer
           format: int32
-    ERPResponseMessageDto_IList_ERPQuoteAssemblyDto:
+    ERPResponseMessageDto_IList_ERPQuoteLineDto:
       type: object
       properties:
         responseInfo:
@@ -4939,17 +4699,257 @@ components:
         returnObject:
           type: array
           items:
-            $ref: '#/components/schemas/ERPQuoteAssemblyDto'
+            $ref: '#/components/schemas/ERPQuoteLineDto'
         recordCount:
           type: integer
           format: int32
-    ERPResponseMessageDto_ERPQuoteDto:
+    ERPResponseMessageDto_IList_ERPQuoteMemoDto:
       type: object
       properties:
         responseInfo:
           $ref: '#/components/schemas/APIResponseMessageDto'
         returnObject:
-          $ref: '#/components/schemas/ERPQuoteDto'
+          type: array
+          items:
+            $ref: '#/components/schemas/ERPQuoteMemoDto'
+        recordCount:
+          type: integer
+          format: int32
+    ERPResponseMessageDto_ERPQuoteLineDto:
+      type: object
+      properties:
+        responseInfo:
+          $ref: '#/components/schemas/APIResponseMessageDto'
+        returnObject:
+          $ref: '#/components/schemas/ERPQuoteLineDto'
+        recordCount:
+          type: integer
+          format: int32
+    ERPResponseMessageDto_ERPQuoteOperationDto:
+      type: object
+      properties:
+        responseInfo:
+          $ref: '#/components/schemas/APIResponseMessageDto'
+        returnObject:
+          $ref: '#/components/schemas/ERPQuoteOperationDto'
+        recordCount:
+          type: integer
+          format: int32
+    ERPResponseMessageDto_IList_ERPQuoteMaterialDto:
+      type: object
+      properties:
+        responseInfo:
+          $ref: '#/components/schemas/APIResponseMessageDto'
+        returnObject:
+          type: array
+          items:
+            $ref: '#/components/schemas/ERPQuoteMaterialDto'
+        recordCount:
+          type: integer
+          format: int32
+    ERPQuoteMaterialDto:
+      required:
+      - qmmPartBinID
+      - qmmPartID
+      - qmmPartShortDescription
+      - qmmPartWarehouseLocationID
+      - qmmQuoteID
+      - qmmQuoteLineID
+      - qmmQuoteMaterialID
+      type: object
+      properties:
+        qmmCreatedBy:
+          type: string
+        qmmCreatedDate:
+          type: string
+          format: date-time
+        qmmDocuments:
+          type: string
+        qmmUniqueID:
+          type: string
+          format: uuid
+          example: 00000000-0000-0000-0000-000000000000
+        qmmEstimatedUnitCost:
+          minimum: 0
+          type: number
+          format: double
+        qmmBackflush:
+          type: boolean
+        qmmClosed:
+          type: boolean
+        qmmCostOverride:
+          type: boolean
+        qmmLeadTime:
+          type: integer
+          format: int32
+        qmmLeadTime1:
+          type: integer
+          format: int32
+        qmmLeadTime2:
+          type: integer
+          format: int32
+        qmmLeadTime3:
+          type: integer
+          format: int32
+        qmmLeadTime4:
+          type: integer
+          format: int32
+        qmmLeadTime5:
+          type: integer
+          format: int32
+        qmmLeadTime6:
+          type: integer
+          format: int32
+        qmmLeadTime7:
+          type: integer
+          format: int32
+        qmmLeadTime8:
+          type: integer
+          format: int32
+        qmmLeadTime9:
+          type: integer
+          format: int32
+        qmmMinimumCharge:
+          minimum: 0
+          type: number
+          format: double
+        qmmPartBinID:
+          type: string
+        qmmPartID:
+          type: string
+        qmmPartLongDescriptionRtf:
+          type: string
+        qmmPartLongDescriptionText:
+          type: string
+        qmmPartRevisionID:
+          type: string
+        qmmPartShortDescription:
+          type: string
+        qmmPartWarehouseLocationID:
+          type: string
+        qmmPurchaseLocationID:
+          type: string
+        qmmQuantityBreak1:
+          minimum: 0
+          type: number
+          format: double
+        qmmQuantityBreak2:
+          minimum: 0
+          type: number
+          format: double
+        qmmQuantityBreak3:
+          minimum: 0
+          type: number
+          format: double
+        qmmQuantityBreak4:
+          minimum: 0
+          type: number
+          format: double
+        qmmQuantityBreak5:
+          minimum: 0
+          type: number
+          format: double
+        qmmQuantityBreak6:
+          minimum: 0
+          type: number
+          format: double
+        qmmQuantityBreak7:
+          minimum: 0
+          type: number
+          format: double
+        qmmQuantityBreak8:
+          minimum: 0
+          type: number
+          format: double
+        qmmQuantityBreak9:
+          minimum: 0
+          type: number
+          format: double
+        qmmQuantityPerAssembly:
+          minimum: 0
+          type: number
+          format: double
+        qmmQuoteAssemblyID:
+          type: integer
+          format: int32
+        qmmQuoteID:
+          type: string
+        qmmQuoteLineID:
+          type: integer
+          format: int32
+        qmmRelatedQuoteOperationID:
+          type: integer
+          format: int32
+        qmmRowVersion:
+          type: integer
+          format: int64
+        qmmScrapPercent:
+          minimum: 0
+          type: number
+          format: double
+        qmmScrapQuantity:
+          minimum: 0
+          type: number
+          format: double
+        qmmQuoteMaterialID:
+          maximum: 99999
+          minimum: 0
+          type: integer
+          format: int32
+        qmmSourcePriceID:
+          type: integer
+          format: int32
+        qmmSourceRfqID:
+          type: string
+        qmmSupplierOrganizationID:
+          type: string
+        qmmUnitCost1:
+          minimum: 0
+          type: number
+          format: double
+        qmmUnitCost2:
+          minimum: 0
+          type: number
+          format: double
+        qmmUnitCost3:
+          minimum: 0
+          type: number
+          format: double
+        qmmUnitCost4:
+          minimum: 0
+          type: number
+          format: double
+        qmmUnitCost5:
+          minimum: 0
+          type: number
+          format: double
+        qmmUnitCost6:
+          minimum: 0
+          type: number
+          format: double
+        qmmUnitCost7:
+          minimum: 0
+          type: number
+          format: double
+        qmmUnitCost8:
+          minimum: 0
+          type: number
+          format: double
+        qmmUnitCost9:
+          minimum: 0
+          type: number
+          format: double
+        qmmUnitOfMeasure:
+          type: string
+    ERPResponseMessageDto_IList_ERPQuoteOperationDto:
+      type: object
+      properties:
+        responseInfo:
+          $ref: '#/components/schemas/APIResponseMessageDto'
+        returnObject:
+          type: array
+          items:
+            $ref: '#/components/schemas/ERPQuoteOperationDto'
         recordCount:
           type: integer
           format: int32

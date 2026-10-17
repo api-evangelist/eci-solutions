@@ -1609,55 +1609,102 @@ components:
           items:
             $ref: '#/components/schemas/Company'
       additionalProperties: false
-    ERPUser:
+    FinancialCompanyResponseModelListAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        result:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/FinancialCompanyResponseModel'
+      additionalProperties: false
+    CompanyIntegrationDetailResponse:
       type: object
       properties:
         id:
-          type:
-          - string
-          - 'null'
+          type: integer
+          format: int32
         name:
-          type:
-          - string
-          - 'null'
-        email:
-          type:
-          - string
-          - 'null'
-        companyName:
-          type:
-          - string
-          - 'null'
-        customerId:
-          type:
-          - string
-          - 'null'
-        productName:
-          type:
-          - string
-          - 'null'
-        emailConfirmed:
           type:
           - string
           - 'null'
         isActive:
           type: boolean
-        companyIsActive:
+        isHosted:
           type: boolean
-        lastLoginDateTime:
+        allowTestConnection:
+          type: boolean
+        externalConnectionCount:
+          type: integer
+          format: int32
+        systems:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/IntegrationSystemSummary'
+        properties:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ErpApiSettings'
+      additionalProperties: false
+    AddUpdateCompanyResponseModelAPIResponse:
+      type: object
+      properties:
+        version:
           type:
           - string
           - 'null'
-          format: date-time
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        result:
+          allOf:
+          - $ref: '#/components/schemas/AddUpdateCompanyResponseModel'
       additionalProperties: false
-    ApiCredentialUserType:
-      enum:
-      - 1
-      - 2
-      - 3
-      - 4
-      type: integer
-      format: int32
+    ErpProperties:
+      type: object
+      properties:
+        keyId:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        keyName:
+          type:
+          - string
+          - 'null'
+        keyValues:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/IntegrationProperties'
+      additionalProperties: false
     CompanyErpSettings:
       type: object
       properties:
@@ -1705,94 +1752,6 @@ components:
             $ref: '#/components/schemas/MasterKeyProperty'
           description: A collection of values that are saved for the setting.
       additionalProperties: false
-    ERPUserListResponseAPIResponse:
-      type: object
-      properties:
-        version:
-          type:
-          - string
-          - 'null'
-        statusCode:
-          type: integer
-          format: int32
-        message:
-          type:
-          - string
-          - 'null'
-        responseException:
-          allOf:
-          - $ref: '#/components/schemas/ApiError'
-        result:
-          allOf:
-          - $ref: '#/components/schemas/ERPUserListResponse'
-      additionalProperties: false
-    TraceMessageResponseListAPIResponse:
-      type: object
-      properties:
-        version:
-          type:
-          - string
-          - 'null'
-        statusCode:
-          type: integer
-          format: int32
-        message:
-          type:
-          - string
-          - 'null'
-        responseException:
-          allOf:
-          - $ref: '#/components/schemas/ApiError'
-        result:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/TraceMessageResponse'
-      additionalProperties: false
-    CompanySummaryResponse:
-      type: object
-      properties:
-        companyId:
-          type: integer
-          format: int32
-        companyName:
-          type:
-          - string
-          - 'null'
-        customerId:
-          type:
-          - string
-          - 'null'
-        nexusId:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        isActive:
-          type: boolean
-        productId:
-          type: integer
-          format: int32
-        productName:
-          type:
-          - string
-          - 'null'
-        createdDate:
-          type: string
-          format: date-time
-        lastActivityDateTime:
-          type:
-          - string
-          - 'null'
-          format: date-time
-        integrations:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/IntegrationSummary'
-      additionalProperties: false
     ListCompanySystemResult:
       type: object
       properties:
@@ -1813,136 +1772,62 @@ components:
         isPublished:
           type: boolean
       additionalProperties: false
-    ERPUserListResponse:
-      type: object
-      properties:
-        erpUserList:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/ERPUser'
-      additionalProperties: false
-    CompanyResponseIListAPIResponse:
-      type: object
-      properties:
-        version:
-          type:
-          - string
-          - 'null'
-        statusCode:
-          type: integer
-          format: int32
-        message:
-          type:
-          - string
-          - 'null'
-        responseException:
-          allOf:
-          - $ref: '#/components/schemas/ApiError'
-        result:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/CompanyResponse'
-      additionalProperties: false
-    ApiUserIntegrationDetailResponseApiUserListResponseAPIResponse:
-      type: object
-      properties:
-        version:
-          type:
-          - string
-          - 'null'
-        statusCode:
-          type: integer
-          format: int32
-        message:
-          type:
-          - string
-          - 'null'
-        responseException:
-          allOf:
-          - $ref: '#/components/schemas/ApiError'
-        result:
-          allOf:
-          - $ref: '#/components/schemas/ApiUserIntegrationDetailResponseApiUserListResponse'
-      additionalProperties: false
-    CompanyErpSettingsListAPIResponse:
-      type: object
-      properties:
-        version:
-          type:
-          - string
-          - 'null'
-        statusCode:
-          type: integer
-          format: int32
-        message:
-          type:
-          - string
-          - 'null'
-        responseException:
-          allOf:
-          - $ref: '#/components/schemas/ApiError'
-        result:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/CompanyErpSettings'
-      additionalProperties: false
-    StringAPIResponse:
-      type: object
-      properties:
-        version:
-          type:
-          - string
-          - 'null'
-        statusCode:
-          type: integer
-          format: int32
-        message:
-          type:
-          - string
-          - 'null'
-        responseException:
-          allOf:
-          - $ref: '#/components/schemas/ApiError'
-        result:
-          type:
-          - string
-          - 'null'
-      additionalProperties: false
-    AddCompanyIntegrationModel:
-      required:
-      - integrationId
-      type: object
-      properties:
-        integrationId:
-          type: integer
-          format: int32
-        isHosted:
-          type: boolean
-        erpProperties:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/ErpProperties'
-      additionalProperties: false
-    MasterKeyProperty:
+    ExternalCompanyResponse:
       type: object
       properties:
         id:
+          type: integer
+          format: int32
+        companyId:
+          type:
+          - string
+          - 'null'
+        companyName:
+          type:
+          - string
+          - 'null'
+        systemName:
+          type:
+          - string
+          - 'null'
+        environment:
+          type:
+          - string
+          - 'null'
+        systemId:
           type:
           - integer
           - 'null'
           format: int32
-        description:
+        credentialCount:
+          type: integer
+          format: int32
+        createDateTime:
           type:
           - string
           - 'null'
+          format: date-time
+      additionalProperties: false
+    CompanyActivateResponseAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        result:
+          allOf:
+          - $ref: '#/components/schemas/CompanyActivateResponse'
       additionalProperties: false
     ValidateIntegrationRequestModel:
       required:
@@ -1959,111 +1844,6 @@ components:
             type:
             - string
             - 'null'
-      additionalProperties: false
-    AuthSessionResultIListAPIResponse:
-      type: object
-      properties:
-        version:
-          type:
-          - string
-          - 'null'
-        statusCode:
-          type: integer
-          format: int32
-        message:
-          type:
-          - string
-          - 'null'
-        responseException:
-          allOf:
-          - $ref: '#/components/schemas/ApiError'
-        result:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/AuthSessionResult'
-      additionalProperties: false
-    UserCompanySystem:
-      type: object
-      properties:
-        id:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        productName:
-          type:
-          - string
-          - 'null'
-        eciIntegrationId:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        integrationName:
-          type:
-          - string
-          - 'null'
-      additionalProperties: false
-    CompanyIntegrationDetailResponse:
-      type: object
-      properties:
-        id:
-          type: integer
-          format: int32
-        name:
-          type:
-          - string
-          - 'null'
-        isActive:
-          type: boolean
-        isHosted:
-          type: boolean
-        allowTestConnection:
-          type: boolean
-        externalConnectionCount:
-          type: integer
-          format: int32
-        systems:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/IntegrationSystemSummary'
-        properties:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/ErpApiSettings'
-      additionalProperties: false
-    IntegrationSummary:
-      type: object
-      properties:
-        id:
-          type: integer
-          format: int32
-        integrationName:
-          type:
-          - string
-          - 'null'
-        allowHostedConfigurations:
-          type: boolean
-        allowOnPremisesConfigurations:
-          type: boolean
-        enableCompanyManagerDashboard:
-          type: boolean
-        introductionText:
-          type:
-          - string
-          - 'null'
-        isActive:
-          type: boolean
-        isHosted:
-          type: boolean
-        isPublished:
-          type: boolean
       additionalProperties: false
     ApiUserIntegrationDetailResponse:
       type: object
@@ -2153,19 +1933,524 @@ components:
           - string
           - 'null'
       additionalProperties: false
-    UpdateCompanyIntegrationModel:
+    StringAPIResponse:
       type: object
       properties:
-        isActive:
+        version:
           type:
-          - boolean
+          - string
           - 'null'
-        erpProperties:
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        result:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    ApplicationResult:
+      type: object
+      properties:
+        clientId:
+          type:
+          - string
+          - 'null'
+        roleId:
+          type: integer
+          format: int32
+        roleName:
+          type:
+          - string
+          - 'null'
+        integrationId:
+          type: integer
+          format: int32
+        integrationName:
+          type:
+          - string
+          - 'null'
+        redirectUris:
+          type:
+          - string
+          - 'null'
+        description:
+          type:
+          - string
+          - 'null'
+        lastUsedDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+      additionalProperties: false
+    ERPUserListResponse:
+      type: object
+      properties:
+        erpUserList:
           type:
           - array
           - 'null'
           items:
-            $ref: '#/components/schemas/ErpProperties'
+            $ref: '#/components/schemas/ERPUser'
+      additionalProperties: false
+    ValidationError:
+      type: object
+      properties:
+        field:
+          type:
+          - string
+          - 'null'
+        message:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    EciProduct:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        productName:
+          type:
+          - string
+          - 'null'
+        displayname:
+          type:
+          - string
+          - 'null'
+        defaultNexusAlias:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    ApiUserIntegrationDetailResponseApiUserListResponse:
+      type: object
+      properties:
+        apiUserList:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ApiUserIntegrationDetailResponse'
+      additionalProperties: false
+    ApiCredentialUserType:
+      enum:
+      - 1
+      - 2
+      - 3
+      - 4
+      type: integer
+      format: int32
+    CompanySummaryResponse:
+      type: object
+      properties:
+        companyId:
+          type: integer
+          format: int32
+        companyName:
+          type:
+          - string
+          - 'null'
+        customerId:
+          type:
+          - string
+          - 'null'
+        nexusId:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        isActive:
+          type: boolean
+        productId:
+          type: integer
+          format: int32
+        productName:
+          type:
+          - string
+          - 'null'
+        createdDate:
+          type: string
+          format: date-time
+        lastActivityDateTime:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        integrations:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/IntegrationSummary'
+      additionalProperties: false
+    CompanyActivateResponse:
+      type: object
+      properties:
+        companyId:
+          type: integer
+          format: int32
+        secret:
+          type:
+          - string
+          - 'null'
+        clientId:
+          type: string
+          format: uuid
+        nexusOrganizationId:
+          type:
+          - integer
+          - 'null'
+          format: int32
+      additionalProperties: false
+    EciIntegrationResponse:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        integrationName:
+          type:
+          - string
+          - 'null'
+        allowHostedConfigurations:
+          type:
+          - boolean
+          - 'null'
+        allowOnPremisesConfigurations:
+          type: boolean
+        enableCompanyManagerDashboard:
+          type: boolean
+        testConnectionUrl:
+          type:
+          - string
+          - 'null'
+        allowsTestConnection:
+          type: boolean
+        isHosted:
+          type:
+          - boolean
+          - 'null'
+        introductionText:
+          type:
+          - string
+          - 'null'
+        isActive:
+          type:
+          - boolean
+          - 'null'
+        isPublished:
+          type:
+          - boolean
+          - 'null'
+        ipRateLimitDefault:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        ipRateLimitDefaultPeriod:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        companyRateLimitDefault:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        companyRateLimitDefaultPeriod:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        userRateLimitDefault:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        userRateLimitDefaultPeriod:
+          type:
+          - integer
+          - 'null'
+          format: int32
+      additionalProperties: false
+    ERPUser:
+      type: object
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+        name:
+          type:
+          - string
+          - 'null'
+        email:
+          type:
+          - string
+          - 'null'
+        companyName:
+          type:
+          - string
+          - 'null'
+        customerId:
+          type:
+          - string
+          - 'null'
+        productName:
+          type:
+          - string
+          - 'null'
+        emailConfirmed:
+          type:
+          - string
+          - 'null'
+        isActive:
+          type: boolean
+        companyIsActive:
+          type: boolean
+        lastLoginDateTime:
+          type:
+          - string
+          - 'null'
+          format: date-time
+      additionalProperties: false
+    IntegrationSummary:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        integrationName:
+          type:
+          - string
+          - 'null'
+        allowHostedConfigurations:
+          type: boolean
+        allowOnPremisesConfigurations:
+          type: boolean
+        enableCompanyManagerDashboard:
+          type: boolean
+        introductionText:
+          type:
+          - string
+          - 'null'
+        isActive:
+          type: boolean
+        isHosted:
+          type: boolean
+        isPublished:
+          type: boolean
+      additionalProperties: false
+    CompanyResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        customerId:
+          type:
+          - string
+          - 'null'
+        companyName:
+          type:
+          - string
+          - 'null'
+        nexusId:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        productName:
+          type:
+          - string
+          - 'null'
+        integrationName:
+          type:
+          - string
+          - 'null'
+        lastActivityOn:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        createdOn:
+          type: string
+          format: date-time
+        isActive:
+          type: boolean
+        productId:
+          type: integer
+          format: int32
+      additionalProperties: false
+    ListCompanySystemResultIListAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        result:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ListCompanySystemResult'
+      additionalProperties: false
+    UserCompanySystemResponseModel:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        systemName:
+          type:
+          - string
+          - 'null'
+        integrationId:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        integrationName:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    UserCompany:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        companyName:
+          type:
+          - string
+          - 'null'
+        customerId:
+          type:
+          - string
+          - 'null'
+        nexusId:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        isActive:
+          type: boolean
+        companyProduct:
+          allOf:
+          - $ref: '#/components/schemas/EciProduct'
+        connectedIntegrations:
+          allOf:
+          - $ref: '#/components/schemas/EciIntegrationList'
+        unconnectedIntegrations:
+          allOf:
+          - $ref: '#/components/schemas/EciIntegrationList'
+        erpApiProperties:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ErpApiSettings'
+        system:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/UserCompanySystem'
+        systemResponse:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/UserCompanySystemResponseModel'
+        createdDate:
+          type: string
+          format: date-time
+        lastActivityDateTime:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        canCreateApiUser:
+          type: boolean
+        maxCompanyManagers:
+          type: integer
+          format: int32
+        currentCompanyManagers:
+          type: integer
+          format: int32
+      additionalProperties: false
+    ApplicationResultIListAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        result:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ApplicationResult'
+      additionalProperties: false
+    TraceMessageResponseListAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        result:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/TraceMessageResponse'
       additionalProperties: false
     IntegrationProperties:
       type: object
@@ -2184,17 +2469,614 @@ components:
           - string
           - 'null'
       additionalProperties: false
-    ValidationError:
+    CompanyResponseIListAPIResponse:
       type: object
       properties:
-        field:
+        version:
           type:
           - string
           - 'null'
+        statusCode:
+          type: integer
+          format: int32
         message:
           type:
           - string
           - 'null'
+        responseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        result:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/CompanyResponse'
+      additionalProperties: false
+    UpdateCompany:
+      type: object
+      properties:
+        companyName:
+          maxLength: 150
+          minLength: 0
+          type:
+          - string
+          - 'null'
+        customerId:
+          type:
+          - string
+          - 'null'
+        isActive:
+          type:
+          - boolean
+          - 'null'
+        nexusId:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        maxCompanyManagers:
+          type:
+          - integer
+          - 'null'
+          format: int32
+      additionalProperties: false
+    ExternalCompanyResponseIListAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        result:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ExternalCompanyResponse'
+      additionalProperties: false
+    MasterKeyProperty:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        description:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    StringObjectDictionaryAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        result:
+          type:
+          - object
+          - 'null'
+          additionalProperties: {}
+      additionalProperties: false
+    AddUpdateCompanyResponseModel:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        companyName:
+          type:
+          - string
+          - 'null'
+        customerId:
+          type:
+          - string
+          - 'null'
+        isActive:
+          type: boolean
+        productId:
+          type: integer
+          format: int32
+        maxCompanyManagers:
+          type: integer
+          format: int32
+        nexusOrganizationId:
+          type:
+          - integer
+          - 'null'
+          format: int32
+      additionalProperties: false
+    AddCompany:
+      required:
+      - productId
+      type: object
+      properties:
+        companyId:
+          type: integer
+          format: int32
+        companyName:
+          maxLength: 150
+          minLength: 0
+          type:
+          - string
+          - 'null'
+        customerId:
+          type:
+          - string
+          - 'null'
+        productId:
+          type: integer
+          format: int32
+        nexusOrganizationId:
+          type:
+          - integer
+          - 'null'
+          format: int32
+      additionalProperties: false
+    ApiUserIntegrationDetailResponseApiUserListResponseAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        result:
+          allOf:
+          - $ref: '#/components/schemas/ApiUserIntegrationDetailResponseApiUserListResponse'
+      additionalProperties: false
+    UpdateCompanyIntegrationModel:
+      type: object
+      properties:
+        isActive:
+          type:
+          - boolean
+          - 'null'
+        erpProperties:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ErpProperties'
+      additionalProperties: false
+    UserCompanySystem:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        productName:
+          type:
+          - string
+          - 'null'
+        eciIntegrationId:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        integrationName:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    AuthSessionResultIListAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        result:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/AuthSessionResult'
+      additionalProperties: false
+    CompanySummaryResponseAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        result:
+          allOf:
+          - $ref: '#/components/schemas/CompanySummaryResponse'
+      additionalProperties: false
+    UserCompanyAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        result:
+          allOf:
+          - $ref: '#/components/schemas/UserCompany'
+      additionalProperties: false
+    CompanyActivateRequest:
+      required:
+      - code
+      - customerId
+      type: object
+      properties:
+        code:
+          minLength: 1
+          type: string
+        companyName:
+          maxLength: 150
+          minLength: 0
+          type:
+          - string
+          - 'null'
+        customerId:
+          minLength: 1
+          type: string
+        nexusOrganizationId:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        redirectUris:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+        isHosted:
+          type:
+          - boolean
+          - 'null'
+        properties:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ErpProperties'
+      additionalProperties: false
+    EciIntegrationList:
+      type: object
+      properties:
+        eciIntegrations:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/EciIntegrationResponse'
+      additionalProperties: false
+    IntegrationProperty:
+      type: object
+      properties:
+        id:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        keyValue:
+          type:
+          - string
+          - 'null'
+        description:
+          type:
+          - string
+          - 'null'
+      additionalProperties: false
+    CompanyErpSettingsListAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        result:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/CompanyErpSettings'
+      additionalProperties: false
+    AddCompanyIntegrationModel:
+      required:
+      - integrationId
+      type: object
+      properties:
+        integrationId:
+          type: integer
+          format: int32
+        isHosted:
+          type: boolean
+        erpProperties:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ErpProperties'
+      additionalProperties: false
+    ErpApiSettings:
+      type: object
+      properties:
+        keyId:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        keyName:
+          type:
+          - string
+          - 'null'
+        isMultiple:
+          type:
+          - boolean
+          - 'null'
+        isRequired:
+          type:
+          - boolean
+          - 'null'
+        isCompanyHosted:
+          type:
+          - boolean
+          - 'null'
+        isCompanyOnPremises:
+          type:
+          - boolean
+          - 'null'
+        isConnectionSpecific:
+          type: boolean
+        minLength:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        maxLength:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        dataType:
+          type:
+          - string
+          - 'null'
+        eciIntegrationId:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        isSecret:
+          type:
+          - boolean
+          - 'null'
+        maskType:
+          type:
+          - string
+          - 'null'
+        displayName:
+          type:
+          - string
+          - 'null'
+        validationPattern:
+          type:
+          - string
+          - 'null'
+        validationPatternMessage:
+          type:
+          - string
+          - 'null'
+        defaultValue:
+          type:
+          - string
+          - 'null'
+        dropdownValues:
+          type:
+          - string
+          - 'null'
+        displayOrdinal:
+          type: integer
+          format: int32
+        listDropdownValues:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+        keyValues:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/IntegrationProperty'
+      additionalProperties: false
+    IntegrationSystemSummary:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+        name:
+          type:
+          - string
+          - 'null'
+        isActive:
+          type: boolean
+      additionalProperties: false
+    CompanyIntegrationDetailResponseAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        result:
+          allOf:
+          - $ref: '#/components/schemas/CompanyIntegrationDetailResponse'
+      additionalProperties: false
+    ApiError:
+      type: object
+      properties:
+        isError:
+          type: boolean
+        exceptionMessage:
+          type:
+          - string
+          - 'null'
+        details:
+          type:
+          - string
+          - 'null'
+        referenceErrorCode:
+          type:
+          - string
+          - 'null'
+        referenceDocumentLink:
+          type:
+          - string
+          - 'null'
+        validationErrors:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ValidationError'
+      additionalProperties: false
+    ERPUserListResponseAPIResponse:
+      type: object
+      properties:
+        version:
+          type:
+          - string
+          - 'null'
+        statusCode:
+          type: integer
+          format: int32
+        message:
+          type:
+          - string
+          - 'null'
+        responseException:
+          allOf:
+          - $ref: '#/components/schemas/ApiError'
+        result:
+          allOf:
+          - $ref: '#/components/schemas/ERPUserListResponse'
+      additionalProperties: false
+    FinancialCompanyResponseModel:
+      type: object
+      properties:
+        financialCompanyProductName:
+          type:
+          - string
+          - 'null'
+        systemName:
+          type:
+          - string
+          - 'null'
+        apiUsername:
+          type:
+          - string
+          - 'null'
+        environment:
+          type:
+          - string
+          - 'null'
+        createdDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        modifiedDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        tokenExpiresDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
       additionalProperties: false
     TraceMessageResponse:
       type: object
@@ -2376,888 +3258,6 @@ components:
           - string
           - 'null'
         redirectUrl:
-          type:
-          - string
-          - 'null'
-      additionalProperties: false
-    UpdateCompany:
-      type: object
-      properties:
-        companyName:
-          maxLength: 150
-          minLength: 0
-          type:
-          - string
-          - 'null'
-        customerId:
-          type:
-          - string
-          - 'null'
-        isActive:
-          type:
-          - boolean
-          - 'null'
-        nexusId:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        maxCompanyManagers:
-          type:
-          - integer
-          - 'null'
-          format: int32
-      additionalProperties: false
-    FinancialCompanyResponseModelListAPIResponse:
-      type: object
-      properties:
-        version:
-          type:
-          - string
-          - 'null'
-        statusCode:
-          type: integer
-          format: int32
-        message:
-          type:
-          - string
-          - 'null'
-        responseException:
-          allOf:
-          - $ref: '#/components/schemas/ApiError'
-        result:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/FinancialCompanyResponseModel'
-      additionalProperties: false
-    AddUpdateCompanyResponseModel:
-      type: object
-      properties:
-        id:
-          type: integer
-          format: int32
-        companyName:
-          type:
-          - string
-          - 'null'
-        customerId:
-          type:
-          - string
-          - 'null'
-        isActive:
-          type: boolean
-        productId:
-          type: integer
-          format: int32
-        maxCompanyManagers:
-          type: integer
-          format: int32
-        nexusOrganizationId:
-          type:
-          - integer
-          - 'null'
-          format: int32
-      additionalProperties: false
-    AddCompany:
-      required:
-      - productId
-      type: object
-      properties:
-        companyId:
-          type: integer
-          format: int32
-        companyName:
-          maxLength: 150
-          minLength: 0
-          type:
-          - string
-          - 'null'
-        customerId:
-          type:
-          - string
-          - 'null'
-        productId:
-          type: integer
-          format: int32
-        nexusOrganizationId:
-          type:
-          - integer
-          - 'null'
-          format: int32
-      additionalProperties: false
-    ApplicationResultIListAPIResponse:
-      type: object
-      properties:
-        version:
-          type:
-          - string
-          - 'null'
-        statusCode:
-          type: integer
-          format: int32
-        message:
-          type:
-          - string
-          - 'null'
-        responseException:
-          allOf:
-          - $ref: '#/components/schemas/ApiError'
-        result:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/ApplicationResult'
-      additionalProperties: false
-    ErpProperties:
-      type: object
-      properties:
-        keyId:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        keyName:
-          type:
-          - string
-          - 'null'
-        keyValues:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/IntegrationProperties'
-      additionalProperties: false
-    ExternalCompanyResponseIListAPIResponse:
-      type: object
-      properties:
-        version:
-          type:
-          - string
-          - 'null'
-        statusCode:
-          type: integer
-          format: int32
-        message:
-          type:
-          - string
-          - 'null'
-        responseException:
-          allOf:
-          - $ref: '#/components/schemas/ApiError'
-        result:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/ExternalCompanyResponse'
-      additionalProperties: false
-    EciIntegrationResponse:
-      type: object
-      properties:
-        id:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        integrationName:
-          type:
-          - string
-          - 'null'
-        allowHostedConfigurations:
-          type:
-          - boolean
-          - 'null'
-        allowOnPremisesConfigurations:
-          type: boolean
-        enableCompanyManagerDashboard:
-          type: boolean
-        testConnectionUrl:
-          type:
-          - string
-          - 'null'
-        allowsTestConnection:
-          type: boolean
-        isHosted:
-          type:
-          - boolean
-          - 'null'
-        introductionText:
-          type:
-          - string
-          - 'null'
-        isActive:
-          type:
-          - boolean
-          - 'null'
-        isPublished:
-          type:
-          - boolean
-          - 'null'
-        ipRateLimitDefault:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        ipRateLimitDefaultPeriod:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        companyRateLimitDefault:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        companyRateLimitDefaultPeriod:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        userRateLimitDefault:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        userRateLimitDefaultPeriod:
-          type:
-          - integer
-          - 'null'
-          format: int32
-      additionalProperties: false
-    ApplicationResult:
-      type: object
-      properties:
-        clientId:
-          type:
-          - string
-          - 'null'
-        roleId:
-          type: integer
-          format: int32
-        roleName:
-          type:
-          - string
-          - 'null'
-        integrationId:
-          type: integer
-          format: int32
-        integrationName:
-          type:
-          - string
-          - 'null'
-        redirectUris:
-          type:
-          - string
-          - 'null'
-        description:
-          type:
-          - string
-          - 'null'
-        lastUsedDate:
-          type:
-          - string
-          - 'null'
-          format: date-time
-      additionalProperties: false
-    CompanyResponse:
-      type: object
-      properties:
-        id:
-          type: integer
-          format: int32
-        customerId:
-          type:
-          - string
-          - 'null'
-        companyName:
-          type:
-          - string
-          - 'null'
-        nexusId:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        productName:
-          type:
-          - string
-          - 'null'
-        integrationName:
-          type:
-          - string
-          - 'null'
-        lastActivityOn:
-          type:
-          - string
-          - 'null'
-          format: date-time
-        createdOn:
-          type: string
-          format: date-time
-        isActive:
-          type: boolean
-        productId:
-          type: integer
-          format: int32
-      additionalProperties: false
-    CompanySummaryResponseAPIResponse:
-      type: object
-      properties:
-        version:
-          type:
-          - string
-          - 'null'
-        statusCode:
-          type: integer
-          format: int32
-        message:
-          type:
-          - string
-          - 'null'
-        responseException:
-          allOf:
-          - $ref: '#/components/schemas/ApiError'
-        result:
-          allOf:
-          - $ref: '#/components/schemas/CompanySummaryResponse'
-      additionalProperties: false
-    UserCompanySystemResponseModel:
-      type: object
-      properties:
-        id:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        systemName:
-          type:
-          - string
-          - 'null'
-        integrationId:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        integrationName:
-          type:
-          - string
-          - 'null'
-      additionalProperties: false
-    UserCompany:
-      type: object
-      properties:
-        id:
-          type: integer
-          format: int32
-        companyName:
-          type:
-          - string
-          - 'null'
-        customerId:
-          type:
-          - string
-          - 'null'
-        nexusId:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        isActive:
-          type: boolean
-        companyProduct:
-          allOf:
-          - $ref: '#/components/schemas/EciProduct'
-        connectedIntegrations:
-          allOf:
-          - $ref: '#/components/schemas/EciIntegrationList'
-        unconnectedIntegrations:
-          allOf:
-          - $ref: '#/components/schemas/EciIntegrationList'
-        erpApiProperties:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/ErpApiSettings'
-        system:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/UserCompanySystem'
-        systemResponse:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/UserCompanySystemResponseModel'
-        createdDate:
-          type: string
-          format: date-time
-        lastActivityDateTime:
-          type:
-          - string
-          - 'null'
-          format: date-time
-        canCreateApiUser:
-          type: boolean
-        maxCompanyManagers:
-          type: integer
-          format: int32
-        currentCompanyManagers:
-          type: integer
-          format: int32
-      additionalProperties: false
-    ExternalCompanyResponse:
-      type: object
-      properties:
-        id:
-          type: integer
-          format: int32
-        companyId:
-          type:
-          - string
-          - 'null'
-        companyName:
-          type:
-          - string
-          - 'null'
-        systemName:
-          type:
-          - string
-          - 'null'
-        environment:
-          type:
-          - string
-          - 'null'
-        systemId:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        credentialCount:
-          type: integer
-          format: int32
-        createDateTime:
-          type:
-          - string
-          - 'null'
-          format: date-time
-      additionalProperties: false
-    ApiError:
-      type: object
-      properties:
-        isError:
-          type: boolean
-        exceptionMessage:
-          type:
-          - string
-          - 'null'
-        details:
-          type:
-          - string
-          - 'null'
-        referenceErrorCode:
-          type:
-          - string
-          - 'null'
-        referenceDocumentLink:
-          type:
-          - string
-          - 'null'
-        validationErrors:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/ValidationError'
-      additionalProperties: false
-    UserCompanyAPIResponse:
-      type: object
-      properties:
-        version:
-          type:
-          - string
-          - 'null'
-        statusCode:
-          type: integer
-          format: int32
-        message:
-          type:
-          - string
-          - 'null'
-        responseException:
-          allOf:
-          - $ref: '#/components/schemas/ApiError'
-        result:
-          allOf:
-          - $ref: '#/components/schemas/UserCompany'
-      additionalProperties: false
-    CompanyIntegrationDetailResponseAPIResponse:
-      type: object
-      properties:
-        version:
-          type:
-          - string
-          - 'null'
-        statusCode:
-          type: integer
-          format: int32
-        message:
-          type:
-          - string
-          - 'null'
-        responseException:
-          allOf:
-          - $ref: '#/components/schemas/ApiError'
-        result:
-          allOf:
-          - $ref: '#/components/schemas/CompanyIntegrationDetailResponse'
-      additionalProperties: false
-    CompanyActivateRequest:
-      required:
-      - code
-      - customerId
-      type: object
-      properties:
-        code:
-          minLength: 1
-          type: string
-        companyName:
-          maxLength: 150
-          minLength: 0
-          type:
-          - string
-          - 'null'
-        customerId:
-          minLength: 1
-          type: string
-        nexusOrganizationId:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        redirectUris:
-          type:
-          - array
-          - 'null'
-          items:
-            type: string
-        isHosted:
-          type:
-          - boolean
-          - 'null'
-        properties:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/ErpProperties'
-      additionalProperties: false
-    StringObjectDictionaryAPIResponse:
-      type: object
-      properties:
-        version:
-          type:
-          - string
-          - 'null'
-        statusCode:
-          type: integer
-          format: int32
-        message:
-          type:
-          - string
-          - 'null'
-        responseException:
-          allOf:
-          - $ref: '#/components/schemas/ApiError'
-        result:
-          type:
-          - object
-          - 'null'
-          additionalProperties: {}
-      additionalProperties: false
-    CompanyActivateResponseAPIResponse:
-      type: object
-      properties:
-        version:
-          type:
-          - string
-          - 'null'
-        statusCode:
-          type: integer
-          format: int32
-        message:
-          type:
-          - string
-          - 'null'
-        responseException:
-          allOf:
-          - $ref: '#/components/schemas/ApiError'
-        result:
-          allOf:
-          - $ref: '#/components/schemas/CompanyActivateResponse'
-      additionalProperties: false
-    ListCompanySystemResultIListAPIResponse:
-      type: object
-      properties:
-        version:
-          type:
-          - string
-          - 'null'
-        statusCode:
-          type: integer
-          format: int32
-        message:
-          type:
-          - string
-          - 'null'
-        responseException:
-          allOf:
-          - $ref: '#/components/schemas/ApiError'
-        result:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/ListCompanySystemResult'
-      additionalProperties: false
-    CompanyActivateResponse:
-      type: object
-      properties:
-        companyId:
-          type: integer
-          format: int32
-        secret:
-          type:
-          - string
-          - 'null'
-        clientId:
-          type: string
-          format: uuid
-        nexusOrganizationId:
-          type:
-          - integer
-          - 'null'
-          format: int32
-      additionalProperties: false
-    EciIntegrationList:
-      type: object
-      properties:
-        eciIntegrations:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/EciIntegrationResponse'
-      additionalProperties: false
-    ApiUserIntegrationDetailResponseApiUserListResponse:
-      type: object
-      properties:
-        apiUserList:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/ApiUserIntegrationDetailResponse'
-      additionalProperties: false
-    AddUpdateCompanyResponseModelAPIResponse:
-      type: object
-      properties:
-        version:
-          type:
-          - string
-          - 'null'
-        statusCode:
-          type: integer
-          format: int32
-        message:
-          type:
-          - string
-          - 'null'
-        responseException:
-          allOf:
-          - $ref: '#/components/schemas/ApiError'
-        result:
-          allOf:
-          - $ref: '#/components/schemas/AddUpdateCompanyResponseModel'
-      additionalProperties: false
-    ErpApiSettings:
-      type: object
-      properties:
-        keyId:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        keyName:
-          type:
-          - string
-          - 'null'
-        isMultiple:
-          type:
-          - boolean
-          - 'null'
-        isRequired:
-          type:
-          - boolean
-          - 'null'
-        isCompanyHosted:
-          type:
-          - boolean
-          - 'null'
-        isCompanyOnPremises:
-          type:
-          - boolean
-          - 'null'
-        isConnectionSpecific:
-          type: boolean
-        minLength:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        maxLength:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        dataType:
-          type:
-          - string
-          - 'null'
-        eciIntegrationId:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        isSecret:
-          type:
-          - boolean
-          - 'null'
-        maskType:
-          type:
-          - string
-          - 'null'
-        displayName:
-          type:
-          - string
-          - 'null'
-        validationPattern:
-          type:
-          - string
-          - 'null'
-        validationPatternMessage:
-          type:
-          - string
-          - 'null'
-        defaultValue:
-          type:
-          - string
-          - 'null'
-        dropdownValues:
-          type:
-          - string
-          - 'null'
-        displayOrdinal:
-          type: integer
-          format: int32
-        listDropdownValues:
-          type:
-          - array
-          - 'null'
-          items:
-            type: string
-        keyValues:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/IntegrationProperty'
-      additionalProperties: false
-    FinancialCompanyResponseModel:
-      type: object
-      properties:
-        financialCompanyProductName:
-          type:
-          - string
-          - 'null'
-        systemName:
-          type:
-          - string
-          - 'null'
-        apiUsername:
-          type:
-          - string
-          - 'null'
-        environment:
-          type:
-          - string
-          - 'null'
-        createdDate:
-          type:
-          - string
-          - 'null'
-          format: date-time
-        modifiedDate:
-          type:
-          - string
-          - 'null'
-          format: date-time
-        tokenExpiresDate:
-          type:
-          - string
-          - 'null'
-          format: date-time
-      additionalProperties: false
-    IntegrationSystemSummary:
-      type: object
-      properties:
-        id:
-          type: integer
-          format: int32
-        name:
-          type:
-          - string
-          - 'null'
-        isActive:
-          type: boolean
-      additionalProperties: false
-    EciProduct:
-      type: object
-      properties:
-        id:
-          type: integer
-          format: int32
-        productName:
-          type:
-          - string
-          - 'null'
-        displayname:
-          type:
-          - string
-          - 'null'
-        defaultNexusAlias:
-          type:
-          - string
-          - 'null'
-      additionalProperties: false
-    IntegrationProperty:
-      type: object
-      properties:
-        id:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        keyValue:
-          type:
-          - string
-          - 'null'
-        description:
           type:
           - string
           - 'null'

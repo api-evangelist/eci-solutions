@@ -169,67 +169,27 @@ paths:
       summary: Put registrants secondarysource type
       x-summary-source: derived
 components:
-  schemas:
-    Rating:
-      type: object
-      title: Rating
-      description: If rating does not exist, it will be created
-      properties:
-        rating:
-          type: string
-          minLength: 1
-          maxLength: 50
-          example: A
-    SourceType:
-      type: object
-      title: Source Type
-      description: If the source type doesn't exist, it will be created
-      properties:
-        sourceType:
-          type: string
-          minLength: 1
-          maxLength: 100
-          example: Online Registration
-    FollowUpProcess:
-      type: object
-      title: Follow-up Process
-      description: If `followUpProcessId` is provided, the system will attempt to lookup the process by id, and fail if not found. If `followUpProcessId` is not provided, but `followUpProcess` is instead provided, the system will then attempt to lookup the process by value. If the value doesn't exist, it will be created
-      properties:
-        followUpProcessId:
-          type: string
-          example: 1
-        followUpProcess:
-          type: string
-          minLength: 1
-          maxLength: 20
-          example: 30 day follow up
-    StandardError:
-      type: object
-      title: Standard Error
-      description: A standard error response format.
-      properties:
-        errorCode:
-          type: integer
-          example: 4xx
-        error:
-          type: string
-          description: A summary of the error
-          example: A summary of the error
-        errorMessage:
-          type: string
-          description: Details of the error
-          example: Details of the error
-    SecondarySourceType:
-      type: object
-      title: Secondary Source Type
-      description: If the secondary source type does not exist, it will be created
-      properties:
-        secondarySourceType:
-          type: string
-          minLength: 1
-          maxLength: 100
-          example: Facebook
   responses:
+    NotFound:
+      description: The specified resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/StandardError'
+    Forbidden:
+      description: The provided authentication credentials does not have sufficient privileges to access this resource
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/StandardError'
+    Unauthorized:
+      description: The request has not been fulfilled because it lacks valid authentication credentials
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/StandardError'
+    InternalServerError:
+      description: Receiving a 5xx response indicates an error on Lasso's end. Please contact us to report the problem
     BadRequest:
       description: 'The request could not be processed due to invalid input:
 
@@ -251,26 +211,66 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/StandardError'
-    InternalServerError:
-      description: Receiving a 5xx response indicates an error on Lasso's end. Please contact us to report the problem
-    Unauthorized:
-      description: The request has not been fulfilled because it lacks valid authentication credentials
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/StandardError'
-    Forbidden:
-      description: The provided authentication credentials does not have sufficient privileges to access this resource
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/StandardError'
-    NotFound:
-      description: The specified resource was not found
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/StandardError'
+  schemas:
+    SourceType:
+      type: object
+      title: Source Type
+      description: If the source type doesn't exist, it will be created
+      properties:
+        sourceType:
+          type: string
+          minLength: 1
+          maxLength: 100
+          example: Online Registration
+    StandardError:
+      type: object
+      title: Standard Error
+      description: A standard error response format.
+      properties:
+        errorCode:
+          type: integer
+          example: 4xx
+        error:
+          type: string
+          description: A summary of the error
+          example: A summary of the error
+        errorMessage:
+          type: string
+          description: Details of the error
+          example: Details of the error
+    FollowUpProcess:
+      type: object
+      title: Follow-up Process
+      description: If `followUpProcessId` is provided, the system will attempt to lookup the process by id, and fail if not found. If `followUpProcessId` is not provided, but `followUpProcess` is instead provided, the system will then attempt to lookup the process by value. If the value doesn't exist, it will be created
+      properties:
+        followUpProcessId:
+          type: string
+          example: 1
+        followUpProcess:
+          type: string
+          minLength: 1
+          maxLength: 20
+          example: 30 day follow up
+    Rating:
+      type: object
+      title: Rating
+      description: If rating does not exist, it will be created
+      properties:
+        rating:
+          type: string
+          minLength: 1
+          maxLength: 50
+          example: A
+    SecondarySourceType:
+      type: object
+      title: Secondary Source Type
+      description: If the secondary source type does not exist, it will be created
+      properties:
+        secondarySourceType:
+          type: string
+          minLength: 1
+          maxLength: 100
+          example: Facebook
   securitySchemes:
     JwtAuthorizer:
       type: http
